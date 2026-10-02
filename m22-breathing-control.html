@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M22 呼吸控制模擬器</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; }
+        body { background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #7f8c8d; margin-top: 0; }
+        
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        
+        .panel { background: #f8f9fa; border: 1fr solid #e9ecef; border-radius: 8px; padding: 18px; }
+        .panel h3 { margin-top: 0; color: #2980b9; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+
+        .control-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type=range] { width: 100%; cursor: pointer; }
+        
+        .status-box { background: #fff; border-left: 4px solid #3498db; padding: 10px; margin-bottom: 10px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .status-title { font-size: 0.85em; color: #7f8c8d; }
+        .status-value { font-size: 1.2em; font-weight: bold; color: #2c3e50; }
+        
+        .flow-container { margin-top: 25px; }
+        .flow-step { background: #eef2f5; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; margin-bottom: 8px; font-size: 0.95em; transition: all 0.3s ease; opacity: 0.5; }
+        .flow-step.active { background: #dbeafe; border-color: #3b82f6; color: #1e40af; font-weight: bold; opacity: 1; transform: translateX(5px); }
+        .flow-step.highlight { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        
+        .btn-btn { display: block; width: 100%; padding: 10px; background: #27ae60; color: white; border: none; border-radius: 6px; font-size: 1em; cursor: pointer; transition: background 0.2s; }
+        .btn-btn:hover { background: #219150; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>M22 呼吸控制模擬器</h1>
+    <p class="subtitle">模擬人體在運動/安靜狀態下的生理調節過程（根據 DSE 課程內容）</p>
+
+    <div class="dashboard">
+        <!-- 左側：生理數據與控制 -->
+        <div class="panel">
+            <h3>🎛️ 生理狀態控制</h3>
+            
+            <div class="control-group">
+                <label for="exerciseSlider">運動強度 (骨骼肌呼吸作用): <span id="exerciseVal">安靜 (0%)</span></label>
+                <input type="range" id="exerciseSlider" min="0" max="100" value="0">
+            </div>
+
+            <button class="btn-btn" onclick="resetSim()">重置狀態</button>
+
+            <h3 style="margin-top:20px;">📊 即時監測數據</h3>
+            <div class="status-box">
+                <div class="status-title">血液 / 腦脊髓液 CO₂ 濃度</div>
+                <div class="status-value" id="co2Display">正常 (40 mmHg)</div>
+            </div>
+            <div class="status-box">
+                <div class="status-title">血液 / 腦脊髓液 pH 值</div>
+                <div class="status-value" id="phDisplay">7.40 (正常)</div>
+            </div>
+            <div class="status-box">
+                <div class="status-title">延腦呼吸中樞神經脈衝頻率</div>
+                <div class="status-value" id="impulseDisplay">低 (正常速率)</div>
+            </div>
+            <div class="status-box">
+                <div class="status-title">呼吸速率及深度 / 換氣率</div>
+                <div class="status-value" id="respDisplay">正常 (12 次/分)</div>
+            </div>
+        </div>
+
+        <!-- 右側：反應流程圖 -->
+        <div class="panel">
+            <h3>🔄 生理動態反應流程 (DSE Key Points)</h3>
+            <div id="flowSteps">
+                <div class="flow-step" id="step1">1. 骨骼肌細胞進行呼吸作用，產生能量</div>
+                <div class="flow-step" id="step2">2. 血液中 CO₂ 濃度上升</div>
+                <div class="flow-step" id="step3">3. 主動脈體和頸動脈體化學感受器感受血液 CO₂ 上升</div>
+                <div class="flow-step" id="step4">4. 腦脊髓液 / 血液 pH 下降[cite: 1]</div>
+                <div class="flow-step" id="step5">5. 延腦呼吸中樞化學感受器感受腦脊髓液 CO₂ 上升[cite: 1]</div>
+                <div class="flow-step" id="step6">6. 延腦呼吸中樞發出更多神經脈衝，經交感神經傳至反應器[cite: 1]</div>
+                <div class="flow-step" id="step7">7. 肋間肌及橫膈膜肌收縮更快更強勁[cite: 1]</div>
+                <div class="flow-step" id="step8">8. 呼吸速率及深度增加，換氣率增加[cite: 1]</div>
+                <div class="flow-step" id="step9">9. 排出更多 CO₂，血液 CO₂ 下降[cite: 1]</div>
+                <div class="flow-step" id="step10">10. 獲得更多 O₂ 運至肌肉，維持代謝平衡[cite: 1]</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const slider = document.getElementById('exerciseSlider');
+    const exerciseVal = document.getElementById('exerciseVal');
+    const co2Display = document.getElementById('co2Display');
+    const phDisplay = document.getElementById('phDisplay');
+    const impulseDisplay = document.getElementById('impulseDisplay');
+    const respDisplay = document.getElementById('respDisplay');
+
+    function updateSimulation() {
+        let val = parseInt(slider.value);
+        
+        // 重置所有步驟
+        for(let i=1; i<=10; i++) {
+            document.getElementById('step' + i).className = 'flow-step';
+        }
+
+        if (val === 0) {
+            exerciseVal.innerText = "安靜 (0%)";
+            co2Display.innerText = "正常 (40 mmHg)";
+            phDisplay.innerText = "7.40 (正常)";
+            phDisplay.style.color = "#2c3e50";
+            impulseDisplay.innerText = "基準值 (正常頻率)";
+            respDisplay.innerText = "12 次/分 (正常深度)";
+            document.getElementById('step1').classList.add('active');
+        } else if (val < 50) {
+            exerciseVal.innerText = `輕度運動 (${val}%)`;
+            co2Display.innerText = "輕微上升 (" + (40 + Math.floor(val*0.1)) + " mmHg)";
+            phDisplay.innerText = (7.40 - val*0.001).toFixed(2) + " (輕微下降)";
+            phDisplay.style.color = "#d35400";
+            impulseDisplay.innerText = "增加 (中等脈衝)";
+            respDisplay.innerText = (12 + Math.floor(val*0.15)) + " 次/分 (深度增加)";
+            
+            // 亮起前半段流程
+            [1, 2, 3, 4, 6, 7, 8].forEach(id => document.getElementById('step' + id).classList.add('active'));
+        } else {
+            exerciseVal.innerText = `劇烈運動 (${val}%)`;
+            co2Display.innerText = "顯著上升 (" + (40 + Math.floor(val*0.2)) + " mmHg)";
+            phDisplay.innerText = (7.40 - val*0.002).toFixed(2) + " (顯著酸性)";
+            phDisplay.style.color = "#c0392b";
+            impulseDisplay.innerText = "極高 (密集神經脈衝)";
+            respDisplay.innerText = (12 + Math.floor(val*0.3)) + " 次/分 (強勁深度/高換氣率)";
+            
+            // 全流程觸發並高亮關鍵點
+            for(let i=1; i<=10; i++) {
+                document.getElementById('step' + i).classList.add('active');
+            }
+            document.getElementById('step2').classList.add('highlight');
+            document.getElementById('step4').classList.add('highlight');
+            document.getElementById('step8').classList.add('highlight');
+        }
+    }
+
+    function resetSim() {
+        slider.value = 0;
+        updateSimulation();
+    }
+
+    slider.addEventListener('input', updateSimulation);
+    // 初始化
+    updateSimulation();
+</script>
+
+</body>
+</html>
