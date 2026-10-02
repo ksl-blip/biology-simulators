@@ -1,155 +1,1118 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M22 呼吸控制模擬器</title>
-    <style>
-        * { box-sizing: border-box; font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; }
-        body { background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #7f8c8d; margin-top: 0; }
-        
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-        
-        .panel { background: #f8f9fa; border: 1fr solid #e9ecef; border-radius: 8px; padding: 18px; }
-        .panel h3 { margin-top: 0; color: #2980b9; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
-
-        .control-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input[type=range] { width: 100%; cursor: pointer; }
-        
-        .status-box { background: #fff; border-left: 4px solid #3498db; padding: 10px; margin-bottom: 10px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .status-title { font-size: 0.85em; color: #7f8c8d; }
-        .status-value { font-size: 1.2em; font-weight: bold; color: #2c3e50; }
-        
-        .flow-container { margin-top: 25px; }
-        .flow-step { background: #eef2f5; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; margin-bottom: 8px; font-size: 0.95em; transition: all 0.3s ease; opacity: 0.5; }
-        .flow-step.active { background: #dbeafe; border-color: #3b82f6; color: #1e40af; font-weight: bold; opacity: 1; transform: translateX(5px); }
-        .flow-step.highlight { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
-        
-        .btn-btn { display: block; width: 100%; padding: 10px; background: #27ae60; color: white; border: none; border-radius: 6px; font-size: 1em; cursor: pointer; transition: background 0.2s; }
-        .btn-btn:hover { background: #219150; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M22 運動時的呼吸控制</title>
+<meta name="description" content="HKDSE 生物：運動時延腦怎樣藉化學感受器、膈神經和肋間神經增加呼吸速率和深度。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230f766e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f172a;
+    --muted: #475569;
+    --bg: #eef6f4;
+    --card: #fff;
+    --line: #dbe4ea;
+    --accent: #0f766e;
+    --accent-2: #14b8a6;
+    --ok: #047857;
+    --warn: #b45309;
+    --bad: #be123c;
+    --shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Noto Sans TC", "PingFang HK", "Microsoft JhengHei", "WenQuanYi Micro Hei", sans-serif;
+    font-size: 17px;
+    color: var(--ink);
+    background:
+      radial-gradient(1000px 420px at 0% -10%, #ccfbf1 0%, transparent 50%),
+      radial-gradient(800px 360px at 100% 0%, #e0f2fe 0%, transparent 46%),
+      var(--bg);
+    line-height: 1.5;
+  }
+  a { color: var(--accent); }
+  button, input { font-family: inherit; }
+  button { cursor: pointer; }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 18px 16px 48px; }
+  header.top {
+    display: flex; gap: 16px; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .kicker { margin: 0; color: var(--accent); font-weight: 800; font-size: 0.82rem; letter-spacing: 0.08em; }
+  h1 { margin: 2px 0 4px; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.2; }
+  .sub { margin: 0; color: var(--muted); }
+  .back { font-weight: 700; text-decoration: none; }
+  #soundBtn {
+    border: 1px solid var(--line); background: #fff; border-radius: 999px;
+    padding: 8px 14px; font-weight: 800; min-height: 44px;
+  }
+  #soundBtn[aria-pressed="true"] { background: #ccfbf1; border-color: #0f766e; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.8fr); gap: 16px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 22px;
+    box-shadow: var(--shadow); padding: 14px;
+  }
+  .stage {
+    background: radial-gradient(80% 70% at 50% 30%, #115e59 0%, #042f2e 72%);
+    color: #ecfeff; border: 0; overflow: hidden;
+  }
+  .stage-top { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 4px 6px 0; }
+  .badge {
+    background: rgba(255,255,255,0.12); border-radius: 999px; padding: 4px 10px; font-weight: 800; font-size: 0.92rem;
+  }
+  .badge.fb { background: #fde68a; color: #713f12; }
+  #fig { width: 100%; height: auto; display: block; }
+  .tag { fill: #ecfeff; font-size: 15px; font-weight: 700; stroke: #042f2e; stroke-width: 4px; paint-order: stroke; }
+  .story { margin: 4px 6px 8px; min-height: 3.2em; font-size: 0.98rem; }
+  .controls { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .controls button, .chal button, .primary, .ghost {
+    min-height: 48px; border-radius: 12px; border: 0; font-weight: 800; font-size: 1rem;
+  }
+  .controls button { background: #ecfeff; color: #134e4a; }
+  .controls button[aria-pressed="true"] { background: #fde68a; color: #713f12; }
+  .chal { display: grid; grid-template-columns: auto 1fr auto auto; gap: 8px; align-items: center; }
+  .chal button { background: #fde68a; color: #713f12; padding: 0 12px; }
+  .chal input[type="range"] { width: 100%; accent-color: #fde68a; height: 36px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 8px 6px 0; font-size: 0.82rem; color: #ccfbf1; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
+  .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .metric { background: #f8fafc; border-radius: 14px; padding: 10px 12px; border: 1px solid var(--line); }
+  .metric span { display: block; color: var(--muted); font-size: 0.82rem; font-weight: 700; }
+  .metric strong { font-size: 1.55rem; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+  .metric em { font-style: normal; color: var(--muted); font-size: 0.82rem; margin-left: 4px; }
+  .metric.ok strong { color: var(--ok); }
+  .metric.warn strong { color: var(--warn); }
+  .metric.bad strong { color: var(--bad); }
+  .bar { position: relative; height: 8px; background: #e2e8f0; border-radius: 99px; margin-top: 6px; overflow: hidden; }
+  .bar i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); border-radius: 99px; }
+  .bar b { position: absolute; top: 0; bottom: 0; background: rgba(16, 185, 129, 0.28); }
+  .graph-card h2, .card h2 { margin: 2px 0 8px; font-size: 1.05rem; }
+  #graph { width: 100%; height: 168px; display: block; border-radius: 12px; background: #f8fafc; }
+  .glegend { display: flex; gap: 14px; font-size: 0.82rem; color: var(--muted); font-weight: 700; margin-top: 6px; }
+  .sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; margin-right: 4px; vertical-align: -1px; }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .step {
+    display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
+    padding: 8px 10px; border-radius: 12px; border: 1px solid var(--line); background: #f8fafc;
+    opacity: 0.48; transition: 0.25s ease;
+  }
+  .step.on { opacity: 1; background: #ecfdf5; border-color: #5eead4; }
+  .step.now { box-shadow: inset 4px 0 0 var(--accent); }
+  .step .n {
+    width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    background: #e2e8f0; font-weight: 900; font-size: 0.85rem;
+  }
+  .step.on .n { background: var(--accent); color: #fff; }
+  .games { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .span2 { grid-column: 1 / -1; }
+  .primary { background: var(--accent); color: #fff; padding: 0 16px; }
+  .ghost { background: #e2e8f0; color: var(--ink); padding: 0 16px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .stars { font-size: 1.4rem; letter-spacing: 2px; color: #d97706; }
+  .sort-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .bin { min-height: 120px; background: #f8fafc; border-radius: 12px; padding: 8px; border: 1px dashed #cbd5e1; }
+  .chip, .aitem {
+    display: block; width: 100%; text-align: left; margin: 0 0 8px; padding: 10px 12px;
+    border-radius: 12px; border: 1px solid #cbd5e1; background: #fff; font-weight: 650; line-height: 1.4;
+  }
+  .aitem { display: flex; gap: 8px; align-items: flex-start; touch-action: none; cursor: grab; }
+  .aitem .tx { flex: 1; }
+  .aitem .kick { border: 0; background: #fee2e2; color: #9f1239; border-radius: 8px; min-height: 36px; font-weight: 800; }
+  .aitem.dragging { opacity: 0.65; }
+  .aitem.good { border-color: #059669; background: #ecfdf5; }
+  .aitem.bad { border-color: #e11d48; background: #fff1f2; }
+  .q-opt {
+    display: block; width: 100%; text-align: left; margin: 0 0 8px; padding: 12px 14px;
+    border-radius: 12px; border: 1px solid #cbd5e1; background: #fff; font-weight: 700; min-height: 48px;
+  }
+  .q-opt.good { background: #ecfdf5; border-color: #059669; }
+  .q-opt.bad { background: #fff1f2; border-color: #e11d48; }
+  .why { background: #f0fdfa; border-radius: 12px; padding: 10px 12px; }
+  .notes { margin-top: 16px; }
+  .notes li { margin: 6px 0; }
+  .fine { color: var(--muted); font-size: 0.85rem; }
+  @media (max-width: 900px) {
+    .layout, .games, .sort-grid { grid-template-columns: 1fr; }
+    .controls { grid-template-columns: 1fr 1fr; }
+    .chal { grid-template-columns: 1fr 1fr; }
+    .span2 { grid-column: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .step { transition: none; }
+  }
+</style>
 </head>
 <body>
-
-<div class="container">
-    <h1>M22 呼吸控制模擬器</h1>
-    <p class="subtitle">模擬人體在運動/安靜狀態下的生理調節過程（根據 DSE 課程內容）</p>
-
-    <div class="dashboard">
-        <!-- 左側：生理數據與控制 -->
-        <div class="panel">
-            <h3>🎛️ 生理狀態控制</h3>
-            
-            <div class="control-group">
-                <label for="exerciseSlider">運動強度 (骨骼肌呼吸作用): <span id="exerciseVal">安靜 (0%)</span></label>
-                <input type="range" id="exerciseSlider" min="0" max="100" value="0">
-            </div>
-
-            <button class="btn-btn" onclick="resetSim()">重置狀態</button>
-
-            <h3 style="margin-top:20px;">📊 即時監測數據</h3>
-            <div class="status-box">
-                <div class="status-title">血液 / 腦脊髓液 CO₂ 濃度</div>
-                <div class="status-value" id="co2Display">正常 (40 mmHg)</div>
-            </div>
-            <div class="status-box">
-                <div class="status-title">血液 / 腦脊髓液 pH 值</div>
-                <div class="status-value" id="phDisplay">7.40 (正常)</div>
-            </div>
-            <div class="status-box">
-                <div class="status-title">延腦呼吸中樞神經脈衝頻率</div>
-                <div class="status-value" id="impulseDisplay">低 (正常速率)</div>
-            </div>
-            <div class="status-box">
-                <div class="status-title">呼吸速率及深度 / 換氣率</div>
-                <div class="status-value" id="respDisplay">正常 (12 次/分)</div>
-            </div>
-        </div>
-
-        <!-- 右側：反應流程圖 -->
-        <div class="panel">
-            <h3>🔄 生理動態反應流程 (DSE Key Points)</h3>
-            <div id="flowSteps">
-                <div class="flow-step" id="step1">1. 骨骼肌細胞進行呼吸作用，產生能量</div>
-                <div class="flow-step" id="step2">2. 血液中 CO₂ 濃度上升</div>
-                <div class="flow-step" id="step3">3. 主動脈體和頸動脈體化學感受器感受血液 CO₂ 上升</div>
-                <div class="flow-step" id="step4">4. 腦脊髓液 / 血液 pH 下降[cite: 1]</div>
-                <div class="flow-step" id="step5">5. 延腦呼吸中樞化學感受器感受腦脊髓液 CO₂ 上升[cite: 1]</div>
-                <div class="flow-step" id="step6">6. 延腦呼吸中樞發出更多神經脈衝，經交感神經傳至反應器[cite: 1]</div>
-                <div class="flow-step" id="step7">7. 肋間肌及橫膈膜肌收縮更快更強勁[cite: 1]</div>
-                <div class="flow-step" id="step8">8. 呼吸速率及深度增加，換氣率增加[cite: 1]</div>
-                <div class="flow-step" id="step9">9. 排出更多 CO₂，血液 CO₂ 下降[cite: 1]</div>
-                <div class="flow-step" id="step10">10. 獲得更多 O₂ 運至肌肉，維持代謝平衡[cite: 1]</div>
-            </div>
-        </div>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="kicker">HKDSE 生物 · 課題 22</p>
+      <h1>運動時的呼吸控制</h1>
+      <p class="sub">骨骼肌產生更多 CO₂ 之後，延腦怎樣令呼吸加快加深？<a class="back" href="index.html">← 全部模擬</a></p>
     </div>
+    <button id="soundBtn" type="button" aria-pressed="false">聲音：關</button>
+  </header>
+
+  <div class="layout">
+    <section class="card stage" aria-label="呼吸動畫">
+      <div class="stage-top">
+        <span class="badge" id="sceneBadge">靜坐</span>
+        <span class="badge" id="fbBadge">負反饋待命</span>
+      </div>
+      <svg id="fig" viewBox="0 0 680 500" role="img" aria-label="延腦經膈神經連接橫膈膜，經肋間神經連接肋間肌">
+        <text class="tag" x="128" y="78">延腦</text>
+        <text class="tag" x="128" y="100">呼吸中樞</text>
+        <circle cx="86" cy="96" r="40" fill="#f6c7a1" stroke="#134e4a" stroke-width="3"/>
+        <circle cx="72" cy="90" r="3.5" fill="#134e4a"/>
+        <path d="M64 108 Q76 116 88 106" fill="none" stroke="#134e4a" stroke-width="2.5" stroke-linecap="round"/>
+        <circle id="medulla" cx="112" cy="118" r="14" fill="#fde68a" stroke="#f59e0b" stroke-width="3"/>
+        <path id="cavity" fill="rgba(153,246,228,0.16)" stroke="#99f6e4" stroke-width="3"/>
+        <ellipse id="lung" fill="#5eead4" opacity="0.88" stroke="#ecfdf5" stroke-width="2"/>
+        <g id="ribs"></g>
+        <path id="trachea" fill="none" stroke="#e2e8f0" stroke-width="8" stroke-linecap="round"/>
+        <path id="diaphragm" fill="#fb7185"/>
+        <rect id="muscleRect" x="478" y="392" width="176" height="80" rx="18" fill="#9f1239"/>
+        <text class="tag" x="522" y="428">骨骼肌</text>
+        <text id="muscleState" class="tag" x="500" y="454">休息</text>
+        <path id="nerveInter" fill="none" stroke="#facc15" stroke-width="4" stroke-linecap="round"/>
+        <path id="nervePhren" fill="none" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+        <g id="specks"></g>
+        <g id="bubbles"></g>
+        <g id="dotsInter"></g>
+        <g id="dotsPhren"></g>
+        <text id="labInter" class="tag" x="24" y="186">肋間神經 → 肋間肌</text>
+        <text id="labPhren" class="tag" x="24" y="214">膈神經 → 橫膈膜</text>
+        <text id="breathWord" class="tag" text-anchor="middle" x="320" y="250">吸氣</text>
+        <text id="diaLabel" class="tag" text-anchor="middle" x="320" y="390">橫膈膜</text>
+        <text id="lungLabel" class="tag" x="360" y="176">肺</text>
+      </svg>
+      <p class="story" id="story" aria-live="polite">靜坐。CO₂、pH 和呼吸維持在設定點附近。</p>
+      <div class="controls" id="autoControls">
+        <button type="button" data-scene="rest" aria-pressed="true">靜坐</button>
+        <button type="button" data-scene="jog" aria-pressed="false">慢跑</button>
+        <button type="button" data-scene="sprint" aria-pressed="false">衝刺</button>
+        <button type="button" data-scene="hold" aria-pressed="false">屏息</button>
+        <button type="button" data-scene="slow" aria-pressed="false">慢鏡</button>
+      </div>
+      <div class="chal" id="chalControls" hidden>
+        <button type="button" id="impDown">脈衝 −</button>
+        <input id="imp" type="range" min="0" max="100" value="20" aria-label="呼吸中樞脈衝強度">
+        <button type="button" id="impUp">脈衝 ＋</button>
+        <button type="button" id="chalStop">結束</button>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="background:#fde047"></i>神經脈衝</span>
+        <span><i class="dot" style="background:#7dd3fc"></i>O₂</span>
+        <span><i class="dot" style="background:#fb7185"></i>CO₂</span>
+        <span>吸氣時橫膈膜變平下降，肋骨向外提起</span>
+      </div>
+    </section>
+
+    <div>
+      <section class="card" style="margin-bottom:16px">
+        <div class="metrics">
+          <div class="metric" id="mCo2"><span>血液 CO₂</span><strong id="co2Val">40</strong><em>mmHg</em><div class="bar"><b style="left:24%;width:27%"></b><i id="co2Bar"></i></div></div>
+          <div class="metric" id="mPh"><span>血液／腦脊髓液 pH</span><strong id="phVal">7.40</strong><div class="bar"><b style="left:37%;width:25%"></b><i id="phBar"></i></div></div>
+          <div class="metric" id="mRate"><span>呼吸速率</span><strong id="rateVal">14</strong><em>次／分</em><div class="bar"><i id="rateBar"></i></div></div>
+          <div class="metric" id="mImp"><span>呼吸中樞脈衝</span><strong id="impVal">低</strong><div class="bar"><i id="impBar"></i></div></div>
+        </div>
+      </section>
+      <section class="card graph-card">
+        <h2>即時變化</h2>
+        <canvas id="graph" width="640" height="336"></canvas>
+        <div class="glegend">
+          <span><i class="sw" style="background:#e11d48"></i>CO₂</span>
+          <span><i class="sw" style="background:#0f766e"></i>呼吸速率</span>
+          <span class="fine">綠區約為平靜範圍</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="card" style="margin-top:16px" aria-label="調節步驟">
+    <h2 id="pathTitle">身體怎樣回應</h2>
+    <ol class="steps" id="pathway"></ol>
+  </section>
+
+  <div class="games">
+    <section class="card span2" id="challengeCard">
+      <h2>挑戰：你就是呼吸中樞</h2>
+      <p>40 秒內運動強度會轉變。調節脈衝，讓血液 CO₂ 留在 36–48 mmHg（pH 約 7.34–7.46）。衝刺要加強，靜坐不要過度換氣。</p>
+      <div class="row">
+        <button class="primary" id="chalStart" type="button">開始挑戰</button>
+        <span id="chalTimer" class="fine"></span>
+        <span class="stars" id="chalStars" aria-label="未有星星">☆☆☆</span>
+      </div>
+      <p id="chalMsg"></p>
+    </section>
+
+    <section class="card">
+      <h2>排序：排對調節步驟</h2>
+      <p>點選步驟，排成運動時的正確次序。答題區可拖曳調位。</p>
+      <div class="row" style="margin-bottom:8px">
+        <span id="sortTime" class="fine">計時尚未開始</span>
+        <span class="stars" id="sortStars">☆☆☆</span>
+        <button class="ghost" id="sortReset" type="button">重設</button>
+        <button class="primary" id="sortSubmit" type="button">交卷</button>
+      </div>
+      <div class="sort-grid">
+        <div>
+          <strong>步驟庫</strong>
+          <div class="bin" id="bank"></div>
+        </div>
+        <div>
+          <strong>你的次序</strong>
+          <div class="bin" id="answer"></div>
+        </div>
+      </div>
+      <p id="sortMsg"></p>
+      <ol id="sortKey" hidden></ol>
+    </section>
+
+    <section class="card">
+      <h2>小測</h2>
+      <p id="qProg" class="fine">第 1／3 題</p>
+      <p id="qText" style="font-weight:800"></p>
+      <div id="qOpts"></div>
+      <p id="qWhy" class="why" hidden></p>
+      <div class="row">
+        <button class="primary" id="qNext" type="button" hidden>下一題</button>
+        <span id="qScore"></span>
+      </div>
+    </section>
+  </div>
+
+  <section class="card notes">
+    <h2>考試必記</h2>
+    <ul>
+      <li>運動時骨骼肌呼吸作用增加，血液 CO₂ 上升，血液和腦脊髓液 pH 下降。</li>
+      <li>延腦的中樞化學感受器偵測腦脊髓液 CO₂ 上升、pH 下降；主動脈體和頸動脈體的化學感受器偵測血液 CO₂ 上升。</li>
+      <li>延腦呼吸中樞發出更多神經脈衝，經肋間神經傳到肋間肌，經膈神經傳到橫膈膜。不是經交感神經。</li>
+      <li>肋間肌和橫膈膜更有力、更頻密地收縮，呼吸速率和深度增加，排出更多 CO₂。這是負反饋。</li>
+    </ul>
+    <p class="fine">模擬數值經過簡化，重點是變化方向和步驟次序。</p>
+  </section>
 </div>
 
 <script>
-    const slider = document.getElementById('exerciseSlider');
-    const exerciseVal = document.getElementById('exerciseVal');
-    const co2Display = document.getElementById('co2Display');
-    const phDisplay = document.getElementById('phDisplay');
-    const impulseDisplay = document.getElementById('impulseDisplay');
-    const respDisplay = document.getElementById('respDisplay');
+'use strict';
+const NS = 'http://www.w3.org/2000/svg';
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-    function updateSimulation() {
-        let val = parseInt(slider.value);
-        
-        // 重置所有步驟
-        for(let i=1; i<=10; i++) {
-            document.getElementById('step' + i).className = 'flow-step';
-        }
+const EX_STEPS = [
+  '骨骼肌進行更多呼吸作用，產生更多 CO₂',
+  '血液 CO₂ 濃度上升',
+  '血液和腦脊髓液的 pH 下降',
+  '延腦的中樞化學感受器偵測腦脊髓液 CO₂ 上升、pH 下降；主動脈體和頸動脈體偵測血液 CO₂ 上升',
+  '延腦呼吸中樞發出更多神經脈衝',
+  '脈衝經肋間神經傳到肋間肌，經膈神經傳到橫膈膜',
+  '肋間肌和橫膈膜更有力、更頻密地收縮',
+  '呼吸速率和深度增加',
+  '更多 CO₂ 被排出（負反饋）'
+];
+const HOLD_STEPS = [
+  '呼吸暫停，肺部無法排出 CO₂',
+  '血液 CO₂ 濃度上升',
+  '血液和腦脊髓液的 pH 下降',
+  '延腦的中樞化學感受器偵測腦脊髓液；主動脈體和頸動脈體偵測血液 CO₂ 上升',
+  '延腦呼吸中樞發出更多神經脈衝（想呼吸的感覺）',
+  '脈衝仍經膈神經和肋間神經傳出',
+  '呼吸肌肉被你暫時抑壓，胸腔未有換氣',
+  '一恢復呼吸，肋間肌和橫膈膜就更有力、更頻密地收縮',
+  '大量 CO₂ 被排出（負反饋）'
+];
 
-        if (val === 0) {
-            exerciseVal.innerText = "安靜 (0%)";
-            co2Display.innerText = "正常 (40 mmHg)";
-            phDisplay.innerText = "7.40 (正常)";
-            phDisplay.style.color = "#2c3e50";
-            impulseDisplay.innerText = "基準值 (正常頻率)";
-            respDisplay.innerText = "12 次/分 (正常深度)";
-            document.getElementById('step1').classList.add('active');
-        } else if (val < 50) {
-            exerciseVal.innerText = `輕度運動 (${val}%)`;
-            co2Display.innerText = "輕微上升 (" + (40 + Math.floor(val*0.1)) + " mmHg)";
-            phDisplay.innerText = (7.40 - val*0.001).toFixed(2) + " (輕微下降)";
-            phDisplay.style.color = "#d35400";
-            impulseDisplay.innerText = "增加 (中等脈衝)";
-            respDisplay.innerText = (12 + Math.floor(val*0.15)) + " 次/分 (深度增加)";
-            
-            // 亮起前半段流程
-            [1, 2, 3, 4, 6, 7, 8].forEach(id => document.getElementById('step' + id).classList.add('active'));
-        } else {
-            exerciseVal.innerText = `劇烈運動 (${val}%)`;
-            co2Display.innerText = "顯著上升 (" + (40 + Math.floor(val*0.2)) + " mmHg)";
-            phDisplay.innerText = (7.40 - val*0.002).toFixed(2) + " (顯著酸性)";
-            phDisplay.style.color = "#c0392b";
-            impulseDisplay.innerText = "極高 (密集神經脈衝)";
-            respDisplay.innerText = (12 + Math.floor(val*0.3)) + " 次/分 (強勁深度/高換氣率)";
-            
-            // 全流程觸發並高亮關鍵點
-            for(let i=1; i<=10; i++) {
-                document.getElementById('step' + i).classList.add('active');
-            }
-            document.getElementById('step2').classList.add('highlight');
-            document.getElementById('step4').classList.add('highlight');
-            document.getElementById('step8').classList.add('highlight');
-        }
+const s = {
+  activity: 0, activityTarget: 0, hold: false,
+  impulse: 0.12, rate: 14, depth: 0.38, co2: 40, ph: 7.4,
+  co2Slope: 0, phase: 0.15, shown: 0, cool: 0, feedbackLatched: false
+};
+let story = 'exercise';
+let timeScale = 1;
+let slowLeft = 0;
+let last = performance.now();
+let graphAcc = 0;
+let lastStory = '';
+
+const challenge = { running: false, t: 0, good: 0, total: 0, impulse: 0.2, name: '靜坐' };
+const sort = { locked: false, t0: 0 };
+let pool = [];
+
+const QUESTIONS = [
+  {
+    q: '延腦呼吸中樞的神經脈衝傳到橫膈膜，經過哪條神經？',
+    options: ['交感神經', '迷走神經', '膈神經', '視神經'],
+    a: 2,
+    why: '膈神經把呼吸中樞的脈衝傳到橫膈膜，肋間神經則傳到肋間肌。控制呼吸肌肉的這段通路不是交感神經。'
+  },
+  {
+    q: '中樞化學感受器位於哪裡，偵測甚麼？',
+    options: [
+      '主動脈體，只偵測血液氧氣',
+      '延腦，偵測腦脊髓液 CO₂ 上升和 pH 下降',
+      '小腦，偵測血糖',
+      '竇房結，偵測血壓'
+    ],
+    a: 1,
+    why: '中樞化學感受器在延腦，偵測腦脊髓液。主動脈體和頸動脈體是另一組化學感受器，偵測血液 CO₂ 上升。'
+  },
+  {
+    q: '呼吸加快加深令 CO₂ 下降，刺激因而減弱。這是哪種調節？',
+    options: ['正反饋', '負反饋', '沒有反饋', '只靠大腦皮層隨意控制'],
+    a: 1,
+    why: '結果（CO₂ 下降、pH 回升）會減弱原來的刺激，呼吸不會無限加快。這是負反饋。屏息時的隨意控制只是暫時蓋過這條反射。'
+  }
+];
+let qIndex = 0;
+let qScore = 0;
+let qLocked = false;
+
+const sound = {
+  on: false,
+  ctx: null,
+  ensure() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!this.ctx) this.ctx = new AC();
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+  },
+  toggle(btn) {
+    this.on = !this.on;
+    if (this.on) this.ensure();
+    btn.setAttribute('aria-pressed', this.on ? 'true' : 'false');
+    btn.textContent = this.on ? '聲音：開' : '聲音：關';
+    if (this.on) this.beep(660, 0.08, 'sine', 0.04);
+  },
+  beep(freq, dur, type, vol) {
+    if (!this.on || !this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type || 'sine';
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(vol || 0.04, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(this.ctx.destination);
+    o.start(t); o.stop(t + dur + 0.02);
+  },
+  ok() { [523, 659, 784].forEach((f, i) => setTimeout(() => this.beep(f, 0.12, 'triangle', 0.05), i * 110)); },
+  bad() { this.beep(196, 0.18, 'square', 0.03); }
+};
+
+function stepPhysics(dt, manual) {
+  const prev = s.co2;
+  s.activity += (s.activityTarget - s.activity) * (1 - Math.exp(-2.2 * dt));
+  const prod = 8 + s.activity * 28;
+  if (manual == null) {
+    const targetImp = clamp((s.co2 - 39.2) / 10, 0.12, 1);
+    s.impulse += (targetImp - s.impulse) * (1 - Math.exp(-0.55 * dt));
+  } else {
+    s.impulse += (manual - s.impulse) * (1 - Math.exp(-3.2 * dt));
+  }
+  const targetRate = s.hold ? 0 : 13 + s.impulse * 27;
+  const targetDepth = s.hold ? s.depth : 0.34 + s.impulse * 0.66;
+  s.rate += (targetRate - s.rate) * (1 - Math.exp(-0.7 * dt));
+  if (!s.hold) s.depth += (targetDepth - s.depth) * (1 - Math.exp(-0.7 * dt));
+  const vent = s.hold ? 0 : (s.rate / 15) * (0.5 + s.depth);
+  s.co2 += ((prod - vent * 0.95 * (s.co2 - 30)) / 5.2) * dt;
+  s.co2 = clamp(s.co2, 16, 80);
+  s.ph = clamp(7.4 - (s.co2 - 40) * 0.008, 7.05, 7.75);
+  s.co2Slope = dt > 0 ? (s.co2 - prev) / dt : 0;
+  if (!s.hold && s.rate > 0.5) {
+    const before = s.phase;
+    s.phase = (s.phase + dt * (s.rate / 60)) % 1;
+    if (s.phase < before && sound.on) sound.beep(s.depth > 0.6 ? 150 : 190, 0.12, 'sine', 0.03);
+  }
+}
+
+function flags() {
+  const falling = !s.hold && s.co2Slope < -0.15 && s.rate > 18 && s.activity > 0.2;
+  if (falling) s.feedbackLatched = true;
+  if (s.hold || (s.activity < 0.12 && s.co2 < 42)) s.feedbackLatched = false;
+  return {
+    muscle: s.activity > 0.22,
+    co2: s.co2 > 42,
+    ph: s.ph < 7.382,
+    receptors: s.co2 > 43.2 && s.ph < 7.378,
+    centre: s.impulse > 0.34,
+    nerves: s.impulse > 0.42,
+    contract: !s.hold && s.rate > 18 && s.depth > 0.48,
+    rateDepth: !s.hold && s.rate > 22 && s.depth > 0.58,
+    feedback: !s.hold && s.rate > 18 && (falling || s.feedbackLatched)
+  };
+}
+function prefix(list) {
+  let n = 0;
+  for (const v of list) { if (!v) break; n++; }
+  return n;
+}
+function targetCount() {
+  const c = flags();
+  if (story === 'exercise') {
+    return prefix([c.muscle, c.co2, c.ph, c.receptors, c.centre, c.nerves, c.contract, c.rateDepth, c.feedback]);
+  }
+  if (story === 'hold') {
+    return prefix([true, c.co2, c.ph, c.receptors, c.centre, c.nerves, c.nerves, false, false]);
+  }
+  return prefix([true, true, true, true, true, true, c.contract, c.rateDepth, c.feedback]);
+}
+function syncCopy() {
+  const useHold = story !== 'exercise';
+  const arr = useHold ? HOLD_STEPS : EX_STEPS;
+  arr.forEach((text, i) => {
+    const tx = document.querySelector('#step' + i + ' .tx');
+    if (tx && tx.textContent !== text) tx.textContent = text;
+  });
+  $('pathTitle').textContent = useHold ? '屏息實驗：反射仍在，換氣暫停' : '運動時的調節次序';
+}
+function advance(dt) {
+  syncCopy();
+  const want = targetCount();
+  s.cool -= dt;
+  if (want > s.shown && s.cool <= 0) {
+    s.shown += 1;
+    s.cool = timeScale < 0.95 ? 1.15 : 0.5;
+  } else if (want < s.shown) {
+    s.shown = want;
+  }
+  for (let i = 0; i < 9; i++) {
+    const el = $('step' + i);
+    el.classList.toggle('on', i < s.shown);
+    el.classList.toggle('now', i === s.shown - 1);
+  }
+}
+
+function storyLine() {
+  if (challenge.running) {
+    return '挑戰進行中：現在是' + challenge.name + '。脈衝 ' + Math.round(challenge.impulse * 100) + '%。把 CO₂ 守在 36–48。';
+  }
+  if (story === 'hold') {
+    return s.co2 > 46
+      ? '屏住呼吸：CO₂ 上升、pH 下降，延腦脈衝愈來愈密，但呼吸肌肉被你按住。'
+      : '屏息中。化學感受器很快會偵測到血液和腦脊髓液的變化。';
+  }
+  if (story === 'hold-release') {
+    return '放手了。膈神經和肋間神經終於令呼吸肌肉大力收縮，把積聚的 CO₂ 排出。';
+  }
+  if ((s.feedbackLatched || s.co2Slope < -0.15) && s.activity > 0.25) return '負反饋生效：呼吸已加快加深，正在把多餘的 CO₂ 排出。';
+  if (s.activity > 0.7 && s.co2 > 44) return '衝刺中。肌肉產生大量 CO₂，化學感受器正在通知延腦呼吸中樞。';
+  if (s.activity > 0.28) return '運動開始，血液 CO₂ 上升，pH 下降。';
+  if (s.co2 > 43) return '活動減了，呼吸仍較快，直到 CO₂ 回到設定點附近。';
+  return '靜坐。CO₂、pH 和呼吸維持在設定點附近。';
+}
+
+function setPressed(name) {
+  document.querySelectorAll('[data-scene]').forEach((b) => {
+    b.setAttribute('aria-pressed', b.dataset.scene === name ? 'true' : 'false');
+  });
+}
+function sceneLabel() {
+  if (challenge.running) return '挑戰 · ' + challenge.name;
+  if (s.hold || story === 'hold') return '屏息';
+  if (story === 'hold-release') return '恢復呼吸';
+  if (timeScale < 0.95) return '慢鏡 · 衝刺';
+  if (s.activityTarget > 0.7) return '衝刺';
+  if (s.activityTarget > 0.2) return '慢跑';
+  return '靜坐';
+}
+function applyScene(name) {
+  if (challenge.running) return;
+  timeScale = 1;
+  slowLeft = 0;
+  if (name === 'slow') {
+    s.activity = 0;
+    s.activityTarget = 1;
+    s.hold = false;
+    s.co2 = 40;
+    s.ph = 7.4;
+    s.impulse = 0.12;
+    s.rate = 14;
+    s.depth = 0.38;
+    s.shown = 0;
+    s.cool = 0;
+    s.feedbackLatched = false;
+    story = 'exercise';
+    timeScale = 0.36;
+    slowLeft = 22;
+    setPressed('slow');
+    return;
+  }
+  if (name === 'hold') {
+    s.hold = true;
+    s.activityTarget = Math.min(s.activityTarget, 0.15);
+    story = 'hold';
+    s.shown = 0;
+    s.cool = 0;
+    s.feedbackLatched = false;
+    setPressed('hold');
+    return;
+  }
+  const wasHold = s.hold || story !== 'exercise';
+  s.hold = false;
+  if (story === 'hold' && s.co2 > 46) {
+    story = 'hold-release';
+  } else {
+    story = 'exercise';
+    if (wasHold) { s.shown = 0; s.cool = 0; }
+  }
+  if (name === 'rest') s.activityTarget = 0;
+  if (name === 'jog') s.activityTarget = 0.45;
+  if (name === 'sprint') s.activityTarget = 1;
+  setPressed(name);
+}
+
+function elNS(name) {
+  return document.createElementNS(NS, name);
+}
+function ensureDots(id, n, fill) {
+  const g = $(id);
+  while (g.children.length < n) {
+    const c = elNS('circle');
+    c.setAttribute('r', '5');
+    c.setAttribute('fill', fill);
+    c.setAttribute('stroke', '#042f2e');
+    c.setAttribute('stroke-width', '1');
+    g.appendChild(c);
+  }
+}
+function moveDots(pathId, groupId, impulse, dt) {
+  const path = $(pathId);
+  const g = $(groupId);
+  const len = path.getTotalLength();
+  if (!len) return;
+  let p = Number(g.dataset.p || 0);
+  p = (p + dt * (0.25 + impulse * 1.4)) % 1;
+  g.dataset.p = String(p);
+  for (let i = 0; i < g.children.length; i++) {
+    const pt = path.getPointAtLength(((p + i / g.children.length) % 1) * len);
+    const c = g.children[i];
+    c.setAttribute('cx', pt.x);
+    c.setAttribute('cy', pt.y);
+    c.setAttribute('opacity', impulse < 0.16 ? '0.12' : String(0.45 + impulse * 0.55));
+  }
+}
+function drawFigure(dt) {
+  const inhale = s.phase < 0.42;
+  const u = inhale ? s.phase / 0.42 : (s.phase - 0.42) / 0.58;
+  const ease = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+  const open = (inhale ? ease : 1 - ease) * (0.2 + Math.min(1, s.depth) * 0.8);
+  const xL = 210 - open * 34;
+  const xR = 430;
+  const yT = 132;
+  const yB = 300 + open * 52;
+  const dome = 46 * (1 - open);
+  const mid = (xL + xR) / 2;
+  $('cavity').setAttribute('d', `M ${xL} ${yT} H ${xR} V ${yB} Q ${mid} ${yB - dome} ${xL} ${yB} Z`);
+  const lungT = yT + 28;
+  const lungB = yB - dome * 0.42 - 14;
+  const lcx = (xL + xR) / 2 + 6;
+  const lcy = (lungT + lungB) / 2;
+  $('lung').setAttribute('cx', lcx);
+  $('lung').setAttribute('cy', lcy);
+  $('lung').setAttribute('rx', Math.max(20, (xR - xL) * 0.34));
+  $('lung').setAttribute('ry', Math.max(20, (lungB - lungT) / 2));
+  $('lung').setAttribute('fill', open > 0.45 ? '#7ee7d8' : '#5eead4');
+  const y2 = yB + 18;
+  $('diaphragm').setAttribute('d', `M ${xL} ${yB} Q ${mid} ${yB - dome} ${xR} ${yB} L ${xR} ${y2} Q ${mid} ${y2 - dome * 0.82} ${xL} ${y2} Z`);
+  $('diaLabel').setAttribute('x', xL - 6);
+  $('diaLabel').setAttribute('text-anchor', 'end');
+  $('diaLabel').setAttribute('y', yB + 8);
+  $('breathWord').setAttribute('x', lcx);
+  $('breathWord').setAttribute('y', lcy);
+  $('breathWord').textContent = s.hold ? '屏息' : (inhale ? '吸氣' : '呼氣');
+  $('trachea').setAttribute('d', `M ${lcx} ${lungT - 4} V ${yT - 28}`);
+  const ribs = $('ribs');
+  while (ribs.children.length < 5) {
+    const p = elNS('path');
+    p.setAttribute('fill', 'none');
+    p.setAttribute('stroke', '#f8fafc');
+    p.setAttribute('stroke-width', '4');
+    p.setAttribute('stroke-linecap', 'round');
+    ribs.appendChild(p);
+  }
+  for (let i = 0; i < 5; i++) {
+    const y = yT + 28 + i * ((yB - yT - 36) / 5);
+    const frontY = y - open * (6 + i * 4);
+    const cpy = y - 16 - open * 12;
+    ribs.children[i].setAttribute('d', `M ${xR - 12} ${y} Q ${(xR + xL) / 2} ${cpy} ${xL + 16} ${frontY}`);
+  }
+  const med = $('medulla');
+  med.setAttribute('r', String(13 + s.impulse * 5));
+  med.setAttribute('fill', s.impulse > 0.45 ? '#fef08a' : '#fde68a');
+  const ribX = xL + 36;
+  const ribY = (yT + yB) / 2 - 20;
+  $('nerveInter').setAttribute('d', `M 112 124 C 168 150, ${ribX - 30} ${ribY - 30}, ${ribX} ${ribY}`);
+  $('nervePhren').setAttribute('d', `M 118 128 C 180 210, ${mid - 30} ${yB - 70}, ${mid} ${yB - 4}`);
+  ensureDots('dotsInter', 4, '#fef08a');
+  ensureDots('dotsPhren', 4, '#fde68a');
+  moveDots('nerveInter', 'dotsInter', s.impulse, dt);
+  moveDots('nervePhren', 'dotsPhren', s.impulse, dt);
+  const specks = $('specks');
+  while (specks.children.length < 10) {
+    const c = elNS('circle');
+    c.setAttribute('r', '4.5');
+    c.dataset.p = String(Math.random());
+    specks.appendChild(c);
+  }
+  const speed = (s.hold ? 0.04 : 0.45 + s.depth) * dt;
+  for (let i = 0; i < specks.children.length; i++) {
+    const c = specks.children[i];
+    const o2 = i % 2 === 0;
+    let p = Number(c.dataset.p);
+    p = (p + ((o2 && inhale) || (!o2 && !inhale) ? speed : speed * 0.2)) % 1;
+    c.dataset.p = String(p);
+    const y = yT - 20 + p * (lcy - yT + 30);
+    c.setAttribute('cx', lcx + Math.sin(i * 2.1) * (20 + open * 16));
+    c.setAttribute('cy', o2 ? y : (lcy + 20 - p * (lcy - yT)));
+    c.setAttribute('fill', o2 ? '#7dd3fc' : '#fb7185');
+    c.setAttribute('opacity', s.hold ? '0.35' : '0.95');
+  }
+  const bubbles = $('bubbles');
+  while (bubbles.children.length < 5) {
+    const c = elNS('circle');
+    c.setAttribute('r', '5');
+    c.setAttribute('fill', '#fb7185');
+    c.dataset.p = String(Math.random());
+    bubbles.appendChild(c);
+  }
+  const flow = s.activity > 0.15 || s.co2 > 46;
+  for (let i = 0; i < bubbles.children.length; i++) {
+    const c = bubbles.children[i];
+    let p = Number(c.dataset.p);
+    p = (p + dt * (flow ? 0.35 + s.activity * 0.5 : 0.05)) % 1;
+    c.dataset.p = String(p);
+    c.setAttribute('cx', 520 + (i % 3) * 28);
+    c.setAttribute('cy', 390 - p * 120);
+    c.setAttribute('opacity', flow ? String(0.3 + (1 - p) * 0.7) : '0.08');
+  }
+  const m = 0.35 + Math.min(1, s.activity) * 0.65;
+  $('muscleRect').setAttribute('fill', `rgba(190, 18, 60, ${m})`);
+  $('muscleState').textContent = s.activity > 0.7 ? '衝刺' : s.activity > 0.25 ? '運動中' : '休息';
+}
+
+const trace = { data: [] };
+function pushTrace() {
+  trace.data.push({ co2: s.co2, rate: s.rate });
+  if (trace.data.length > 90) trace.data.shift();
+}
+function drawGraph() {
+  const c = $('graph');
+  const w = c.clientWidth || 320;
+  const h = 168;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  if (c.width !== Math.floor(w * dpr)) {
+    c.width = Math.floor(w * dpr);
+    c.height = Math.floor(h * dpr);
+  }
+  const ctx = c.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(0, 0, w, h);
+  const plot = (key, min, max, color) => {
+    if (trace.data.length < 2) return;
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.4;
+    trace.data.forEach((row, i) => {
+      const x = 8 + (w - 16) * (i / (trace.data.length - 1));
+      const n = clamp((row[key] - min) / (max - min), 0, 1);
+      const y = 10 + (h - 28) * (1 - n);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+  };
+  ctx.fillStyle = 'rgba(16,185,129,0.13)';
+  const y1 = 10 + (h - 28) * (1 - (48 - 25) / 50);
+  const y2 = 10 + (h - 28) * (1 - (36 - 25) / 50);
+  ctx.fillRect(8, Math.min(y1, y2), w - 16, Math.abs(y2 - y1));
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1;
+  for (let i = 1; i <= 3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(8, 10 + (h - 28) * i / 4);
+    ctx.lineTo(w - 8, 10 + (h - 28) * i / 4);
+    ctx.stroke();
+  }
+  plot('co2', 25, 75, '#e11d48');
+  plot('rate', 0, 45, '#0f766e');
+}
+
+function paintReadouts() {
+  const co2 = Math.round(s.co2);
+  const ph = s.ph.toFixed(2);
+  $('co2Val').textContent = String(co2);
+  $('phVal').textContent = ph;
+  $('rateVal').textContent = String(Math.round(s.rate));
+  const impWord = s.impulse > 0.72 ? '很高' : s.impulse > 0.45 ? '高' : s.impulse > 0.25 ? '上升' : '低';
+  $('impVal').textContent = impWord;
+  $('co2Bar').style.width = clamp((s.co2 - 25) / 50, 0, 1) * 100 + '%';
+  $('phBar').style.width = clamp((s.ph - 7.2) / 0.5, 0, 1) * 100 + '%';
+  $('rateBar').style.width = clamp(s.rate / 42, 0, 1) * 100 + '%';
+  $('impBar').style.width = clamp(s.impulse, 0, 1) * 100 + '%';
+  const co2State = s.co2 < 35 ? 'warn' : s.co2 > 50 ? 'bad' : 'ok';
+  const phState = s.ph < 7.32 ? 'bad' : s.ph > 7.48 ? 'warn' : 'ok';
+  $('mCo2').className = 'metric ' + co2State;
+  $('mPh').className = 'metric ' + phState;
+  $('sceneBadge').textContent = sceneLabel();
+  const fb = !s.hold && s.co2Slope < -0.18 && s.rate > 18;
+  const badge = $('fbBadge');
+  badge.textContent = fb ? '負反饋進行中' : '負反饋待命';
+  badge.className = fb ? 'badge fb' : 'badge';
+  const line = storyLine();
+  if (line !== lastStory) {
+    lastStory = line;
+    $('story').textContent = line;
+  }
+  if (sort.t0 && !sort.locked) {
+    $('sortTime').textContent = '用時 ' + Math.floor((performance.now() - sort.t0) / 1000) + ' 秒';
+  }
+}
+
+function starText(n) { return '★★★☆☆☆'.slice(3 - n, 6 - n); }
+
+function startChallenge() {
+  challenge.running = true;
+  challenge.t = 0;
+  challenge.good = 0;
+  challenge.total = 0;
+  challenge.impulse = 0.2;
+  $('imp').value = '20';
+  s.hold = false;
+  story = 'exercise';
+  s.activity = 0;
+  s.activityTarget = 0;
+  s.co2 = 40;
+  s.impulse = 0.2;
+  s.rate = 14;
+  s.shown = 0;
+  timeScale = 1;
+  $('autoControls').hidden = true;
+  $('chalControls').hidden = false;
+  $('chalMsg').textContent = '';
+  $('chalStars').textContent = '☆☆☆';
+  $('chalStart').disabled = true;
+}
+function stopChallenge(done) {
+  challenge.running = false;
+  $('autoControls').hidden = false;
+  $('chalControls').hidden = true;
+  $('chalStart').disabled = false;
+  s.hold = false;
+  story = 'exercise';
+  s.activityTarget = 0;
+  setPressed('rest');
+  if (!done) {
+    $('chalTimer').textContent = '';
+    return;
+  }
+  const pct = challenge.total > 0 ? challenge.good / challenge.total : 0;
+  const n = pct >= 0.85 ? 3 : pct >= 0.65 ? 2 : pct >= 0.45 ? 1 : 0;
+  $('chalStars').textContent = starText(n);
+  $('chalStars').setAttribute('aria-label', n + ' 星');
+  $('chalMsg').textContent = 'CO₂ 和 pH 留在範圍內 ' + Math.round(pct * 100) + '%。' + (n >= 2 ? '調節得不錯。' : '再試一次：衝刺時把脈衝推高，靜坐時收回來。');
+  if (n >= 2) sound.ok(); else sound.bad();
+}
+function stepChallenge(realDt, dt) {
+  challenge.t += realDt;
+  const t = challenge.t;
+  let name = '靜坐';
+  let a = 0;
+  if (t < 6) { name = '靜坐'; a = 0; }
+  else if (t < 14) { name = '慢跑'; a = 0.45; }
+  else if (t < 26) { name = '衝刺'; a = 1; }
+  else if (t < 33) { name = '慢跑'; a = 0.4; }
+  else { name = '靜坐'; a = 0; }
+  challenge.name = name;
+  s.activityTarget = a;
+  s.hold = false;
+  stepPhysics(dt, challenge.impulse);
+  const inZone = s.co2 >= 36 && s.co2 <= 48 && s.ph >= 7.34 && s.ph <= 7.46;
+  challenge.total += realDt;
+  if (inZone) challenge.good += realDt;
+  $('chalTimer').textContent = '剩餘 ' + Math.max(0, Math.ceil(40 - t)) + ' 秒 · 在範圍內 ' + Math.round((challenge.good / Math.max(challenge.total, 0.01)) * 100) + '%';
+  if (t >= 40) stopChallenge(true);
+}
+
+function buildPathway() {
+  const ol = $('pathway');
+  EX_STEPS.forEach((text, i) => {
+    const li = document.createElement('li');
+    li.className = 'step';
+    li.id = 'step' + i;
+    const n = document.createElement('span');
+    n.className = 'n';
+    n.textContent = String(i + 1);
+    const tx = document.createElement('span');
+    tx.className = 'tx';
+    tx.textContent = text;
+    li.append(n, tx);
+    ol.appendChild(li);
+  });
+}
+
+function shuffle(list) {
+  const a = list.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function renderBank() {
+  const bank = $('bank');
+  bank.innerHTML = '';
+  pool.forEach((text) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip';
+    b.textContent = text;
+    b.disabled = sort.locked;
+    b.addEventListener('click', () => take(text));
+    bank.appendChild(b);
+  });
+}
+function addAnswer(text) {
+  const row = document.createElement('div');
+  row.className = 'aitem';
+  row.dataset.text = text;
+  const n = document.createElement('span');
+  n.className = 'n';
+  const tx = document.createElement('span');
+  tx.className = 'tx';
+  tx.textContent = text;
+  const kick = document.createElement('button');
+  kick.type = 'button';
+  kick.className = 'kick';
+  kick.textContent = '移走';
+  kick.addEventListener('click', () => {
+    if (sort.locked) return;
+    row.remove();
+    pool.push(text);
+    renumber();
+    renderBank();
+  });
+  row.append(n, tx, kick);
+  $('answer').appendChild(row);
+  renumber();
+}
+function renumber() {
+  [...$('answer').children].forEach((el, i) => {
+    el.querySelector('.n').textContent = String(i + 1);
+  });
+}
+function take(text) {
+  if (sort.locked) return;
+  if (!sort.t0) sort.t0 = performance.now();
+  pool = pool.filter((t) => t !== text);
+  addAnswer(text);
+  renderBank();
+}
+function resetSort() {
+  sort.locked = false;
+  sort.t0 = 0;
+  pool = shuffle(EX_STEPS);
+  $('answer').innerHTML = '';
+  $('sortMsg').textContent = '';
+  $('sortKey').hidden = true;
+  $('sortKey').innerHTML = '';
+  $('sortStars').textContent = '☆☆☆';
+  $('sortTime').textContent = '計時尚未開始';
+  renderBank();
+}
+function submitSort() {
+  if (sort.locked) return;
+  const got = [...$('answer').children].map((el) => el.dataset.text);
+  if (got.length !== EX_STEPS.length) {
+    $('sortMsg').textContent = '還有步驟留在步驟庫。';
+    return;
+  }
+  sort.locked = true;
+  const sec = (performance.now() - sort.t0) / 1000;
+  let correct = 0;
+  got.forEach((text, i) => {
+    const ok = text === EX_STEPS[i];
+    $('answer').children[i].classList.add(ok ? 'good' : 'bad');
+    if (ok) correct++;
+  });
+  const all = correct === EX_STEPS.length;
+  const n = all ? (sec < 45 ? 3 : sec < 75 ? 2 : 1) : (correct >= 7 ? 1 : 0);
+  $('sortStars').textContent = starText(n);
+  $('sortTime').textContent = '用時 ' + Math.round(sec) + ' 秒';
+  $('sortMsg').textContent = all
+    ? '次序完全正確。'
+    : '對了 ' + correct + '／' + EX_STEPS.length + ' 步。下面是正確次序。';
+  if (!all) {
+    const key = $('sortKey');
+    key.hidden = false;
+    EX_STEPS.forEach((text) => {
+      const li = document.createElement('li');
+      li.textContent = text;
+      key.appendChild(li);
+    });
+  }
+  renderBank();
+  if (all) sound.ok(); else sound.bad();
+}
+let drag = null;
+function setupDrag() {
+  const box = $('answer');
+  box.addEventListener('pointerdown', (e) => {
+    if (sort.locked) return;
+    const item = e.target.closest('.aitem');
+    if (!item || e.target.closest('.kick')) return;
+    drag = item;
+    item.classList.add('dragging');
+    item.setPointerCapture(e.pointerId);
+  });
+  box.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    e.preventDefault();
+    const items = [...box.querySelectorAll('.aitem')].filter((n) => n !== drag);
+    let placed = false;
+    for (const sib of items) {
+      const r = sib.getBoundingClientRect();
+      if (e.clientY < r.top + r.height / 2) {
+        box.insertBefore(drag, sib);
+        placed = true;
+        break;
+      }
     }
+    if (!placed) box.appendChild(drag);
+    renumber();
+  }, { passive: false });
+  const end = () => {
+    if (!drag) return;
+    drag.classList.remove('dragging');
+    drag = null;
+  };
+  box.addEventListener('pointerup', end);
+  box.addEventListener('pointercancel', end);
+}
 
-    function resetSim() {
-        slider.value = 0;
-        updateSimulation();
-    }
+function renderQuestion() {
+  const q = QUESTIONS[qIndex];
+  $('qProg').textContent = '第 ' + (qIndex + 1) + '／' + QUESTIONS.length + ' 題';
+  $('qText').textContent = q.q;
+  $('qWhy').hidden = true;
+  $('qNext').hidden = true;
+  qLocked = false;
+  const box = $('qOpts');
+  box.innerHTML = '';
+  q.options.forEach((text, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'q-opt';
+    b.textContent = String.fromCharCode(65 + i) + '. ' + text;
+    b.addEventListener('click', () => answerQuestion(i));
+    box.appendChild(b);
+  });
+}
+function answerQuestion(i) {
+  if (qLocked) return;
+  qLocked = true;
+  const q = QUESTIONS[qIndex];
+  [...$('qOpts').children].forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === q.a) btn.classList.add('good');
+    else if (idx === i) btn.classList.add('bad');
+  });
+  const right = i === q.a;
+  if (right) qScore += 1;
+  $('qWhy').hidden = false;
+  $('qWhy').textContent = (right ? '正確。' : '未中。') + q.why;
+  if (right) sound.beep(680, 0.1, 'triangle', 0.05); else sound.bad();
+  if (qIndex === QUESTIONS.length - 1) {
+    $('qNext').hidden = false;
+    $('qNext').textContent = '再測一次';
+    $('qScore').textContent = '得分 ' + qScore + '／' + QUESTIONS.length;
+  } else {
+    $('qNext').hidden = false;
+    $('qNext').textContent = '下一題';
+  }
+}
+function nextQuestion() {
+  if (qIndex === QUESTIONS.length - 1) {
+    qIndex = 0;
+    qScore = 0;
+    $('qScore').textContent = '';
+  } else {
+    qIndex += 1;
+  }
+  renderQuestion();
+}
 
-    slider.addEventListener('input', updateSimulation);
-    // 初始化
-    updateSimulation();
+function frame(now) {
+  const realDt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (slowLeft > 0) {
+    slowLeft -= realDt;
+    if (slowLeft <= 0) timeScale = 1;
+  }
+  const dt = realDt * timeScale;
+  if (challenge.running) stepChallenge(realDt, dt);
+  else stepPhysics(dt, null);
+  if (story === 'hold-release' && s.co2 < 42 && s.co2Slope > -0.05) {
+    story = 'exercise';
+  }
+  advance(dt);
+  drawFigure(Math.max(dt, realDt * 0.35));
+  graphAcc += realDt;
+  if (graphAcc > 0.25) {
+    graphAcc = 0;
+    pushTrace();
+    drawGraph();
+  }
+  paintReadouts();
+  requestAnimationFrame(frame);
+}
+
+function boot() {
+  buildPathway();
+  ensureDots('dotsInter', 4, '#fef08a');
+  ensureDots('dotsPhren', 4, '#fde68a');
+  resetSort();
+  setupDrag();
+  renderQuestion();
+  $('soundBtn').addEventListener('click', () => sound.toggle($('soundBtn')));
+  document.querySelectorAll('[data-scene]').forEach((btn) => {
+    btn.addEventListener('click', () => applyScene(btn.dataset.scene));
+  });
+  $('chalStart').addEventListener('click', startChallenge);
+  $('chalStop').addEventListener('click', () => stopChallenge(false));
+  $('imp').addEventListener('input', () => { challenge.impulse = Number($('imp').value) / 100; });
+  $('impDown').addEventListener('click', () => {
+    challenge.impulse = clamp(challenge.impulse - 0.08, 0, 1);
+    $('imp').value = String(Math.round(challenge.impulse * 100));
+  });
+  $('impUp').addEventListener('click', () => {
+    challenge.impulse = clamp(challenge.impulse + 0.08, 0, 1);
+    $('imp').value = String(Math.round(challenge.impulse * 100));
+  });
+  $('sortReset').addEventListener('click', resetSort);
+  $('sortSubmit').addEventListener('click', submitSort);
+  $('qNext').addEventListener('click', nextQuestion);
+  window.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, textarea')) return;
+    const map = { '1': 'rest', '2': 'jog', '3': 'sprint', '4': 'hold' };
+    if (map[e.key]) applyScene(map[e.key]);
+  });
+  window.__sim = { get state() { return Object.assign({}, s, { story, timeScale, challenge: challenge.running }); } };
+  drawFigure(0.016);
+  pushTrace();
+  drawGraph();
+  paintReadouts();
+  requestAnimationFrame(frame);
+}
+boot();
 </script>
-
 </body>
 </html>

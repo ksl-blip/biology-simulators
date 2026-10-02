@@ -1,310 +1,607 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>心輸出量控制模擬器 (減少心輸出量)</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --success-color: #2ecc71;
-            --warning-color: #e74c3c;
-            --bg-color: #f8f9fa;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        h1, h2 {
-            text-align: center;
-            color: var(--primary-color);
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 25px;
-        }
-
-        /* 控制面板 */
-        .control-panel {
-            background: #eef2f5;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: space-around;
-        }
-
-        .param-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 200px;
-        }
-
-        label {
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-        }
-
-        .value-display {
-            font-size: 1.1em;
-            color: var(--accent-color);
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        /* 儀表板 */
-        .dashboard {
-            display: flex;
-            justify-content: space-around;
-            background: #fff;
-            border: 2px solid #e0e0e0;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .metric-box {
-            flex: 1;
-        }
-
-        .metric-value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .metric-label {
-            font-size: 0.9em;
-            color: #777;
-        }
-
-        /* 流程圖樣式 */
-        .flowchart {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .flow-step {
-            background: #fff;
-            border: 2px solid #cbd5e1;
-            border-left: 6px solid #94a3b8;
-            padding: 12px 18px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .flow-step.active {
-            border-left-color: var(--warning-color);
-            background-color: #fef2f2;
-            transform: scale(1.02);
-            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
-        }
-
-        .flow-step .step-num {
-            font-weight: bold;
-            margin-right: 10px;
-            color: #64748b;
-        }
-
-        .flow-step.active .step-num {
-            color: var(--warning-color);
-        }
-
-        .arrow {
-            text-align: center;
-            font-size: 1.2em;
-            color: #94a3b8;
-            margin: -5px 0;
-        }
-
-        .mode-toggle {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        button {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .note {
-            background: #fffbe6;
-            border: 1px solid #ffe58f;
-            padding: 10px 15px;
-            border-radius: 6px;
-            margin-top: 20px;
-            font-size: 0.9em;
-            color: #8c6b00;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M23B 心輸出量怎樣減少</title>
+<meta name="description" content="HKDSE 生物：化學感受器或牽張感受器怎樣經迷走神經和較少的交感脈衝減少心輸出量。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%234f46e5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0f172a; --muted:#475569; --bg:#f4f5ff; --line:#e0e4f5; --accent:#4f46e5; --ok:#047857; --warn:#b45309; --bad:#be123c; }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  body {
+    margin:0; font-family:"Noto Sans TC","PingFang HK","Microsoft JhengHei","WenQuanYi Micro Hei",sans-serif;
+    font-size:17px; color:var(--ink); line-height:1.5;
+    background: radial-gradient(900px 380px at 0% -10%, #e0e7ff 0%, transparent 50%),
+                radial-gradient(700px 320px at 100% 0%, #dbeafe 0%, transparent 46%), var(--bg);
+  }
+  button, input { font-family:inherit; } button { cursor:pointer; }
+  button:focus-visible, a:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  a { color:var(--accent); }
+  .wrap { max-width:1120px; margin:0 auto; padding:18px 16px 48px; }
+  header.top { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:14px; }
+  .kicker { margin:0; color:var(--accent); font-weight:800; letter-spacing:.08em; font-size:.82rem; }
+  h1 { margin:2px 0 4px; font-size:clamp(1.55rem,3vw,2.15rem); line-height:1.2; }
+  .sub { margin:0; color:var(--muted); } .back { font-weight:700; text-decoration:none; }
+  #soundBtn { border:1px solid var(--line); background:#fff; border-radius:999px; padding:8px 14px; font-weight:800; min-height:44px; }
+  #soundBtn[aria-pressed="true"] { background:#e0e7ff; border-color:var(--accent); }
+  .layout { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(280px,.82fr); gap:16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:22px; box-shadow:0 12px 32px rgba(49,46,129,.08); padding:14px; }
+  .stage { background:radial-gradient(80% 70% at 50% 28%, #312e81 0%, #0f172a 74%); color:#eef2ff; border:0; }
+  .stage-top, .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .stage-top { justify-content:space-between; padding:4px 6px 0; }
+  .badge { background:rgba(255,255,255,.12); border-radius:999px; padding:4px 10px; font-weight:800; font-size:.92rem; }
+  .badge.fb { background:#a5f3fc; color:#164e63; }
+  #fig { width:100%; height:auto; display:block; }
+  .tag { fill:#eef2ff; font-size:15px; font-weight:700; stroke:#0f172a; stroke-width:4px; paint-order:stroke; }
+  .story { margin:4px 6px 8px; min-height:3.2em; }
+  .controls { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .controls button, .chal button, .primary, .ghost { min-height:48px; border:0; border-radius:12px; font-weight:800; font-size:1rem; }
+  .controls button { background:#eef2ff; color:#312e81; }
+  .controls button[aria-pressed="true"] { background:#fde68a; color:#713f12; }
+  .chal { display:grid; grid-template-columns:auto 1fr auto auto; gap:8px; align-items:center; }
+  .chal button { background:#a5f3fc; color:#164e63; padding:0 10px; }
+  .chal input { width:100%; height:36px; accent-color:#22d3ee; }
+  .legend { display:flex; flex-wrap:wrap; gap:10px 14px; margin:8px 6px 0; font-size:.82rem; color:#c7d2fe; }
+  .dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:4px; }
+  .metrics { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+  .metric { background:#f8faff; border:1px solid var(--line); border-radius:14px; padding:8px 10px; }
+  .metric span { display:block; color:var(--muted); font-size:.78rem; font-weight:700; }
+  .metric strong { font-size:1.28rem; font-variant-numeric:tabular-nums; }
+  .metric em { font-style:normal; color:var(--muted); font-size:.75rem; }
+  .metric.ok strong { color:var(--ok); } .metric.warn strong { color:var(--warn); } .metric.bad strong { color:var(--bad); }
+  .formula { background:#eef2ff; border-radius:12px; padding:10px 12px; font-weight:800; margin:8px 0 0; }
+  #graph { width:100%; height:150px; display:block; background:#f8faff; border-radius:12px; }
+  .glegend, .fine { color:var(--muted); font-size:.82rem; }
+  .sw { width:12px; height:12px; border-radius:3px; display:inline-block; margin-right:4px; }
+  h2 { margin:2px 0 8px; font-size:1.05rem; }
+  .steps { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+  .step { display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start; padding:8px 10px; border-radius:12px; border:1px solid var(--line); background:#f8faff; opacity:.48; }
+  .step.on { opacity:1; background:#eef2ff; border-color:#a5b4fc; }
+  .step.now { box-shadow:inset 4px 0 0 var(--accent); }
+  .step .n, .aitem .n { width:28px; height:28px; border-radius:50%; display:grid; place-items:center; background:#e0e7ff; font-weight:900; font-size:.85rem; flex:none; }
+  .step.on .n { background:var(--accent); color:#fff; }
+  .tip { background:#fffbeb; border:1px solid #fde68a; border-radius:14px; padding:10px 12px; margin-top:10px; color:#713f12; }
+  .games { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+  .span2 { grid-column:1 / -1; }
+  .primary { background:var(--accent); color:#fff; padding:0 16px; }
+  .ghost { background:#e0e7ff; color:var(--ink); padding:0 16px; }
+  .stars { color:#d97706; font-size:1.35rem; letter-spacing:2px; }
+  .sort-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .bin { min-height:110px; background:#f8faff; border:1px dashed #c7d2fe; border-radius:12px; padding:8px; }
+  .chip, .aitem { width:100%; text-align:left; margin:0 0 8px; padding:10px 12px; border-radius:12px; border:1px solid #c7d2fe; background:#fff; font-weight:700; line-height:1.4; }
+  .aitem { display:flex; gap:8px; align-items:flex-start; touch-action:none; cursor:grab; }
+  .aitem .tx { flex:1; }
+  .aitem .kick { border:0; background:#e0e7ff; color:#312e81; border-radius:8px; min-height:36px; font-weight:800; }
+  .aitem.dragging { opacity:.6; }
+  .aitem.good { background:#ecfdf5; border-color:#059669; }
+  .aitem.bad { background:#fff1f2; border-color:#e11d48; }
+  .q-opt { display:block; width:100%; text-align:left; margin:0 0 8px; padding:12px; border-radius:12px; border:1px solid #c7d2fe; background:#fff; font-weight:700; min-height:48px; }
+  .q-opt.good { background:#ecfdf5; border-color:#059669; }
+  .q-opt.bad { background:#fff1f2; border-color:#e11d48; }
+  .why { background:#eef2ff; border-radius:12px; padding:10px 12px; }
+  .notes { margin-top:16px; } .notes li { margin:6px 0; }
+  @media (max-width:900px) {
+    .layout, .games, .sort-grid { grid-template-columns:1fr; }
+    .metrics { grid-template-columns:1fr 1fr; }
+    .controls { grid-template-columns:1fr; }
+    .chal { grid-template-columns:1fr 1fr; }
+    .span2 { grid-column:auto; }
+  }
+</style>
 </head>
 <body>
-
-<div class="container">
-    <h1>M23B 心輸出量控制模擬器</h1>
-    <div class="subtitle">課題：減少心輸出量的調節機制 (HKDSE Biology)</div>
-
-    <!-- 模擬控制面板 -->
-    <div class="control-panel">
-        <div class="param-group">
-            <label for="co2-slider">血液二氧化碳 ($CO_2$) 濃度</label>
-            <input type="range" id="co2-slider" min="1" max="5" value="3" step="1">
-            <div class="value-display" id="co2-val">正常 (Level 3)</div>
-        </div>
-
-        <div class="param-group">
-            <label for="bp-slider">血壓 (Blood Pressure)</label>
-            <input type="range" id="bp-slider" min="1" max="5" value="3" step="1">
-            <div class="value-display" id="bp-val">正常 (Level 3)</div>
-        </div>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="kicker">HKDSE 生物 · 課題 23B</p>
+      <h1>心輸出量怎樣減少</h1>
+      <p class="sub">迷走神經加快，交感神經減弱，心臟怎樣慢下來？<a class="back" href="index.html">← 全部模擬</a></p>
     </div>
-
-    <!-- 生理數據儀表板 -->
-    <div class="dashboard">
-        <div class="metric-box">
-            <div class="metric-label">血液 pH 值</div>
-            <div class="metric-value" id="ph-display">7.40</div>
+    <button id="soundBtn" type="button" aria-pressed="false">聲音：關</button>
+  </header>
+  <div class="layout">
+    <section class="card stage" aria-label="心輸出量減少動畫">
+      <div class="stage-top">
+        <span class="badge" id="sceneBadge">平靜</span>
+        <span class="badge" id="stimBadge">未有額外刺激</span>
+      </div>
+      <svg id="fig" viewBox="0 0 720 500" role="img" aria-label="迷走神經由延腦連到竇房結；交感神經連到竇房結和腎上腺">
+        <rect id="inhibBox" x="16" y="16" width="230" height="132" rx="16" fill="rgba(255,255,255,.08)" stroke="#818cf8" stroke-width="2"/>
+        <text class="tag" x="32" y="48">延腦</text>
+        <text class="tag" x="32" y="74">心血管抑制中樞</text>
+        <circle id="recMed" cx="210" cy="112" r="8" fill="#fde68a"/>
+        <text class="tag" x="32" y="122">化學感受器</text>
+        <path id="aorta" d="M408 196 C 450 130, 530 118, 575 160" fill="none" stroke="#fb7185" stroke-width="14" stroke-linecap="round"/>
+        <path id="carotid" d="M530 140 C 555 100, 600 78, 640 52" fill="none" stroke="#fda4af" stroke-width="8" stroke-linecap="round"/>
+        <circle id="baroAorta" cx="560" cy="156" r="11" fill="none" stroke="#5eead4" stroke-width="3"/>
+        <circle id="baroCar" cx="642" cy="50" r="11" fill="none" stroke="#5eead4" stroke-width="3"/>
+        <circle id="chemoAorta" cx="520" cy="132" r="7" fill="#fde68a"/>
+        <circle id="chemoCar" cx="600" cy="78" r="7" fill="#fde68a"/>
+        <text class="tag" x="392" y="126">主動脈體</text>
+        <text class="tag" x="392" y="148">管壁牽張感受器</text>
+        <text class="tag" x="548" y="36">頸動脈體</text>
+        <g id="heartBeat">
+          <path d="M0 20 C-8 0 -36 -6 -48 16 C-66 46 -28 74 0 102 C28 74 66 46 48 16 C36 -6 8 0 0 20 Z" fill="#e11d48" stroke="#ffe4e6" stroke-width="3"/>
+          <ellipse cx="-16" cy="28" rx="14" ry="16" fill="#fb7185" opacity=".65"/>
+          <ellipse cx="16" cy="30" rx="14" ry="16" fill="#fb7185" opacity=".5"/>
+          <ellipse cx="-12" cy="62" rx="13" ry="15" fill="#9f1239"/>
+          <ellipse cx="14" cy="62" rx="13" ry="15" fill="#881337"/>
+          <circle id="sa" cx="26" cy="18" r="7" fill="#fef08a" stroke="#fff" stroke-width="1.5"/>
+        </g>
+        <text id="saLabel" class="tag" x="430" y="250">竇房結</text>
+        <g id="adrenal"><ellipse cx="0" cy="0" rx="26" ry="14" fill="#fdba74"/><ellipse cx="0" cy="16" rx="32" ry="20" fill="#fecaca"/></g>
+        <text class="tag" x="560" y="408">腎上腺</text>
+        <path id="vagus" fill="none" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/>
+        <path id="symSa" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+        <path id="symAd" fill="none" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+        <g id="dotsVagus"></g>
+        <g id="dotsSa"></g>
+        <g id="dotsAd"></g>
+        <text class="tag" x="24" y="176">迷走神經 → 只到竇房結</text>
+        <text class="tag" x="24" y="202">交感神經 → 竇房結及腎上腺</text>
+      </svg>
+      <p class="story" id="story" aria-live="polite"></p>
+      <div class="controls" id="autoControls">
+        <button type="button" data-scene="rest" aria-pressed="true">平靜</button>
+        <button type="button" data-scene="recover" aria-pressed="false">運動後休息</button>
+        <button type="button" data-scene="bp" aria-pressed="false">血壓上升</button>
+      </div>
+      <div class="chal" id="chalControls" hidden>
+        <button type="button" id="impDown">抑制 −</button>
+        <input id="imp" type="range" min="0" max="100" value="10" aria-label="抑制強度">
+        <button type="button" id="impUp">抑制 ＋</button>
+        <button type="button" id="chalStop">結束</button>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="background:#38bdf8"></i>迷走神經脈衝（變多）</span>
+        <span><i class="dot" style="background:#fde047"></i>交感神經脈衝（變少）</span>
+        <span><i class="dot" style="background:#5eead4"></i>牽張感受器</span>
+      </div>
+    </section>
+    <div>
+      <section class="card" style="margin-bottom:16px">
+        <div class="metrics">
+          <div class="metric" id="mCo2"><span>血液 CO₂</span><strong id="co2Val">40</strong><em>mmHg</em></div>
+          <div class="metric" id="mPh"><span>pH</span><strong id="phVal">7.40</strong></div>
+          <div class="metric" id="mBp"><span>血壓</span><strong id="bpVal">120</strong><em>mmHg</em></div>
+          <div class="metric"><span>心跳率</span><strong id="hrVal">74</strong><em>次／分</em></div>
+          <div class="metric"><span>心搏量</span><strong id="svVal">72</strong><em>mL</em></div>
+          <div class="metric"><span>迷走／交感</span><strong id="nerveVal">低</strong></div>
         </div>
-        <div class="metric-box">
-            <div class="metric-label">迷走神經脈衝</div>
-            <div class="metric-value" id="nerve-display">正常</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-label">心律 / 心輸出量</div>
-            <div class="metric-value" id="co-display">正常</div>
-        </div>
+        <p class="formula" id="formula">心輸出量 = 心跳率 × 心搏量 = 74 × 72 mL = 5.3 L/min</p>
+      </section>
+      <section class="card">
+        <h2>即時變化</h2>
+        <canvas id="graph" width="640" height="300"></canvas>
+        <div class="glegend"><span><i class="sw" style="background:#4f46e5"></i>心跳率</span> <span><i class="sw" style="background:#0f766e"></i>心輸出量</span></div>
+      </section>
     </div>
-
-    <h2>調節流程圖</h2>
-    <div class="flowchart" id="flowchart">
-        <div class="flow-step" id="step-1"><span class="step-num">1.</span>主動脈體和頸動脈體化學感受器 / 牽張感受器</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-2"><span class="step-num">2.</span>延腦心動中樞化學感受器感受</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-3"><span class="step-num">3.</span>CO2 下降 / 血壓上升</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-4"><span class="step-num">4.</span>pH 上升</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-5"><span class="step-num">5.</span>產生更多神經脈衝</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-6"><span class="step-num">6.</span>至延腦心血管中樞</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-7"><span class="step-num">7.</span>心血管抑制中樞產生更多神經脈衝沿迷走神經至竇房結及腎上腺</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-8"><span class="step-num">8.</span>腎上腺分泌較少腎上腺素</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-9"><span class="step-num">9.</span>竇房結產生較少電脈衝令心臟收縮更慢更弱</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-10"><span class="step-num">10.</span>較少腎上腺素令心臟收縮更慢更弱</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-11"><span class="step-num">11.</span>心跳率及心搏量減少</div>
-        <div class="arrow">↓</div>
-        <div class="flow-step" id="step-12"><span class="step-num">12.</span>心輸出量減少</div>
-    </div>
-
-    <div class="note">
-        <strong>*備註 (考評重點)：</strong> 步驟 1-3 的化學感受器機制，可以「主動脈體及頸動脈體內的牽張感受器感受到血壓上升」作為替代機制進行調節。
-    </div>
+  </div>
+  <section class="card" style="margin-top:16px">
+    <h2>減少心輸出量的次序</h2>
+    <ol class="steps" id="pathway"></ol>
+    <div class="tip"><strong>考試提示：</strong>刺激可以是血液 CO₂ 下降、pH 上升，由主動脈體、頸動脈體和延腦的化學感受器偵測；也可以是血壓上升，由主動脈和頸動脈<strong>管壁</strong>的牽張感受器偵測。兩種刺激之後都是：心血管抑制中樞 → 迷走神經（副交感）到竇房結的脈衝增加；交感神經到竇房結和腎上腺的脈衝減少，腎上腺素減少。迷走神經不到腎上腺。</div>
+  </section>
+  <div class="games">
+    <section class="card span2">
+      <h2>挑戰：收慢這顆心</h2>
+      <p>運動剛停，CO₂ 會慢慢下降。CO₂ 仍高時保持心跳快（抑制低）；CO₂ 回落後才加強抑制，把心跳帶回 60–88 次／分。不要一早煞停，也不要低於 50。</p>
+      <div class="row">
+        <button class="primary" id="chalStart" type="button">開始挑戰</button>
+        <span id="chalTimer" class="fine"></span>
+        <span class="stars" id="chalStars">☆☆☆</span>
+      </div>
+      <p id="chalMsg"></p>
+    </section>
+    <section class="card">
+      <h2>排序</h2>
+      <p>點選並排好減少心輸出量的步驟。答題區可拖曳。</p>
+      <div class="row">
+        <span id="sortTime" class="fine">計時尚未開始</span>
+        <span class="stars" id="sortStars">☆☆☆</span>
+        <button class="ghost" id="sortReset" type="button">重設</button>
+        <button class="primary" id="sortSubmit" type="button">交卷</button>
+      </div>
+      <div class="sort-grid">
+        <div><strong>步驟庫</strong><div class="bin" id="bank"></div></div>
+        <div><strong>你的次序</strong><div class="bin" id="answer"></div></div>
+      </div>
+      <p id="sortMsg"></p>
+      <ol id="sortKey" hidden></ol>
+    </section>
+    <section class="card">
+      <h2>小測</h2>
+      <p id="qProg" class="fine"></p>
+      <p id="qText" style="font-weight:800"></p>
+      <div id="qOpts"></div>
+      <p id="qWhy" class="why" hidden></p>
+      <div class="row">
+        <button class="primary" id="qNext" type="button" hidden>下一題</button>
+        <span id="qScore"></span>
+      </div>
+    </section>
+  </div>
+  <section class="card notes">
+    <h2>考試必記</h2>
+    <ul>
+      <li>血液 CO₂ 下降、pH 上升：主動脈體、頸動脈體和延腦的化學感受器偵測到。</li>
+      <li>血壓上升：主動脈和頸動脈管壁的牽張感受器偵測到。這是另一個刺激，不是化學感受器的替代位置。</li>
+      <li>更多脈衝傳到延腦的心血管抑制中樞。</li>
+      <li>迷走神經（副交感神經）到竇房結的脈衝增加。迷走神經不到腎上腺。</li>
+      <li>交感神經到竇房結和腎上腺的脈衝減少，所以腎上腺素分泌減少。</li>
+      <li>心跳更慢、更弱，心跳率和心搏量下降，心輸出量減少。</li>
+    </ul>
+    <p class="fine">模擬數值經過簡化，重點是變化方向和步驟次序。</p>
+  </section>
 </div>
-
 <script>
-    const co2Slider = document.getElementById('co2-slider');
-    const bpSlider = document.getElementById('bp-slider');
-    const co2Val = document.getElementById('co2-val');
-    const bpVal = document.getElementById('bp-val');
-    
-    const phDisplay = document.getElementById('ph-display');
-    const nerveDisplay = document.getElementById('nerve-display');
-    const coDisplay = document.getElementById('co-display');
-
-    function updateSimulation() {
-        const co2Level = parseInt(co2Slider.value);
-        const bpLevel = parseInt(bpSlider.value);
-
-        // 更新 CO2 顯示
-        if (co2Level < 3) co2Val.textContent = "偏低 (下降)";
-        else if (co2Level === 3) co2Val.textContent = "正常";
-        else co2Val.textContent = "偏高";
-
-        // 更新 BP 顯示
-        if (bpLevel > 3) bpVal.textContent = "偏高 (上升)";
-        else if (bpLevel === 3) bpVal.textContent = "正常";
-        else bpVal.textContent = "偏低";
-
-        // 計算 pH 值 (CO2 越低，pH 越高)
-        let ph = (7.40 + (3 - co2Level) * 0.1).toFixed(2);
-        phDisplay.textContent = ph;
-
-        // 判斷是否觸發「減少心輸出量」機制 (CO2 下降 或 血壓上升)
-        const isTriggered = (co2Level < 3) || (bpLevel > 3);
-
-        // 重設所有步驟亮燈
-        for (let i = 1; i <= 12; i++) {
-            document.getElementById(`step-${i}`).classList.remove('active');
-        }
-
-        if (isTriggered) {
-            // 觸發調節機制：步驟 1-12 高亮顯示
-            for (let i = 1; i <= 12; i++) {
-                document.getElementById(`step-${i}`).classList.add('active');
-            }
-            nerveDisplay.textContent = "增加 (迷走神經)";
-            nerveDisplay.style.color = "#e74c3c";
-            coDisplay.textContent = "減少 (下降)";
-            coDisplay.style.color = "#e74c3c";
-        } else {
-            nerveDisplay.textContent = "正常";
-            nerveDisplay.style.color = "#2c3e50";
-            coDisplay.textContent = "正常";
-            coDisplay.style.color = "#2c3e50";
-        }
+'use strict';
+const NS = 'http://www.w3.org/2000/svg';
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const STEPS = [
+  '血液 CO₂ 下降、pH 上升（化學感受器），或血壓上升（主動脈和頸動脈管壁的牽張感受器）',
+  '更多神經脈衝傳至延腦的心血管抑制中樞',
+  '抑制中樞沿迷走神經（副交感神經）發出更多脈衝至竇房結',
+  '沿交感神經傳到竇房結和腎上腺的脈衝減少，腎上腺素分泌減少',
+  '心臟跳得更慢、更沒力，心跳率和心搏量減少',
+  '心輸出量減少'
+];
+const QUESTIONS = [
+  { q:'迷走神經屬於哪類神經，在這條途徑傳到哪裡？', options:['交感神經，傳到腎上腺','副交感神經，傳到竇房結','膈神經，傳到橫膈膜','交感神經，傳到竇房結和腎上腺'], a:1,
+    why:'迷走神經是副交感神經，這裡只把更多脈衝傳到竇房結，令心跳減慢。它不到腎上腺。腎上腺由交感神經支配。' },
+  { q:'血壓上升時，哪種感受器偵測到刺激？', options:['主動脈和頸動脈管壁的牽張感受器','主動脈體裡面的牽張感受器','視網膜','肌梭'], a:0,
+    why:'牽張感受器在主動脈和頸動脈的管壁。主動脈體和頸動脈體是化學感受器，不是牽張感受器的所在。' },
+  { q:'心輸出量減少時，交感神經和腎上腺素怎樣改變？', options:['交感脈衝和腎上腺素都增加','傳到竇房結和腎上腺的交感脈衝減少，腎上腺素分泌減少','完全不變','改由迷走神經刺激腎上腺分泌更多腎上腺素'], a:1,
+    why:'抑制中樞加強迷走神經的同時，交感神經脈衝減少，腎上腺分泌較少腎上腺素，心臟收縮更慢、更弱。' }
+];
+const restState = () => ({ mode:'rest', co2:40, ph:7.4, co2Slope:0, sym:0.14, adr:0.12, vagal:0.2, hr:74, sv:72, co:5.3, bp:120, load:0, kick:0, beat:0, shown:0, cool:0, inhibit:0 });
+const s = restState();
+let last = performance.now(), graphAcc = 0, lastStory = '';
+const trace = [];
+const challenge = { running:false, t:0, good:0, total:0, level:0.1 };
+const sort = { locked:false, t0:0 };
+let pool = [], drag = null, qIndex = 0, qScore = 0, qLocked = false;
+const sound = {
+  on:false, ctx:null,
+  ensure() { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return; if (!this.ctx) this.ctx = new AC(); if (this.ctx.state === 'suspended') this.ctx.resume(); },
+  toggle(btn) { this.on = !this.on; if (this.on) this.ensure(); btn.setAttribute('aria-pressed', this.on ? 'true' : 'false'); btn.textContent = this.on ? '聲音：開' : '聲音：關'; if (this.on) this.beep(520,.08,'sine',.04); },
+  beep(freq,dur,type,vol) { if (!this.on || !this.ctx) return; const t=this.ctx.currentTime; const o=this.ctx.createOscillator(); const g=this.ctx.createGain(); o.type=type||'sine'; o.frequency.value=freq; g.gain.setValueAtTime(vol||.04,t); g.gain.exponentialRampToValueAtTime(.001,t+dur); o.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t+dur+.02); },
+  ok() { [523,659,784].forEach((f,i)=>setTimeout(()=>this.beep(f,.12,'triangle',.05), i*110)); },
+  bad() { this.beep(180,.16,'square',.03); }
+};
+function smooth(cur, target, k, dt) { return cur + (target - cur) * (1 - Math.exp(-k * dt)); }
+function stepPhysics(dt, manualInhibit) {
+  const prev = s.co2;
+  if (s.mode === 'recover' || challenge.running) s.load = smooth(s.load, 0, 0.22, dt);
+  const prod = 8 + s.load;
+  s.co = Math.max(2.2, s.hr * s.sv / 1000);
+  const clear = s.mode === 'bp' ? 1.05 : s.co / 6.2;
+  s.co2 += ((prod - clear * 0.8 * (s.co2 - 31)) / 6.5) * dt;
+  s.co2 = clamp(s.co2, 20, 75);
+  s.ph = clamp(7.4 - (s.co2 - 40) * 0.008, 7.05, 7.75);
+  s.co2Slope = dt > 0 ? (s.co2 - prev) / dt : 0;
+  const chemoHigh = clamp((s.co2 - 43) / 9, 0, 1);
+  const falling = (s.mode === 'recover' || challenge.running) ? clamp((48 - s.co2) / 10, 0, 1) : 0;
+  const baro = s.mode === 'bp' ? clamp((s.bp - 132) / 22, 0, 1) : 0;
+  let inhibit = clamp(falling * 0.9 + baro, 0, 1);
+  if (manualInhibit != null) inhibit = manualInhibit;
+  s.inhibit = inhibit;
+  const accel = (s.mode === 'recover' || challenge.running) ? chemoHigh * (1 - inhibit) : 0;
+  const targetV = clamp(0.16 + inhibit * 0.82 - accel * 0.06, 0.1, 1);
+  const targetS = clamp(0.1 + accel * 0.9 - inhibit * 0.55, 0.04, 1);
+  s.vagal = smooth(s.vagal, targetV, 0.7, dt);
+  s.sym = smooth(s.sym, targetS, 0.65, dt);
+  s.adr = smooth(s.adr, s.sym, 0.38, dt);
+  if (s.mode === 'bp') {
+    const reflex = clamp((s.vagal - 0.25) / 0.4, 0, 1);
+    s.kick = smooth(s.kick, 0, 0.08 + reflex * 0.28, dt);
+    s.bp = smooth(s.bp, 118 + 46 * s.kick, 0.9, dt);
+  } else {
+    s.kick = 0;
+    s.bp = smooth(s.bp, 120, 0.4, dt);
+  }
+  const targetHr = 68 + s.sym * 22 + s.adr * 52 - s.vagal * 22;
+  const targetSv = 70 + s.sym * 10 + s.adr * 28 - s.vagal * 12;
+  s.hr = clamp(smooth(s.hr, targetHr, 0.75, dt), 46, 180);
+  s.sv = clamp(smooth(s.sv, targetSv, 0.65, dt), 50, 130);
+  s.co = s.hr * s.sv / 1000;
+  const before = s.beat;
+  s.beat = (s.beat + dt * (s.hr / 60)) % 1;
+  if (s.beat < before) sound.beep(64, .07, 'sine', .04);
+}
+function signals() {
+  const chemical = (s.mode === 'recover' || challenge.running) && s.co2 < 50 && (s.co2Slope < -0.04 || s.co2 < 46);
+  const pressure = s.mode === 'bp' && s.bp > 135;
+  const stim = chemical || pressure;
+  const centre = stim && (s.inhibit > 0.16 || s.vagal > 0.34);
+  const vagus = centre && s.vagal > 0.4;
+  const symDown = vagus && s.sym < 0.42 && s.adr < 0.6;
+  const slower = symDown && s.hr < 110 && s.sv < 96;
+  const coDown = slower && s.co < 8.5;
+  return { stim, centre, vagus, symDown, slower, coDown };
+}
+function targetCount() {
+  if (s.mode === 'rest' && !challenge.running) return 0;
+  const g = signals();
+  const seq = [g.stim, g.centre, g.vagus, g.symDown, g.slower, g.coDown];
+  let n = 0;
+  for (const v of seq) { if (!v) break; n++; }
+  return n;
+}
+function advance(dt) {
+  const want = targetCount();
+  s.cool -= dt;
+  if (want > s.shown && s.cool <= 0) { s.shown += 1; s.cool = 0.55; }
+  if (s.mode === 'rest' && !challenge.running && want === 0) s.shown = 0;
+  for (let i = 0; i < STEPS.length; i++) {
+    const el = $('step' + i);
+    el.classList.toggle('on', i < s.shown);
+    el.classList.toggle('now', i === s.shown - 1);
+  }
+}
+function storyLine() {
+  if (challenge.running) {
+    return '挑戰：CO₂ ' + Math.round(s.co2) + ' mmHg。' + (s.co2 > 48 ? 'CO₂ 仍高，先不要大力抑制。' : 'CO₂ 已回落，可以加強迷走神經、減弱交感神經。');
+  }
+  if (s.mode === 'bp') {
+    return s.bp > 140
+      ? '血壓上升。主動脈和頸動脈管壁的牽張感受器把脈衝傳到抑制中樞，迷走神經加強，交感神經減弱。'
+      : '心輸出量下降後，血壓回落。這是負反饋。迷走神經只到竇房結，不到腎上腺。';
+  }
+  if (s.mode === 'recover') {
+    if (s.co2 > 48) return '剛停下運動。心輸出量仍然高，CO₂ 正被帶走，pH 回升。';
+    if (s.hr > 100) return '化學感受器偵測到 CO₂ 下降、pH 上升，抑制中樞開始經迷走神經煞慢竇房結。';
+    return '心跳率和心搏量下降，心輸出量回到休息水平。交感脈衝和腎上腺素都減少了。';
+  }
+  return '平靜。選「運動後休息」看 CO₂ 下降，或選「血壓上升」看牽張感受器。兩條路之後的傳出途徑相同。';
+}
+function setPressed(name) {
+  document.querySelectorAll('[data-scene]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.scene === name ? 'true' : 'false'));
+}
+function applyScene(name) {
+  if (challenge.running) return;
+  const keepBeat = s.beat;
+  if (name === 'rest') Object.assign(s, restState(), { beat: keepBeat });
+  if (name === 'recover') Object.assign(s, restState(), { mode:'recover', co2:52, ph:7.4 - 12 * 0.008, sym:0.9, adr:0.85, vagal:0.12, hr:142, sv:104, co:14.8, bp:122, load:16, beat:keepBeat, shown:0 });
+  if (name === 'bp') Object.assign(s, restState(), { mode:'bp', bp:158, kick:1, beat:keepBeat, shown:0 });
+  setPressed(name);
+}
+function elNS(n) { return document.createElementNS(NS, n); }
+function ensure(id, n, fill) {
+  const g = $(id);
+  while (g.children.length < n) { const c = elNS('circle'); c.setAttribute('r','5'); c.setAttribute('fill', fill); g.appendChild(c); }
+}
+function moveAlong(pathId, groupId, level, dt) {
+  const path = $(pathId); const g = $(groupId); const len = path.getTotalLength(); if (!len) return;
+  let p = Number(g.dataset.p || 0); p = (p + dt * (0.12 + level)) % 1; g.dataset.p = String(p);
+  for (let i = 0; i < g.children.length; i++) {
+    const pt = path.getPointAtLength(((p + i / g.children.length) % 1) * len);
+    g.children[i].setAttribute('cx', pt.x); g.children[i].setAttribute('cy', pt.y);
+    g.children[i].setAttribute('opacity', level < 0.12 ? '0.1' : String(0.35 + Math.min(1, level) * 0.6));
+  }
+}
+function draw(dt) {
+  const cyc = s.beat;
+  const power = clamp(s.sv / 120, .5, 1.15);
+  let sq = 1;
+  if (cyc < 0.18) sq = 1 - Math.sin(cyc / 0.18 * Math.PI) * 0.1 * power;
+  else sq = 1 + Math.sin((cyc - 0.18) / 0.82 * Math.PI) * 0.035;
+  $('heartBeat').setAttribute('transform', 'translate(360 268) scale(' + sq.toFixed(3) + ')');
+  $('sa').setAttribute('r', cyc < 0.12 ? String(6 + (1 - cyc / 0.12) * (s.hr > 100 ? 7 : 4)) : '6');
+  $('adrenal').setAttribute('transform', 'translate(610 352)');
+  $('vagus').setAttribute('d', 'M140 78 C 200 120, 250 180, 330 240');
+  $('symSa').setAttribute('d', 'M150 110 C 230 150, 280 190, 345 250');
+  $('symAd').setAttribute('d', 'M150 120 C 260 180, 480 260, 590 345');
+  $('inhibBox').setAttribute('stroke', s.inhibit > 0.25 ? '#67e8f9' : '#818cf8');
+  $('inhibBox').setAttribute('stroke-width', s.inhibit > 0.25 ? '4' : '2');
+  const chemoOn = (s.mode === 'recover' || challenge.running) && s.co2 < 50;
+  ['recMed','chemoAorta','chemoCar'].forEach((id) => $(id).setAttribute('opacity', chemoOn ? '1' : '0.35'));
+  const baroOn = s.mode === 'bp' && s.bp > 132;
+  ['baroAorta','baroCar'].forEach((id) => {
+    $(id).setAttribute('stroke-width', baroOn ? '5' : '2');
+    $(id).setAttribute('opacity', baroOn ? '1' : '0.35');
+  });
+  $('vagus').setAttribute('stroke-width', String(3 + s.vagal * 4));
+  $('symSa').setAttribute('opacity', String(0.25 + s.sym));
+  $('symAd').setAttribute('opacity', String(0.25 + s.sym));
+  ensure('dotsVagus', 5, '#7dd3fc'); ensure('dotsSa', 4, '#fef08a'); ensure('dotsAd', 3, '#fde68a');
+  moveAlong('vagus', 'dotsVagus', s.vagal, dt);
+  moveAlong('symSa', 'dotsSa', s.sym, dt);
+  moveAlong('symAd', 'dotsAd', s.sym, dt);
+}
+function drawGraph() {
+  const c = $('graph'); const w = c.clientWidth || 300; const h = 150;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  if (c.width !== Math.floor(w * dpr)) { c.width = Math.floor(w * dpr); c.height = Math.floor(h * dpr); }
+  const ctx = c.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle = '#f8faff'; ctx.fillRect(0,0,w,h);
+  const plot = (key, min, max, color) => {
+    if (trace.length < 2) return;
+    ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2.4;
+    trace.forEach((row, i) => {
+      const x = 8 + (w - 16) * (i / (trace.length - 1));
+      const y = 10 + (h - 24) * (1 - clamp((row[key] - min) / (max - min), 0, 1));
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+  };
+  plot('hr', 45, 160, '#4f46e5');
+  plot('co', 3, 16, '#0f766e');
+}
+function paint() {
+  $('co2Val').textContent = String(Math.round(s.co2));
+  $('phVal').textContent = s.ph.toFixed(2);
+  $('bpVal').textContent = String(Math.round(s.bp));
+  $('hrVal').textContent = String(Math.round(s.hr));
+  $('svVal').textContent = String(Math.round(s.sv));
+  $('nerveVal').textContent = s.vagal > 0.55 ? '迷走高' : s.sym > 0.55 ? '交感高' : '接近休息';
+  $('mCo2').className = 'metric ' + (s.co2 > 50 ? 'bad' : s.co2 < 36 ? 'warn' : 'ok');
+  $('mPh').className = 'metric ' + (s.ph < 7.32 ? 'bad' : 'ok');
+  $('mBp').className = 'metric ' + (s.bp > 145 ? 'bad' : s.bp > 132 ? 'warn' : 'ok');
+  $('formula').textContent = '心輸出量 = 心跳率 × 心搏量 = ' + Math.round(s.hr) + ' × ' + Math.round(s.sv) + ' mL = ' + (s.hr * s.sv / 1000).toFixed(1) + ' L/min';
+  $('sceneBadge').textContent = challenge.running ? '挑戰 · 運動後' : s.mode === 'bp' ? '血壓上升' : s.mode === 'recover' ? '運動後休息' : '平靜';
+  $('stimBadge').textContent = s.mode === 'bp' ? '刺激：血壓上升' : (s.mode === 'recover' || challenge.running) ? '刺激：CO₂ 下降／pH 上升' : '未有額外刺激';
+  const line = storyLine();
+  if (line !== lastStory) { lastStory = line; $('story').textContent = line; }
+  if (sort.t0 && !sort.locked) $('sortTime').textContent = '用時 ' + Math.floor((performance.now() - sort.t0) / 1000) + ' 秒';
+}
+function stars(n) { return '★★★☆☆☆'.slice(3 - n, 6 - n); }
+function startChallenge() {
+  challenge.running = true; challenge.t = 0; challenge.good = 0; challenge.total = 0; challenge.level = 0.08;
+  $('imp').value = '8';
+  Object.assign(s, restState(), { mode:'recover', co2:54, ph:7.4 - 14 * 0.008, sym:0.92, adr:0.88, vagal:0.12, hr:146, sv:106, bp:122, load:18, shown:0 });
+  $('autoControls').hidden = true; $('chalControls').hidden = false;
+  $('chalMsg').textContent = ''; $('chalStars').textContent = '☆☆☆'; $('chalStart').disabled = true;
+}
+function stopChallenge(done) {
+  challenge.running = false;
+  $('autoControls').hidden = false; $('chalControls').hidden = true; $('chalStart').disabled = false;
+  applyScene('rest');
+  if (!done) { $('chalTimer').textContent = ''; return; }
+  const pct = challenge.total ? challenge.good / challenge.total : 0;
+  const n = pct >= 0.8 ? 3 : pct >= 0.6 ? 2 : pct >= 0.4 ? 1 : 0;
+  $('chalStars').textContent = stars(n);
+  $('chalMsg').textContent = '判斷正確的時間佔 ' + Math.round(pct * 100) + '%。' + (n >= 2 ? '你懂得在 CO₂ 回落之後才加強迷走神經。' : 'CO₂ 仍高時保持低抑制；CO₂ 跌到 48 以下再把抑制推高。');
+  if (n >= 2) sound.ok(); else sound.bad();
+}
+function stepChallenge(realDt, dt) {
+  challenge.t += realDt;
+  stepPhysics(dt, challenge.level);
+  let ok = true;
+  if (s.hr < 50) ok = false;
+  else if (s.co2 > 49) ok = s.hr > 100;
+  else if (s.co2 < 44) ok = s.hr >= 58 && s.hr <= 90;
+  challenge.total += realDt; if (ok) challenge.good += realDt;
+  $('chalTimer').textContent = '剩餘 ' + Math.max(0, Math.ceil(24 - challenge.t)) + ' 秒 · 判斷正確 ' + Math.round(100 * challenge.good / Math.max(challenge.total, .01)) + '%';
+  if (challenge.t >= 24) stopChallenge(true);
+}
+function buildSteps() {
+  STEPS.forEach((text, i) => {
+    const li = document.createElement('li'); li.className = 'step'; li.id = 'step' + i;
+    const n = document.createElement('span'); n.className = 'n'; n.textContent = String(i + 1);
+    const tx = document.createElement('span'); tx.className = 'tx'; tx.textContent = text;
+    li.append(n, tx); $('pathway').appendChild(li);
+  });
+}
+function shuffle(list) { const a=list.slice(); for (let i=a.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function renderBank() {
+  $('bank').innerHTML = '';
+  pool.forEach((text) => {
+    const b = document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=text; b.disabled=sort.locked;
+    b.addEventListener('click', () => take(text)); $('bank').appendChild(b);
+  });
+}
+function renumber() { [...$('answer').children].forEach((el,i)=>{ el.querySelector('.n').textContent=String(i+1); }); }
+function addAnswer(text) {
+  const row = document.createElement('div'); row.className='aitem'; row.dataset.text=text;
+  const n = document.createElement('span'); n.className='n';
+  const tx = document.createElement('span'); tx.className='tx'; tx.textContent=text;
+  const kick = document.createElement('button'); kick.type='button'; kick.className='kick'; kick.textContent='移走';
+  kick.addEventListener('click', () => { if (sort.locked) return; row.remove(); pool.push(text); renumber(); renderBank(); });
+  row.append(n, tx, kick); $('answer').appendChild(row); renumber();
+}
+function take(text) { if (sort.locked) return; if (!sort.t0) sort.t0 = performance.now(); pool = pool.filter((t)=>t!==text); addAnswer(text); renderBank(); }
+function resetSort() {
+  sort.locked=false; sort.t0=0; pool=shuffle(STEPS);
+  $('answer').innerHTML=''; $('sortMsg').textContent=''; $('sortKey').hidden=true; $('sortKey').innerHTML='';
+  $('sortStars').textContent='☆☆☆'; $('sortTime').textContent='計時尚未開始'; renderBank();
+}
+function submitSort() {
+  if (sort.locked) return;
+  const got = [...$('answer').children].map((el)=>el.dataset.text);
+  if (got.length !== STEPS.length) { $('sortMsg').textContent='還有步驟留在步驟庫。'; return; }
+  sort.locked = true; const sec = (performance.now()-sort.t0)/1000; let correct=0;
+  got.forEach((text,i)=>{ const ok=text===STEPS[i]; $('answer').children[i].classList.add(ok?'good':'bad'); if(ok) correct++; });
+  const all = correct===STEPS.length;
+  const n = all ? (sec<30?3:sec<55?2:1) : (correct>=STEPS.length-1?1:0);
+  $('sortStars').textContent = stars(n);
+  $('sortTime').textContent = '用時 ' + Math.round(sec) + ' 秒';
+  $('sortMsg').textContent = all ? '次序完全正確。' : '對了 ' + correct + '／' + STEPS.length + ' 步。下面是正確次序。';
+  if (!all) { $('sortKey').hidden=false; STEPS.forEach((text)=>{ const li=document.createElement('li'); li.textContent=text; $('sortKey').appendChild(li); }); }
+  renderBank(); if (all) sound.ok(); else sound.bad();
+}
+function setupDrag() {
+  const box = $('answer');
+  box.addEventListener('pointerdown', (e) => {
+    if (sort.locked) return;
+    const item = e.target.closest('.aitem');
+    if (!item || e.target.closest('.kick')) return;
+    drag = item; item.classList.add('dragging'); item.setPointerCapture(e.pointerId);
+  });
+  box.addEventListener('pointermove', (e) => {
+    if (!drag) return; e.preventDefault();
+    const items = [...box.querySelectorAll('.aitem')].filter((n)=>n!==drag);
+    let placed = false;
+    for (const sib of items) {
+      const r = sib.getBoundingClientRect();
+      if (e.clientY < r.top + r.height/2) { box.insertBefore(drag, sib); placed = true; break; }
     }
-
-    co2Slider.addEventListener('input', updateSimulation);
-    bpSlider.addEventListener('input', updateSimulation);
-
-    // 初始化
-    updateSimulation();
+    if (!placed) box.appendChild(drag); renumber();
+  }, { passive:false });
+  const end = () => { if (!drag) return; drag.classList.remove('dragging'); drag = null; };
+  box.addEventListener('pointerup', end); box.addEventListener('pointercancel', end);
+}
+function renderQuestion() {
+  const q = QUESTIONS[qIndex];
+  $('qProg').textContent = '第 ' + (qIndex+1) + '／' + QUESTIONS.length + ' 題';
+  $('qText').textContent = q.q; $('qWhy').hidden = true; $('qNext').hidden = true; qLocked = false;
+  $('qOpts').innerHTML = '';
+  q.options.forEach((text,i)=>{
+    const b=document.createElement('button'); b.type='button'; b.className='q-opt';
+    b.textContent = String.fromCharCode(65+i)+'. '+text;
+    b.addEventListener('click', ()=>answer(i)); $('qOpts').appendChild(b);
+  });
+}
+function answer(i) {
+  if (qLocked) return; qLocked = true; const q = QUESTIONS[qIndex];
+  [...$('qOpts').children].forEach((btn,idx)=>{ btn.disabled=true; if(idx===q.a) btn.classList.add('good'); else if(idx===i) btn.classList.add('bad'); });
+  const right = i===q.a; if (right) qScore++;
+  $('qWhy').hidden=false; $('qWhy').textContent=(right?'正確。':'未中。')+q.why;
+  if (right) sound.beep(640,.1,'triangle',.05); else sound.bad();
+  $('qNext').hidden=false; $('qNext').textContent = qIndex===QUESTIONS.length-1 ? '再測一次' : '下一題';
+  if (qIndex===QUESTIONS.length-1) $('qScore').textContent = '得分 '+qScore+'／'+QUESTIONS.length;
+}
+function nextQ() {
+  if (qIndex===QUESTIONS.length-1) { qIndex=0; qScore=0; $('qScore').textContent=''; }
+  else qIndex++;
+  renderQuestion();
+}
+function frame(now) {
+  const dt = Math.min(0.05, (now-last)/1000); last = now;
+  if (challenge.running) stepChallenge(dt, dt); else stepPhysics(dt, null);
+  advance(dt); draw(dt);
+  graphAcc += dt;
+  if (graphAcc > 0.25) { graphAcc = 0; trace.push({ hr:s.hr, co:s.co }); if (trace.length>90) trace.shift(); drawGraph(); }
+  paint(); requestAnimationFrame(frame);
+}
+function boot() {
+  buildSteps(); resetSort(); setupDrag(); renderQuestion();
+  $('soundBtn').addEventListener('click', () => sound.toggle($('soundBtn')));
+  document.querySelectorAll('[data-scene]').forEach((b)=>b.addEventListener('click', ()=>applyScene(b.dataset.scene)));
+  $('chalStart').addEventListener('click', startChallenge);
+  $('chalStop').addEventListener('click', ()=>stopChallenge(false));
+  $('imp').addEventListener('input', ()=>{ challenge.level = Number($('imp').value)/100; });
+  $('impDown').addEventListener('click', ()=>{ challenge.level = clamp(challenge.level-0.08,0,1); $('imp').value=String(Math.round(challenge.level*100)); });
+  $('impUp').addEventListener('click', ()=>{ challenge.level = clamp(challenge.level+0.08,0,1); $('imp').value=String(Math.round(challenge.level*100)); });
+  $('sortReset').addEventListener('click', resetSort);
+  $('sortSubmit').addEventListener('click', submitSort);
+  $('qNext').addEventListener('click', nextQ);
+  window.addEventListener('keydown', (e)=>{
+    if (e.target.matches('input, textarea')) return;
+    const map = { '1':'rest','2':'recover','3':'bp' };
+    if (map[e.key]) applyScene(map[e.key]);
+  });
+  window.__sim = { get state() { return Object.assign({}, s, { challenge: challenge.running }); } };
+  draw(0.016); trace.push({ hr:s.hr, co:s.co }); drawGraph(); paint();
+  requestAnimationFrame(frame);
+}
+boot();
 </script>
-
 </body>
 </html>
