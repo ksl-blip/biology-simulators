@@ -3,21 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>生物互動模擬器</title>
+<title>身體調節實驗室 · HKDSE 生物</title>
+<meta name="description" content="香港中學文憑試生物互動模擬：運動時的呼吸控制，以及心輸出量怎樣增加和減少。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230f766e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-body{font-family:'PingFang HK','Microsoft JhengHei',sans-serif;background:#f4f7f6;margin:0;padding:30px;color:#333}
-.wrap{max-width:700px;margin:0 auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
-h1{text-align:center;color:#2c3e50}
-a{display:block;padding:14px 18px;margin:10px 0;background:#eef2f5;border-left:5px solid #3498db;border-radius:6px;color:#1e40af;text-decoration:none;font-weight:bold}
-a:hover{background:#dbeafe}
+  :root {
+    --ink: #0f172a;
+    --muted: #475569;
+    --bg: #f3f6fb;
+    --card: #fff;
+    --line: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans TC", "PingFang HK", "Microsoft JhengHei", "WenQuanYi Micro Hei", sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(900px 420px at 0% -10%, #ccfbf1 0%, transparent 55%),
+      radial-gradient(800px 380px at 100% 0%, #ffe4e6 0%, transparent 50%),
+      radial-gradient(700px 360px at 80% 100%, #e0e7ff 0%, transparent 45%),
+      var(--bg);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 48px; }
+  .hero {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 28px;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+  .eyebrow {
+    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #0f766e;
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    line-height: 1.15;
+    margin: 0 0 12px;
+    font-weight: 900;
+  }
+  .lead { font-size: 1.12rem; color: var(--muted); margin: 0 0 18px; max-width: 38rem; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; list-style: none; }
+  .pills li {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+  .hero-art {
+    background: linear-gradient(160deg, #042f2e, #1e1b4b 70%);
+    border-radius: 28px;
+    min-height: 280px;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+    overflow: hidden;
+  }
+  .hero-art svg { width: min(100%, 420px); height: auto; }
+  .lung { transform-origin: 150px 210px; animation: breathe 3.4s ease-in-out infinite; }
+  .heart { transform-origin: 300px 168px; animation: beat 0.85s ease-in-out infinite; }
+  @keyframes breathe {
+    0%, 100% { transform: scale(0.92, 0.9); }
+    50% { transform: scale(1.06, 1.08); }
+  }
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    30% { transform: scale(0.9); }
+    55% { transform: scale(1.08); }
+  }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--card);
+    border-radius: 22px;
+    padding: 18px 18px 16px;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    min-height: 250px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .card:hover, .card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+    outline: none;
+  }
+  .card:focus-visible { outline: 3px solid #0f766e; outline-offset: 3px; }
+  .code {
+    font-weight: 900;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: #fff;
+    align-self: flex-start;
+    padding: 4px 8px;
+    border-radius: 999px;
+  }
+  .m22 .code { background: #0f766e; }
+  .m23a .code { background: #e11d48; }
+  .m23b .code { background: #4f46e5; }
+  .card h2 { margin: 4px 0 0; font-size: 1.28rem; line-height: 1.3; }
+  .card p { margin: 0; color: var(--muted); flex: 1; }
+  .go { font-weight: 800; }
+  .m22 .go { color: #0f766e; }
+  .m23a .go { color: #e11d48; }
+  .m23b .go { color: #4f46e5; }
+  .how {
+    margin-top: 22px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 12px 20px;
+    align-items: start;
+  }
+  .how h2 { margin: 0; font-size: 1.15rem; }
+  .how ol { margin: 0; padding-left: 1.2rem; color: var(--muted); }
+  .how li { margin: 6px 0; }
+  footer { margin-top: 18px; color: #64748b; font-size: 0.88rem; }
+  @media (max-width: 860px) {
+    .hero, .grid, .how { grid-template-columns: 1fr; }
+    .hero-art { min-height: 220px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lung, .heart, .card { animation: none; transition: none; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>生物互動模擬器</h1>
-<a href="m22-breathing-control.html">M22 呼吸控制模擬器</a>
-<a href="m23a-cardiac-output-increase.html">M23A 心輸出量控制（增加心輸出量）</a>
-<a href="m23b-cardiac-output-decrease.html">M23B 心輸出量控制（減少心輸出量）</a>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">香港中學文憑試 · 生物學</p>
+      <h1>身體調節實驗室</h1>
+      <p class="lead">三個給中四至中六的互動模擬。選一個情境、看動畫，再挑戰自己：呼吸和心跳怎樣用負反饋把身體拉回平衡。</p>
+      <ul class="pills">
+        <li>平板和投影都適用</li>
+        <li>即時圖表</li>
+        <li>排序挑戰</li>
+        <li>文憑試選擇題</li>
+      </ul>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 420 250">
+        <g class="lung" fill="#5eead4" stroke="#ccfbf1" stroke-width="3">
+          <ellipse cx="118" cy="150" rx="48" ry="62"/>
+          <ellipse cx="186" cy="150" rx="48" ry="62"/>
+        </g>
+        <path d="M152 78 v36" stroke="#99f6e4" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path class="heart" d="M300 150 c0-22 18-38 36-28 c10-22 40-18 40 10 c0 32-40 58-40 58 s-40-26-40-58 c0-16 12-24 20-18 c6-8 14-10 20 4z" fill="#fb7185" stroke="#ffe4e6" stroke-width="3"/>
+        <circle cx="332" cy="132" r="5" fill="#fef08a"/>
+      </svg>
+    </div>
+  </header>
+
+  <nav class="grid" aria-label="模擬器">
+    <a class="card m22" href="m22-breathing-control.html">
+      <span class="code">M22</span>
+      <h2>運動時的呼吸控制</h2>
+      <p>骨骼肌產生更多 CO₂，延腦怎樣令橫膈膜和肋間肌更快、更有力？試試衝刺和屏息。</p>
+      <span class="go">開始模擬 →</span>
+    </a>
+    <a class="card m23a" href="m23a-cardiac-output-increase.html">
+      <span class="code">M23A</span>
+      <h2>心輸出量怎樣增加</h2>
+      <p>交感神經、竇房結和腎上腺素一起作用。看心跳加快時，血液怎樣把 O₂ 送到肌肉。</p>
+      <span class="go">開始模擬 →</span>
+    </a>
+    <a class="card m23b" href="m23b-cardiac-output-decrease.html">
+      <span class="code">M23B</span>
+      <h2>心輸出量怎樣減少</h2>
+      <p>迷走神經令心臟慢下來。化學感受器或者牽張感受器，兩條路都通往同一個結果。</p>
+      <span class="go">開始模擬 →</span>
+    </a>
+  </nav>
+
+  <section class="how">
+    <h2>課堂可以這樣用</h2>
+    <ol>
+      <li>先叫學生預測下一步，再按「慢鏡」對答案。</li>
+      <li>用挑戰模式守住 CO₂、pH 或心跳，分組比星星。</li>
+      <li>最後做排序和三題選擇，核對考試用字。</li>
+    </ol>
+  </section>
+  <footer>模擬數值經過簡化，用來顯示變化方向和調節次序，不是臨床讀數。名詞跟香港中學文憑試生物課程：延腦、竇房結、迷走神經、交感神經、膈神經、肋間神經、化學感受器、牽張感受器、心搏量、心輸出量、負反饋。</footer>
 </div>
 </body>
 </html>
