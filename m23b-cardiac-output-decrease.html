@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心輸出量控制模擬器 (減少心輸出量)</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #e74c3c;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            background: #eef2f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+        }
+
+        .param-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        .value-display {
+            font-size: 1.1em;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* 儀表板 */
+        .dashboard {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .metric-box {
+            flex: 1;
+        }
+
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        /* 流程圖樣式 */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .flow-step {
+            background: #fff;
+            border: 2px solid #cbd5e1;
+            border-left: 6px solid #94a3b8;
+            padding: 12px 18px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .flow-step.active {
+            border-left-color: var(--warning-color);
+            background-color: #fef2f2;
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
+        }
+
+        .flow-step .step-num {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #64748b;
+        }
+
+        .flow-step.active .step-num {
+            color: var(--warning-color);
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 1.2em;
+            color: #94a3b8;
+            margin: -5px 0;
+        }
+
+        .mode-toggle {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .note {
+            background: #fffbe6;
+            border: 1px solid #ffe58f;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #8c6b00;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>M23B 心輸出量控制模擬器</h1>
+    <div class="subtitle">課題：減少心輸出量的調節機制 (HKDSE Biology)</div>
+
+    <!-- 模擬控制面板 -->
+    <div class="control-panel">
+        <div class="param-group">
+            <label for="co2-slider">血液二氧化碳 ($CO_2$) 濃度</label>
+            <input type="range" id="co2-slider" min="1" max="5" value="3" step="1">
+            <div class="value-display" id="co2-val">正常 (Level 3)</div>
+        </div>
+
+        <div class="param-group">
+            <label for="bp-slider">血壓 (Blood Pressure)</label>
+            <input type="range" id="bp-slider" min="1" max="5" value="3" step="1">
+            <div class="value-display" id="bp-val">正常 (Level 3)</div>
+        </div>
+    </div>
+
+    <!-- 生理數據儀表板 -->
+    <div class="dashboard">
+        <div class="metric-box">
+            <div class="metric-label">血液 pH 值</div>
+            <div class="metric-value" id="ph-display">7.40</div>
+        </div>
+        <div class="metric-box">
+            <div class="metric-label">迷走神經脈衝</div>
+            <div class="metric-value" id="nerve-display">正常</div>
+        </div>
+        <div class="metric-box">
+            <div class="metric-label">心律 / 心輸出量</div>
+            <div class="metric-value" id="co-display">正常</div>
+        </div>
+    </div>
+
+    <h2>調節流程圖</h2>
+    <div class="flowchart" id="flowchart">
+        <div class="flow-step" id="step-1"><span class="step-num">1.</span>主動脈體和頸動脈體化學感受器 / 牽張感受器</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-2"><span class="step-num">2.</span>延腦心動中樞化學感受器感受</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-3"><span class="step-num">3.</span>CO2 下降 / 血壓上升</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-4"><span class="step-num">4.</span>pH 上升</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-5"><span class="step-num">5.</span>產生更多神經脈衝</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-6"><span class="step-num">6.</span>至延腦心血管中樞</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-7"><span class="step-num">7.</span>心血管抑制中樞產生更多神經脈衝沿迷走神經至竇房結及腎上腺</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-8"><span class="step-num">8.</span>腎上腺分泌較少腎上腺素</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-9"><span class="step-num">9.</span>竇房結產生較少電脈衝令心臟收縮更慢更弱</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-10"><span class="step-num">10.</span>較少腎上腺素令心臟收縮更慢更弱</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-11"><span class="step-num">11.</span>心跳率及心搏量減少</div>
+        <div class="arrow">↓</div>
+        <div class="flow-step" id="step-12"><span class="step-num">12.</span>心輸出量減少</div>
+    </div>
+
+    <div class="note">
+        <strong>*備註 (考評重點)：</strong> 步驟 1-3 的化學感受器機制，可以「主動脈體及頸動脈體內的牽張感受器感受到血壓上升」作為替代機制進行調節。
+    </div>
+</div>
+
+<script>
+    const co2Slider = document.getElementById('co2-slider');
+    const bpSlider = document.getElementById('bp-slider');
+    const co2Val = document.getElementById('co2-val');
+    const bpVal = document.getElementById('bp-val');
+    
+    const phDisplay = document.getElementById('ph-display');
+    const nerveDisplay = document.getElementById('nerve-display');
+    const coDisplay = document.getElementById('co-display');
+
+    function updateSimulation() {
+        const co2Level = parseInt(co2Slider.value);
+        const bpLevel = parseInt(bpSlider.value);
+
+        // 更新 CO2 顯示
+        if (co2Level < 3) co2Val.textContent = "偏低 (下降)";
+        else if (co2Level === 3) co2Val.textContent = "正常";
+        else co2Val.textContent = "偏高";
+
+        // 更新 BP 顯示
+        if (bpLevel > 3) bpVal.textContent = "偏高 (上升)";
+        else if (bpLevel === 3) bpVal.textContent = "正常";
+        else bpVal.textContent = "偏低";
+
+        // 計算 pH 值 (CO2 越低，pH 越高)
+        let ph = (7.40 + (3 - co2Level) * 0.1).toFixed(2);
+        phDisplay.textContent = ph;
+
+        // 判斷是否觸發「減少心輸出量」機制 (CO2 下降 或 血壓上升)
+        const isTriggered = (co2Level < 3) || (bpLevel > 3);
+
+        // 重設所有步驟亮燈
+        for (let i = 1; i <= 12; i++) {
+            document.getElementById(`step-${i}`).classList.remove('active');
+        }
+
+        if (isTriggered) {
+            // 觸發調節機制：步驟 1-12 高亮顯示
+            for (let i = 1; i <= 12; i++) {
+                document.getElementById(`step-${i}`).classList.add('active');
+            }
+            nerveDisplay.textContent = "增加 (迷走神經)";
+            nerveDisplay.style.color = "#e74c3c";
+            coDisplay.textContent = "減少 (下降)";
+            coDisplay.style.color = "#e74c3c";
+        } else {
+            nerveDisplay.textContent = "正常";
+            nerveDisplay.style.color = "#2c3e50";
+            coDisplay.textContent = "正常";
+            coDisplay.style.color = "#2c3e50";
+        }
+    }
+
+    co2Slider.addEventListener('input', updateSimulation);
+    bpSlider.addEventListener('input', updateSimulation);
+
+    // 初始化
+    updateSimulation();
+</script>
+
+</body>
+</html>
