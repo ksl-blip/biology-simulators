@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M23A 心輸出量控制 A - 互動學習模擬器</title>
+    <style>
+        :root {
+            --primary: #2b5876;
+            --secondary: #4e4376;
+            --accent: #e74c3c;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, "Microsoft JhengHei";
+            background-color: var(--bg);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #ddd;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 模擬器樣式 */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border-left: 5px solid var(--primary);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .metric-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .heart-animation {
+            width: 80px;
+            height: 80px;
+            background-color: var(--accent);
+            margin: 20px auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            animation: beat 1s infinite alternate;
+        }
+
+        @keyframes beat {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1.1); }
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button.action-btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        /* 排序練習樣式 */
+        .drag-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .drag-item {
+            background: #edf2f7;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            cursor: grab;
+            border: 1px solid #cbd5e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .drag-item:active {
+            cursor: grabbing;
+        }
+
+        .result-msg {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* 流程圖樣式 */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .flow-step {
+            width: 80%;
+            background: #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            font-weight: bold;
+        }
+
+        .flow-step::after {
+            content: '↓';
+            display: block;
+            font-size: 20px;
+            margin-top: 5px;
+            color: #718096;
+        }
+
+        .flow-step:last-child::after {
+            content: '';
+        }
+
+        .highlight {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>M23A 心輸出量控制 A 模擬器</h1>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('sim')">生理生理動態模擬器</button>
+        <button class="tab-btn" onclick="switchTab('quiz')">步驟排序測驗</button>
+        <button class="tab-btn" onclick="switchTab('flow')">完整流程圖導覽</button>
+    </div>
+
+    <!-- 頁籤 1: 動態模擬器 -->
+    <div id="sim" class="tab-content active">
+        <h2>肌肉呼吸作用與心輸出量調控模擬</h2>
+        <div class="heart-animation" id="heart">❤️</div>
+        
+        <div class="dashboard">
+            <div class="metric-card">
+                <h3>肌肉運動強度</h3>
+                <div class="metric-value" id="workload">靜止中</div>
+            </div>
+            <div class="metric-card">
+                <h3>血液 $\text{CO}_2$ 濃度 / $\text{pH}$</h3>
+                <div class="metric-value" id="co2-status">正常 / pH 7.4</div>
+            </div>
+            <div class="metric-card">
+                <h3>心跳率 (HR)</h3>
+                <div class="metric-value" id="hr-val">70 bpm</div>
+            </div>
+            <div class="metric-card">
+                <h3>心輸出量 (Cardiac Output)</h3>
+                <div class="metric-value" id="co-val">5.0 L/min</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="action-btn" onclick="triggerExercise()">🏃‍♂️ 開始劇烈運動（骨骼肌進行呼吸作用）</button>
+            <button class="action-btn" style="background-color: #4a5568;" onclick="resetSim()">🧘‍♂️ 恢復平靜</button>
+        </div>
+
+        <div id="status-log" style="margin-top: 20px; padding: 15px; background: #eef2f5; border-radius: 5px; font-size: 14px;">
+            <strong>調控狀態日誌：</strong><span id="log-text">生理狀態穩定。</span>
+        </div>
+    </div>
+
+    <!-- 頁籤 2: 步驟排序測驗 -->
+    <div id="quiz" class="tab-content">
+        <h2>增加心輸出量控制過程 — 重新排序</h2>
+        <p>請用滑鼠拖曳（或上下移動）以下步驟，還原正確的心輸出量控制順序：</p>
+        <ul class="drag-list" id="drag-list">
+            <!-- 由 JS 動態生成 -->
+        </ul>
+        <div class="controls">
+            <button class="action-btn" onclick="checkOrder()">檢查答案</button>
+            <button class="action-btn" style="background-color: #718096;" onclick="initQuiz()">隨機重置</button>
+        </div>
+        <div class="result-msg" id="quiz-result"></div>
+    </div>
+
+    <!-- 頁籤 3: 流程圖導覽 -->
+    <div id="flow" class="tab-content">
+        <h2>增加心輸出量控制的完整過程[cite: 1]</h2>
+        <div class="flowchart">
+            <div class="flow-step">1. 骨骼肌細胞進行更多呼吸作用，產生更多能量與 <span class="highlight">$\text{CO}_2$ 上升</span>[cite: 1]</div>
+            <div class="flow-step">2. 血液及腦脊髓液 <span class="highlight">$\text{CO}_2$ 上升，$\text{pH}$ 下降</span>[cite: 1]</div>
+            <div class="flow-step">3. 主動脈體、頸動脈體及<span class="highlight">延腦心血管中樞</span>化學感受器感受刺激[cite: 1]</div>
+            <div class="flow-step">4. 產生更多神經脈衝傳至<span class="highlight">延腦心血管加速中樞</span>[cite: 1]</div>
+            <div class="flow-step">5. 沿交感神經傳至竇房結及腎上腺[cite: 1]</div>
+            <div class="flow-step">6. 腎上腺分泌更多腎上腺素，竇房結產生更多電脈衝[cite: 1]</div>
+            <div class="flow-step">7. 心臟收縮更快更強勁（<span class="highlight">心跳率及心搏量增加</span>）[cite: 1]</div>
+            <div class="flow-step">8. <span class="highlight">心輸出量增加</span>，運送更多 $\text{O}_2$、食物及帶走 $\text{CO}_2$[cite: 1]</div>
+            <div class="flow-step">9. $\text{CO}_2$ 下降，透過<span class="highlight">負反饋機制</span>恢復平衡[cite: 1]</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 頁籤切換邏輯
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // 模擬器狀態與邏輯
+    let animInterval;
+    function triggerExercise() {
+        const heart = document.getElementById('heart');
+        const workload = document.getElementById('workload');
+        const co2Status = document.getElementById('co2-status');
+        const hrVal = document.getElementById('hr-val');
+        const coVal = document.getElementById('co-val');
+        const logText = document.getElementById('log-text');
+
+        workload.innerText = "劇烈運動中";
+        logText.innerText = "1. 肌肉呼吸作用增加 → 2. 血液/腦脊髓液 CO2 上升、pH 下降 → 3. 延腦心血管加速中樞傳送脈衝 → 4. 腎上腺素與交感神經刺激竇房結...";
+
+        // 動畫加快
+        heart.style.animationDuration = "0.3s";
+
+        // 模擬數據變化
+        setTimeout(() => {
+            co2Status.innerHTML = "<span style='color:red;'>高 CO2 / pH 下降</span>";
+            hrVal.innerText = "140 bpm";
+            coVal.innerText = "12.5 L/min";
+            logText.innerText = "5. 心跳率及心搏量增加 → 6. 心輸出量增加！更多 CO2 被運至肺部排出，進行負反饋調節。";
+        }, 1000);
+    }
+
+    function resetSim() {
+        const heart = document.getElementById('heart');
+        document.getElementById('workload').innerText = "靜止中";
+        document.getElementById('co2-status').innerHTML = "正常 / pH 7.4";
+        document.getElementById('hr-val').innerText = "70 bpm";
+        document.getElementById('co-val').innerText = "5.0 L/min";
+        document.getElementById('log-text').innerText = "生理狀態穩定（負反饋機制保持內環境穩定）。";
+        heart.style.animationDuration = "1s";
+    }
+
+    // 排序練習資料（根據圖片教材關鍵步驟簡化）
+    const correctSteps = [
+        "骨骼肌細胞進行更多呼吸作用，產生更多 CO2",
+        "血液/腦脊髓液 CO2 上升，pH 下降",
+        "化學感受器感受刺激，傳送神經脈衝至延腦心血管中樞",
+        "心血管加速中樞發出脈衝，沿交感神經至竇房結及腎上腺",
+        "心臟收縮更快更強勁（心跳率及心搏量增加）",
+        "心輸出量增加，CO2 下降（負反饋控制）"
+    ];
+
+    let currentOrder = [];
+
+    function initQuiz() {
+        const listEl = document.getElementById('drag-list');
+        document.getElementById('quiz-result').innerText = '';
+        listEl.innerHTML = '';
+        
+        // 隨機打亂
+        currentOrder = [...correctSteps].sort(() => Math.random() - 0.5);
+
+        currentOrder.forEach((step, index) => {
+            const li = document.createElement('li');
+            li.className = 'drag-item';
+            li.draggable = true;
+            li.dataset.index = index;
+            li.innerHTML = `
+                <span>${step}</span>
+                <div>
+                    <button onclick="moveItem(${index}, -1)">▲</button>
+                    <button onclick="moveItem(${index}, 1)">▼</button>
+                </div>
+            `;
+            listEl.appendChild(li);
+        });
+    }
+
+    function moveItem(index, direction) {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= currentOrder.length) return;
+        
+        const temp = currentOrder[index];
+        currentOrder[index] = currentOrder[newIndex];
+        currentOrder[newIndex] = temp;
+
+        renderQuizList();
+    }
+
+    function renderQuizList() {
+        const listEl = document.getElementById('drag-list');
+        listEl.innerHTML = '';
+        currentOrder.forEach((step, index) => {
+            const li = document.createElement('li');
+            li.className = 'drag-item';
+            li.innerHTML = `
+                <span>${step}</span>
+                <div>
+                    <button onclick="moveItem(${index}, -1)">▲</button>
+                    <button onclick="moveItem(${index}, 1)">▼</button>
+                </div>
+            `;
+            listEl.appendChild(li);
+        });
+    }
+
+    function checkOrder() {
+        const resultEl = document.getElementById('quiz-result');
+        let isCorrect = true;
+
+        for (let i = 0; i < correctSteps.length; i++) {
+            if (currentOrder[i] !== correctSteps[i]) {
+                isCorrect = false;
+                break;
+            }
+        }
+
+        if (isCorrect) {
+            resultEl.style.color = 'green';
+            resultEl.innerText = '🎉 完全正確！你已掌握心輸出量調控的順序。';
+        } else {
+            resultEl.style.color = 'red';
+            resultEl.innerText = '❌ 順序有誤，請再試一次或參考完整流程圖！';
+        }
+    }
+
+    // 初始化排序測驗
+    initQuiz();
+</script>
+
+</body>
+</html>
