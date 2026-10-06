@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="description" content="老師用交收對分工具。名冊只存在這部瀏覽器，不會上傳。">
+<title>交收對分 · 老師工具</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230f766e'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --ink: #0f172a;
+    --muted: #475569;
+    --line: #e2e8f0;
+    --teal: #0f766e;
+    --teal-dark: #115e59;
+    --bg: #f4f7fb;
+    --card: #fff;
+    --red: #be123c;
+    --red-bg: #fff1f2;
+    --amber: #b45309;
+    --green: #047857;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "PingFang HK", "PingFang TC", "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", "WenQuanYi Micro Hei", sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(900px 280px at 0% -10%, #ccfbf1 0%, transparent 55%),
+      var(--bg);
+    line-height: 1.5;
+    font-size: 16px;
+    padding-bottom: 132px;
+  }
+  .wrap { width: min(1080px, calc(100% - 28px)); margin: 0 auto; }
+  header.top { padding: 22px 0 6px; }
+  .eyebrow {
+    margin: 0 0 4px;
+    color: var(--teal);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  h1 { margin: 0 0 6px; font-size: 1.7rem; line-height: 1.2; }
+  h2 { margin: 0 0 10px; font-size: 1.15rem; }
+  h3 { margin: 14px 0 6px; font-size: 1rem; }
+  .lead, .muted { color: var(--muted); }
+  .lead { margin: 0 0 8px; }
+  p { margin: 0 0 8px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px;
+    margin: 12px 0;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  }
+  .banner {
+    margin: 0;
+    padding: 10px 14px;
+    font-weight: 700;
+  }
+  .banner.bad { background: var(--red-bg); color: var(--red); }
+  .banner.warn { background: #fffbeb; color: var(--amber); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+  .grid3 { display: grid; grid-template-columns: 1.3fr 0.6fr 1.5fr; gap: 10px; }
+  label.field, .grid3 label, .row > label.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+  .row > label.field { flex: 1; min-width: 160px; }
+  input, select, textarea {
+    width: 100%;
+    font: inherit;
+    color: inherit;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  textarea { resize: vertical; line-height: 1.45; }
+  .check { display: flex; align-items: center; gap: 8px; font-weight: 700; margin: 8px 0; }
+  .check input { width: auto; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font: inherit;
+    font-weight: 800;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    padding: 10px 14px;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .btn.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .btn.primary:hover { background: var(--teal-dark); }
+  .btn.danger { color: var(--red); border-color: #fecdd3; background: #fff; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn.xl { min-height: 52px; font-size: 1.02rem; }
+  .file { position: relative; cursor: pointer; }
+  .instr {
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-radius: 12px;
+    padding: 10px 12px;
+    color: #134e4a;
+    margin: 8px 0 10px;
+  }
+  .instr p:last-child { margin: 0; }
+  details { margin-top: 12px; }
+  summary { cursor: pointer; font-weight: 800; }
+  summary .summary-hint {
+    display: block;
+    font-weight: 500;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  details[open] > summary .summary-hint { display: none; }
+  details.drag { outline: 2px dashed var(--teal); outline-offset: 4px; border-radius: 12px; }
+  .warn-text { color: var(--amber); font-weight: 700; }
+  .table-wrap { overflow: auto; max-height: 420px; border: 1px solid var(--line); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  caption { text-align: left; padding: 8px 10px; font-weight: 800; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; white-space: nowrap; }
+  th { position: sticky; top: 0; background: #f8fafc; z-index: 1; font-size: 0.88rem; }
+  td.empty { text-align: center; color: var(--muted); white-space: normal; padding: 18px; }
+  tr.blank td { background: #f8fafc; color: #64748b; }
+  tr.missing { background: var(--red-bg); }
+  tr.missing td:first-child { box-shadow: inset 3px 0 0 #e11d48; }
+  tr.submitted td:first-child { box-shadow: inset 3px 0 0 #10b981; }
+  tr.noscore td:first-child { box-shadow: inset 3px 0 0 #d97706; }
+  td.mark, th.mark { font-weight: 800; background: #f0fdfa; }
+  th.mark { background: #ccfbf1; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .pill {
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-weight: 800;
+    background: #f1f5f9;
+  }
+  .pill.ok { background: #ecfdf5; color: var(--green); }
+  .pill.bad { background: var(--red-bg); color: var(--red); }
+  .pill.warn { background: #fffbeb; color: var(--amber); }
+  .issue { border-radius: 12px; padding: 10px 12px; margin: 8px 0; }
+  .issue ul { margin: 6px 0 0; padding-left: 1.2rem; max-height: 180px; overflow: auto; }
+  .issue.warn { background: #fffbeb; border: 1px solid #fde68a; }
+  .issue.info { background: #eff6ff; border: 1px solid #bfdbfe; }
+  .issue.bad { background: var(--red-bg); border: 1px solid #fecdd3; }
+  .mapgrid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .mapcol { display: flex; flex-direction: column; gap: 4px; min-width: 130px; flex: 1 1 130px; font-weight: 700; font-size: 0.88rem; }
+  select.need { border-color: #e11d48; }
+  pre.copy {
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #f8fafc;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    min-height: 72px;
+    max-height: 220px;
+    overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Noto Sans TC", monospace;
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+  .dock {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.06);
+    padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+  }
+  .dock-inner { display: flex; gap: 8px; align-items: center; }
+  .dock-inner .btn { flex: 1; }
+  #dock-count { margin: 0; font-weight: 800; min-width: 180px; }
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 108px;
+    transform: translateX(-50%) translateY(8px);
+    background: #0f172a;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 30;
+    max-width: calc(100% - 24px);
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  dialog {
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    width: min(560px, calc(100% - 24px));
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
+  }
+  dialog::backdrop { background: rgba(15, 23, 42, 0.45); }
+  dialog textarea { min-height: 200px; }
+  .skip {
+    position: absolute;
+    left: -999px;
+    top: 8px;
+    background: #fff;
+    padding: 8px 12px;
+    z-index: 40;
+  }
+  .skip:focus { left: 8px; }
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  :focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+  @media (max-width: 800px) {
+    .grid3 { grid-template-columns: 1fr; }
+    .dock-inner { flex-wrap: wrap; }
+    #dock-count { width: 100%; }
+    .dock-inner .btn { flex: 1 1 42%; }
+    h1 { font-size: 1.45rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #toast { transition: none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到內容</a>
+<div id="fatal" class="banner bad" hidden></div>
+<div id="storage-warning" class="banner warn" hidden>這部瀏覽器未能使用 localStorage。名冊暫時只留在這個分頁，重新整理後會消失。</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">老師工具 · 學生主頁沒有連結到這裡</p>
+    <h1>交收對分</h1>
+    <p class="lead">每次作業貼上遞交紀錄，按班別加班號對回名冊，複製「平時分」一欄貼上 GP。</p>
+  </div>
+</header>
+<main id="main" class="wrap">
+  <section class="card" id="group-card">
+    <h2>1. 組別與名冊</h2>
+    <div class="row">
+      <label class="field">組別
+        <select id="group-select" aria-label="選擇組別"></select>
+      </label>
+      <label class="field">組別名稱
+        <input id="group-name" maxlength="80" autocomplete="off" aria-label="組別名稱">
+      </label>
+      <button type="button" class="btn" id="btn-new-group">新增組別</button>
+      <button type="button" class="btn danger needs-group" id="btn-delete-group">刪除組別</button>
+    </div>
+    <p id="empty-msg" hidden>尚未有組別。請按「新增組別」，然後貼上名冊。</p>
+    <details id="roster-details" class="needs-group">
+      <summary>
+        <span id="roster-summary">名冊</span>
+        <span class="summary-hint">從 Google 試算表或 GP 複製「班別、班號、姓名」貼上。空行會保留，用來對齊 GP。</span>
+      </summary>
+      <div class="instr">
+        <p><strong>點樣貼上名冊：</strong>在 Google 試算表或 GP 成績表選取「班別、班號、姓名」三欄，複製，貼上下面的方格。</p>
+        <p><strong>空行會保留</strong>，用來對齊 GP 的列次序，請勿刪去中間的空行。</p>
+        <p>也可以上載 .csv、.tsv 或 .xlsx。檔案只在這部瀏覽器讀取，不會上傳。請核對預覽，再按「儲存名冊」。</p>
+      </div>
+      <label class="field" for="roster-text">名冊（三欄，可含空行）</label>
+      <textarea id="roster-text" rows="8" spellcheck="false" autocomplete="off" aria-label="貼上班別、班號、姓名"></textarea>
+      <div class="row" style="margin-top:8px">
+        <label class="btn file">上載 CSV、TSV 或 Excel
+          <input id="roster-file" class="visually-hidden" type="file" accept=".csv,.tsv,.txt,.xlsx,text/csv,text/tab-separated-values,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        </label>
+      </div>
+      <p id="file-status" class="muted"></p>
+      <label class="check"><input type="checkbox" id="roster-header"> 第一行是標題（不計入名冊）</label>
+      <p id="roster-status"></p>
+      <p id="roster-warn" class="warn-text" hidden></p>
+      <div class="table-wrap" id="preview-wrap">
+        <table>
+          <caption>名冊預覽（儲存前）</caption>
+          <thead>
+            <tr><th>序</th><th>班別</th><th>班號</th><th>姓名</th><th>備註</th></tr>
+          </thead>
+          <tbody id="preview-body"></tbody>
+        </table>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button type="button" class="btn primary" id="btn-save-roster">儲存名冊</button>
+        <button type="button" class="btn danger" id="btn-clear-roster">清除名冊</button>
+      </div>
+    </details>
+  </section>
+
+  <section class="card needs-group" id="task-card">
+    <h2>2. 今次遞交</h2>
+    <p id="active-roster" class="muted"></p>
+    <div class="grid3">
+      <label>項目名稱
+        <input id="task-name" maxlength="100" autocomplete="off" placeholder="例如 QZ02 CORR" aria-label="項目名稱">
+      </label>
+      <label>滿分
+        <input id="full-marks" type="number" min="0" step="any" inputmode="decimal" aria-label="滿分">
+      </label>
+      <label>平時分計法
+        <select id="mark-mode" aria-label="平時分計法">
+          <option value="a">交收分：已交 50，未交 -50</option>
+          <option value="b">分數%：已交用百分比，未交 -50</option>
+          <option value="c">已交 100，未交 -50</option>
+          <option value="d">已交 × 100（未交 0）</option>
+          <option value="e">分數% × 3（未交 -150）</option>
+        </select>
+      </label>
+    </div>
+    <p id="mode-help" class="muted"></p>
+    <div class="instr">
+      <p>從 Google 表單或試算表複製後貼上。以班別加班號對應（不是姓名）。<strong>4A、4 A、4a、A</strong> 會視為同一班；5A、3C 或自訂班名同樣處理。重複遞交取最高分。</p>
+    </div>
+    <label class="field" for="sub-text">遞交紀錄</label>
+    <textarea id="sub-text" rows="7" spellcheck="false" autocomplete="off" aria-label="貼上遞交紀錄"></textarea>
+    <div id="mapping"></div>
+    <div id="issues"></div>
+  </section>
+
+  <section class="card needs-group" id="result-card">
+    <h2>3. 對分結果</h2>
+    <div id="result-pills" class="pills"></div>
+    <p id="result-note"></p>
+    <div class="table-wrap">
+      <table>
+        <caption>對分結果，次序與名冊相同</caption>
+        <thead>
+          <tr>
+            <th>序</th><th>班別</th><th>班號</th><th>姓名</th><th>已交?</th><th>分數</th><th>分數%</th><th class="mark">平時分</th>
+          </tr>
+        </thead>
+        <tbody id="result-body"></tbody>
+      </table>
+    </div>
+    <h3>將會複製的平時分欄</h3>
+    <p id="copy-meta" class="muted"></p>
+    <pre id="copy-preview" class="copy" aria-label="將會複製的平時分"></pre>
+  </section>
+
+  <section class="card needs-group" id="wa-card">
+    <h2>4. WhatsApp 未交通知</h2>
+    <p class="muted">標題、連結和提示會按組別記住。限期預設是明天 23:59。</p>
+    <label class="field">標題列
+      <input id="wa-title" maxlength="200" autocomplete="off" aria-label="WhatsApp 標題">
+    </label>
+    <label class="field">GP 試算表連結
+      <input id="wa-link" maxlength="2000" autocomplete="off" inputmode="url" placeholder="https://docs.google.com/spreadsheets/d/…" aria-label="GP 試算表連結">
+    </label>
+    <label class="field">遲交提示
+      <textarea id="wa-notice" rows="2" maxlength="1000" aria-label="遲交提示"></textarea>
+    </label>
+    <label class="field">補交限期
+      <input id="wa-deadline" type="datetime-local" aria-label="補交限期">
+    </label>
+    <h3>訊息預覽</h3>
+    <pre id="wa-preview" class="copy" aria-label="WhatsApp 訊息預覽"></pre>
+    <button type="button" class="btn primary" id="btn-copy-wa">複製訊息</button>
+  </section>
+
+  <section class="card" id="backup-card">
+    <h2>5. 備份</h2>
+    <p class="muted">名冊和設定只存在這部瀏覽器的 localStorage，不會上傳。匯出的 JSON 含有學生姓名，請勿放到公開的 GitHub 或任何公開連結。</p>
+    <div class="row">
+      <button type="button" class="btn" id="btn-export">匯出 JSON</button>
+      <label class="btn file">匯入 JSON
+        <input id="import-file" class="visually-hidden" type="file" accept="application/json,.json">
+      </label>
+      <button type="button" class="btn danger" id="btn-wipe">清除全部本機資料</button>
+    </div>
+  </section>
+</main>
+<div class="dock needs-group" id="dock">
+  <div class="wrap dock-inner">
+    <p id="dock-count">先儲存名冊，再貼上遞交紀錄</p>
+    <button type="button" class="btn primary xl" id="copy-col" disabled>複製平時分欄</button>
+    <button type="button" class="btn xl" id="copy-head" disabled>連標題複製</button>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="manual-copy">
+  <p id="manual-copy-lead">無法自動複製。請選取下面文字，自行複製後貼上。</p>
+  <textarea id="manual-copy-text" readonly aria-label="待複製文字"></textarea>
+  <div class="row" style="margin-top:8px">
+    <button type="button" class="btn primary" id="manual-copy-close">關閉</button>
+  </div>
+</dialog>
+<noscript><p class="wrap">此工具需要 JavaScript。</p></noscript>
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'hkdse-sorting-tool-v1';
+  var MODE_IDS = ['a', 'b', 'c', 'd', 'e'];
+  var MODE_HELP = {
+    a: '已交 50，未交 -50。',
+    b: '已交用分數百分比（分數 ÷ 滿分 × 100），未交 -50。沒有分數的已交當作 0。',
+    c: '已交 100，未交 -50。',
+    d: '已交 100，未交 0。',
+    e: '已交用分數百分比 × 3，未交 -150。沒有分數的已交當作 0。'
+  };
+  var SHEETJS_URLS = [
+    'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
+  ];
+
+  function cleanCell(value) {
+    return String(value == null ? '' : value)
+      .replace(/[\r\n]+/g, ' ')
+      .replace(/^[\s\u00a0\u3000]+|[\s\u00a0\u3000]+$/g, '');
+  }
+
+  function normHeaderKey(value) {
+    return cleanCell(value).normalize('NFKC').toLowerCase().replace(/[.。．]/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  function classIdentity(raw) {
+    var norm = String(raw == null ? '' : raw).normalize('NFKC').replace(/[\s\u00a0\u3000]+/g, '').toUpperCase();
+    if (/班$/u.test(norm)) {
+      var stripped = norm.replace(/班$/u, '');
+      if (/^\d*[A-Z][A-Z0-9]*$/.test(stripped)) norm = stripped;
+    }
+    var matched = norm.match(/^(\d+)([A-Z].*)$/);
+    if (matched) return { norm: norm, form: matched[1], label: matched[2] };
+    return { norm: norm, form: '', label: norm };
+  }
+
+  function classCompatible(a, b) {
+    if (!a || !b || !a.norm || !b.norm) return false;
+    if (a.norm === b.norm) return true;
+    if (!a.label || !b.label || a.label !== b.label) return false;
+    if (!a.form || !b.form) return true;
+    return a.form === b.form;
+  }
+
+  function normNo(raw) {
+    var t = String(raw == null ? '' : raw).normalize('NFKC').replace(/[\s\u00a0\u3000]+/g, '');
+    if (!t) return '';
+    if (/^\d+\.0+$/.test(t) || /^\d+$/.test(t)) return String(parseInt(t, 10));
+    return t.toUpperCase();
+  }
+
+  function detectDelimiter(text) {
+    var sample = String(text || '').slice(0, 8000);
+    var tabs = 0;
+    var commas = 0;
+    var semis = 0;
+    var inQuotes = false;
+    for (var i = 0; i < sample.length; i++) {
+      var ch = sample.charAt(i);
+      if (ch === '"') {
+        if (inQuotes && sample.charAt(i + 1) === '"') { i++; continue; }
+        inQuotes = !inQuotes;
+        continue;
+      }
+      if (inQuotes) continue;
+      if (ch === '\t') tabs++;
+      else if (ch === ',') commas++;
+      else if (ch === ';') semis++;
+    }
+    if (tabs > 0 && tabs >= commas && tabs >= semis) return '\t';
+    if (semis > commas && semis > 0) return ';';
+    if (commas > 0) return ',';
+    return '\t';
+  }
+
+  function parseDelimited(text, delimiter) {
+    var s = String(text == null ? '' : text).replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    var rows = [];
+    var row = [];
+    var cell = '';
+    var inQuotes = false;
+    for (var i = 0; i < s.length; i++) {
+      var ch = s.charAt(i);
+      if (inQuotes) {
+        if (ch === '"') {
+          if (s.charAt(i + 1) === '"') { cell += '"'; i++; }
+          else inQuotes = false;
+        } else cell += ch;
+      } else if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === delimiter) {
+        row.push(cell);
+        cell = '';
+      } else if (ch === '\n') {
+        row.push(cell);
+        rows.push(row);
+        row = [];
+        cell = '';
+      } else cell += ch;
+    }
+    if (cell.length || row.length) {
+      row.push(cell);
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  function parseRosterMatrix(text) {
+    var raw = String(text || '').replace(/^\uFEFF/, '');
+    if (raw === '') return [];
+    return parseDelimited(raw, detectDelimiter(raw));
+  }
+
+  function looksLikeRosterHeader(parts) {
+    var cells = (parts || []).slice(0, 3).map(normHeaderKey);
+    function has(pred) { return cells.some(pred); }
+    var hasClass = has(function (h) { return h === '班別' || h === '班級' || h === 'class' || h === 'class name'; });
+    var hasNo = has(function (h) {
+      return h === '班號' || h === '學號' || h === '座號' || h === 'class no' || h === 'class number' || h === 'no';
+    });
+    var hasName = has(function (h) { return h === '姓名' || h === '名字' || h === '學生姓名' || h === 'name'; });
+    return [hasClass, hasNo, hasName].filter(Boolean).length >= 2;
+  }
+
+  function rowsToRoster(matrix, skipFirst) {
+    var start = 0;
+    var skippedHeader = null;
+    if (skipFirst && matrix.length) {
+      skippedHeader = matrix[0].slice(0, 3).map(cleanCell);
+      start = 1;
+    }
+    var roster = [];
+    for (var i = start; i < matrix.length; i++) {
+      var parts = matrix[i] || [];
+      var className = cleanCell(parts[0]);
+      var classNo = cleanCell(parts[1]);
+      var name = cleanCell(parts[2]);
+      roster.push({
+        className: className,
+        classNo: classNo,
+        name: name,
+        blank: className === '' && classNo === '' && name === ''
+      });
+    }
+    return { roster: roster, skippedHeader: skippedHeader, extra: matrix.some(function (r) { return r.length > 3; }) };
+  }
+
+  function rosterToText(roster) {
+    if (!roster || !roster.length) return '';
+    var lines = roster.map(function (r) {
+      if (r.blank) return '';
+      return [r.className, r.classNo, r.name].join('\t');
+    });
+    return lines.join('\n') + '\n';
+  }
+
+  function rowsToTsv(rows) {
+    if (!rows || !rows.length) return '';
+    var lines = rows.map(function (r) {
+      var a = cleanCell(r && r[0]);
+      var b = cleanCell(r && r[1]);
+      var c = cleanCell(r && r[2]);
+      if (!a && !b && !c) return '';
+      return [a, b, c].join('\t');
+    });
+    return lines.join('\n') + '\n';
+  }
+
+  function sameRoster(a, b) {
+    if (!a || !b || a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (!!a[i].blank !== !!b[i].blank) return false;
+      if (a[i].blank) continue;
+      if (a[i].className !== b[i].className || a[i].classNo !== b[i].classNo || a[i].name !== b[i].name) return false;
+    }
+    return true;
+  }
+
+  function countStudents(roster) {
+    return (roster || []).filter(function (r) { return !r.blank; }).length;
+  }
+
+  function countBlanks(roster) {
+    return (roster || []).filter(function (r) { return r.blank; }).length;
+  }
+
+  function detectRole(header) {
+    var h = normHeaderKey(header);
+    if (!h) return null;
+    if (/班號|學號|座號/.test(h) || /class\s*no/.test(h) || /class\s*number/.test(h) || h === 'no' || h === 'number' || h === 'num' || h === 'classno') return 'no';
+    if (/分數|得分|成績/.test(h) || h === 'score' || h === 'mark' || h === 'marks' || h === 'point' || h === 'points') return 'score';
+    if (/姓名|學生姓名|名字/.test(h) || h === 'name' || h === 'student' || h === 'student name' || h === 'full name') return 'name';
+    if (/班別|班級/.test(h) || h === 'class' || h === 'classname' || h === 'class name' || h === 'form') return 'class';
+    return null;
+  }
+
+  function countHeaderRoles(headers) {
+    var roles = {};
+    var n = 0;
+    (headers || []).forEach(function (h) {
+      var role = detectRole(h);
+      if (role && !roles[role]) { roles[role] = true; n++; }
+    });
+    return n;
+  }
+
+  function autoMapHeaders(headers) {
+    var map = {};
+    (headers || []).forEach(function (h, i) {
+      var role = detectRole(h);
+      if (role && map[role] == null) map[role] = i;
+    });
+    return map;
+  }
+
+  function gridWidth(matrix) {
+    return (matrix || []).reduce(function (m, r) { return Math.max(m, (r || []).length); }, 0);
+  }
+
+  function isUsable(map, colCount) {
+    if (!map) return false;
+    var c = map['class'];
+    var no = map.no;
+    if (!isIndex(c) || !isIndex(no) || c === no) return false;
+    if (c >= colCount || no >= colCount) return false;
+    if (map.score != null && (!isIndex(map.score) || map.score >= colCount || map.score === c || map.score === no)) return false;
+    if (map.name != null && (!isIndex(map.name) || map.name >= colCount || map.name === c || map.name === no || map.name === map.score)) return false;
+    return true;
+  }
+
+  function isIndex(n) { return typeof n === 'number' && n >= 0 && Math.floor(n) === n; }
+
+  function defaultMap(colCount) {
+    if (colCount >= 4) return { score: 0, name: 1, 'class': 2, no: 3 };
+    if (colCount === 3) return { name: 0, 'class': 1, no: 2 };
+    if (colCount === 2) return { 'class': 0, no: 1 };
+    return {};
+  }
+
+  function applyHeaderMap(headers, byHeader) {
+    var map = {};
+    var indexByNorm = {};
+    (headers || []).forEach(function (h, i) { indexByNorm[normHeaderKey(h)] = i; });
+    Object.keys(byHeader || {}).forEach(function (header) {
+      var role = byHeader[header];
+      if (['score', 'name', 'class', 'no'].indexOf(role) === -1) return;
+      if (map[role] != null) return;
+      var idx = indexByNorm[normHeaderKey(header)];
+      if (idx != null) map[role] = idx;
+    });
+    return map;
+  }
+
+  function resolveMapping(matrix, saved) {
+    var width = gridWidth(matrix);
+    var usedHeader = matrix.length > 0 && countHeaderRoles(matrix[0]) >= 2;
+    var headers = usedHeader ? matrix[0] : null;
+    if (usedHeader && saved && saved.byHeader) {
+      var fromHeader = applyHeaderMap(headers, saved.byHeader);
+      if (isUsable(fromHeader, width)) return { map: fromHeader, usedHeader: true, headers: headers, source: 'saved-header' };
+    }
+    if (usedHeader) {
+      var auto = autoMapHeaders(headers);
+      if (isUsable(auto, width)) return { map: auto, usedHeader: true, headers: headers, source: 'auto' };
+    }
+    if (!usedHeader && saved && isUsable(saved.byIndex, width)) {
+      return { map: cloneMap(saved.byIndex), usedHeader: false, headers: null, source: 'saved-index' };
+    }
+    var fallback = defaultMap(width);
+    return {
+      map: fallback,
+      usedHeader: usedHeader,
+      headers: headers,
+      source: isUsable(fallback, width) ? 'default' : 'incomplete'
+    };
+  }
+
+  function cloneMap(map) {
+    var out = {};
+    ['score', 'name', 'class', 'no'].forEach(function (role) {
+      if (isIndex(map && map[role])) out[role] = map[role];
+    });
+    return out;
+  }
+
+  function mergeStored(prev, headers, map) {
+    var byIndex = cloneMap(map);
+    var byHeader = {};
+    var old = prev && prev.byHeader;
+    if (old && typeof old === 'object') {
+      Object.keys(old).forEach(function (k) {
+        if (['score', 'name', 'class', 'no'].indexOf(old[k]) !== -1 && typeof k === 'string') byHeader[k.slice(0, 100)] = old[k];
+      });
+    }
+    if (headers) {
+      ['score', 'name', 'class', 'no'].forEach(function (role) {
+        var idx = map[role];
+        if (!isIndex(idx)) return;
+        var label = cleanCell(headers[idx]);
+        if (label) byHeader[label.slice(0, 100)] = role;
+      });
+    }
+    return { byIndex: byIndex, byHeader: byHeader };
+  }
+
+  function matrixSignature(matrix) {
+    var first = (matrix[0] || []).map(cleanCell).join('\u0001');
+    return gridWidth(matrix) + '|' + first;
+  }
+
+  function parseScore(raw) {
+    var t = cleanCell(raw);
+    if (!t) return { score: null, scoreInvalid: false, scoreEmpty: true };
+    var n = Number(String(t).replace(/,/g, ''));
+    if (!Number.isFinite(n)) return { score: null, scoreInvalid: true, scoreEmpty: false };
+    return { score: n, scoreInvalid: false, scoreEmpty: false };
+  }
+
+  function matrixToSubmissions(matrix, map, usedHeader) {
+    var subs = [];
+    for (var i = 0; i < matrix.length; i++) {
+      if (usedHeader && i === 0) continue;
+      var row = matrix[i] || [];
+      var className = map['class'] == null ? '' : cleanCell(row[map['class']]);
+      var classNo = map.no == null ? '' : cleanCell(row[map.no]);
+      var name = map.name == null ? '' : cleanCell(row[map.name]);
+      var scoreRaw = map.score == null ? '' : cleanCell(row[map.score]);
+      if (!className && !classNo && !name && !scoreRaw) continue;
+      var parsed = parseScore(scoreRaw);
+      subs.push({
+        line: i + 1,
+        className: className,
+        classNo: classNo,
+        name: name,
+        scoreRaw: scoreRaw,
+        score: parsed.score,
+        scoreInvalid: parsed.scoreInvalid,
+        scoreEmpty: parsed.scoreEmpty
+      });
+    }
+    return subs;
+  }
+
+  function matchSubmissions(roster, submissions) {
+    var slots = (roster || []).map(function (row, index) { return { row: row, index: index, dup: false }; });
+    var targets = [];
+    var seen = {};
+    slots.forEach(function (slot) {
+      if (slot.row.blank) return;
+      var id = classIdentity(slot.row.className);
+      var no = normNo(slot.row.classNo);
+      slot.identity = id;
+      slot.no = no;
+      if (!id.norm || !no) return;
+      var key = id.norm + '|' + no;
+      if (seen[key]) { slot.dup = true; return; }
+      seen[key] = true;
+      targets.push(slot);
+    });
+    var bySlot = new Map();
+    var unmatched = [];
+    (submissions || []).forEach(function (sub) {
+      var id = classIdentity(sub.className);
+      var no = normNo(sub.classNo);
+      if (!id.norm || !no) {
+        unmatched.push({ sub: sub, reason: 'incomplete', hits: [] });
+        return;
+      }
+      var hits = targets.filter(function (t) { return t.no === no && classCompatible(t.identity, id); });
+      if (hits.length === 1) {
+        var list = bySlot.get(hits[0].index) || [];
+        list.push(sub);
+        bySlot.set(hits[0].index, list);
+      } else if (hits.length === 0) unmatched.push({ sub: sub, reason: 'none', hits: [] });
+      else unmatched.push({ sub: sub, reason: 'ambiguous', hits: hits });
+    });
+    return { slots: slots, bySlot: bySlot, unmatched: unmatched };
+  }
+
+  function pickBest(subs) {
+    var best = subs[0];
+    for (var i = 1; i < subs.length; i++) {
+      var s = subs[i];
+      if (s.score != null && (best.score == null || s.score > best.score)) best = s;
+    }
+    return best;
+  }
+
+  function normName(value) {
+    return String(value || '').normalize('NFKC').replace(/[\s\u00a0\u3000]+/g, '').toLowerCase();
+  }
+
+  function namesDiffer(rosterName, subs) {
+    var base = normName(rosterName);
+    if (!base) return false;
+    return subs.some(function (s) {
+      var n = normName(s.name);
+      return n && n !== base;
+    });
+  }
+
+  function computeMark(row, mode, fullMarks) {
+    if (row.blank || row.rosterDup) return null;
+    var submitted = !!row.submitted;
+    var pct = null;
+    if (submitted && row.score != null && fullMarks > 0) pct = (row.score / fullMarks) * 100;
+    if (mode === 'a') return submitted ? 50 : -50;
+    if (mode === 'b') return submitted ? (pct == null ? 0 : pct) : -50;
+    if (mode === 'c') return submitted ? 100 : -50;
+    if (mode === 'd') return submitted ? 100 : 0;
+    if (mode === 'e') return submitted ? (pct == null ? 0 : pct * 3) : -150;
+    return null;
+  }
+
+  function formatMark(n) {
+    if (typeof n !== 'number' || !Number.isFinite(n)) return '';
+    var r = Math.round((n + Number.EPSILON) * 100) / 100;
+    if (Object.is(r, -0)) return '0';
+    return String(r);
+  }
+
+  function formatPct(n) {
+    if (typeof n !== 'number' || !Number.isFinite(n)) return '—';
+    return formatMark(n) + '%';
+  }
+
+  function studentLine(s) {
+    return [s.className, s.classNo, s.name].map(function (v) { return String(v || '').trim(); }).filter(Boolean).join(' ');
+  }
+
+  function buildResult(opts) {
+    var roster = opts.roster || [];
+    var mode = MODE_IDS.indexOf(opts.mode) === -1 ? 'a' : opts.mode;
+    var fullMarks = typeof opts.fullMarks === 'number' ? opts.fullMarks : null;
+    var fullOk = fullMarks != null && fullMarks > 0;
+    var needFull = mode === 'b' || mode === 'e';
+    var blocked = needFull && !fullOk;
+    var matched = matchSubmissions(roster, opts.submissions || []);
+    var rows = matched.slots.map(function (slot) {
+      var base = {
+        index: slot.index,
+        blank: !!slot.row.blank,
+        rosterDup: !!slot.dup,
+        className: slot.row.className,
+        classNo: slot.row.classNo,
+        name: slot.row.name,
+        submitted: false,
+        score: null,
+        pct: null,
+        mark: null,
+        imputed: false,
+        duplicate: false,
+        allScores: [],
+        submittedName: '',
+        nameMismatch: false
+      };
+      if (base.blank || base.rosterDup) return base;
+      var subs = matched.bySlot.get(slot.index) || [];
+      if (subs.length) {
+        var best = pickBest(subs);
+        base.submitted = true;
+        base.score = best.score;
+        base.duplicate = subs.length > 1;
+        base.allScores = subs.map(function (s) { return s.score; });
+        base.submittedName = best.name || '';
+        base.nameMismatch = namesDiffer(base.name, subs);
+        base.imputed = base.score == null;
+        if (base.score != null && fullOk) base.pct = (base.score / fullMarks) * 100;
+      }
+      base.mark = blocked ? null : computeMark(base, mode, fullOk ? fullMarks : 0);
+      return base;
+    });
+    var countable = rows.filter(function (r) { return !r.blank && !r.rosterDup; });
+    return {
+      rows: rows,
+      unmatched: matched.unmatched,
+      duplicates: rows.filter(function (r) { return r.duplicate; }),
+      nameMismatches: rows.filter(function (r) { return r.nameMismatch; }),
+      missingScores: rows.filter(function (r) { return r.imputed; }),
+      rosterDupes: rows.filter(function (r) { return r.rosterDup; }),
+      counts: {
+        total: countable.length,
+        submitted: countable.filter(function (r) { return r.submitted; }).length
+      },
+      copyLines: rows.map(function (r) { return r.mark == null ? '' : formatMark(r.mark); }),
+      blocked: blocked,
+      mode: mode
+    };
+  }
+
+  function defaultDeadlineValue(now) {
+    var d = new Date(now.getTime());
+    d.setDate(d.getDate() + 1);
+    function p(n) { return String(n).padStart(2, '0'); }
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T23:59';
+  }
+
+  function formatDeadline(value) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(value || '');
+    if (!m) return '（未設定限期）';
+    return m[1] + '年' + Number(m[2]) + '月' + Number(m[3]) + '日 ' + m[4] + ':' + m[5];
+  }
+
+  function buildWhatsApp(opts) {
+    var lines = [];
+    if (String(opts.title || '').trim()) lines.push(String(opts.title).trim());
+    if (String(opts.link || '').trim()) lines.push(String(opts.link).trim());
+    if (lines.length) lines.push('');
+    if (String(opts.notice || '').trim()) lines.push(String(opts.notice).trim());
+    lines.push('限期：' + formatDeadline(opts.deadlineValue));
+    lines.push('項目：' + (String(opts.taskName || '').trim() || '（未填名稱）'));
+    lines.push('');
+    if (!opts.ready) lines.push('（貼上遞交紀錄後會列出未交學生）');
+    else if (!opts.missing || !opts.missing.length) lines.push('全部已交。');
+    else {
+      lines.push('未交名單：');
+      opts.missing.forEach(function (s) { lines.push(studentLine(s)); });
+    }
+    return lines.join('\n');
+  }
+
+  function sheetToMatrix(XLSX, sheet) {
+    if (!sheet || !sheet['!ref'] || !XLSX || !XLSX.utils) return [];
+    var range = XLSX.utils.decode_range(sheet['!ref']);
+    var c0 = range.s.c;
+    var rows = [];
+    for (var r = range.s.r; r <= range.e.r; r++) {
+      var row = [];
+      for (var c = 0; c < 3; c++) {
+        var cell = sheet[XLSX.utils.encode_cell({ r: r, c: c0 + c })];
+        row.push(cellValue(cell));
+      }
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  function cellValue(cell) {
+    if (!cell) return '';
+    if (typeof cell.w === 'string' && cell.w !== '') return cell.w;
+    if (cell.v == null || typeof cell.v === 'object') return '';
+    return String(cell.v);
+  }
+
+  function uid() {
+    return 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function makeGroup(name) {
+    return {
+      id: uid(),
+      name: name,
+      roster: [],
+      gpLink: '',
+      waTitle: name + ' 上學期平時分(直至目前)',
+      waNotice: '如尚未遞交，請於限期前補交。',
+      fullMarks: 10,
+      markMode: 'a',
+      columnMap: { byIndex: {}, byHeader: {} }
+    };
+  }
+
+  function sanitizeRow(r) {
+    if (!r || typeof r !== 'object') return null;
+    var className = cleanCell(r.className != null ? r.className : r['class']);
+    var classNo = cleanCell(r.classNo != null ? r.classNo : r.no);
+    var name = cleanCell(r.name);
+    return { className: className, classNo: classNo, name: name, blank: className === '' && classNo === '' && name === '' };
+  }
+
+  function sanitizeMap(m) {
+    var byIndex = {};
+    var byHeader = {};
+    if (m && m.byIndex && typeof m.byIndex === 'object') {
+      ['score', 'name', 'class', 'no'].forEach(function (role) {
+        var n = m.byIndex[role];
+        if (isIndex(n) && n < 50) byIndex[role] = n;
+      });
+    }
+    if (m && m.byHeader && typeof m.byHeader === 'object') {
+      Object.keys(m.byHeader).forEach(function (k) {
+        var role = m.byHeader[k];
+        if (typeof k === 'string' && ['score', 'name', 'class', 'no'].indexOf(role) !== -1) byHeader[k.slice(0, 100)] = role;
+      });
+    }
+    return { byIndex: byIndex, byHeader: byHeader };
+  }
+
+  function sanitizeGroup(g, seen) {
+    if (!g || typeof g !== 'object') return null;
+    var id = String(g.id || '');
+    if (!/^[A-Za-z0-9_-]{4,40}$/.test(id) || seen[id]) id = uid();
+    while (seen[id]) id = uid();
+    seen[id] = true;
+    var name = cleanCell(g.name).slice(0, 80) || '未命名組別';
+    var roster = Array.isArray(g.roster) ? g.roster.map(sanitizeRow).filter(Boolean).slice(0, 2000) : [];
+    var full = Number(g.fullMarks);
+    if (!Number.isFinite(full) || full <= 0 || full > 100000) full = 10;
+    return {
+      id: id,
+      name: name,
+      roster: roster,
+      gpLink: String(g.gpLink || '').slice(0, 2000),
+      waTitle: g.waTitle == null ? (name + ' 上學期平時分(直至目前)') : String(g.waTitle).slice(0, 200),
+      waNotice: g.waNotice == null ? '如尚未遞交，請於限期前補交。' : String(g.waNotice).slice(0, 1000),
+      fullMarks: full,
+      markMode: MODE_IDS.indexOf(g.markMode) === -1 ? 'a' : g.markMode,
+      columnMap: sanitizeMap(g.columnMap)
+    };
+  }
+
+  function sanitizeData(input) {
+    if (!input || typeof input !== 'object' || Array.isArray(input) || !Array.isArray(input.groups)) return null;
+    var seen = {};
+    var groups = [];
+    input.groups.forEach(function (g) {
+      var sg = sanitizeGroup(g, seen);
+      if (sg) groups.push(sg);
+    });
+    if (!groups.length) return null;
+    var active = String(input.activeGroupId || '');
+    if (!groups.some(function (g) { return g.id === active; })) active = groups[0].id;
+    return { version: 1, activeGroupId: active, groups: groups.slice(0, 50) };
+  }
+
+  function unmatchedText(item) {
+    var s = item.sub;
+    var who = [s.className || '（班別空白）', s.classNo || '（班號空白）', s.name].filter(Boolean).join(' ');
+    var score = s.scoreEmpty ? '沒有分數' : (s.scoreInvalid ? ('分數「' + s.scoreRaw + '」') : (formatMark(s.score) + ' 分'));
+    if (item.reason === 'incomplete') return '第 ' + s.line + ' 行：' + who + '（資料不足，未能對應）';
+    if (item.reason === 'ambiguous') {
+      var opts = item.hits.map(function (h) { return studentLine(h.row); }).join('、');
+      return '第 ' + s.line + ' 行：' + who + '（' + score + '）可對應多於一人：' + opts;
+    }
+    return '第 ' + s.line + ' 行：' + who + '（' + score + '）不在名冊';
+  }
+
+  function dupText(row) {
+    var scores = row.allScores.map(function (sc) { return sc == null ? '空白' : formatMark(sc); }).join('、');
+    var kept = row.score == null ? '（沒有分數）' : formatMark(row.score);
+    return studentLine(row) + ' 遞交 ' + row.allScores.length + ' 次（' + scores + '），已取最高分 ' + kept;
+  }
+
+  globalThis.__SORTING_TEST__ = {
+    classIdentity: classIdentity,
+    classCompatible: classCompatible,
+    normNo: normNo,
+    parseDelimited: parseDelimited,
+    parseRosterMatrix: parseRosterMatrix,
+    looksLikeRosterHeader: looksLikeRosterHeader,
+    rowsToRoster: rowsToRoster,
+    rosterToText: rosterToText,
+    rowsToTsv: rowsToTsv,
+    sameRoster: sameRoster,
+    resolveMapping: resolveMapping,
+    mergeStored: mergeStored,
+    matrixToSubmissions: matrixToSubmissions,
+    buildResult: buildResult,
+    buildWhatsApp: buildWhatsApp,
+    formatMark: formatMark,
+    formatDeadline: formatDeadline,
+    defaultDeadlineValue: defaultDeadlineValue,
+    sanitizeData: sanitizeData,
+    makeGroup: makeGroup,
+    sheetToMatrix: sheetToMatrix,
+    detectDelimiter: detectDelimiter,
+    studentLine: studentLine
+  };
+
+  if (typeof document === 'undefined') return;
+
+  var memoryStore = null;
+  var storageBroken = false;
+  var corruptBackup = false;
+
+  function storageGet() {
+    try { return localStorage.getItem(STORAGE_KEY); }
+    catch (e) { storageBroken = true; return memoryStore; }
+  }
+
+  function storageSet(value) {
+    memoryStore = value;
+    try {
+      localStorage.setItem(STORAGE_KEY, value);
+      storageBroken = false;
+    } catch (e) {
+      storageBroken = true;
+      throw e;
+    }
+  }
+
+  function initialData() {
+    var g = makeGroup('2029 DSE Biology');
+    return { version: 1, activeGroupId: g.id, groups: [g] };
+  }
+
+  function loadState() {
+    var raw = storageGet();
+    if (!raw) return { data: initialData(), fresh: true };
+    try {
+      var parsed = sanitizeData(JSON.parse(raw));
+      if (parsed) return { data: parsed, fresh: false };
+    } catch (e) { /* fall through */ }
+    try { localStorage.setItem(STORAGE_KEY + '-corrupt', raw); } catch (e2) { /* ignore */ }
+    corruptBackup = true;
+    return { data: initialData(), fresh: true };
+  }
+
+  var loaded = loadState();
+  var state = { data: loaded.data };
+  var session = { sub: {}, view: {} };
+  var headerMode = 'auto';
+  var lockedFirstLine = null;
+  var mappingSig = '';
+  var groupSig = '';
+  var suppressSelect = false;
+  var lastResult = null;
+  var persistTimer = 0;
+  var toastTimer = 0;
+  var sheetJsPromise = null;
+  var dragDepth = 0;
+
+  var groupSelect = document.getElementById('group-select');
+  var groupNameInput = document.getElementById('group-name');
+  var rosterDetails = document.getElementById('roster-details');
+  var rosterSummary = document.getElementById('roster-summary');
+  var rosterText = document.getElementById('roster-text');
+  var rosterFile = document.getElementById('roster-file');
+  var rosterHeader = document.getElementById('roster-header');
+  var rosterStatus = document.getElementById('roster-status');
+  var rosterWarn = document.getElementById('roster-warn');
+  var previewBody = document.getElementById('preview-body');
+  var fileStatus = document.getElementById('file-status');
+  var taskNameInput = document.getElementById('task-name');
+  var fullMarksInput = document.getElementById('full-marks');
+  var markModeSelect = document.getElementById('mark-mode');
+  var modeHelp = document.getElementById('mode-help');
+  var subText = document.getElementById('sub-text');
+  var mapping = document.getElementById('mapping');
+  var issues = document.getElementById('issues');
+  var activeRoster = document.getElementById('active-roster');
+  var resultPills = document.getElementById('result-pills');
+  var resultNote = document.getElementById('result-note');
+  var resultBody = document.getElementById('result-body');
+  var copyMeta = document.getElementById('copy-meta');
+  var copyPreview = document.getElementById('copy-preview');
+  var waTitleInput = document.getElementById('wa-title');
+  var waLinkInput = document.getElementById('wa-link');
+  var waNoticeInput = document.getElementById('wa-notice');
+  var waDeadline = document.getElementById('wa-deadline');
+  var waPreview = document.getElementById('wa-preview');
+  var dockCount = document.getElementById('dock-count');
+  var copyColBtn = document.getElementById('copy-col');
+  var copyHeadBtn = document.getElementById('copy-head');
+  var emptyMsg = document.getElementById('empty-msg');
+  var manualDialog = document.getElementById('manual-copy');
+  var manualText = document.getElementById('manual-copy-text');
+  var storageWarning = document.getElementById('storage-warning');
+  var fatal = document.getElementById('fatal');
+
+  function active() {
+    return state.data.groups.filter(function (g) { return g.id === state.data.activeGroupId; })[0] || null;
+  }
+
+  function persist() {
+    clearTimeout(persistTimer);
+    try {
+      storageSet(JSON.stringify(state.data));
+      storageWarning.hidden = !storageBroken;
+    } catch (e) {
+      storageWarning.hidden = false;
+    }
+  }
+
+  function persistSoon() {
+    clearTimeout(persistTimer);
+    persistTimer = setTimeout(persist, 200);
+  }
+
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600);
+  }
+
+  function node(tag, className, text) {
+    var n = document.createElement(tag);
+    if (className) n.className = className;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function addCell(tr, text, className) {
+    var cell = node('td', className || '', text == null ? '' : String(text));
+    tr.appendChild(cell);
+    return cell;
+  }
+
+  function showStorageFlag() {
+    storageWarning.hidden = !storageBroken;
+    if (corruptBackup) {
+      fatal.hidden = false;
+      fatal.textContent = '先前儲存在這部瀏覽器的資料無法讀取，已重置。如有 JSON 備份，可用下面的匯入還原。';
+    }
+  }
+
+  function showEmpty() {
+    document.querySelectorAll('.needs-group').forEach(function (el) { el.hidden = true; });
+    emptyMsg.hidden = false;
+  }
+
+  function showGroupUI() {
+    document.querySelectorAll('.needs-group').forEach(function (el) { el.hidden = false; });
+    emptyMsg.hidden = true;
+  }
+
+  function renderGroupOptions() {
+    var sig = state.data.groups.map(function (g) { return g.id; }).join('|');
+    suppressSelect = true;
+    if (sig !== groupSig) {
+      groupSelect.replaceChildren();
+      state.data.groups.forEach(function (g) {
+        var o = document.createElement('option');
+        o.value = g.id;
+        o.textContent = g.name.trim() || '未命名組別';
+        groupSelect.appendChild(o);
+      });
+      groupSig = sig;
+    } else {
+      Array.prototype.forEach.call(groupSelect.options, function (o, i) {
+        var g = state.data.groups[i];
+        if (g) o.textContent = g.name.trim() || '未命名組別';
+      });
+    }
+    if (state.data.activeGroupId) groupSelect.value = state.data.activeGroupId;
+    suppressSelect = false;
+  }
+
+  function readFullMarks() {
+    var raw = fullMarksInput.value.trim();
+    if (raw === '') return { ok: false, value: null };
+    var n = Number(raw);
+    if (!Number.isFinite(n) || n <= 0 || n > 100000) return { ok: false, value: null };
+    return { ok: true, value: n };
+  }
+
+  function describeRoster(roster) {
+    return countStudents(roster) + ' 人，空行 ' + countBlanks(roster);
+  }
+
+  function currentParsed() {
+    return rowsToRoster(parseRosterMatrix(rosterText.value), rosterHeader.checked);
+  }
+
+  function isDirty() {
+    var g = active();
+    if (!g) return false;
+    return !sameRoster(currentParsed().roster, g.roster);
+  }
+
+  function applyAutoHeader() {
+    var matrix = parseRosterMatrix(rosterText.value);
+    var first = matrix[0] ? matrix[0].map(cleanCell).join('\t') : '';
+    if (headerMode !== 'auto' && first === lockedFirstLine) {
+      rosterHeader.checked = headerMode === 'on';
+      return;
+    }
+    headerMode = 'auto';
+    lockedFirstLine = null;
+    rosterHeader.checked = !!(matrix[0] && looksLikeRosterHeader(matrix[0]));
+  }
+
+  function refreshSubmissionView(group, force) {
+    var text = subText.value;
+    if (!String(text).trim()) {
+      session.view[group.id] = null;
+      return;
+    }
+    var matrix = parseDelimited(String(text).replace(/^\uFEFF/, ''), detectDelimiter(text));
+    var sig = matrixSignature(matrix);
+    if (!force && session.view[group.id] && session.view[group.id].sig === sig) return;
+    var resolved = resolveMapping(matrix, group.columnMap);
+    var width = gridWidth(matrix);
+    session.view[group.id] = {
+      sig: sig,
+      map: resolved.map,
+      usedHeader: resolved.usedHeader,
+      headers: resolved.headers,
+      width: width,
+      source: resolved.source
+    };
+    if (isUsable(resolved.map, width)) {
+      group.columnMap = mergeStored(group.columnMap, resolved.usedHeader ? resolved.headers : null, resolved.map);
+      persistSoon();
+    }
+  }
+
+  function loadGroup(group, opts) {
+    if (!group) { showEmpty(); updateAll(); return; }
+    showGroupUI();
+    headerMode = 'auto';
+    lockedFirstLine = null;
+    mappingSig = '';
+    groupNameInput.value = group.name;
+    fullMarksInput.value = String(group.fullMarks);
+    markModeSelect.value = MODE_IDS.indexOf(group.markMode) === -1 ? 'a' : group.markMode;
+    waTitleInput.value = group.waTitle;
+    waLinkInput.value = group.gpLink;
+    waNoticeInput.value = group.waNotice;
+    rosterText.value = rosterToText(group.roster);
+    subText.value = session.sub[group.id] || '';
+    applyAutoHeader();
+    refreshSubmissionView(group, true);
+    if (opts && opts.forceOpenRoster) rosterDetails.open = true;
+    else rosterDetails.open = countStudents(group.roster) === 0;
+    updateAll();
+  }
+
+  function uniqueName(base) {
+    var names = {};
+    state.data.groups.forEach(function (g) { names[g.name] = true; });
+    if (!names[base]) return base;
+    var i = 2;
+    while (names[base + ' ' + i]) i++;
+    return base + ' ' + i;
+  }
+
+  function stashSub() {
+    var g = active();
+    if (g) session.sub[g.id] = subText.value;
+  }
+
+  function renderPreview(g, parsed) {
+    var dirty = !sameRoster(parsed.roster, g.roster);
+    previewBody.replaceChildren();
+    if (!parsed.roster.length) {
+      var tr0 = document.createElement('tr');
+      var td0 = node('td', 'empty', '貼上或上載後，這裡會即時預覽。空行會顯示出來，方便你核對 GP 列序。');
+      td0.colSpan = 5;
+      tr0.appendChild(td0);
+      previewBody.appendChild(tr0);
+    } else {
+      parsed.roster.forEach(function (r, i) {
+        var tr = document.createElement('tr');
+        tr.dataset.kind = r.blank ? 'blank' : 'student';
+        if (r.blank) tr.className = 'blank';
+        addCell(tr, String(i + 1));
+        addCell(tr, r.blank ? '' : r.className);
+        addCell(tr, r.blank ? '' : r.classNo);
+        addCell(tr, r.blank ? '' : r.name);
+        addCell(tr, r.blank ? '保留空行' : '');
+        previewBody.appendChild(tr);
+      });
+    }
+    var savedEmpty = !g.roster.length;
+    var previewEmpty = !parsed.roster.length;
+    if (savedEmpty && previewEmpty && parsed.skippedHeader) rosterStatus.textContent = '只讀到標題列，沒有學生。請一併貼上標題下面的名冊，或取消「第一行是標題」。';
+    else if (savedEmpty && previewEmpty) rosterStatus.textContent = '尚未有名冊。貼上三欄後會在下面預覽，空行會保留。';
+    else if (dirty && savedEmpty) rosterStatus.textContent = '尚未儲存：預覽 ' + describeRoster(parsed.roster) + '。按「儲存名冊」後才會用於對分。';
+    else if (dirty) rosterStatus.textContent = '尚未儲存：預覽 ' + describeRoster(parsed.roster) + '。對分仍用已儲存的名冊（' + describeRoster(g.roster) + '）。';
+    else rosterStatus.textContent = '已儲存：' + describeRoster(g.roster) + '。空行留在原位，以便對齊 GP。';
+    if (rosterHeader.checked && parsed.skippedHeader) {
+      rosterStatus.textContent += ' 已略過標題列：「' + parsed.skippedHeader.filter(Boolean).join('、') + '」。';
+    }
+    var warns = [];
+    if (dirty && g.roster.length && g.roster.length !== parsed.roster.length) {
+      warns.push('預覽共 ' + parsed.roster.length + ' 列（含空行），已儲存名冊有 ' + g.roster.length + ' 列。儲存會取代舊名冊，請先核對列數是否與 GP 相同。');
+    }
+    if (parsed.extra) warns.push('資料多於三欄，只會使用前三欄（班別、班號、姓名）。');
+    rosterWarn.hidden = warns.length === 0;
+    rosterWarn.textContent = warns.join(' ');
+    var saveBtn = document.getElementById('btn-save-roster');
+    saveBtn.disabled = !dirty;
+    if (!dirty && g.roster.length) saveBtn.textContent = '已儲存';
+    else if (dirty && g.roster.length) saveBtn.textContent = '儲存並取代名冊';
+    else saveBtn.textContent = '儲存名冊';
+    document.getElementById('btn-clear-roster').disabled = !g.roster.length && rosterText.value === '';
+    if (!g.roster.length && previewEmpty) rosterSummary.textContent = '名冊 · 尚未貼上';
+    else if (dirty) rosterSummary.textContent = '名冊 · 預覽尚未儲存（' + describeRoster(parsed.roster) + '）';
+    else rosterSummary.textContent = '名冊 · 已儲存 ' + describeRoster(g.roster);
+    activeRoster.textContent = g.roster.length
+      ? ('對分用已儲存名冊：' + describeRoster(g.roster) + (dirty ? '（預覽有未儲存變更）' : ''))
+      : '尚未儲存名冊。請先在上面貼上並儲存。';
+  }
+
+  function roleFor(map, col) {
+    var roles = ['score', 'name', 'class', 'no'];
+    for (var i = 0; i < roles.length; i++) if (map[roles[i]] === col) return roles[i];
+    return '';
+  }
+
+  function renderMapping(view) {
+    var sig = view ? JSON.stringify({
+      h: (view.headers || []).map(cleanCell),
+      m: view.map,
+      u: view.usedHeader,
+      w: view.width
+    }) : '';
+    if (sig === mappingSig) return;
+    mappingSig = sig;
+    mapping.replaceChildren();
+    if (!view || !view.width) return;
+    mapping.appendChild(node('p', 'muted', '欄位對應（會按組別記住）'));
+    var wrap = node('div', 'mapgrid');
+    var shown = Math.min(view.width, 40);
+    var missing = !isUsable(view.map, view.width);
+    for (var c = 0; c < shown; c++) {
+      var label = node('label', 'mapcol');
+      var title = view.usedHeader && view.headers ? cleanCell(view.headers[c]) : '';
+      label.appendChild(node('span', '', title || ('第 ' + (c + 1) + ' 欄')));
+      var sel = document.createElement('select');
+      sel.dataset.col = String(c);
+      sel.setAttribute('aria-label', (title || ('第 ' + (c + 1) + ' 欄')) + '的用途');
+      [['', '不使用'], ['score', '分數'], ['name', '姓名'], ['class', '班別'], ['no', '班號']].forEach(function (pair) {
+        var o = document.createElement('option');
+        o.value = pair[0];
+        o.textContent = pair[1];
+        sel.appendChild(o);
+      });
+      sel.value = roleFor(view.map, c);
+      if (missing) sel.classList.add('need');
+      (function (col) {
+        sel.addEventListener('change', function () { setColumnRole(col, sel.value); });
+      })(c);
+      label.appendChild(sel);
+      wrap.appendChild(label);
+    }
+    mapping.appendChild(wrap);
+    if (view.width > shown) mapping.appendChild(node('p', 'muted', '只顯示前 ' + shown + ' 欄。'));
+    if (missing) mapping.appendChild(node('p', 'warn-text', '請指明哪一欄是班別、哪一欄是班號。未對應前不會把全班當成未交。'));
+  }
+
+  function setColumnRole(col, role) {
+    var g = active();
+    var view = g && session.view[g.id];
+    if (!view) return;
+    var map = cloneMap(view.map);
+    ['score', 'name', 'class', 'no'].forEach(function (k) { if (map[k] === col) delete map[k]; });
+    if (role) map[role] = col;
+    view.map = map;
+    g.columnMap = mergeStored(g.columnMap, view.usedHeader ? view.headers : null, map);
+    persistSoon();
+    mappingSig = '';
+    updateAll();
+  }
+
+  function issueBox(kind, title, items) {
+    var box = node('div', 'issue ' + kind);
+    box.appendChild(node('strong', '', title));
+    if (items && items.length) {
+      var ul = document.createElement('ul');
+      items.slice(0, 100).forEach(function (text) { ul.appendChild(node('li', '', text)); });
+      if (items.length > 100) ul.appendChild(node('li', '', '其餘 ' + (items.length - 100) + ' 筆未顯示'));
+      box.appendChild(ul);
+    }
+    return box;
+  }
+
+  function computeCurrentResult(g) {
+    var text = subText.value;
+    var view = session.view[g.id];
+    if (!String(text).trim() || !view) return { kind: 'no-sub' };
+    var matrix = parseDelimited(String(text).replace(/^\uFEFF/, ''), detectDelimiter(text));
+    if (!isUsable(view.map, view.width)) return { kind: 'bad-map', view: view };
+    var subs = matrixToSubmissions(matrix, view.map, view.usedHeader);
+    if (!subs.length) return { kind: 'no-data-rows', view: view };
+    if (!g.roster.some(function (r) { return !r.blank; })) return { kind: 'no-roster', view: view, subs: subs };
+    var full = readFullMarks();
+    var built = buildResult({
+      roster: g.roster,
+      submissions: subs,
+      mode: markModeSelect.value,
+      fullMarks: full.ok ? full.value : null
+    });
+    return {
+      kind: 'ok',
+      view: view,
+      subs: subs,
+      built: built,
+      invalidScores: subs.filter(function (s) { return s.scoreInvalid; })
+    };
+  }
+
+  function renderIssues(result) {
+    issues.replaceChildren();
+    if (!result || result.kind === 'no-sub') return;
+    if (result.kind === 'bad-map') {
+      issues.appendChild(issueBox('warn', '請先對應班別和班號。對應好之前，不會計算平時分。', []));
+      return;
+    }
+    if (result.kind === 'no-data-rows') {
+      issues.appendChild(issueBox('warn', '沒有讀到遞交資料。如果第一行是標題，請確認下面還有學生資料。', []));
+      return;
+    }
+    if (result.kind === 'no-roster') {
+      issues.appendChild(issueBox('warn', '已儲存的名冊沒有學生。請先貼上並儲存名冊。', []));
+      return;
+    }
+    var b = result.built;
+    if (b.blocked) issues.appendChild(issueBox('bad', '這個計法需要大於 0 的滿分。', []));
+    if (result.view && result.view.map.score == null && (b.mode === 'b' || b.mode === 'e')) {
+      issues.appendChild(issueBox('warn', '未設定分數欄。已交同學的百分比會當作 0。', []));
+    }
+    if (b.unmatched.length) issues.appendChild(issueBox('warn', '未能對應 ' + b.unmatched.length + ' 行（請核對班別或班號）', b.unmatched.map(unmatchedText)));
+    if (b.duplicates.length) issues.appendChild(issueBox('info', '重複遞交 ' + b.duplicates.length + ' 人（已取最高分）', b.duplicates.map(dupText)));
+    if (b.nameMismatches.length) {
+      issues.appendChild(issueBox('info', '姓名與名冊不同（仍按班別班號對應）', b.nameMismatches.map(function (r) {
+        return studentLine(r) + ' 的遞交姓名是「' + (r.submittedName || '（空白）') + '」';
+      })));
+    }
+    if (b.rosterDupes.length) {
+      issues.appendChild(issueBox('warn', '名冊有重複班號，較後的列平時分留空', b.rosterDupes.map(function (r) {
+        return '第 ' + (r.index + 1) + ' 列 ' + studentLine(r) + ' 與較早一列重複';
+      })));
+    }
+    if (b.missingScores.length && result.view && result.view.map.score != null) {
+      issues.appendChild(issueBox('info', '已交但沒有分數', b.missingScores.map(function (r) {
+        return studentLine(r) + (b.mode === 'b' || b.mode === 'e' ? '，百分比當作 0' : '');
+      })));
+    }
+    if (result.invalidScores && result.invalidScores.length) {
+      issues.appendChild(issueBox('warn', '有分數不是數字', result.invalidScores.map(function (s) {
+        return '第 ' + s.line + ' 行「' + s.scoreRaw + '」不是數字，仍當作已交，但不計分數。';
+      })));
+    }
+  }
+
+  function statusLabel(row) {
+    if (row.blank) return '空行';
+    if (row.rosterDup) return '名冊重複';
+    if (!row.submitted) return '未交';
+    if (row.imputed) return '已交（無分）';
+    return '已交';
+  }
+
+  function renderResultTable(g, parsed, result) {
+    resultPills.replaceChildren();
+    resultBody.replaceChildren();
+    var dirty = !sameRoster(parsed.roster, g.roster);
+    if (!result || result.kind !== 'ok') {
+      var msg = '貼上遞交紀錄後，這裡會列出全班結果。';
+      if (result && result.kind === 'bad-map') msg = '請先對應班別和班號。';
+      else if (result && result.kind === 'no-roster') msg = '請先儲存有學生的名冊。';
+      else if (result && result.kind === 'no-data-rows') msg = '沒有讀到遞交資料。';
+      else if (!g.roster.length) msg = '請先儲存名冊，再貼上遞交紀錄。';
+      var tr = document.createElement('tr');
+      var td = node('td', 'empty', msg);
+      td.colSpan = 8;
+      tr.appendChild(td);
+      resultBody.appendChild(tr);
+      resultNote.textContent = dirty ? '名冊預覽尚未儲存。結果會用已儲存的名冊。' : '';
+      copyPreview.textContent = '';
+      copyMeta.textContent = '';
+      return;
+    }
+    var b = result.built;
+    var submittedPill = node('span', 'pill ok', '已交 ' + b.counts.submitted + '／' + b.counts.total);
+    var missingN = b.counts.total - b.counts.submitted;
+    var missingPill = node('span', 'pill bad', '未交 ' + missingN);
+    resultPills.appendChild(submittedPill);
+    resultPills.appendChild(missingPill);
+    if (b.unmatched.length) resultPills.appendChild(node('span', 'pill warn', '未能對應 ' + b.unmatched.length));
+    resultNote.textContent = (dirty ? '名冊預覽尚未儲存，下面用的是已儲存名冊（' + describeRoster(g.roster) + '）。' : '紅色是未交，灰色空行在複製時會留空。') + ' 計法：' + markModeSelect.options[markModeSelect.selectedIndex].text;
+    b.rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      var kind = r.blank ? 'blank' : (r.rosterDup ? 'dup' : (r.submitted ? 'in' : 'out'));
+      tr.dataset.kind = kind;
+      tr.dataset.mark = r.mark == null ? '' : formatMark(r.mark);
+      if (r.blank || r.rosterDup) tr.className = 'blank';
+      else if (!r.submitted) tr.className = 'missing';
+      else tr.className = r.imputed ? 'submitted noscore' : 'submitted';
+      addCell(tr, String(r.index + 1));
+      addCell(tr, r.blank ? '' : r.className);
+      addCell(tr, r.blank ? '' : r.classNo);
+      addCell(tr, r.blank ? '' : r.name);
+      addCell(tr, statusLabel(r));
+      addCell(tr, !r.submitted || r.score == null || r.blank || r.rosterDup ? '—' : formatMark(r.score));
+      addCell(tr, r.pct == null ? '—' : formatPct(r.pct));
+      addCell(tr, r.mark == null ? '' : formatMark(r.mark), 'mark');
+      resultBody.appendChild(tr);
+    });
+    copyPreview.textContent = b.copyLines.join('\n');
+    copyMeta.textContent = '共 ' + b.copyLines.length + ' 行，次序與名冊相同（含空行）。下方「複製平時分欄」只複製這些數字；「連標題複製」會先加項目名稱，再加滿分。';
+  }
+
+  function renderWhatsApp(g, result) {
+    var ready = !!(result && result.kind === 'ok' && result.built && !result.built.blocked);
+    var missing = [];
+    if (ready) {
+      missing = result.built.rows.filter(function (r) { return !r.blank && !r.rosterDup && !r.submitted; });
+    }
+    waPreview.textContent = buildWhatsApp({
+      title: waTitleInput.value,
+      link: waLinkInput.value,
+      notice: waNoticeInput.value,
+      deadlineValue: waDeadline.value,
+      taskName: taskNameInput.value,
+      missing: missing,
+      ready: ready
+    });
+  }
+
+  function renderDock(result) {
+    var ok = result && result.kind === 'ok' && result.built && !result.built.blocked;
+    copyColBtn.disabled = !ok;
+    copyHeadBtn.disabled = !ok;
+    if (!ok) {
+      if (!active() || !active().roster.length) dockCount.textContent = '先儲存名冊，再貼上遞交紀錄';
+      else if (!subText.value.trim()) dockCount.textContent = '貼上遞交紀錄後即可複製';
+      else if (result && result.kind === 'bad-map') dockCount.textContent = '請先對應班別和班號';
+      else if (result && result.built && result.built.blocked) dockCount.textContent = '請輸入滿分';
+      else dockCount.textContent = '還不能複製';
+      return;
+    }
+    var b = result.built;
+    dockCount.textContent = '已交 ' + b.counts.submitted + '／' + b.counts.total;
+  }
+
+  function updateAll() {
+    renderGroupOptions();
+    var g = active();
+    if (!g) {
+      showEmpty();
+      lastResult = null;
+      return;
+    }
+    showGroupUI();
+    var parsed = currentParsed();
+    renderPreview(g, parsed);
+    modeHelp.textContent = MODE_HELP[markModeSelect.value] || '';
+    var result = computeCurrentResult(g);
+    lastResult = result;
+    renderMapping(session.view[g.id] || null);
+    renderIssues(result);
+    renderResultTable(g, parsed, result);
+    renderWhatsApp(g, result);
+    renderDock(result);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    ta.style.top = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { ta.setSelectionRange(0, text.length); } catch (e) { /* ignore */ }
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e2) { ok = false; }
+    ta.remove();
+    return ok;
+  }
+
+  function showManual(text) {
+    manualText.value = text;
+    if (typeof manualDialog.showModal === 'function') manualDialog.showModal();
+    else manualDialog.setAttribute('open', '');
+    manualText.focus();
+    manualText.select();
+  }
+
+  async function copyPlain(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* try legacy */ }
+    }
+    return legacyCopy(text);
+  }
+
+  async function copyLines(lines) {
+    var text = lines.join('\n');
+    var html = '<table>' + lines.map(function (line) {
+      return '<tr><td>' + escapeHtml(line) + '</td></tr>';
+    }).join('') + '</table>';
+    if (navigator.clipboard && window.isSecureContext && navigator.clipboard.write && typeof ClipboardItem !== 'undefined') {
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': new Blob([html], { type: 'text/html' }),
+            'text/plain': new Blob([text], { type: 'text/plain' })
+          })
+        ]);
+        return true;
+      } catch (e) { /* fall through */ }
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      try { await navigator.clipboard.writeText(text); return true; } catch (e2) { /* fall through */ }
+    }
+    return legacyCopy(text);
+  }
+
+  async function doCopy(withHeader) {
+    if (!lastResult || lastResult.kind !== 'ok' || !lastResult.built || lastResult.built.blocked) {
+      toast('還不能複製。請先儲存名冊、貼上遞交，並填寫所需的滿分。');
+      return;
+    }
+    var lines = lastResult.built.copyLines.slice();
+    if (withHeader) {
+      var task = taskNameInput.value.trim();
+      var full = readFullMarks();
+      if (!task) { toast('請先填寫項目名稱'); taskNameInput.focus(); return; }
+      if (!full.ok) { toast('請先填寫滿分'); fullMarksInput.focus(); return; }
+      lines = [task, formatMark(full.value)].concat(lines);
+    }
+    var ok = await copyLines(lines);
+    if (ok) toast(withHeader ? '已複製（含項目名稱及滿分）' : '已複製，可直接貼上 GP 的一欄');
+    else showManual(lines.join('\n'));
+  }
+
+  function saveRoster() {
+    var g = active();
+    if (!g) return;
+    var parsed = currentParsed();
+    if (parsed.roster.length > 2000) { toast('名冊超過 2000 列，請只貼上三欄。'); return; }
+    g.roster = parsed.roster.map(function (r) {
+      return { className: r.className, classNo: r.classNo, name: r.name, blank: r.blank };
+    });
+    persist();
+    toast('名冊已儲存：' + describeRoster(g.roster));
+    updateAll();
+  }
+
+  function clearRoster() {
+    var g = active();
+    if (!g) return;
+    if (!g.roster.length && rosterText.value === '') return;
+    if (!confirm('清除這個組別的名冊？學生和空行都會從這部瀏覽器移除。')) return;
+    g.roster = [];
+    rosterText.value = '';
+    headerMode = 'auto';
+    lockedFirstLine = null;
+    rosterHeader.checked = false;
+    persist();
+    toast('名冊已清除');
+    updateAll();
+  }
+
+  function switchTo(id) {
+    if (!id || id === state.data.activeGroupId) return;
+    if (isDirty() && !confirm('名冊預覽尚未儲存，切換組別會捨棄這些變更。要繼續嗎？')) {
+      groupSelect.value = state.data.activeGroupId;
+      return;
+    }
+    stashSub();
+    state.data.activeGroupId = id;
+    persist();
+    loadGroup(active(), {});
+  }
+
+  function createGroup() {
+    if (state.data.groups.length >= 50) { toast('組別最多 50 個。'); return; }
+    if (isDirty() && !confirm('名冊預覽尚未儲存，新增組別會捨棄這些變更。要繼續嗎？')) return;
+    stashSub();
+    var g = makeGroup(uniqueName('新組別'));
+    state.data.groups.push(g);
+    state.data.activeGroupId = g.id;
+    persist();
+    renderGroupOptions();
+    loadGroup(g, { forceOpenRoster: true });
+    groupNameInput.focus();
+    groupNameInput.select();
+  }
+
+  function deleteGroup() {
+    var g = active();
+    if (!g) return;
+    if (!confirm('刪除組別「' + (g.name.trim() || '未命名組別') + '」？這部瀏覽器內這個組別的名冊和設定會被移除。')) return;
+    delete session.sub[g.id];
+    delete session.view[g.id];
+    state.data.groups = state.data.groups.filter(function (x) { return x.id !== g.id; });
+    state.data.activeGroupId = state.data.groups[0] ? state.data.groups[0].id : '';
+    persist();
+    renderGroupOptions();
+    if (active()) loadGroup(active(), {});
+    else { lastResult = null; showEmpty(); }
+    toast('已刪除組別');
+  }
+
+  function setFileStatus(text) { fileStatus.textContent = text; }
+
+  function isXlsx(file) {
+    return /\.xlsx$/i.test(file.name) || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  }
+
+  function loadSheetJS() {
+    if (globalThis.XLSX) return Promise.resolve(globalThis.XLSX);
+    if (sheetJsPromise) return sheetJsPromise;
+    sheetJsPromise = new Promise(function (resolve, reject) {
+      var tryAt = function (i) {
+        if (i >= SHEETJS_URLS.length) {
+          sheetJsPromise = null;
+          reject(new Error('sheetjs'));
+          return;
+        }
+        var s = document.createElement('script');
+        s.src = SHEETJS_URLS[i];
+        s.async = true;
+        s.referrerPolicy = 'no-referrer';
+        s.onload = function () {
+          if (globalThis.XLSX) resolve(globalThis.XLSX);
+          else tryAt(i + 1);
+        };
+        s.onerror = function () { tryAt(i + 1); };
+        document.head.appendChild(s);
+      };
+      tryAt(0);
+    });
+    return sheetJsPromise;
+  }
+
+  async function readRosterFile(file) {
+    if (/\.xls$/i.test(file.name) && !/\.xlsx$/i.test(file.name)) {
+      setFileStatus('不支援舊版 .xls。請另存為 .xlsx 或 CSV，或直接貼上。');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setFileStatus('檔案太大。名冊只需要三欄，請另存較小的檔案或直接貼上。');
+      return;
+    }
+    try {
+      var text = '';
+      if (isXlsx(file)) {
+        setFileStatus('正在讀取 Excel…');
+        var XLSX = await loadSheetJS();
+        var buf = await file.arrayBuffer();
+        var wb = XLSX.read(buf, { type: 'array' });
+        var sheetName = wb.SheetNames[0];
+        if (!sheetName) throw new Error('empty');
+        text = rowsToTsv(sheetToMatrix(XLSX, wb.Sheets[sheetName]));
+        var extra = wb.SheetNames.length > 1 ? '（檔案有多個工作表，已用「' + sheetName + '」）' : '';
+        setFileStatus('已讀取 ' + file.name + extra + '。請核對預覽，再按儲存。');
+      } else {
+        text = await file.text();
+        setFileStatus('已讀取 ' + file.name + '。請核對預覽，再按儲存。檔案內的空行會保留。');
+      }
+      headerMode = 'auto';
+      lockedFirstLine = null;
+      rosterText.value = String(text).replace(/^\uFEFF/, '');
+      rosterDetails.open = true;
+      applyAutoHeader();
+      updateAll();
+      document.getElementById('preview-wrap').scrollIntoView({ block: 'nearest' });
+    } catch (e) {
+      setFileStatus('無法讀取檔案。請改為貼上，或另存為 CSV。讀取 Excel 需要網絡。');
+    } finally {
+      rosterFile.value = '';
+    }
+  }
+
+  function exportJson() {
+    persist();
+    var blob = new Blob([JSON.stringify(state.data, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    var now = new Date();
+    function p(n) { return String(n).padStart(2, '0'); }
+    a.download = 'sorting-backup-' + now.getFullYear() + p(now.getMonth() + 1) + p(now.getDate()) + '.json';
+    a.href = URL.createObjectURL(blob);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
+    toast('已匯出備份');
+  }
+
+  async function importJson(file) {
+    var data = null;
+    try { data = sanitizeData(JSON.parse(await file.text())); }
+    catch (e) { toast('檔案格式不正確'); return; }
+    if (!data) { toast('檔案沒有有效的組別'); return; }
+    if (!confirm('匯入會取代這部瀏覽器現有的 ' + state.data.groups.length + ' 個組別（檔案內有 ' + data.groups.length + ' 個）。確定？')) return;
+    state.data = data;
+    session = { sub: {}, view: {} };
+    persist();
+    renderGroupOptions();
+    loadGroup(active(), { forceOpenRoster: countStudents(active().roster) === 0 });
+    toast('已匯入 ' + data.groups.length + ' 個組別');
+  }
+
+  function wipeAll() {
+    if (!confirm('確定清除這部瀏覽器內所有組別、名冊和設定？此動作不能還原（除非你有 JSON 備份）。')) return;
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+    memoryStore = null;
+    state.data = initialData();
+    session = { sub: {}, view: {} };
+    taskNameInput.value = '';
+    waDeadline.value = defaultDeadlineValue(new Date());
+    persist();
+    renderGroupOptions();
+    loadGroup(active(), { forceOpenRoster: true });
+    toast('已清除，並建立一個新的空白組別');
+  }
+
+  groupSelect.addEventListener('change', function () {
+    if (suppressSelect) return;
+    switchTo(groupSelect.value);
+  });
+  groupNameInput.addEventListener('input', function () {
+    var g = active();
+    if (!g) return;
+    g.name = groupNameInput.value.slice(0, 80);
+    persistSoon();
+    renderGroupOptions();
+  });
+  document.getElementById('btn-new-group').addEventListener('click', createGroup);
+  document.getElementById('btn-delete-group').addEventListener('click', deleteGroup);
+  document.getElementById('btn-save-roster').addEventListener('click', saveRoster);
+  document.getElementById('btn-clear-roster').addEventListener('click', clearRoster);
+  rosterText.addEventListener('input', function () {
+    applyAutoHeader();
+    updateAll();
+  });
+  rosterHeader.addEventListener('change', function () {
+    var matrix = parseRosterMatrix(rosterText.value);
+    lockedFirstLine = matrix[0] ? matrix[0].map(cleanCell).join('\t') : '';
+    headerMode = rosterHeader.checked ? 'on' : 'off';
+    updateAll();
+  });
+  rosterFile.addEventListener('change', function () {
+    var file = rosterFile.files && rosterFile.files[0];
+    if (file) readRosterFile(file);
+  });
+  rosterDetails.addEventListener('dragenter', function (e) {
+    if (!e.dataTransfer || !e.dataTransfer.types || Array.prototype.indexOf.call(e.dataTransfer.types, 'Files') === -1) return;
+    dragDepth++;
+    rosterDetails.classList.add('drag');
+  });
+  rosterDetails.addEventListener('dragover', function (e) {
+    if (!e.dataTransfer || !e.dataTransfer.types || Array.prototype.indexOf.call(e.dataTransfer.types, 'Files') === -1) return;
+    e.preventDefault();
+  });
+  rosterDetails.addEventListener('dragleave', function () {
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (!dragDepth) rosterDetails.classList.remove('drag');
+  });
+  rosterDetails.addEventListener('drop', function (e) {
+    dragDepth = 0;
+    rosterDetails.classList.remove('drag');
+    if (!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) return;
+    e.preventDefault();
+    readRosterFile(e.dataTransfer.files[0]);
+  });
+  fullMarksInput.addEventListener('input', function () {
+    var g = active();
+    if (!g) return;
+    var read = readFullMarks();
+    if (read.ok) { g.fullMarks = read.value; persistSoon(); }
+    updateAll();
+  });
+  markModeSelect.addEventListener('change', function () {
+    var g = active();
+    if (!g) return;
+    g.markMode = markModeSelect.value;
+    persist();
+    updateAll();
+  });
+  subText.addEventListener('input', function () {
+    var g = active();
+    if (!g) return;
+    session.sub[g.id] = subText.value;
+    refreshSubmissionView(g, false);
+    updateAll();
+  });
+  taskNameInput.addEventListener('input', updateAll);
+  [waTitleInput, waLinkInput, waNoticeInput].forEach(function (input, idx) {
+    input.addEventListener('input', function () {
+      var g = active();
+      if (!g) return;
+      if (idx === 0) g.waTitle = input.value;
+      else if (idx === 1) g.gpLink = input.value;
+      else g.waNotice = input.value;
+      persistSoon();
+      renderWhatsApp(g, lastResult);
+    });
+  });
+  waDeadline.addEventListener('input', function () {
+    var g = active();
+    if (g) renderWhatsApp(g, lastResult);
+  });
+  document.getElementById('btn-copy-wa').addEventListener('click', async function () {
+    if (!lastResult || lastResult.kind !== 'ok' || !lastResult.built || lastResult.built.blocked) {
+      toast('請先貼上遞交紀錄，再複製未交通知');
+      return;
+    }
+    var text = waPreview.textContent || '';
+    var ok = await copyPlain(text);
+    if (ok) toast('已複製 WhatsApp 訊息');
+    else showManual(text);
+  });
+  copyColBtn.addEventListener('click', function () { doCopy(false); });
+  copyHeadBtn.addEventListener('click', function () { doCopy(true); });
+  document.getElementById('btn-export').addEventListener('click', exportJson);
+  document.getElementById('import-file').addEventListener('change', function (e) {
+    var file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (file) importJson(file);
+  });
+  document.getElementById('btn-wipe').addEventListener('click', wipeAll);
+  document.getElementById('manual-copy-close').addEventListener('click', function () {
+    if (typeof manualDialog.close === 'function') manualDialog.close();
+    else manualDialog.removeAttribute('open');
+  });
+  window.addEventListener('beforeunload', persist);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') persist();
+  });
+  window.addEventListener('error', function (e) {
+    if (e.filename && /xlsx|sheetjs/i.test(e.filename)) return;
+    if (!e.message) return;
+    fatal.hidden = false;
+    fatal.textContent = '頁面發生錯誤，請重新整理。' + e.message;
+  });
+
+  rosterText.placeholder = '4A\t1\t陳大文\n4A\t2\t李小美\n\n4B\t1\t林子豪';
+  subText.placeholder = 'Score\tName\tClass\tClass no.\n8\t陳大文\t4A\t1\n\t李小美\t4 a\t2';
+  waDeadline.value = defaultDeadlineValue(new Date());
+  showStorageFlag();
+  if (loaded.fresh) persist();
+  renderGroupOptions();
+  if (active()) loadGroup(active(), { forceOpenRoster: countStudents(active().roster) === 0 });
+  else showEmpty();
+})();
+</script>
+</body>
+</html>
