@@ -700,11 +700,15 @@
       });
     }
     if (headers) {
-      ['score', 'name', 'class', 'no'].forEach(function (role) {
-        var idx = map[role];
-        if (!isIndex(idx)) return;
-        var label = cleanCell(headers[idx]);
-        if (label) byHeader[label.slice(0, 100)] = role;
+      headers.forEach(function (header, idx) {
+        var label = cleanCell(header);
+        if (!label) return;
+        var role = '';
+        ['score', 'name', 'class', 'no'].forEach(function (key) {
+          if (map[key] === idx) role = key;
+        });
+        if (role) byHeader[label.slice(0, 100)] = role;
+        else delete byHeader[label.slice(0, 100)];
       });
     }
     return { byIndex: byIndex, byHeader: byHeader };
