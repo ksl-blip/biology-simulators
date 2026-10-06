@@ -325,6 +325,10 @@
       </label>
     </div>
     <p id="mode-help" class="muted"></p>
+    <label class="field" for="column-max" style="max-width:280px">GP 此欄滿分
+      <input id="column-max" type="number" step="any" inputmode="decimal" aria-label="GP 此欄滿分">
+    </label>
+    <p id="column-max-help" class="muted">「連標題複製」的第 3 行，即 GP 這欄的總分。預設是所選計法的最高分（交收分 50、分數% 100、已交 100、已交×100 為 100、分數%×3 為 300），可自行修改。</p>
     <div class="instr">
       <p>從 Google 表單或試算表複製後貼上。以班別加班號對應（不是姓名）。<strong>4A、4 A、4a、A</strong> 會視為同一班；5A、3C 或自訂班名同樣處理。重複遞交取最高分。</p>
     </div>
@@ -350,8 +354,12 @@
       </table>
     </div>
     <h3>將會複製的平時分欄</h3>
+    <p class="muted">「複製平時分欄」只複製下面的平時分，每生一行，空行留空。「連標題複製」貼去 GP 的次序是：第 1 行項目名稱、第 2 行空白、第 3 行「GP 此欄滿分」、第 4 行起才是各生平時分。</p>
     <p id="copy-meta" class="muted"></p>
     <pre id="copy-preview" class="copy" aria-label="將會複製的平時分"></pre>
+    <h3>連標題複製（GP 次序）</h3>
+    <p id="header-copy-meta" class="muted"></p>
+    <pre id="header-copy-preview" class="copy" aria-label="連標題複製的內容"></pre>
   </section>
 
   <section class="card needs-group" id="wa-card">
@@ -390,7 +398,7 @@
   <div class="wrap dock-inner">
     <p id="dock-count">先儲存名冊，再貼上遞交紀錄</p>
     <button type="button" class="btn primary xl" id="copy-col" disabled>複製平時分欄</button>
-    <button type="button" class="btn xl" id="copy-head" disabled>連標題複製</button>
+    <button type="button" class="btn xl" id="copy-head" disabled title="第 1 行項目名稱，第 2 行空白，第 3 行 GP 此欄滿分，之後是平時分">連標題複製</button>
   </div>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -408,6 +416,15 @@
 
   var STORAGE_KEY = 'hkdse-sorting-tool-v1';
   var MODE_IDS = ['a', 'b', 'c', 'd', 'e'];
+  var MODE_MAX = { a: 50, b: 100, c: 100, d: 100, e: 300 };
+
+  function modeMax(mode) {
+    return MODE_MAX[mode] != null ? MODE_MAX[mode] : 50;
+  }
+
+  function headerCopyLines(taskName, columnMax, markLines) {
+    return [String(taskName || ''), '', formatMark(columnMax)].concat(markLines || []);
+  }
   var MODE_HELP = {
     a: '已交 50，未交 -50。',
     b: '已交用分數百分比（分數 ÷ 滿分 × 100），未交 -50。沒有分數的已交當作 0。',
@@ -967,6 +984,7 @@
       waNotice: '如尚未遞交，請於限期前補交。',
       fullMarks: 10,
       markMode: 'a',
+      columnMax: null,
       columnMap: { byIndex: {}, byHeader: {} }
     };
   }
@@ -1007,6 +1025,11 @@
     var roster = Array.isArray(g.roster) ? g.roster.map(sanitizeRow).filter(Boolean).slice(0, 2000) : [];
     var full = Number(g.fullMarks);
     if (!Number.isFinite(full) || full <= 0 || full > 100000) full = 10;
+    var columnMax = null;
+    if (g.columnMax != null && g.columnMax !== '') {
+      var cm = Number(g.columnMax);
+      if (Number.isFinite(cm) && Math.abs(cm) <= 100000) columnMax = cm;
+    }
     return {
       id: id,
       name: name,
@@ -1016,6 +1039,7 @@
       waNotice: g.waNotice == null ? '如尚未遞交，請於限期前補交。' : String(g.waNotice).slice(0, 1000),
       fullMarks: full,
       markMode: MODE_IDS.indexOf(g.markMode) === -1 ? 'a' : g.markMode,
+      columnMax: columnMax,
       columnMap: sanitizeMap(g.columnMap)
     };
   }
@@ -1069,6 +1093,8 @@
     buildResult: buildResult,
     buildWhatsApp: buildWhatsApp,
     formatMark: formatMark,
+    modeMax: modeMax,
+    headerCopyLines: headerCopyLines,
     formatDeadline: formatDeadline,
     defaultDeadlineValue: defaultDeadlineValue,
     sanitizeData: sanitizeData,
@@ -1144,6 +1170,8 @@
   var fileStatus = document.getElementById('file-status');
   var taskNameInput = document.getElementById('task-name');
   var fullMarksInput = document.getElementById('full-marks');
+  var columnMaxInput = document.getElementById('column-max');
+  var columnMaxHelp = document.getElementById('column-max-help');
   var markModeSelect = document.getElementById('mark-mode');
   var modeHelp = document.getElementById('mode-help');
   var subText = document.getElementById('sub-text');
@@ -1155,6 +1183,8 @@
   var resultBody = document.getElementById('result-body');
   var copyMeta = document.getElementById('copy-meta');
   var copyPreview = document.getElementById('copy-preview');
+  var headerCopyMeta = document.getElementById('header-copy-meta');
+  var headerCopyPreview = document.getElementById('header-copy-preview');
   var waTitleInput = document.getElementById('wa-title');
   var waLinkInput = document.getElementById('wa-link');
   var waNoticeInput = document.getElementById('wa-notice');
@@ -1257,6 +1287,14 @@
     return { ok: true, value: n };
   }
 
+  function readColumnMax() {
+    var raw = columnMaxInput.value.trim();
+    if (raw === '') return { ok: false, value: null };
+    var n = Number(raw);
+    if (!Number.isFinite(n) || Math.abs(n) > 100000) return { ok: false, value: null };
+    return { ok: true, value: n };
+  }
+
   function describeRoster(roster) {
     return countStudents(roster) + ' 人，空行 ' + countBlanks(roster);
   }
@@ -1317,6 +1355,7 @@
     groupNameInput.value = group.name;
     fullMarksInput.value = String(group.fullMarks);
     markModeSelect.value = MODE_IDS.indexOf(group.markMode) === -1 ? 'a' : group.markMode;
+    columnMaxInput.value = group.columnMax != null ? String(group.columnMax) : String(modeMax(markModeSelect.value));
     waTitleInput.value = group.waTitle;
     waLinkInput.value = group.gpLink;
     waNoticeInput.value = group.waNotice;
@@ -1564,6 +1603,8 @@
       resultNote.textContent = dirty ? '名冊預覽尚未儲存。結果會用已儲存的名冊。' : '';
       copyPreview.textContent = '';
       copyMeta.textContent = '';
+      headerCopyPreview.textContent = '';
+      headerCopyMeta.textContent = '';
       return;
     }
     var b = result.built;
@@ -1593,7 +1634,16 @@
       resultBody.appendChild(tr);
     });
     copyPreview.textContent = b.copyLines.join('\n');
-    copyMeta.textContent = '共 ' + b.copyLines.length + ' 行，次序與名冊相同（含空行）。下方「複製平時分欄」只複製這些數字；「連標題複製」會先加項目名稱，再加滿分。';
+    copyMeta.textContent = '共 ' + b.copyLines.length + ' 行，次序與名冊相同（含空行）。';
+    var colRead = readColumnMax();
+    if (colRead.ok) {
+      var headerLines = headerCopyLines(taskNameInput.value.trim(), colRead.value, b.copyLines);
+      headerCopyPreview.textContent = headerLines.join('\n');
+      headerCopyMeta.textContent = '第 1 行是項目名稱，第 2 行留空，第 3 行是 GP 此欄滿分 ' + formatMark(colRead.value) + '，第 4 行起是平時分。';
+    } else {
+      headerCopyPreview.textContent = '';
+      headerCopyMeta.textContent = '請填寫「GP 此欄滿分」。連標題複製的第 3 行要用這個數字。';
+    }
   }
 
   function renderWhatsApp(g, result) {
@@ -1641,6 +1691,9 @@
     var parsed = currentParsed();
     renderPreview(g, parsed);
     modeHelp.textContent = MODE_HELP[markModeSelect.value] || '';
+    if (columnMaxHelp) {
+      columnMaxHelp.textContent = '「連標題複製」的第 3 行，即 GP 這欄的總分。現時計法的預設是 ' + modeMax(markModeSelect.value) + '，可自行修改。';
+    }
     var result = computeCurrentResult(g);
     lastResult = result;
     renderMapping(session.view[g.id] || null);
@@ -1716,13 +1769,13 @@
     var lines = lastResult.built.copyLines.slice();
     if (withHeader) {
       var task = taskNameInput.value.trim();
-      var full = readFullMarks();
       if (!task) { toast('請先填寫項目名稱'); taskNameInput.focus(); return; }
-      if (!full.ok) { toast('請先填寫滿分'); fullMarksInput.focus(); return; }
-      lines = [task, formatMark(full.value)].concat(lines);
+      var colMax = readColumnMax();
+      if (!colMax.ok) { toast('請填寫 GP 此欄滿分'); columnMaxInput.focus(); return; }
+      lines = headerCopyLines(task, colMax.value, lines);
     }
     var ok = await copyLines(lines);
-    if (ok) toast(withHeader ? '已複製（含項目名稱及滿分）' : '已複製，可直接貼上 GP 的一欄');
+    if (ok) toast(withHeader ? '已複製：項目名稱、空白行、此欄滿分，然後是平時分' : '已複製，可直接貼上 GP 的一欄');
     else showManual(lines.join('\n'));
   }
 
@@ -1965,10 +2018,26 @@
     if (read.ok) { g.fullMarks = read.value; persistSoon(); }
     updateAll();
   });
+  columnMaxInput.addEventListener('input', function () {
+    var g = active();
+    if (!g) return;
+    var read = readColumnMax();
+    var def = modeMax(markModeSelect.value);
+    g.columnMax = read.ok && read.value !== def ? read.value : null;
+    persistSoon();
+    updateAll();
+  });
   markModeSelect.addEventListener('change', function () {
     var g = active();
     if (!g) return;
+    var previousDefault = modeMax(g.markMode);
+    var read = readColumnMax();
+    var keepOverride = g.columnMax != null && read.ok && read.value !== previousDefault;
     g.markMode = markModeSelect.value;
+    if (!keepOverride) {
+      g.columnMax = null;
+      columnMaxInput.value = String(modeMax(g.markMode));
+    }
     persist();
     updateAll();
   });
