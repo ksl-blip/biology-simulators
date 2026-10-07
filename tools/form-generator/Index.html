@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>功課 Google Form 產生器</title>
+<style>
+  :root {
+    --bg: #e7f0ec;
+    --ink: #14241f;
+    --muted: #52645d;
+    --card: #fffdf8;
+    --line: #d5e3dc;
+    --teal: #0f766e;
+    --teal-dark: #115e59;
+    --soft: #f0fdfa;
+    --amber: #9a3412;
+    --amber-bg: #fff7ed;
+    --red: #b91c1c;
+    --red-bg: #fef2f2;
+    --shadow: 0 12px 32px rgba(20, 36, 31, 0.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans TC", "PingFang HK", "Heiti TC", "Microsoft JhengHei", sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(720px 280px at 0% -10%, #ccfbf1 0%, transparent 60%),
+      var(--bg);
+    min-height: 100vh;
+  }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: wait; opacity: 0.65; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 48px; }
+  header.top { margin-bottom: 14px; }
+  .eyebrow { margin: 0 0 4px; color: var(--teal); font-weight: 700; letter-spacing: 0.08em; font-size: 0.78rem; }
+  h1 { margin: 0; font-size: 1.7rem; line-height: 1.25; }
+  .sub { margin: 8px 0 0; color: var(--muted); }
+  .who { margin: 8px 0 0; font-size: 0.92rem; color: var(--teal-dark); font-weight: 700; }
+  nav.tabs { display: flex; gap: 8px; margin: 16px 0; position: sticky; top: 0; z-index: 2; background: rgba(231, 240, 236, 0.92); padding: 6px 0; }
+  nav.tabs button {
+    flex: 1;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 999px;
+    min-height: 44px;
+    font-weight: 700;
+  }
+  nav.tabs button[aria-selected="true"] { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+  }
+  h2 { margin: 0 0 12px; font-size: 1.15rem; }
+  label { display: block; font-weight: 700; margin: 12px 0 6px; }
+  .hint { display: block; font-weight: 500; color: var(--muted); margin-top: 3px; }
+  input[type="text"], input[type="url"], input[type="datetime-local"], textarea, select {
+    width: 100%;
+    border: 1px solid #b7c9c1;
+    border-radius: 12px;
+    padding: 12px;
+    background: #fff;
+    min-height: 46px;
+  }
+  textarea { min-height: 88px; resize: vertical; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-weight: 600; margin: 12px 0; }
+  .check input { width: 1.2rem; height: 1.2rem; margin-top: 2px; }
+  .primary, .ghost, .danger {
+    border-radius: 12px;
+    min-height: 46px;
+    padding: 10px 14px;
+    font-weight: 800;
+    border: 1px solid transparent;
+  }
+  .primary { background: var(--teal); color: #fff; }
+  .primary:hover, .primary:focus-visible { background: var(--teal-dark); }
+  .ghost { background: #fff; border-color: var(--line); }
+  .danger { background: #fff; color: var(--red); border-color: #fecaca; }
+  .banner {
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .banner.error { background: var(--red-bg); color: var(--red); }
+  .banner.warn { background: var(--amber-bg); color: var(--amber); }
+  .banner.info { background: var(--soft); color: var(--teal-dark); }
+  .chip { display: inline-block; border-radius: 999px; padding: 4px 10px; font-size: 0.85rem; font-weight: 800; }
+  .chip.ok { background: #ccfbf1; color: var(--teal-dark); }
+  .chip.todo { background: var(--amber-bg); color: var(--amber); }
+  .link-row, .history-card { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
+  .link-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+  .link-row a, .url { word-break: break-all; color: var(--teal-dark); }
+  .whatsapp {
+    width: 100%;
+    background: #f7fee7;
+    border: 1px solid #d9f99d;
+    border-radius: 14px;
+    padding: 12px;
+    white-space: pre-wrap;
+    line-height: 1.55;
+  }
+  .template-list { display: flex; flex-direction: column; gap: 8px; }
+  .template-list button, .history-card { text-align: left; }
+  .pick { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin-top: 10px; background: #fff; }
+  .pick p { margin: 6px 0; word-break: break-all; }
+  .roles { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+  .roles label { font-weight: 650; margin: 0; }
+  .muted { color: var(--muted); }
+  .standalone { max-width: 760px; margin: 24px auto; padding: 0 16px; }
+  .hidden { display: none !important; }
+  :focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
+  @media (max-width: 640px) {
+    h1 { font-size: 1.45rem; }
+    .link-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="standalone" class="standalone hidden">
+  <div class="card">
+    <p class="eyebrow">HKDSE 生物</p>
+    <h1>功課 Google Form 產生器</h1>
+    <p>這是 Apps Script 的介面檔，還未連到你的 Google 帳戶。請先看<a href="./">設定步驟</a>，用 ksl@fss.edu.hk 部署網頁應用程式，再把那個網址加入書籤。</p>
+  </div>
+</div>
+<div id="app" class="wrap hidden">
+  <header class="top">
+    <p class="eyebrow">HKDSE 生物 · 只供老師使用</p>
+    <h1>功課 Google Form 產生器</h1>
+    <p class="sub">複製範本、換上今次的語音和筆記連結，然後把交功課表格和 WhatsApp 訊息一次過複製好。</p>
+    <p class="who" id="who"></p>
+  </header>
+  <nav class="tabs" aria-label="功能">
+    <button type="button" id="tab-generate" aria-selected="true">產生</button>
+    <button type="button" id="tab-template" aria-selected="false">範本</button>
+    <button type="button" id="tab-history" aria-selected="false">紀錄</button>
+  </nav>
+  <div id="banner" class="banner error hidden" role="alert"></div>
+
+  <section id="view-generate">
+    <form id="gen-form" class="card" novalidate>
+      <div class="row" style="justify-content: space-between;">
+        <h2 style="margin:0">今次功課</h2>
+        <span id="map-chip" class="chip todo">尚未標示連結</span>
+      </div>
+      <label for="template-select">範本
+        <span class="hint" id="map-hint"></span>
+      </label>
+      <select id="template-select"></select>
+      <label for="title">新表單標題</label>
+      <input id="title" name="title" type="text" autocomplete="off">
+      <div class="row">
+        <button type="button" class="ghost" id="refresh-title">按今天日期重算 a/b/c</button>
+      </div>
+      <label for="audio">今次語音連結</label>
+      <input id="audio" name="audio" type="url" inputmode="url" placeholder="https://" autocomplete="off">
+      <label for="notes">今次筆記連結</label>
+      <input id="notes" name="notes" type="url" inputmode="url" placeholder="https://" autocomplete="off">
+      <label for="instructions">補充說明（可留空）
+        <span class="hint">會寫進表單說明，也會放進 WhatsApp 訊息。</span>
+      </label>
+      <textarea id="instructions"></textarea>
+      <label for="deadline">截止日期（香港時間，可留空）</label>
+      <input id="deadline" type="datetime-local">
+      <label class="check"><input id="label-links" type="checkbox" checked> 在表單說明加上「🎧 語音」和「📒 筆記」</label>
+      <label class="check"><input id="auto-close" type="checkbox"> 到截止時間自動關閉表單</label>
+      <label for="folder-id">放入另一個資料夾（可留空，預設跟範本同一個資料夾）</label>
+      <input id="folder-id" type="text" placeholder="雲端硬碟資料夾網址或 ID">
+      <div class="row" style="margin-top: 14px;">
+        <button type="submit" class="primary" id="generate-btn">產生表單</button>
+      </div>
+    </form>
+    <section id="result" class="card hidden" aria-live="polite">
+      <h2>已產生</h2>
+      <p id="result-title" style="font-weight:800"></p>
+      <p id="result-checks" class="muted"></p>
+      <div id="result-warnings"></div>
+      <div id="result-links"></div>
+      <label for="whatsapp">WhatsApp 訊息</label>
+      <textarea id="whatsapp" class="whatsapp" readonly></textarea>
+      <div class="row">
+        <button type="button" class="primary" id="copy-whatsapp" data-copy-id="whatsapp">複製 WhatsApp 訊息</button>
+      </div>
+    </section>
+    <section class="card">
+      <h2>預覽訊息</h2>
+      <p class="muted">產生之前可以先看文字。表單連結要產生後才會出現。</p>
+      <pre id="preview" class="whatsapp"></pre>
+    </section>
+  </section>
+
+  <section id="view-template" class="hidden">
+    <div class="card">
+      <h2>已儲存的範本</h2>
+      <div id="template-list" class="template-list"></div>
+      <div class="row" style="margin-top: 12px;">
+        <button type="button" class="ghost" id="new-template">新範本</button>
+        <button type="button" class="ghost" id="use-default">填入 2029 預設範本</button>
+      </div>
+    </div>
+    <form id="template-form" class="card" novalidate>
+      <h2 id="template-heading">範本設定</h2>
+      <label for="tpl-name">名稱</label>
+      <input id="tpl-name" type="text">
+      <label for="tpl-form">表單 ID 或編輯網址
+        <span class="hint">要用含 /d/ 的編輯網址，不要用學生的 /e/ 發佈連結。</span>
+      </label>
+      <input id="tpl-form" type="text">
+      <label for="tpl-folder">資料夾 ID 或網址
+        <span class="hint">用來檢查今天的 a/b/c，以及放置新表單。留空則用範本所在資料夾。</span>
+      </label>
+      <input id="tpl-folder" type="text">
+      <label for="tpl-prefix">標題字首</label>
+      <input id="tpl-prefix" type="text">
+      <p id="tpl-status" class="muted"></p>
+      <div class="row">
+        <button type="button" class="ghost" id="scan-btn">掃描範本裡的網址</button>
+        <button type="submit" class="primary" id="save-template">儲存範本</button>
+        <button type="button" class="danger" id="delete-template">刪除</button>
+      </div>
+      <div id="scan-box"></div>
+    </form>
+  </section>
+
+  <section id="view-history" class="hidden">
+    <div id="history-list"></div>
+  </section>
+</div>
+<script>
+(function () {
+  var DEFAULTS = {
+    name: '2029 DSE Biology',
+    formId: '1uerPSCadog-u3AsRlM0OR-3mRpJR_GXJCOMlVh75Uvw',
+    folderId: '1I5hvOvxqYWIFXzP1HxlfdWdl7RcacUVF',
+    titlePrefix: '2029 DSE Biology Homework Submission '
+  };
+  var state = { templates: [], activeTemplateKey: '', history: [], suggestion: {}, email: '' };
+  var editor = blankEditor();
+  var titleDirty = false;
+  var copyBank = {};
+
+  function $(id) { return document.getElementById(id); }
+  function blankEditor() {
+    return { key: '', name: '', formId: '', folderId: '', titlePrefix: DEFAULTS.titlePrefix, audioUrl: '', notesUrl: '', baseFormId: '' };
+  }
+  function callServer(name, payload) {
+    return new Promise(function (resolve, reject) {
+      var runner = google.script.run
+        .withSuccessHandler(function (result) { resolve(result); })
+        .withFailureHandler(function (err) {
+          var message = err && err.message ? err.message : String(err || '未知錯誤');
+          reject(new Error(message));
+        });
+      if (payload === undefined) runner[name]();
+      else runner[name](payload);
+    });
+  }
+  function showBanner(kind, message) {
+    var box = $('banner');
+    if (!message) { box.className = 'banner error hidden'; box.textContent = ''; return; }
+    box.className = 'banner ' + (kind || 'error');
+    box.textContent = message;
+  }
+  function activeTemplate() {
+    for (var i = 0; i < state.templates.length; i++) {
+      if (state.templates[i].key === state.activeTemplateKey) return state.templates[i];
+    }
+    return state.templates[0] || null;
+  }
+  function previewMessage() {
+    var deadline = $('deadline').value;
+    var deadlineText = '';
+    var match = deadline.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+    if (match) deadlineText = match[1] + '年' + Number(match[2]) + '月' + Number(match[3]) + '日 ' + match[4] + ':' + match[5];
+    var lines = ['【' + ($('title').value.trim() || '家課') + '】', '', '請先閱讀筆記，再聽語音，然後用下面的表格交功課（只接受 PDF）。'];
+    if ($('instructions').value.trim()) lines.push('', $('instructions').value.trim());
+    lines.push('', '📒 筆記：', $('notes').value.trim() || '（未填）', '', '🎧 語音：', $('audio').value.trim() || '（未填）', '', '📝 交功課：', '（產生後會放上表單連結）');
+    if (deadlineText) lines.push('', '📅 截止日期：' + deadlineText);
+    $('preview').textContent = lines.join('\n');
+  }
+  function showView(name) {
+    $('view-generate').classList.toggle('hidden', name !== 'generate');
+    $('view-template').classList.toggle('hidden', name !== 'template');
+    $('view-history').classList.toggle('hidden', name !== 'history');
+    $('tab-generate').setAttribute('aria-selected', name === 'generate' ? 'true' : 'false');
+    $('tab-template').setAttribute('aria-selected', name === 'template' ? 'true' : 'false');
+    $('tab-history').setAttribute('aria-selected', name === 'history' ? 'true' : 'false');
+  }
+  function renderGenerate() {
+    var select = $('template-select');
+    select.innerHTML = '';
+    state.templates.forEach(function (template) {
+      var option = document.createElement('option');
+      option.value = template.key;
+      option.textContent = template.name;
+      if (template.key === state.activeTemplateKey) option.selected = true;
+      select.appendChild(option);
+    });
+    if (!state.templates.length) {
+      var empty = document.createElement('option');
+      empty.textContent = '尚未有範本';
+      select.appendChild(empty);
+    }
+    var current = activeTemplate();
+    var chip = $('map-chip');
+    if (current && current.audioUrl && current.notesUrl) {
+      chip.className = 'chip ok';
+      chip.textContent = '已標示語音和筆記';
+      $('map-hint').textContent = '取代範本裡的語音和筆記網址。今次的新連結填在下面。';
+    } else {
+      chip.className = 'chip todo';
+      chip.textContent = '尚未標示連結';
+      $('map-hint').textContent = '請先到「範本」掃描，標明哪一個是語音、哪一個是筆記。';
+    }
+    if (!titleDirty && state.suggestion && state.suggestion.title) $('title').value = state.suggestion.title;
+    $('who').textContent = state.email ? ('已登入 ' + state.email) : '以部署這個網頁的帳戶執行';
+    if (state.suggestion && state.suggestion.error) showBanner('warn', state.suggestion.error);
+    previewMessage();
+  }
+  function renderTemplates() {
+    var list = $('template-list');
+    list.innerHTML = '';
+    if (!state.templates.length) {
+      var p = document.createElement('p');
+      p.className = 'muted';
+      p.textContent = '還沒有已儲存的範本。可以填入 2029 預設範本，或自己新增。';
+      list.appendChild(p);
+    }
+    state.templates.forEach(function (template) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'ghost';
+      var mapped = template.audioUrl && template.notesUrl;
+      button.textContent = template.name + (mapped ? ' · 已標示連結' : ' · 未掃描') + (template.key === state.activeTemplateKey ? ' · 使用中' : '');
+      button.addEventListener('click', function () { loadEditor(template); });
+      list.appendChild(button);
+    });
+    fillEditor();
+  }
+  function loadEditor(template) {
+    editor = {
+      key: template.key,
+      name: template.name,
+      formId: template.formId,
+      folderId: template.folderId,
+      titlePrefix: template.titlePrefix,
+      audioUrl: template.audioUrl,
+      notesUrl: template.notesUrl,
+      baseFormId: template.formId
+    };
+    $('scan-box').innerHTML = '';
+    fillEditor();
+  }
+  function fillEditor() {
+    $('tpl-name').value = editor.name || '';
+    $('tpl-form').value = editor.formId || '';
+    $('tpl-folder').value = editor.folderId || '';
+    $('tpl-prefix').value = editor.titlePrefix || DEFAULTS.titlePrefix;
+    $('template-heading').textContent = editor.key ? '編輯範本' : '新範本';
+    $('delete-template').classList.toggle('hidden', !editor.key);
+    if (editor.audioUrl && editor.notesUrl) {
+      $('tpl-status').textContent = '已記住範本裡的語音和筆記網址。換了範本內容後請再掃描。';
+    } else {
+      $('tpl-status').textContent = '尚未標示。請掃描後選擇哪一個網址是語音、哪一個是筆記。';
+    }
+  }
+  function renderHistory() {
+    var list = $('history-list');
+    list.innerHTML = '';
+    if (!state.history.length) {
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.textContent = '還沒有產生過表單。';
+      list.appendChild(card);
+      return;
+    }
+    state.history.forEach(function (entry) {
+      var card = document.createElement('article');
+      card.className = 'card history-card';
+      var title = document.createElement('h2');
+      title.textContent = entry.title;
+      card.appendChild(title);
+      var meta = document.createElement('p');
+      meta.className = 'muted';
+      meta.textContent = (entry.createdAt || '').replace('T', ' ').slice(0, 16) + (entry.templateName ? ' · ' + entry.templateName : '');
+      card.appendChild(meta);
+      addLink(card, '學生短連結', entry.shortUrl || entry.publishedUrl);
+      addLink(card, '編輯', entry.editUrl);
+      addLink(card, '回應試算表', entry.sheetUrl);
+      var box = document.createElement('textarea');
+      box.className = 'whatsapp';
+      box.readOnly = true;
+      box.value = entry.whatsapp || '';
+      card.appendChild(box);
+      var row = document.createElement('div');
+      row.className = 'row';
+      row.appendChild(copyButton('複製 WhatsApp', entry.whatsapp || ''));
+      var reuse = document.createElement('button');
+      reuse.type = 'button';
+      reuse.className = 'ghost';
+      reuse.textContent = '填入產生頁';
+      reuse.addEventListener('click', function () {
+        $('audio').value = entry.audioUrl || '';
+        $('notes').value = entry.notesUrl || '';
+        $('instructions').value = entry.instructions || '';
+        showView('generate');
+        previewMessage();
+        showBanner('info', '已填入該次的語音、筆記和說明。請改標題和今次的新連結。');
+      });
+      row.appendChild(reuse);
+      var remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'danger';
+      remove.textContent = '刪除紀錄';
+      remove.addEventListener('click', function () {
+        run(function () { return callServer('deleteHistoryItem', { formId: entry.formId }); }, function (result) {
+          state.history = result.history || [];
+          renderHistory();
+        });
+      });
+      row.appendChild(remove);
+      card.appendChild(row);
+      list.appendChild(card);
+    });
+  }
+  function addLink(parent, label, url) {
+    var row = document.createElement('div');
+    row.className = 'link-row';
+    var block = document.createElement('div');
+    var strong = document.createElement('strong');
+    strong.textContent = label;
+    block.appendChild(strong);
+    if (url && /^https?:\/\//i.test(url)) {
+      var a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = url;
+      block.appendChild(document.createElement('br'));
+      block.appendChild(a);
+    } else {
+      var span = document.createElement('div');
+      span.className = 'muted';
+      span.textContent = '沒有連結';
+      block.appendChild(span);
+    }
+    row.appendChild(block);
+    if (url) row.appendChild(copyButton('複製', url));
+    parent.appendChild(row);
+  }
+  function copyButton(label, text) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'ghost';
+    button.textContent = label;
+    button.addEventListener('click', function () { copyText(text, button, label); });
+    return button;
+  }
+  function copyText(text, button, label) {
+    var done = function () {
+      if (!button) return;
+      button.textContent = '已複製';
+      setTimeout(function () { button.textContent = label; }, 1400);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text); done(); });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+  function fallbackCopy(text) {
+    var area = document.createElement('textarea');
+    area.value = text;
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    area.remove();
+  }
+  function applyState(next) {
+    state.templates = next.templates || [];
+    state.activeTemplateKey = next.activeTemplateKey || '';
+    state.history = next.history || [];
+    state.suggestion = next.suggestion || {};
+    state.email = next.email || '';
+    renderGenerate();
+    renderTemplates();
+    renderHistory();
+  }
+  function run(work, done) {
+    showBanner('');
+    return work().then(function (result) {
+      return done ? done(result) : result;
+    }).catch(function (err) {
+      showBanner('error', err.message || String(err));
+    });
+  }
+  function selectedRoles() {
+    var audio = '';
+    var notes = '';
+    var picks = document.querySelectorAll('input[type="radio"][data-url]:checked');
+    picks.forEach(function (input) {
+      if (input.value === 'audio') audio = input.getAttribute('data-url');
+      if (input.value === 'notes') notes = input.getAttribute('data-url');
+    });
+    return { audioUrl: audio, notesUrl: notes };
+  }
+  function renderScan(scan) {
+    var box = $('scan-box');
+    box.innerHTML = '';
+    if (scan.folderId && !$('tpl-folder').value.trim()) {
+      $('tpl-folder').value = scan.folderId;
+      editor.folderId = scan.folderId;
+    }
+    var head = document.createElement('p');
+    head.innerHTML = '';
+    head.textContent = '掃到的表單：「' + (scan.title || '') + '」';
+    box.appendChild(head);
+    (scan.fileUploads || []).forEach(function (item) {
+      var line = document.createElement('p');
+      line.className = 'muted';
+      line.textContent = '找到檔案上載題：' + (item.title || '（沒有標題）');
+      box.appendChild(line);
+    });
+    (scan.warnings || []).forEach(function (warning) {
+      var warn = document.createElement('div');
+      warn.className = 'banner warn';
+      warn.textContent = warning;
+      box.appendChild(warn);
+    });
+    if (!scan.urls || !scan.urls.length) return;
+    scan.urls.forEach(function (entry, index) {
+      var card = document.createElement('div');
+      card.className = 'pick';
+      var url = document.createElement('p');
+      url.textContent = entry.url;
+      card.appendChild(url);
+      var places = document.createElement('p');
+      places.className = 'muted';
+      places.textContent = '出現位置：' + entry.locations.map(function (location) { return location.label; }).join('、');
+      card.appendChild(places);
+      var roles = document.createElement('div');
+      roles.className = 'roles';
+      [['audio', '語音連結'], ['notes', '筆記連結'], ['ignore', '不用取代']].forEach(function (pair) {
+        var label = document.createElement('label');
+        var input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'role-' + index;
+        input.value = pair[0];
+        input.setAttribute('data-url', entry.url);
+        if ((pair[0] === 'audio' && entry.url === editor.audioUrl) || (pair[0] === 'notes' && entry.url === editor.notesUrl) || (pair[0] === 'ignore' && entry.url !== editor.audioUrl && entry.url !== editor.notesUrl)) {
+          input.checked = true;
+        }
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(' ' + pair[1]));
+        roles.appendChild(label);
+      });
+      card.appendChild(roles);
+      box.appendChild(card);
+    });
+  }
+  function showResult(result) {
+    $('result').classList.remove('hidden');
+    $('result-title').textContent = result.title || '';
+    var uploads = (result.checks && result.checks.fileUploads || []).map(function (item) { return item.title; }).filter(Boolean);
+    var bits = [];
+    if (uploads.length) bits.push('檔案上載題仍在：' + uploads.join('、') + '。');
+    if (result.checks && result.checks.acceptingResponses) bits.push('表單正在接受回應。');
+    if (result.checks && result.checks.collectSettingsUnchanged) bits.push('收集設定沒有改動。');
+    if (result.replacedCount != null) bits.push('已處理 ' + result.replacedCount + ' 處文字或連結。');
+    $('result-checks').textContent = bits.join('');
+    var warnings = $('result-warnings');
+    warnings.innerHTML = '';
+    (result.warnings || []).forEach(function (warning) {
+      var div = document.createElement('div');
+      div.className = 'banner warn';
+      div.textContent = warning;
+      warnings.appendChild(div);
+    });
+    var links = $('result-links');
+    links.innerHTML = '';
+    addLink(links, '學生連結', result.publishedUrl);
+    addLink(links, '短網址', result.shortUrl);
+    addLink(links, '編輯連結', result.editUrl);
+    addLink(links, '回應試算表', result.sheetUrl);
+    $('whatsapp').value = result.whatsapp || '';
+    copyBank.whatsapp = result.whatsapp || '';
+    $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  $('tab-generate').addEventListener('click', function () { showView('generate'); });
+  $('tab-template').addEventListener('click', function () { showView('template'); });
+  $('tab-history').addEventListener('click', function () { showView('history'); });
+  ['title', 'audio', 'notes', 'instructions', 'deadline'].forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      if (id === 'title') titleDirty = true;
+      previewMessage();
+    });
+  });
+  $('template-select').addEventListener('change', function () {
+    var key = $('template-select').value;
+    titleDirty = false;
+    run(function () { return callServer('setActiveTemplate', { key: key }); }, applyState);
+  });
+  $('refresh-title').addEventListener('click', function () {
+    var current = activeTemplate();
+    var folderId = $('folder-id').value.trim() || (current && current.folderId) || '';
+    titleDirty = false;
+    run(function () {
+      return callServer('suggestTitleFor', { folderId: folderId, titlePrefix: current && current.titlePrefix });
+    }, function (result) {
+      $('title').value = result.title || '';
+      previewMessage();
+    });
+  });
+  $('gen-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+    var current = activeTemplate();
+    if (!current) { showBanner('error', '請先到「範本」頁加入範本。'); return; }
+    if (!$('title').value.trim()) { showBanner('error', '請輸入新表單標題。'); return; }
+    if (!/^https?:\/\/\S+$/i.test($('audio').value.trim())) { showBanner('error', '今次的語音連結必須是以 http:// 或 https:// 開頭的網址。'); return; }
+    if (!/^https?:\/\/\S+$/i.test($('notes').value.trim())) { showBanner('error', '今次的筆記連結必須是以 http:// 或 https:// 開頭的網址。'); return; }
+    if (!current.audioUrl || !current.notesUrl) {
+      showBanner('error', '這個範本還沒有標示語音連結和筆記連結。請先到「範本」頁掃描並儲存。');
+      return;
+    }
+    var button = $('generate-btn');
+    button.disabled = true;
+    button.textContent = '正在產生…';
+    run(function () {
+      return callServer('generateForm', {
+        templateKey: current.key,
+        title: $('title').value.trim(),
+        audioUrl: $('audio').value.trim(),
+        notesUrl: $('notes').value.trim(),
+        instructions: $('instructions').value.trim(),
+        deadline: $('deadline').value,
+        autoClose: $('auto-close').checked,
+        labelLinks: $('label-links').checked,
+        folderId: $('folder-id').value.trim()
+      });
+    }, function (result) {
+      showResult(result);
+      return callServer('getAppState').then(applyState);
+    }).then(function () {
+      button.disabled = false;
+      button.textContent = '產生表單';
+    });
+  });
+  $('copy-whatsapp').addEventListener('click', function () {
+    copyText($('whatsapp').value, $('copy-whatsapp'), '複製 WhatsApp 訊息');
+  });
+  $('new-template').addEventListener('click', function () {
+    editor = blankEditor();
+    $('scan-box').innerHTML = '';
+    fillEditor();
+  });
+  $('use-default').addEventListener('click', function () {
+    editor = blankEditor();
+    editor.name = DEFAULTS.name;
+    editor.formId = DEFAULTS.formId;
+    editor.folderId = DEFAULTS.folderId;
+    editor.titlePrefix = DEFAULTS.titlePrefix;
+    $('scan-box').innerHTML = '';
+    fillEditor();
+    showBanner('info', '已填入 2029 預設範本。請掃描並標示語音和筆記連結，然後儲存。');
+  });
+  $('tpl-form').addEventListener('input', function () {
+    if ($('tpl-form').value.trim() !== editor.baseFormId) {
+      editor.audioUrl = '';
+      editor.notesUrl = '';
+      $('tpl-status').textContent = '表單 ID 已更改，請重新掃描再標示連結。';
+    }
+  });
+  $('scan-btn').addEventListener('click', function () {
+    if (!$('tpl-form').value.trim()) { showBanner('error', '請輸入範本表單 ID。'); return; }
+    var button = $('scan-btn');
+    button.disabled = true;
+    run(function () { return callServer('scanTemplate', { formId: $('tpl-form').value.trim() }); }, function (scan) {
+      renderScan(scan);
+      if (scan.urls && scan.urls.length) showBanner('info', '請標示語音和筆記，然後按儲存範本。');
+    }).then(function () { button.disabled = false; });
+  });
+  $('template-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (!$('tpl-name').value.trim()) { showBanner('error', '請為範本起一個名稱，例如「2029 DSE Biology」。'); return; }
+    if (!$('tpl-form').value.trim()) { showBanner('error', '請輸入範本表單 ID。'); return; }
+    var roles = selectedRoles();
+    var audioUrl = roles.audioUrl || editor.audioUrl;
+    var notesUrl = roles.notesUrl || editor.notesUrl;
+    var picks = document.querySelectorAll('#scan-box input[type="radio"]');
+    if (picks.length) {
+      audioUrl = roles.audioUrl;
+      notesUrl = roles.notesUrl;
+      if (!audioUrl || !notesUrl) {
+        showBanner('error', '請各選一個網址作為語音連結和筆記連結。');
+        return;
+      }
+      if (audioUrl === notesUrl) {
+        showBanner('error', '語音和筆記不能是同一個網址。');
+        return;
+      }
+    }
+    var button = $('save-template');
+    button.disabled = true;
+    run(function () {
+      return callServer('saveTemplate', {
+        key: editor.key,
+        name: $('tpl-name').value.trim(),
+        formId: $('tpl-form').value.trim(),
+        folderId: $('tpl-folder').value.trim(),
+        titlePrefix: $('tpl-prefix').value,
+        audioUrl: audioUrl,
+        notesUrl: notesUrl,
+        makeActive: true
+      });
+    }, function (next) {
+      titleDirty = false;
+      applyState(next);
+      var current = activeTemplate();
+      if (current) loadEditor(current);
+      showBanner('info', '範本已儲存。');
+      showView('template');
+    }).then(function () { button.disabled = false; });
+  });
+  $('delete-template').addEventListener('click', function () {
+    if (!editor.key) return;
+    if (!window.confirm('刪除這個範本設定？已經產生的 Google Form 不會被刪掉。')) return;
+    run(function () { return callServer('deleteTemplate', { key: editor.key }); }, function (next) {
+      editor = blankEditor();
+      applyState(next);
+      showBanner('info', '已刪除範本設定。');
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!(window.google && google.script && google.script.run)) {
+      $('standalone').classList.remove('hidden');
+      return;
+    }
+    $('app').classList.remove('hidden');
+    run(function () { return callServer('getAppState'); }, applyState);
+  });
+})();
+</script>
+</body>
+</html>
