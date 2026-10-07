@@ -1,7 +1,9 @@
 /**
- * 功課 Google Form 產生器
+ * 功課 Google Form 產生器（Apps Script 後備）
  *
- * 在老師自己的 Google 帳戶裡複製範本表單、取代語音／筆記連結、
+ * 平時用 GitHub Pages 的 index.html，以學校帳戶登入後直接產生表單。
+ * 學校封鎖 Cloud 專案或第三方應用程式時，才把這個檔貼進 Apps Script。
+ * 程式在老師自己的 Google 帳戶裡複製範本、取代語音／筆記連結、
  * 為每次功課另建回應試算表。學生資料只留在該帳戶，不要放進這個程式庫。
  */
 

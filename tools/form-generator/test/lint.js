@@ -6,7 +6,12 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const file = path.join(__dirname, '..', 'Code.gs');
+const root = path.join(__dirname, '..');
+['logic.js', 'app.js', 'config.js', 'test/mock-google.js'].forEach(function (name) {
+  new vm.Script(fs.readFileSync(path.join(root, name), 'utf8'), { filename: name });
+});
+
+const file = path.join(root, 'Code.gs');
 const code = fs.readFileSync(file, 'utf8');
 new vm.Script(code, { filename: 'Code.gs' });
 

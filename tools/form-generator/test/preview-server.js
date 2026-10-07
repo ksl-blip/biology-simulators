@@ -36,6 +36,12 @@ const server = http.createServer(function (req, res) {
     if (path.basename(file) === 'Index.html') {
       data = Buffer.from(String(data).replace('<head>', '<head><script src="/test/mock-gas.js"></script>'));
     }
+    if (path.basename(file) === 'index.html' && url.searchParams.get('mock') === '1') {
+      data = Buffer.from(String(data).replace(
+        'https://accounts.google.com/gsi/client',
+        '/test/mock-google.js'
+      ));
+    }
     res.writeHead(200, { 'Content-Type': types[path.extname(file)] || 'application/octet-stream' });
     res.end(data);
   });
