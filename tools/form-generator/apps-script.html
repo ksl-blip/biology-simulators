@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>功課 Google Form 產生器 · Apps Script 後備做法</title>
+<meta name="description" content="給香港中學文憑試生物科老師用的 Google Form 產生器。程式在老師自己的 Google 帳戶裡運行。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230f766e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#14241f; --muted:#52645d; --line:#d5e3dc; --teal:#0f766e; --card:#fffdf8; --bg:#e7f0ec; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Noto Sans TC", "PingFang HK", "Microsoft JhengHei", sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(800px 320px at 0% -10%, #ccfbf1 0%, transparent 55%),
+      var(--bg);
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 28px 18px 64px; }
+  .eyebrow { margin: 0 0 6px; color: var(--teal); font-weight: 800; letter-spacing: 0.08em; font-size: 0.78rem; }
+  h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.2; }
+  h2 { margin: 0 0 10px; font-size: 1.25rem; }
+  p { line-height: 1.6; }
+  .lead { color: var(--muted); font-size: 1.05rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; margin: 14px 0; }
+  ol, ul { margin: 8px 0 0; padding-left: 1.2rem; }
+  li { margin: 6px 0; line-height: 1.55; }
+  code { background: #f0fdfa; padding: 0 4px; border-radius: 6px; }
+  .warn { background: #fff7ed; border-color: #fed7aa; }
+  .file { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .file h3 { margin: 0; font-size: 1.05rem; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  button {
+    font: inherit; font-weight: 800; min-height: 44px; padding: 8px 12px;
+    border-radius: 12px; border: 1px solid var(--line); background: #fff; cursor: pointer;
+  }
+  button.primary { background: var(--teal); color: #fff; border-color: var(--teal); }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+  .url { word-break: break-all; color: var(--muted); font-size: 0.88rem; margin: 8px 0 0; }
+  footer { color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">HKDSE 生物 · 後備做法</p>
+  <h1>用 Apps Script 部署</h1>
+  <p class="lead">如果學校管理員封鎖了 Cloud 專案或第三方應用程式，就不能在 GitHub Pages 直接登入。這時把程式貼進你自己的 Google 帳戶，部署成只有你能開的網頁應用程式。平時請用 <a href="./">網頁版</a>。</p>
+
+  <section class="card">
+    <h2>每次你要做的事</h2>
+    <ol>
+      <li>打開已加入書籤的網頁應用程式。</li>
+      <li>核對標題（預設是 <code>2029 DSE Biology Homework Submission</code>、今天日期，以及下一個未用過的 a／b／c）。</li>
+      <li>貼上今次的語音連結和筆記連結，有需要再加一句說明和截止日期。</li>
+      <li>按「產生表單」，複製 WhatsApp 訊息發給學生。</li>
+    </ol>
+    <p>學生仍是閱讀筆記、聽語音，然後在表格上載 PDF。姓名、班別、班號和檔案上載題沿用範本，不會在這裡改掉。</p>
+  </section>
+
+  <section class="card warn">
+    <h2>不要把學生資料放進這個網站</h2>
+    <p>這個 GitHub 儲存庫是公開的。學生姓名、學號、功課 PDF 和回應試算表只應留在你的 Google 雲端硬碟。下面的按鈕只複製程式碼。</p>
+  </section>
+
+  <section class="card">
+    <h2>貼進 Apps Script 的三個檔案</h2>
+    <p>到 <a href="https://script.google.com">script.google.com</a> 用 ksl@fss.edu.hk 開新專案。HTML 檔的名稱必須是 <code>Index</code>。不要貼說明頁 <code>index.html</code> 或本頁。</p>
+    <div id="files"></div>
+  </section>
+
+  <section class="card">
+    <h2>設定步驟</h2>
+    <ol>
+      <li>專案設定裡勾選顯示 <code>appsscript.json</code>，把三個檔案分別貼上並儲存。</li>
+      <li>選函數 <code>getAppState</code> 按執行，用 ksl@fss.edu.hk 授權。若顯示尚未驗證，按「進階」再允許。這是你自己的指令碼。</li>
+      <li>部署 → 新增部署 → 網頁應用程式。</li>
+      <li>執行身分：<strong>我</strong>（Execute as: Me）。</li>
+      <li>誰可以存取：<strong>只有我自己</strong>（Who has access: Only myself）。</li>
+      <li>部署後把網頁應用程式網址加入書籤。</li>
+      <li>第一次打開「範本」，掃描預設表單 <code>1uerPSCadog-u3AsRlM0OR-3mRpJR_GXJCOMlVh75Uvw</code>，指出哪一個網址是語音、哪一個是筆記，然後儲存。資料夾預設是 <code>1I5hvOvxqYWIFXzP1HxlfdWdl7RcacUVF</code>。</li>
+      <li>改過程式後：部署 → 管理部署 → 鉛筆 → 新版本 → 部署。書籤網址不用改。</li>
+    </ol>
+    <p>更完整的說明、權限清單和錯誤對照在 <a href="https://github.com/ksl-blip/biology-simulators/blob/main/tools/form-generator/README.md">README</a>。</p>
+  </section>
+
+  <section class="card">
+    <h2>程式會幫你做什麼</h2>
+    <ul>
+      <li>用雲端硬碟複製範本，放到範本同一個資料夾（或你指定的資料夾），並改標題。</li>
+      <li>以舊網址的完整字串，取代說明、題目、分節和圖片裡的連結。如果語音是 YouTube，也會更新表單上的影片。</li>
+      <li>保留 PDF 上載題，並讓新表單接受回應。收集設定不會故意改動。</li>
+      <li>為這一份功課另建回應試算表。</li>
+      <li>可以儲存多個範本（不同班別或學年）。產生紀錄留在指令碼屬性，方便再複製。</li>
+      <li>填了截止日期的話，可以選擇到時自動關閉表單。</li>
+    </ul>
+  </section>
+  <footer>介面語言是繁體中文（香港）。模擬數值和學生答案都不會出現在這個說明頁。</footer>
+</div>
+<script>
+(function () {
+  var RAW = 'https://raw.githubusercontent.com/ksl-blip/biology-simulators/main/tools/form-generator/';
+  var files = [
+    { name: 'Code.gs', note: '貼到 Code.gs' },
+    { name: 'Index.html', note: '新增 HTML，檔名輸入 Index' },
+    { name: 'appsscript.json', note: '貼到資訊清單' }
+  ];
+  var root = document.getElementById('files');
+  files.forEach(function (file) {
+    var card = document.createElement('article');
+    card.className = 'card';
+    var head = document.createElement('div');
+    head.className = 'file';
+    var title = document.createElement('div');
+    var h3 = document.createElement('h3');
+    h3.textContent = file.name;
+    var note = document.createElement('div');
+    note.textContent = file.note;
+    title.appendChild(h3);
+    title.appendChild(note);
+    var row = document.createElement('div');
+    row.className = 'row';
+    var copyUrl = document.createElement('button');
+    copyUrl.type = 'button';
+    copyUrl.textContent = '複製 raw 網址';
+    copyUrl.addEventListener('click', function () { copy(RAW + file.name, copyUrl, '複製 raw 網址'); });
+    var copyBody = document.createElement('button');
+    copyBody.type = 'button';
+    copyBody.className = 'primary';
+    copyBody.textContent = '複製檔案內容';
+    copyBody.addEventListener('click', function () { copyContents(file.name, copyBody); });
+    row.appendChild(copyUrl);
+    row.appendChild(copyBody);
+    head.appendChild(title);
+    head.appendChild(row);
+    var url = document.createElement('p');
+    url.className = 'url';
+    url.textContent = RAW + file.name;
+    card.appendChild(head);
+    card.appendChild(url);
+    root.appendChild(card);
+  });
+
+  function copy(text, button, label) {
+    var done = function () {
+      button.textContent = '已複製';
+      setTimeout(function () { button.textContent = label; }, 1400);
+    };
+    var write = navigator.clipboard && navigator.clipboard.writeText
+      ? navigator.clipboard.writeText(text)
+      : Promise.reject();
+    write.then(done).catch(function () {
+      var area = document.createElement('textarea');
+      area.value = text;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand('copy');
+      area.remove();
+      done();
+    });
+  }
+
+  function copyContents(name, button) {
+    button.disabled = true;
+    fetch(name).then(function (res) {
+      if (!res.ok) throw new Error('讀不到 ' + name);
+      return res.text();
+    }).then(function (text) {
+      copy(text, button, '複製檔案內容');
+    }).catch(function () {
+      button.textContent = '讀不到檔案';
+      setTimeout(function () { button.textContent = '複製檔案內容'; }, 1800);
+    }).then(function () { button.disabled = false; });
+  }
+})();
+</script>
+</body>
+</html>

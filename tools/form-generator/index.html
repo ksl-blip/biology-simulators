@@ -3,179 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>功課 Google Form 產生器 · 設定</title>
-<meta name="description" content="給香港中學文憑試生物科老師用的 Google Form 產生器。程式在老師自己的 Google 帳戶裡運行。">
+<title>功課 Google Form 產生器</title>
+<meta name="description" content="用學校 Google 帳戶在這個網頁複製家課 Google Form，換上語音和筆記連結。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230f766e'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root { --ink:#14241f; --muted:#52645d; --line:#d5e3dc; --teal:#0f766e; --card:#fffdf8; --bg:#e7f0ec; }
+  :root {
+    --bg: #e7f0ec; --ink: #14241f; --muted: #52645d; --card: #fffdf8;
+    --line: #d5e3dc; --teal: #0f766e; --teal-dark: #115e59; --soft: #f0fdfa;
+    --amber: #9a3412; --amber-bg: #fff7ed; --red: #b91c1c; --red-bg: #fef2f2;
+  }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     font-family: "Noto Sans TC", "PingFang HK", "Microsoft JhengHei", sans-serif;
     color: var(--ink);
-    background:
-      radial-gradient(800px 320px at 0% -10%, #ccfbf1 0%, transparent 55%),
-      var(--bg);
+    background: radial-gradient(720px 280px at 0% -10%, #ccfbf1 0%, transparent 60%), var(--bg);
   }
-  .wrap { max-width: 820px; margin: 0 auto; padding: 28px 18px 64px; }
-  .eyebrow { margin: 0 0 6px; color: var(--teal); font-weight: 800; letter-spacing: 0.08em; font-size: 0.78rem; }
-  h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.2; }
-  h2 { margin: 0 0 10px; font-size: 1.25rem; }
-  p { line-height: 1.6; }
-  .lead { color: var(--muted); font-size: 1.05rem; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; margin: 14px 0; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: wait; opacity: 0.65; }
+  a { color: var(--teal-dark); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 56px; }
+  .eyebrow { margin: 0 0 4px; color: var(--teal); font-weight: 800; letter-spacing: 0.08em; font-size: 0.78rem; }
+  h1 { margin: 0; font-size: 1.7rem; line-height: 1.25; }
+  h2 { margin: 0 0 10px; font-size: 1.15rem; }
+  .sub, .muted { color: var(--muted); }
+  .who { margin: 8px 0 0; font-weight: 800; color: var(--teal-dark); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  nav.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; position: sticky; top: 0; z-index: 2; background: rgba(231,240,236,.94); padding: 6px 0; }
+  nav.tabs button { flex: 1 1 40%; border: 1px solid var(--line); background: #fff; border-radius: 999px; min-height: 44px; font-weight: 800; }
+  nav.tabs button[aria-selected="true"] { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-bottom: 12px; }
+  label { display: block; font-weight: 800; margin: 12px 0 6px; }
+  .hint { display: block; font-weight: 500; color: var(--muted); margin-top: 3px; }
+  input[type="text"], input[type="url"], input[type="datetime-local"], textarea, select {
+    width: 100%; border: 1px solid #b7c9c1; border-radius: 12px; padding: 12px; background: #fff; min-height: 46px;
+  }
+  textarea { min-height: 88px; resize: vertical; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-weight: 700; margin: 12px 0; }
+  .check input { width: 1.2rem; height: 1.2rem; margin-top: 2px; }
+  .primary, .ghost, .danger { border-radius: 12px; min-height: 46px; padding: 10px 14px; font-weight: 800; border: 1px solid transparent; }
+  .primary { background: var(--teal); color: #fff; }
+  .ghost { background: #fff; border-color: var(--line); }
+  .danger { background: #fff; color: var(--red); border-color: #fecaca; }
+  .banner { border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; }
+  .banner.error { background: var(--red-bg); color: var(--red); }
+  .banner.warn { background: var(--amber-bg); color: var(--amber); }
+  .banner.info { background: var(--soft); color: var(--teal-dark); }
+  .banner a { font-weight: 800; }
+  .chip { display: inline-block; border-radius: 999px; padding: 4px 10px; font-size: 0.85rem; font-weight: 800; }
+  .chip.ok { background: #ccfbf1; color: var(--teal-dark); }
+  .chip.todo { background: var(--amber-bg); color: var(--amber); }
+  .link-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
+  .link-row a, .url { word-break: break-all; }
+  .whatsapp { width: 100%; background: #f7fee7; border: 1px solid #d9f99d; border-radius: 14px; padding: 12px; white-space: pre-wrap; line-height: 1.55; }
+  .pick { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin-top: 10px; background: #fff; }
+  .pick p { margin: 6px 0; word-break: break-all; }
+  .roles { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+  .roles label { font-weight: 650; margin: 0; }
   ol, ul { margin: 8px 0 0; padding-left: 1.2rem; }
   li { margin: 6px 0; line-height: 1.55; }
-  code { background: #f0fdfa; padding: 0 4px; border-radius: 6px; }
-  .warn { background: #fff7ed; border-color: #fed7aa; }
-  .file { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
-  .file h3 { margin: 0; font-size: 1.05rem; }
-  .row { display: flex; gap: 8px; flex-wrap: wrap; }
-  button {
-    font: inherit; font-weight: 800; min-height: 44px; padding: 8px 12px;
-    border-radius: 12px; border: 1px solid var(--line); background: #fff; cursor: pointer;
+  code { background: var(--soft); padding: 0 4px; border-radius: 6px; }
+  .hidden { display: none !important; }
+  :focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+  @media (max-width: 640px) {
+    h1 { font-size: 1.45rem; }
+    .link-row { grid-template-columns: 1fr; }
   }
-  button.primary { background: var(--teal); color: #fff; border-color: var(--teal); }
-  button:focus-visible, a:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
-  .url { word-break: break-all; color: var(--muted); font-size: 0.88rem; margin: 8px 0 0; }
-  footer { color: var(--muted); font-size: 0.9rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <p class="eyebrow">HKDSE 生物 · 老師工具</p>
-  <h1>功課 Google Form 產生器</h1>
-  <p class="lead">每次家課複製範本 Google Form，換上今次的語音連結和筆記連結，再得到學生交功課的表格、回應試算表，以及一段 WhatsApp 訊息。真正的程式在 <strong>ksl@fss.edu.hk</strong> 的 Google 帳戶裡運行。這一頁只負責說明怎樣安裝。</p>
+  <header>
+    <p class="eyebrow">HKDSE 生物 · 只供老師使用</p>
+    <h1>功課 Google Form 產生器</h1>
+    <p class="sub">用 ksl@fss.edu.hk 登入這個網頁，複製範本、換上今次的語音和筆記連結，然後把學生連結和 WhatsApp 訊息複製出去。</p>
+    <p class="who" id="who"></p>
+    <div class="row" style="margin-top:10px">
+      <button type="button" class="primary" id="sign-in">用學校帳戶登入</button>
+      <button type="button" class="ghost hidden" id="sign-out">登出</button>
+    </div>
+  </header>
 
-  <section class="card">
-    <h2>每次你要做的事</h2>
-    <ol>
-      <li>打開已加入書籤的網頁應用程式。</li>
-      <li>核對標題（預設是 <code>2029 DSE Biology Homework Submission</code>、今天日期，以及下一個未用過的 a／b／c）。</li>
-      <li>貼上今次的語音連結和筆記連結，有需要再加一句說明和截止日期。</li>
-      <li>按「產生表單」，複製 WhatsApp 訊息發給學生。</li>
-    </ol>
-    <p>學生仍是閱讀筆記、聽語音，然後在表格上載 PDF。姓名、班別、班號和檔案上載題沿用範本，不會在這裡改掉。</p>
+  <div id="banner" class="banner hidden" role="alert"></div>
+
+  <section id="setup-needed" class="card">
+    <h2>第一次：貼上 OAuth 用戶端 ID</h2>
+    <p>這個網頁沒有伺服器。你要在學校的 Google Cloud 建立一個用戶端 ID（不是密碼），貼上一次，之後就留在這部瀏覽器。</p>
+    <p><a href="#view-settings">看完整設定步驟</a></p>
   </section>
 
-  <section class="card warn">
-    <h2>不要把學生資料放進這個網站</h2>
-    <p>這個 GitHub 儲存庫是公開的。學生姓名、學號、功課 PDF 和回應試算表只應留在你的 Google 雲端硬碟。下面的按鈕只複製程式碼。</p>
+  <nav class="tabs" aria-label="功能">
+    <button type="button" id="tab-generate" aria-selected="true">產生</button>
+    <button type="button" id="tab-template" aria-selected="false">範本</button>
+    <button type="button" id="tab-history" aria-selected="false">紀錄</button>
+    <button type="button" id="tab-settings" aria-selected="false">設定</button>
+  </nav>
+
+  <section id="view-generate">
+    <form id="gen-form" class="card" novalidate>
+      <div class="row" style="justify-content:space-between">
+        <h2 style="margin:0">今次功課</h2>
+        <span id="map-chip" class="chip todo">尚未標示連結</span>
+      </div>
+      <label for="template-select">範本<span class="hint" id="map-hint"></span></label>
+      <select id="template-select"></select>
+      <label for="title">新表單標題</label>
+      <input id="title" type="text" autocomplete="off">
+      <div class="row"><button type="button" class="ghost" id="refresh-title">按今天日期重算 a/b/c</button></div>
+      <label for="audio">今次語音連結</label>
+      <input id="audio" type="url" inputmode="url" placeholder="https://" autocomplete="off">
+      <label for="notes">今次筆記連結</label>
+      <input id="notes" type="url" inputmode="url" placeholder="https://" autocomplete="off">
+      <label for="instructions">補充說明（可留空）<span class="hint">會寫進表單說明，也會放進 WhatsApp 訊息。</span></label>
+      <textarea id="instructions"></textarea>
+      <label for="deadline">截止日期（香港時間，可留空）<span class="hint">只會寫進表單說明。這個網頁版不能到時自動關閉。</span></label>
+      <input id="deadline" type="datetime-local">
+      <label class="check"><input id="label-links" type="checkbox" checked> 在表單說明加上「🎧 語音」和「📒 筆記」</label>
+      <label for="folder-id">放入另一個資料夾（可留空，預設跟範本）</label>
+      <input id="folder-id" type="text" placeholder="雲端硬碟資料夾網址或 ID">
+      <div class="row" style="margin-top:14px"><button type="submit" class="primary" id="generate-btn">產生表單</button></div>
+    </form>
+    <section id="result" class="card hidden" aria-live="polite">
+      <h2>已產生</h2>
+      <p id="result-title" style="font-weight:800"></p>
+      <p id="result-checks" class="muted"></p>
+      <div id="result-warnings"></div>
+      <div id="result-links"></div>
+      <label for="whatsapp">WhatsApp 訊息</label>
+      <textarea id="whatsapp" class="whatsapp" readonly></textarea>
+      <div class="row"><button type="button" class="primary" id="copy-whatsapp">複製 WhatsApp 訊息</button></div>
+    </section>
+    <section class="card">
+      <h2>預覽訊息</h2>
+      <pre id="preview" class="whatsapp"></pre>
+    </section>
   </section>
 
-  <section class="card">
-    <h2>貼進 Apps Script 的三個檔案</h2>
-    <p>到 <a href="https://script.google.com">script.google.com</a> 用 ksl@fss.edu.hk 開新專案。HTML 檔的名稱必須是 <code>Index</code>。不要貼本頁（小寫的 <code>index.html</code>）。</p>
-    <div id="files"></div>
+  <section id="view-template" class="hidden">
+    <div class="card">
+      <h2>已儲存的範本</h2>
+      <div id="template-list"></div>
+      <div class="row" style="margin-top:12px">
+        <button type="button" class="ghost" id="new-template">新範本</button>
+        <button type="button" class="ghost" id="use-default">填入 2029 預設範本</button>
+      </div>
+    </div>
+    <form id="template-form" class="card" novalidate>
+      <h2 id="template-heading">範本設定</h2>
+      <label for="tpl-name">名稱</label>
+      <input id="tpl-name" type="text">
+      <label for="tpl-form">表單 ID 或編輯網址<span class="hint">要用含 /d/ 的編輯網址，不要用學生的 /e/ 發佈連結。</span></label>
+      <input id="tpl-form" type="text">
+      <label for="tpl-folder">資料夾 ID 或網址<span class="hint">用來檢查今天的 a/b/c，以及放置新表單。</span></label>
+      <input id="tpl-folder" type="text">
+      <label for="tpl-prefix">標題字首</label>
+      <input id="tpl-prefix" type="text">
+      <p id="tpl-status" class="muted"></p>
+      <div class="row">
+        <button type="button" class="ghost" id="scan-btn">掃描範本裡的網址</button>
+        <button type="submit" class="primary" id="save-template">儲存範本</button>
+        <button type="button" class="danger" id="delete-template">刪除</button>
+      </div>
+      <div id="scan-box"></div>
+    </form>
   </section>
 
-  <section class="card">
-    <h2>設定步驟</h2>
-    <ol>
-      <li>專案設定裡勾選顯示 <code>appsscript.json</code>，把三個檔案分別貼上並儲存。</li>
-      <li>選函數 <code>getAppState</code> 按執行，用 ksl@fss.edu.hk 授權。若顯示尚未驗證，按「進階」再允許。這是你自己的指令碼。</li>
-      <li>部署 → 新增部署 → 網頁應用程式。</li>
-      <li>執行身分：<strong>我</strong>（Execute as: Me）。</li>
-      <li>誰可以存取：<strong>只有我自己</strong>（Who has access: Only myself）。</li>
-      <li>部署後把網頁應用程式網址加入書籤。</li>
-      <li>第一次打開「範本」，掃描預設表單 <code>1uerPSCadog-u3AsRlM0OR-3mRpJR_GXJCOMlVh75Uvw</code>，指出哪一個網址是語音、哪一個是筆記，然後儲存。資料夾預設是 <code>1I5hvOvxqYWIFXzP1HxlfdWdl7RcacUVF</code>。</li>
-      <li>改過程式後：部署 → 管理部署 → 鉛筆 → 新版本 → 部署。書籤網址不用改。</li>
-    </ol>
-    <p>更完整的說明、權限清單和錯誤對照在 <a href="https://github.com/ksl-blip/biology-simulators/blob/main/tools/form-generator/README.md">README</a>。</p>
+  <section id="view-history" class="hidden"><div id="history-list"></div></section>
+
+  <section id="view-settings" class="hidden">
+    <form class="card" id="client-form" novalidate>
+      <h2>OAuth 用戶端 ID</h2>
+      <label for="client-id">用戶端 ID<span class="hint">公開的 ID，不是密碼。只存在這部瀏覽器。</span></label>
+      <input id="client-id" type="text" autocomplete="off" placeholder="xxxx.apps.googleusercontent.com">
+      <div class="row" style="margin-top:12px"><button type="button" class="primary" id="save-client">儲存</button></div>
+    </form>
+    <section class="card">
+      <h2>用學校帳戶建立用戶端 ID</h2>
+      <ol>
+        <li>用 <strong>ksl@fss.edu.hk</strong> 開啟 <a href="https://console.cloud.google.com/">Google Cloud Console</a>。</li>
+        <li>建立新專案，名稱可以是「功課表單產生器」。</li>
+        <li>啟用 <a href="https://console.cloud.google.com/apis/library/drive.googleapis.com">Google Drive API</a> 和 <a href="https://console.cloud.google.com/apis/library/forms.googleapis.com">Google Forms API</a>。不用 Picker API，也不用 API 金鑰。</li>
+        <li>「API 和服務」→「OAuth 同意畫面」。使用者類型選 <strong>內部 (Internal)</strong>。這是 Workspace 內部應用程式，不用經過 Google 驗證。應用程式名稱和支援電郵填你的學校帳戶。</li>
+        <li>「憑證」→「建立憑證」→「OAuth 用戶端 ID」。應用程式類型選 <strong>網頁應用程式</strong>。</li>
+        <li>已授權的 JavaScript 來源只填 <code>https://ksl-blip.github.io</code>。不要加上網頁路徑。重新導向 URI 可以留空，這個網頁用彈出視窗登入。</li>
+        <li>建立後複製用戶端 ID，貼到上面的欄位並儲存。然後按「用學校帳戶登入」，在帳戶清單選 ksl@fss.edu.hk。</li>
+      </ol>
+      <p>登入時 Google 會要求雲端硬碟和表單的權限。需要完整的雲端硬碟權限，才能按表單 ID 複製你已經擁有的範本，以及讀取資料夾裡現有功課的檔名來決定 a、b、c。如果只用「這個應用程式開啟過的檔案」，程式看不到資料夾裡其他表單，標題會撞名。</p>
+    </section>
+    <section class="card">
+      <h2>這個網頁版做不到的事</h2>
+      <ul>
+        <li>不能自動建立或連結回應試算表。產生後請打開編輯頁，按「回應」→「連結至試算表」。</li>
+        <li>不能把連結縮成 forms.gle。</li>
+        <li>不能到截止時間自動關閉表單。截止日期只會寫在說明裡。</li>
+      </ul>
+      <p>如果學校管理員封鎖 Cloud 專案或第三方應用程式，登入會失敗。那時請改用 <a href="apps-script.html">Apps Script 做法</a>，在你自己的 Google 帳戶裡部署，不用 Cloud Console。</p>
+    </section>
   </section>
 
-  <section class="card">
-    <h2>程式會幫你做什麼</h2>
-    <ul>
-      <li>用雲端硬碟複製範本，放到範本同一個資料夾（或你指定的資料夾），並改標題。</li>
-      <li>以舊網址的完整字串，取代說明、題目、分節和圖片裡的連結。如果語音是 YouTube，也會更新表單上的影片。</li>
-      <li>保留 PDF 上載題，並讓新表單接受回應。收集設定不會故意改動。</li>
-      <li>為這一份功課另建回應試算表。</li>
-      <li>可以儲存多個範本（不同班別或學年）。產生紀錄留在指令碼屬性，方便再複製。</li>
-      <li>填了截止日期的話，可以選擇到時自動關閉表單。</li>
-    </ul>
-  </section>
-  <footer>介面語言是繁體中文（香港）。模擬數值和學生答案都不會出現在這個說明頁。</footer>
+  <footer class="card">
+    <h2>另一種做法</h2>
+    <p>不想用 Cloud Console 的話，可以把程式貼進 Apps Script，部署成只有你能開的網頁應用程式。<a href="apps-script.html">看 Apps Script 設定步驟</a>。學生姓名和功課不要放進這個公開網站；產生紀錄只留在你的瀏覽器。</p>
+  </footer>
 </div>
-<script>
-(function () {
-  var RAW = 'https://raw.githubusercontent.com/ksl-blip/biology-simulators/main/tools/form-generator/';
-  var files = [
-    { name: 'Code.gs', note: '貼到 Code.gs' },
-    { name: 'Index.html', note: '新增 HTML，檔名輸入 Index' },
-    { name: 'appsscript.json', note: '貼到資訊清單' }
-  ];
-  var root = document.getElementById('files');
-  files.forEach(function (file) {
-    var card = document.createElement('article');
-    card.className = 'card';
-    var head = document.createElement('div');
-    head.className = 'file';
-    var title = document.createElement('div');
-    var h3 = document.createElement('h3');
-    h3.textContent = file.name;
-    var note = document.createElement('div');
-    note.textContent = file.note;
-    title.appendChild(h3);
-    title.appendChild(note);
-    var row = document.createElement('div');
-    row.className = 'row';
-    var copyUrl = document.createElement('button');
-    copyUrl.type = 'button';
-    copyUrl.textContent = '複製 raw 網址';
-    copyUrl.addEventListener('click', function () { copy(RAW + file.name, copyUrl, '複製 raw 網址'); });
-    var copyBody = document.createElement('button');
-    copyBody.type = 'button';
-    copyBody.className = 'primary';
-    copyBody.textContent = '複製檔案內容';
-    copyBody.addEventListener('click', function () { copyContents(file.name, copyBody); });
-    row.appendChild(copyUrl);
-    row.appendChild(copyBody);
-    head.appendChild(title);
-    head.appendChild(row);
-    var url = document.createElement('p');
-    url.className = 'url';
-    url.textContent = RAW + file.name;
-    card.appendChild(head);
-    card.appendChild(url);
-    root.appendChild(card);
-  });
-
-  function copy(text, button, label) {
-    var done = function () {
-      button.textContent = '已複製';
-      setTimeout(function () { button.textContent = label; }, 1400);
-    };
-    var write = navigator.clipboard && navigator.clipboard.writeText
-      ? navigator.clipboard.writeText(text)
-      : Promise.reject();
-    write.then(done).catch(function () {
-      var area = document.createElement('textarea');
-      area.value = text;
-      document.body.appendChild(area);
-      area.select();
-      document.execCommand('copy');
-      area.remove();
-      done();
-    });
-  }
-
-  function copyContents(name, button) {
-    button.disabled = true;
-    fetch(name).then(function (res) {
-      if (!res.ok) throw new Error('讀不到 ' + name);
-      return res.text();
-    }).then(function (text) {
-      copy(text, button, '複製檔案內容');
-    }).catch(function () {
-      button.textContent = '讀不到檔案';
-      setTimeout(function () { button.textContent = '複製檔案內容'; }, 1800);
-    }).then(function () { button.disabled = false; });
-  }
-})();
-</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="config.js"></script>
+<script src="logic.js"></script>
+<script src="app.js" defer></script>
 </body>
 </html>

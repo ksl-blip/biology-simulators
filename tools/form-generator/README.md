@@ -1,123 +1,65 @@
 # 功課 Google Form 產生器
 
-給香港中學文憑試生物科老師用。每次家課只要填任務名稱、語音連結和筆記連結，程式會：
+給香港中學文憑試生物科老師用。打開 GitHub Pages 上的這個網頁，用 **ksl@fss.edu.hk** 登入，就可以複製範本 Google Form、換上今次的語音和筆記連結，並複製一段 WhatsApp 訊息。不用部署 Apps Script，也沒有後端。
 
-1. 複製範本 Google Form（連同 PDF 檔案上載題）
-2. 在表單說明、題目、分節、圖片和 YouTube 影片裡，把舊的語音／筆記網址換成今次的
-3. 在同一個資料夾建立一份新的回應試算表
-4. 給出學生連結、編輯連結，以及一段可以貼到 WhatsApp 的訊息
+網址：<https://ksl-blip.github.io/biology-simulators/tools/form-generator/>
 
-程式在你自己的 Google 帳戶裡運行。請用 **ksl@fss.edu.hk**。這個資料夾的程式碼可以公開，但學生姓名、學號、功課和回應試算表不要放進 GitHub。
+學生姓名、學號、功課 PDF 和回應試算表不要放進這個公開儲存庫。產生紀錄只存在你這部瀏覽器的 localStorage。
 
-網頁介面是繁體中文，手機也可以用。
+## 這個網頁會做的事
 
-## 你需要準備
+1. 按香港日期建議標題 `2029 DSE Biology Homework Submission YYYYMMDDx`，並查看資料夾裡現有檔名，用下一個未用過的 a、b、c。
+2. 掃描範本，列出說明、題目、分節、圖片和 YouTube 影片裡的網址，讓你標示哪一個是語音、哪一個是筆記。每個範本只標一次。
+3. 把範本複製到同一個資料夾（或你指定的資料夾），改雲端硬碟檔名和表單標題。
+4. 以完整字串取代那兩個舊網址。語音如果是 YouTube，會一併更新表單上的影片。PDF 檔案上載題不會被改寫。
+5. 要求新表單發佈並接受回應，然後給出學生連結、編輯連結和 WhatsApp 訊息。
 
-- 已登入 ksl@fss.edu.hk 的瀏覽器
-- 範本表單的編輯權。預設範本檔案 ID：`1uerPSCadog-u3AsRlM0OR-3mRpJR_GXJCOMlVh75Uvw`
-- 範本所在的雲端硬碟資料夾（預設 `1I5hvOvxqYWIFXzP1HxlfdWdl7RcacUVF`），新表單和回應試算表會放在這裡
-- 範本裡已經有兩個**不同**的網址：一個是語音，一個是筆記。它們可以在表單說明、題目標題、說明文字、分節標題、圖片來源或 YouTube 影片。第一次使用時，程式會把它們列出來，讓你指出哪一個是哪一種，之後會記住
+預設範本：`1uerPSCadog-u3AsRlM0OR-3mRpJR_GXJCOMlVh75Uvw`  
+預設資料夾：`1I5hvOvxqYWIFXzP1HxlfdWdl7RcacUVF`
 
-學生交功課的題目維持範本原樣（短答姓名、班別 A/B/C/D、班號、PDF 檔案上載）。複製表單時這些題目會一起複製。程式不會改收集電郵或其他收集設定，只會確認表單正在接受回應。
+## 這個網頁版做不到的事
 
-## 1. 建立指令碼專案
+Google Forms API 沒有這些功能，介面不會假裝做到：
 
-1. 開啟 [https://script.google.com](https://script.google.com)，確認右上角帳戶是 **ksl@fss.edu.hk**。
-2. 按「新專案」。
-3. 左上方專案名稱改成 `功課 Google Form 產生器`。
-4. 左側齒輪「專案設定」→ 勾選「在編輯器中顯示『appsscript.json』資訊清單檔案」。
-5. 回到編輯器，打開 `appsscript.json`，把內容全部換成這個資料夾的 `appsscript.json`，然後儲存。
-6. 打開預設的 `Code.gs`，把內容全部換成這個資料夾的 `Code.gs`，然後儲存。
-7. 檔案旁邊的「+」→「HTML」→ 檔名輸入 **`Index`**（Apps Script 會存成 `Index.html`）。把這個資料夾的 **`Index.html`**（I 是大寫）全部貼上，然後儲存。
-8. 不要把說明頁 `index.html`（i 是小寫）貼進 Apps Script。那個檔只是給人看的設定說明。
+- 不能自動建立或連結回應試算表。請打開編輯連結，按「回應」→「連結至試算表」。
+- 不能把連結縮成 forms.gle。學生連結是 API 交回的發佈網址。
+- 不能到截止時間自動關閉。截止日期只會寫進表單說明。
 
-三個要貼上的檔：
+需要試算表、短網址或自動關閉時，用頁底的 [Apps Script 做法](apps-script.html)。
 
-| Apps Script 裡的檔名 | 這個資料夾的檔案 |
-| --- | --- |
-| `Code.gs` | `Code.gs` |
-| `Index.html` | `Index.html` |
-| `appsscript.json` | `appsscript.json` |
+## 第一次：建立 OAuth 用戶端 ID
 
-## 2. 授權
+用戶端 ID 是公開的，不是密碼。程式庫裡的 `config.js` 把 `CLIENT_ID` 留空。你可以之後把 ID 填進那個檔再部署，也可以只在網頁「設定」貼一次（存在這部瀏覽器）。網頁裡的值會蓋過 `config.js`。
 
-1. 在編輯器上方選函數 `getAppState`，按「執行」。
-2. 跳出授權視窗時，選擇 **ksl@fss.edu.hk**。
-3. 如果出現「Google 尚未驗證這個應用程式」，按「進階」→「前往功課 Google Form 產生器（不安全）」→「允許」。這是你自己的指令碼，不是外人的應用程式。
-4. 允許的權限包括：表單、雲端硬碟（用來複製範本）、試算表（回應）、指令碼屬性（記住範本和紀錄）、外部連線（讀取影片網址）、以及在截止時間關閉表單的觸發條件。
+1. 用 **ksl@fss.edu.hk** 開啟 [Google Cloud Console](https://console.cloud.google.com/)。
+2. 建立新專案，名稱可以是「功課表單產生器」。
+3. 啟用 [Google Drive API](https://console.cloud.google.com/apis/library/drive.googleapis.com) 和 [Google Forms API](https://console.cloud.google.com/apis/library/forms.googleapis.com)。這個版本不用 Picker API，也不用 API 金鑰。
+4. 「API 和服務」→「OAuth 同意畫面」。使用者類型選 **內部 (Internal)**。這是 Workspace 內部應用程式，不用經過 Google 驗證。
+5. 「憑證」→「建立憑證」→「OAuth 用戶端 ID」。類型選 **網頁應用程式**。
+6. 已授權的 JavaScript 來源只填 `https://ksl-blip.github.io`。不要加上網頁路徑。重新導向 URI 可以留空（登入用彈出視窗）。
+7. 複製用戶端 ID，貼到網頁的「設定」並儲存。按「用學校帳戶登入」，在帳戶清單選 ksl@fss.edu.hk。
 
-## 3. 部署網頁應用程式
+登入會要求雲端硬碟和表單權限。需要完整的雲端硬碟權限，才能按表單 ID 複製你已經擁有的範本，以及讀取資料夾裡現有功課的檔名來決定 a、b、c。如果只用「這個應用程式開啟過的檔案」，程式看不到資料夾裡其他表單，標題會撞名。
 
-1. 右上角「部署」→「新增部署」。
-2. 類型選齒輪 →「網頁應用程式」。
-3. 說明可以寫 `功課表單產生器`。
-4. **執行身分：我**（Execute as: **Me**）。必須是 ksl@fss.edu.hk，這樣才能複製你的範本。
-5. **誰可以存取：只有我自己**（Who has access: **Only myself**）。
-6. 按「部署」。如果再問授權，同樣用 ksl@fss.edu.hk 允許。
-7. 複製「網頁應用程式」網址（Workspace 帳戶通常像 `https://script.google.com/a/macros/fss.edu.hk/s/…/exec`）。
-8. 把這個網址加入書籤。以後每天用書籤開啟，不要用編輯器裡的預覽。
+如果學校管理員封鎖 Cloud 專案或第三方應用程式，登入會失敗。請改用 [Apps Script 做法](apps-script.html)，不用 Cloud Console。
 
-改過程式之後，舊網址不會自動更新。請「部署」→「管理部署」→ 鉛筆圖示 → 版本選「新版本」→「部署」。書籤網址維持不變。
+## 每次出功課
 
-## 4. 第一次：標示範本裡的兩個連結
+1. 打開「產生」，核對標題。
+2. 如果範本顯示「尚未標示連結」，先到「範本」掃描，指出語音和筆記，然後儲存。
+3. 貼上今次的兩個連結。補充說明和截止日期可以留空。
+4. 按「產生表單」。複製學生連結或 WhatsApp 訊息。
 
-1. 用書籤打開網頁。
-2. 打開「範本」。預設已有「2029 DSE Biology」，表單 ID 和資料夾 ID 已填好。可以改，也可以按「新範本」再加另一班或另一學年。每個範本各自記住哪一個網址是語音、哪一個是筆記。
-3. 按「掃描範本裡的網址」。程式會列出找到的每一個網址，以及它出現在說明、題目、分節、圖片還是影片。
-4. 為語音選「語音連結」，為筆記選「筆記連結」，其餘選「不用取代」。
-5. 按「儲存範本」。看到「已標示語音和筆記」就可以產生功課。
+## 後備：Apps Script
 
-如果掃描時說尚未啟用 Google Forms API：在指令碼編輯器左側「服務」按「+」，加入 **Google Forms API**，儲存後再掃描一次。沒有這項服務時，說明和題目文字裡的連結仍然掃得到；YouTube 影片網址則要有這項服務才讀得到。只有一段影片、而今次語音又是 YouTube 時，程式仍會把那段影片換成新的語音連結。
-
-標題字首預設是 `2029 DSE Biology Homework Submission `。換學年時改字首即可，例如另一班用另一個字首。
-
-## 5. 每次出功課
-
-1. 打開「產生」。
-2. 選範本。標題會建議成 `2029 DSE Biology Homework Submission` 加上今天的日期（香港時間）和第一個還沒用過的字母 a、b、c…。程式會看資料夾裡現有的檔名。你可以改標題。
-3. 貼上今次的語音連結和筆記連結。
-4. 如有需要，寫一句補充說明，以及截止日期（香港時間）。
-5. 預設會在表單說明加上兩行：`🎧 語音` 和 `📒 筆記`。可以取消勾選。
-6. 如果填了截止日期，可以再勾選「到截止時間自動關閉表單」。時間一到，表單不再接受回應。這是附加功能；如果觸發條件已滿，程式會用中文告訴你，表單仍然會產生。
-7. 資料夾留空，就放在範本同一個資料夾。
-8. 按「產生表單」。
-
-完成後會看到：
-
-- 學生用的發佈連結
-- forms.gle 短網址（如果 Google 沒有發出短網址，就用完整發佈連結）
-- 編輯連結
-- 這一次專用的回應試算表
-- 可複製的 WhatsApp 訊息（任務名稱、筆記、語音、表格連結、截止日期）
-
-「紀錄」頁會留下之前產生的連結，可以再複製，或把該次的網址填回產生頁再改。紀錄存在這個指令碼的指令碼屬性裡，不在 GitHub。
-
-再出一份功課，把欄位改一改，再按一次「產生表單」即可。
-
-## 常見問題
-
-| 畫面 | 可以怎樣做 |
-| --- | --- |
-| 找不到這個表單或資料夾 | 檢查貼上的是編輯網址裡 `/d/` 後面的 ID，不是學生連結裡 `/e/` 的那串。也確認檔案沒有被刪除。 |
-| 沒有權限 | 用 ksl@fss.edu.hk 重新授權。範本必須是這個帳戶擁有或可編輯。 |
-| 這是學生用的發佈連結 | 打開範本，按鉛筆進入編輯，再複製網址。 |
-| 尚未標示連結 | 到「範本」掃描，標示語音和筆記，再儲存。 |
-| 複製後沒有檔案上載題 | 不要把該連結發給學生。打開範本，確認 PDF 上載題還在，然後再產生一次。 |
-| 學生打不開表格 | 打開編輯連結，確認表單已發佈，而且正在接受回應。 |
-| 未能設定自動關閉 | 表單已經建好。請在截止後自行到編輯頁關閉回應。一個指令碼的觸發條件數量有限。 |
-
-## 私隱
-
-這個儲存庫是公開的。請只把程式碼放在這裡。學生提交的 PDF、姓名、班號和回應試算表留在你的 Google 雲端硬碟。
+`Code.gs`、`Index.html`（I 大寫）和 `appsscript.json` 仍是完整的 Apps Script 網頁應用程式。它另外可以建立回應試算表、取得 forms.gle，以及到截止時間自動關閉。設定步驟在 [apps-script.html](apps-script.html)。網站首頁沒有連到這個工具。
 
 ## 開發者檢查
 
-在儲存庫根目錄：
-
 ```bash
 node tools/form-generator/test/lint.js
-node --test tools/form-generator/test/logic.test.js
+node --test tools/form-generator/test/logic.test.js tools/form-generator/test/client-logic.test.js
 node tools/form-generator/test/preview-server.js
 ```
 
-第三行會在本機打開介面，並用模擬的 `google.script.run` 代替 Google 伺服器，方便看版面。正式產生表單仍然要在 Apps Script 部署之後才可以。
+`index.html?mock=1` 會改載 `test/mock-google.js`，用模擬的登入和 Drive／Forms 回應看版面。正式網頁仍向 Google 登入。
