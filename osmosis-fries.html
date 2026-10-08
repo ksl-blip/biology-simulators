@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>滲透作用模擬：馬鈴薯條浸於不同濃度的蔗糖溶液</title>
+<style>
+:root {
+  --paper: #f3eee4;
+  --ink: #2b241c;
+  --muted: #5a493c;
+  --green: #1f6b3a;
+  --green-d: #174e2b;
+  --card: #fffaf3;
+  --line: #e0d2c0;
+  --neg: #8d3d2a;
+  --pos: #1f6b3a;
+  --zero: #5a493c;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "PingFang HK", "Noto Sans CJK HK", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; padding: 28px 18px 56px; }
+h1 { font-size: 28px; line-height: 1.3; margin: 0 0 8px; }
+h2 { font-size: 20px; margin: 0 0 10px; }
+p { margin: 8px 0; }
+.kicker { letter-spacing: .08em; color: var(--muted); margin: 0 0 4px; font-size: 13px; }
+.banner {
+  background: #fff6e4;
+  border: 1px solid #e4c98a;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 12px 0;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 12px 0;
+}
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+button, .beaker {
+  font-family: inherit;
+  font-size: 15px;
+}
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button.act {
+  background: var(--green);
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+button.ghost {
+  background: transparent;
+  color: var(--green-d);
+  border: 1px solid var(--green);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+button:disabled { opacity: .42; cursor: not-allowed; }
+button:focus-visible, .beaker:focus-visible, tr:focus-visible, input:focus-visible {
+  outline: 3px solid #1f6b3a;
+  outline-offset: 2px;
+}
+.slider-line { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; }
+input[type="range"] { width: min(480px, 72vw); accent-color: #1f6b3a; }
+.time-big { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 7.5em; }
+.stage {
+  position: relative;
+  background: linear-gradient(#f7f1e6, #efe2d0 72%, #e6d4bb);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 10px 0;
+  overflow: hidden;
+}
+.stage-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; padding: 2px 6px 4px; }
+.row { display: flex; justify-content: space-between; align-items: flex-end; gap: 6px; }
+.beaker {
+  appearance: none;
+  flex: 1 1 0;
+  min-width: 0;
+  border: 2px solid transparent;
+  background: transparent;
+  color: inherit;
+  border-radius: 16px;
+  padding: 4px 2px 8px;
+  cursor: pointer;
+  text-align: center;
+}
+.beaker:hover { background: rgba(255, 250, 243, .45); }
+.beaker.is-selected {
+  border-color: #1f6b3a;
+  background: rgba(255, 250, 243, .78);
+}
+.beaker svg { width: 100%; height: auto; display: block; }
+.bk-text { min-height: 5.6em; display: flex; flex-direction: column; align-items: center; line-height: 1.35; }
+.bk-id {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #efe4d2;
+  font-weight: 700;
+  font-size: 13px;
+}
+.bk-conc { font-size: 13px; }
+.bk-sub { font-size: 12px; color: var(--muted); }
+.bk-mass, .bk-pct { font-variant-numeric: tabular-nums; font-size: 14px; }
+.bk-pct { font-weight: 700; }
+.pos { color: var(--pos); }
+.neg { color: var(--neg); }
+.zero { color: var(--zero); }
+.bench {
+  height: 16px;
+  margin: 0 -10px;
+  background: linear-gradient(#c9a57c, #a07c52);
+  border-radius: 0 0 14px 14px;
+}
+.glass { fill: none; stroke: rgba(70, 100, 112, .75); stroke-width: 2.4; }
+.rim { fill: rgba(255, 255, 255, .28); stroke: rgba(70, 100, 112, .75); stroke-width: 2; }
+.shine { fill: none; stroke: rgba(255, 255, 255, .85); stroke-width: 2; stroke-linecap: round; }
+.arrows .set { opacity: 0; }
+.arrows.dir-hypo .set.in,
+.arrows.dir-hyper .set.out { opacity: 1; }
+.arrows polygon { fill: #145f78; }
+.iso-mark { opacity: 0; font-size: 20px; font-weight: 700; fill: #145f78; }
+.arrows.dir-iso .iso-mark { opacity: .9; }
+.flow-right { animation: toRight 1.8s ease-in-out infinite; }
+.flow-left { animation: toLeft 1.8s ease-in-out infinite; }
+@keyframes toRight {
+  0% { transform: translateX(-3px); opacity: .55; }
+  50% { opacity: 1; }
+  100% { transform: translateX(5px); opacity: .55; }
+}
+@keyframes toLeft {
+  0% { transform: translateX(3px); opacity: .55; }
+  50% { opacity: 1; }
+  100% { transform: translateX(-5px); opacity: .55; }
+}
+.inspect-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.stat {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+.stat span { display: block; color: var(--muted); font-size: 13px; }
+.stat strong { font-size: 18px; font-variant-numeric: tabular-nums; font-weight: 700; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+th, td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: center; }
+th { background: #efe4d2; font-weight: 650; }
+tbody tr { cursor: pointer; }
+tbody tr.is-selected { background: #f4e7cf; }
+caption { text-align: left; font-weight: 700; margin-bottom: 6px; color: var(--ink); }
+#chart { width: 100%; height: auto; display: block; background: #fffaf3; border-radius: 12px; }
+.defs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.defs dl { margin: 0; }
+.defs dt { font-weight: 700; margin-top: 8px; }
+.defs dd { margin: 2px 0 0; }
+ol.steps { margin: 8px 0 0; padding-left: 1.2em; }
+ol.steps li { margin: 4px 0; }
+.key { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); border: 0;
+}
+footer { color: var(--muted); font-size: 14px; margin-top: 8px; }
+@media (max-width: 860px) {
+  .inspect-grid, .defs { grid-template-columns: 1fr; }
+  h1 { font-size: 24px; }
+  .row { overflow-x: auto; }
+  .beaker { min-width: 128px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-right, .flow-left { animation: none !important; opacity: .9; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">中四生物 · 教學模擬</p>
+  <h1>滲透作用模擬：馬鈴薯條浸於不同濃度的蔗糖溶液</h1>
+  <p>滲透（osmosis）是水分子經細胞的部分透膜（partially permeable membrane），由水勢（water potential）較高的一側淨移動到較低的一側。溶質濃度愈高，水勢愈低。</p>
+  <div class="banner">
+    這是模擬示例，不是實驗室實測。頁面只顯示步驟、情境和讀數，結論請自行撰寫。
+  </div>
+
+  <section class="card" aria-labelledby="aimH">
+    <h2 id="aimH">目的與變項</h2>
+    <div class="defs">
+      <dl>
+        <dt>目的</dt>
+        <dd>比較蔗糖溶液濃度對馬鈴薯條質量和長度的影響，觀察滲透。</dd>
+        <dt>自變項</dt>
+        <dd>蔗糖溶液濃度（0、0.2、0.4、0.6、0.8 mol/dm³）。</dd>
+        <dt>因變項</dt>
+        <dd>質量或長度的百分比變化。</dd>
+      </dl>
+      <dl>
+        <dt>控制變項</dt>
+        <dd>同一條馬鈴薯、相同初始大小與質量、相同體積溶液、相同時間、同一溫度。</dd>
+        <dt>百分比變化</dt>
+        <dd>（末值 − 初值）÷ 初值 × 100%。質量取小數兩位，長度取小數一位，百分比取小數一位。</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="ctrlH">
+    <h2 id="ctrlH">時間</h2>
+    <div class="controls">
+      <button class="act" id="btnPlay" type="button">播放</button>
+      <button class="ghost" id="btnPause" type="button">暫停</button>
+      <button class="ghost" id="btnReset" type="button">重設</button>
+      <span class="time-big" id="timeText">0.0 分鐘</span>
+      <span class="muted small" id="phase">剛浸入（初始讀數）</span>
+    </div>
+    <div class="slider-line">
+      <label for="slider">模擬時間（0–30 分鐘）</label>
+      <input id="slider" type="range" min="0" max="30" step="0.1" value="0" aria-valuemin="0" aria-valuemax="30" aria-valuetext="0.0 分鐘">
+    </div>
+    <p class="muted small" style="margin-bottom:0;">播放約 20 秒走完 30 分鐘。拖動滑桿會暫停。可點選燒杯或表格列，亦可用左右方向鍵切換。</p>
+  </section>
+
+  <section aria-labelledby="sceneH">
+    <div class="stage" id="stage">
+      <div class="stage-top">
+        <h2 id="sceneH" style="margin:0;">五個燒杯</h2>
+        <p class="muted small" style="margin:0;">每杯一條生馬鈴薯條，初始 50.0 mm × 10 mm × 10 mm，5.00 g</p>
+      </div>
+      <div class="row" id="row"></div>
+      <div class="bench" aria-hidden="true"></div>
+    </div>
+    <p class="key small muted">
+      <span>低滲（hypotonic）：水淨入</span>
+      <span>近等滲（isotonic）：幾乎沒有淨移動</span>
+      <span>高滲（hypertonic）：水淨出</span>
+    </p>
+    <p class="small muted">箭嘴表示水的淨移動方向。溶液由淺至深只為分辨濃度，真實蔗糖溶液接近無色。薯條是生的，細胞膜仍然完整。讀數代表該時間取出並拭乾後的模擬量度；畫面仍把薯條留在杯中，方便比較。模擬假設 30 分鐘內變化大致均勻。</p>
+    <p class="small muted">濃食鹽水同樣會降低水勢，外觀變化類似 0.6 和 0.8 mol/dm³ 這兩個高滲燒杯。本模擬的自變項只有蔗糖濃度。</p>
+  </section>
+
+  <section class="card" aria-labelledby="inspectH">
+    <h2 id="inspectH">所選燒杯</h2>
+    <p id="inspectTitle" style="margin-top:0;font-weight:700;">燒杯 A</p>
+    <div class="inspect-grid">
+      <div class="stat"><span>蔗糖濃度</span><strong id="iConc"></strong></div>
+      <div class="stat"><span>溶液水勢</span><strong id="iWp"></strong></div>
+      <div class="stat"><span>用語</span><strong id="iTerm"></strong></div>
+      <div class="stat"><span>質量（初始 5.00 g）</span><strong id="iMass"></strong></div>
+      <div class="stat"><span>長度（初始 50.0 mm）</span><strong id="iLen"></strong></div>
+      <div class="stat"><span>質地</span><strong id="iTex"></strong></div>
+    </div>
+    <p id="iMove"></p>
+  </section>
+
+  <section class="card" aria-labelledby="tableCap">
+    <div class="scroll">
+      <table>
+        <caption id="tableCap">現時讀數</caption>
+        <thead>
+          <tr>
+            <th scope="col">燒杯</th>
+            <th scope="col">蔗糖濃度<br>(mol/dm³)</th>
+            <th scope="col">質量 (g)</th>
+            <th scope="col">長度 (mm)</th>
+            <th scope="col">質量變化 (%)</th>
+            <th scope="col">長度變化 (%)</th>
+            <th scope="col">質地</th>
+            <th scope="col">溶液水勢</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="chartTitle">
+    <h2 id="chartTitle">質量百分比變化 對 蔗糖濃度</h2>
+    <svg id="chart" viewBox="0 0 760 340" role="img" aria-labelledby="chartTitle chartDesc">
+      <desc id="chartDesc">折線圖使用與讀數表相同的模擬數字，縱軸是質量百分比變化，橫軸是蔗糖濃度。</desc>
+      <g id="grid"></g>
+      <polyline id="line" fill="none" stroke="#1f6b3a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
+      <g id="points"></g>
+    </svg>
+    <p class="small muted" id="chartNote" style="margin-bottom:0;">縱軸只畫質量百分比變化。綠：增加；灰：近乎不變；棕：減少。顏色只作提示，請以表中數字為準。</p>
+  </section>
+
+  <section class="card" aria-labelledby="stepH">
+    <h2 id="stepH">步驟</h2>
+    <p style="margin-top:0;">切條、拭乾、稱量、浸 30 分鐘、再拭乾再稱。</p>
+    <ol class="steps">
+      <li><strong>切條。</strong>從同一條馬鈴薯切出相同薯條：50.0 mm × 10 mm × 10 mm，每杯一條。</li>
+      <li><strong>拭乾。</strong>用吸水紙抹去表面液體。</li>
+      <li><strong>稱量。</strong>量度初始質量和長度。</li>
+      <li><strong>浸 30 分鐘。</strong>放入相同體積、不同濃度的蔗糖溶液，溫度相同。</li>
+      <li><strong>再拭乾再稱。</strong>取出，抹乾，再量度質量和長度，計算百分比變化。</li>
+    </ol>
+    <p>稱量前要拭乾，否則表面黏着的溶液會被算進質量，不能反映薯條細胞內的水。</p>
+  </section>
+
+  <footer>
+    <p>模擬數據只供教學，並非真實量度。中四生物科。</p>
+  </footer>
+</div>
+<script>
+const MASS0 = 5;
+const LEN0 = 50;
+const SERIES = [
+  { id: "A", conc: 0, name: "蒸餾水", mass30: 5.85, len30: 54.5 },
+  { id: "B", conc: 0.2, name: "蔗糖溶液", mass30: 5.40, len30: 52.0 },
+  { id: "C", conc: 0.4, name: "蔗糖溶液", mass30: 5.02, len30: 50.1 },
+  { id: "D", conc: 0.6, name: "蔗糖溶液", mass30: 4.55, len30: 47.5 },
+  { id: "E", conc: 0.8, name: "蔗糖溶液", mass30: 4.10, len30: 45.0 }
+];
+const TINT = [
+  { fill: "#c5e0ee", opacity: 0.58 },
+  { fill: "#f0d48a", opacity: 0.64 },
+  { fill: "#e2b84a", opacity: 0.72 },
+  { fill: "#d0893a", opacity: 0.78 },
+  { fill: "#b86a28", opacity: 0.84 }
+];
+const CHIP_BOTTOM = 206;
+const LIQUID_BOTTOM = 214;
+const SIM_PER_SEC = 1.5;
+
+function fixed(n, dp) {
+  const m = 10 ** dp;
+  let v = Math.round(n * m) / m;
+  if (Object.is(v, -0)) v = 0;
+  return v.toFixed(dp);
+}
+function fmtPct(n) {
+  const s = fixed(n, 1);
+  if (s === "0.0" || s === "-0.0") return "0.0%";
+  const body = s.replace("-", "");
+  return (Number(s) > 0 ? "+" : "−") + body + "%";
+}
+function pctClass(n) {
+  const s = fixed(n, 1);
+  if (s === "0.0" || s === "-0.0") return "zero";
+  return Number(s) > 0 ? "pos" : "neg";
+}
+function sample(b, t) {
+  const f = t >= 29.999 ? 1 : Math.max(0, t) / 30;
+  const massRaw = f === 1 ? b.mass30 : MASS0 + (b.mass30 - MASS0) * f;
+  const lenRaw = f === 1 ? b.len30 : LEN0 + (b.len30 - LEN0) * f;
+  const mass = Number(fixed(massRaw, 2));
+  const len = Number(fixed(lenRaw, 1));
+  return {
+    massRaw: massRaw,
+    lenRaw: lenRaw,
+    mass: mass,
+    len: len,
+    massPct: ((mass - MASS0) / MASS0) * 100,
+    lenPct: ((len - LEN0) / LEN0) * 100
+  };
+}
+function wpInfo(conc) {
+  if (conc < 0.3) {
+    return { key: "hypo", dir: "dir-hypo", short: "高", detail: "溶液水勢高於薯條細胞", term: "低滲（hypotonic）", move: "水由溶液淨移入細胞" };
+  }
+  if (conc < 0.5) {
+    return { key: "iso", dir: "dir-iso", short: "約等於細胞", detail: "溶液水勢約等於薯條細胞", term: "近等滲（isotonic）", move: "水大致沒有淨移動" };
+  }
+  return { key: "hyper", dir: "dir-hyper", short: "低", detail: "溶液水勢低於薯條細胞", term: "高滲（hypertonic）", move: "水由細胞淨移出到溶液" };
+}
+function textureShort(pct) {
+  if (pct >= 12) return "硬挺飽滿";
+  if (pct >= 3) return "較硬稍脹";
+  if (pct >= -1.5) return "大致不變";
+  if (pct >= -12) return "較軟";
+  return "軟塌皺縮";
+}
+function textureLong(pct) {
+  if (pct >= 12) return "硬挺、飽滿（緊脹 turgid）";
+  if (pct >= 3) return "較硬、稍脹";
+  if (pct >= -1.5) return "質地大致不變";
+  if (pct >= -12) return "較軟（軟縮 flaccid）";
+  return "軟塌、皺縮（可呈質壁分離 plasmolysis）";
+}
+function chipFill(mass) {
+  if (mass >= 5.5) return "#f6e2a6";
+  if (mass >= 5.05) return "#f3d78c";
+  if (mass >= 4.7) return "#e8c98a";
+  return "#dcb87a";
+}
+function arrowPoints(x, y, dir) {
+  if (dir > 0) {
+    return x + "," + y + " " + (x + 14) + "," + y + " " + (x + 14) + "," + (y - 4) + " " + (x + 22) + "," + (y + 4) + " " + (x + 14) + "," + (y + 12) + " " + (x + 14) + "," + (y + 8) + " " + x + "," + (y + 8);
+  }
+  const x2 = x + 22;
+  return x2 + "," + y + " " + (x2 - 14) + "," + y + " " + (x2 - 14) + "," + (y - 4) + " " + x + "," + (y + 4) + " " + (x2 - 14) + "," + (y + 12) + " " + (x2 - 14) + "," + (y + 8) + " " + x2 + "," + (y + 8);
+}
+function arrowSet(kind) {
+  const specs = kind === "in"
+    ? [{ x: 34, y: 150, dir: 1, anim: "flow-right" }, { x: 34, y: 174, dir: 1, anim: "flow-right" }, { x: 104, y: 150, dir: -1, anim: "flow-left" }, { x: 104, y: 174, dir: -1, anim: "flow-left" }]
+    : [{ x: 34, y: 150, dir: -1, anim: "flow-left" }, { x: 34, y: 174, dir: -1, anim: "flow-left" }, { x: 104, y: 150, dir: 1, anim: "flow-right" }, { x: 104, y: 174, dir: 1, anim: "flow-right" }];
+  return "<g class=\"set " + kind + "\">" + specs.map(function (s, idx) {
+    return "<g class=\"" + s.anim + "\" style=\"animation-delay:" + (idx * 0.28) + "s\"><polygon points=\"" + arrowPoints(s.x, s.y, s.dir) + "\"></polygon></g>";
+  }).join("") + "</g>";
+}
+function beakerMarkup(b, i) {
+  return ""
+    + "<button type=\"button\" class=\"beaker\" id=\"bk" + i + "\" data-i=\"" + i + "\">"
+    + "<svg viewBox=\"0 0 160 248\" aria-hidden=\"true\">"
+    + "<defs><clipPath id=\"clip" + i + "\"><path d=\"M34 50 L38 198 Q38 214 54 214 L106 214 Q122 214 122 198 L126 50 Z\"></path></clipPath></defs>"
+    + "<g clip-path=\"url(#clip" + i + ")\">"
+    + "<rect id=\"liquid" + i + "\" x=\"32\" y=\"120\" width=\"96\" height=\"96\"></rect>"
+    + "<ellipse id=\"meniscus" + i + "\" cx=\"80\" cy=\"120\" rx=\"42\" ry=\"6\"></ellipse>"
+    + "</g>"
+    + "<g id=\"chip" + i + "\">"
+    + "<rect id=\"body" + i + "\" rx=\"6\" ry=\"6\"></rect>"
+    + "<ellipse id=\"gloss" + i + "\" fill=\"#fff\"></ellipse>"
+    + "<ellipse id=\"e1" + i + "\" fill=\"#8a6230\"></ellipse>"
+    + "<ellipse id=\"e2" + i + "\" fill=\"#8a6230\"></ellipse>"
+    + "<path id=\"w" + i + "_0\" fill=\"none\" stroke=\"#a07840\" stroke-width=\"1.4\" stroke-linecap=\"round\"></path>"
+    + "<path id=\"w" + i + "_1\" fill=\"none\" stroke=\"#a07840\" stroke-width=\"1.4\" stroke-linecap=\"round\"></path>"
+    + "<path id=\"w" + i + "_2\" fill=\"none\" stroke=\"#a07840\" stroke-width=\"1.4\" stroke-linecap=\"round\"></path>"
+    + "</g>"
+    + "<g clip-path=\"url(#clip" + i + ")\">"
+    + "<rect id=\"wash" + i + "\" x=\"32\" y=\"120\" width=\"96\" height=\"96\" opacity=\"0.28\"></rect>"
+    + "<g id=\"arrows" + i + "\" class=\"arrows\">"
+    + arrowSet("in") + arrowSet("out")
+    + "<text class=\"iso-mark\" x=\"80\" y=\"78\" text-anchor=\"middle\">≈</text>"
+    + "</g></g>"
+    + "<path class=\"glass\" d=\"M30 46 L34 200 Q34 220 54 220 L106 220 Q126 220 126 200 L130 46\"></path>"
+    + "<ellipse class=\"rim\" cx=\"80\" cy=\"46\" rx=\"50\" ry=\"9\"></ellipse>"
+    + "<path class=\"shine\" d=\"M46 58 C52 110 52 150 48 190\"></path>"
+    + "</svg>"
+    + "<span class=\"bk-text\">"
+    + "<span class=\"bk-id\">" + b.id + "</span>"
+    + "<span class=\"bk-sub\">" + b.name + "</span>"
+    + "<span class=\"bk-conc\">" + b.conc.toFixed(1) + " mol/dm³</span>"
+    + "<span class=\"bk-mass\" id=\"massLab" + i + "\"></span>"
+    + "<span class=\"bk-pct\" id=\"pctLab" + i + "\"></span>"
+    + "</span></button>";
+}
+
+const PLOT = { left: 68, right: 28, top: 18, bottom: 52, w: 664, h: 250 };
+function chartX(conc) {
+  return PLOT.left + 14 + (conc / 0.8) * (PLOT.w - 28);
+}
+function chartY(pct) {
+  return PLOT.top + ((24 - pct) / 48) * PLOT.h;
+}
+
+let t = 0;
+let playing = false;
+let lastTs = 0;
+let selected = 0;
+let nodes = [];
+let rows = [];
+let pointNodes = [];
+
+function buildChart() {
+  const g = document.getElementById("grid");
+  const axisY = PLOT.top + PLOT.h;
+  let svg = "";
+  svg += "<rect x=\"" + PLOT.left + "\" y=\"" + PLOT.top + "\" width=\"" + PLOT.w + "\" height=\"" + PLOT.h + "\" fill=\"#fffaf3\" stroke=\"#e0d2c0\"></rect>";
+  [-20, -10, 0, 10, 20].forEach(function (tick) {
+    const y = chartY(tick);
+    svg += "<line x1=\"" + PLOT.left + "\" y1=\"" + y + "\" x2=\"" + (PLOT.left + PLOT.w) + "\" y2=\"" + y + "\" stroke=\"" + (tick === 0 ? "#8a735c" : "#eadfce") + "\" stroke-dasharray=\"" + (tick === 0 ? "0" : "4 4") + "\"></line>";
+    svg += "<text x=\"" + (PLOT.left - 8) + "\" y=\"" + (y + 4) + "\" text-anchor=\"end\" font-size=\"13\" fill=\"#5a493c\">" + tick + "</text>";
+  });
+  [0, 0.2, 0.4, 0.6, 0.8].forEach(function (c) {
+    const x = chartX(c);
+    svg += "<line x1=\"" + x + "\" y1=\"" + PLOT.top + "\" x2=\"" + x + "\" y2=\"" + axisY + "\" stroke=\"#eadfce\"></line>";
+    svg += "<text x=\"" + x + "\" y=\"" + (axisY + 20) + "\" text-anchor=\"middle\" font-size=\"13\" fill=\"#5a493c\">" + c.toFixed(1) + "</text>";
+  });
+  svg += "<text x=\"" + (PLOT.left + PLOT.w / 2) + "\" y=\"332\" text-anchor=\"middle\" font-size=\"14\" fill=\"#2b241c\">蔗糖濃度 (mol/dm³)</text>";
+  svg += "<text transform=\"rotate(-90 20 150)\" x=\"20\" y=\"150\" text-anchor=\"middle\" font-size=\"14\" fill=\"#2b241c\">質量變化 (%)</text>";
+  g.innerHTML = svg;
+  const pg = document.getElementById("points");
+  pg.innerHTML = SERIES.map(function (_, i) {
+    return "<g id=\"pt" + i + "\"><circle r=\"5\"></circle><text font-size=\"12\" text-anchor=\"middle\"></text></g>";
+  }).join("");
+  pointNodes = SERIES.map(function (_, i) {
+    const el = document.getElementById("pt" + i);
+    return { g: el, c: el.querySelector("circle"), label: el.querySelector("text") };
+  });
+}
+function build() {
+  document.getElementById("row").innerHTML = SERIES.map(beakerMarkup).join("");
+  nodes = SERIES.map(function (_, i) {
+    return {
+      btn: document.getElementById("bk" + i),
+      liquid: document.getElementById("liquid" + i),
+      meniscus: document.getElementById("meniscus" + i),
+      wash: document.getElementById("wash" + i),
+      body: document.getElementById("body" + i),
+      gloss: document.getElementById("gloss" + i),
+      e1: document.getElementById("e1" + i),
+      e2: document.getElementById("e2" + i),
+      wrinkles: [0, 1, 2].map(function (k) { return document.getElementById("w" + i + "_" + k); }),
+      massLab: document.getElementById("massLab" + i),
+      pctLab: document.getElementById("pctLab" + i),
+      arrows: document.getElementById("arrows" + i)
+    };
+  });
+  const tb = document.getElementById("tbody");
+  tb.innerHTML = SERIES.map(function (b, i) {
+    return "<tr data-i=\"" + i + "\" tabindex=\"0\">"
+      + "<th scope=\"row\">" + b.id + "</th>"
+      + "<td>" + b.conc.toFixed(1) + (b.conc === 0 ? "<br><span class=\"small muted\">蒸餾水</span>" : "") + "</td>"
+      + "<td class=\"c-mass\"></td><td class=\"c-len\"></td><td class=\"c-mp\"></td><td class=\"c-lp\"></td><td class=\"c-tx\"></td><td class=\"c-wp\"></td></tr>";
+  }).join("");
+  rows = Array.from(tb.querySelectorAll("tr"));
+  buildChart();
+}
+function surfaceY(mass) {
+  return 128 + (mass - 4.1) * 16;
+}
+function renderBeaker(i) {
+  const b = SERIES[i];
+  const s = sample(b, t);
+  const wp = wpInfo(b.conc);
+  const tint = TINT[i];
+  const n = nodes[i];
+  const yS = surfaceY(s.massRaw);
+  n.liquid.setAttribute("y", yS);
+  n.liquid.setAttribute("height", Math.max(0, LIQUID_BOTTOM - yS));
+  n.liquid.setAttribute("fill", tint.fill);
+  n.liquid.setAttribute("fill-opacity", String(tint.opacity));
+  n.meniscus.setAttribute("cy", yS);
+  n.meniscus.setAttribute("fill", tint.fill);
+  n.meniscus.setAttribute("fill-opacity", "0.95");
+  n.wash.setAttribute("y", yS);
+  n.wash.setAttribute("height", Math.max(0, LIQUID_BOTTOM - yS));
+  n.wash.setAttribute("fill", tint.fill);
+  const h = 108 + (s.lenRaw - LEN0) * 3.2;
+  const w = Math.max(22, Math.min(44, 32 + (s.massRaw - MASS0) * 14));
+  const x = 80 - w / 2;
+  const y = CHIP_BOTTOM - h;
+  n.body.setAttribute("x", x);
+  n.body.setAttribute("y", y);
+  n.body.setAttribute("width", w);
+  n.body.setAttribute("height", h);
+  n.body.setAttribute("fill", chipFill(s.mass));
+  n.body.setAttribute("stroke", "#8d6430");
+  n.body.setAttribute("stroke-width", "1.2");
+  n.gloss.setAttribute("cx", x + w * 0.42);
+  n.gloss.setAttribute("cy", y + h * 0.22);
+  n.gloss.setAttribute("rx", w * 0.18);
+  n.gloss.setAttribute("ry", Math.min(10, h * 0.08));
+  n.gloss.setAttribute("opacity", s.mass > 5.3 ? "0.55" : "0.16");
+  n.e1.setAttribute("cx", x + w * 0.35);
+  n.e1.setAttribute("cy", y + h * 0.32);
+  n.e1.setAttribute("rx", "2.1");
+  n.e1.setAttribute("ry", "1.5");
+  n.e2.setAttribute("cx", x + w * 0.62);
+  n.e2.setAttribute("cy", y + h * 0.5);
+  n.e2.setAttribute("rx", "1.8");
+  n.e2.setAttribute("ry", "1.3");
+  const wr = Math.max(0, Math.min(1, (5.02 - s.mass) / 0.8));
+  n.wrinkles.forEach(function (path, k) {
+    const yy = y + h * (0.28 + k * 0.2);
+    const x0 = x + 5;
+    const x1 = x + w - 5;
+    const mid = (x0 + x1) / 2;
+    const amp = k % 2 === 0 ? 2.4 : -2.4;
+    path.setAttribute("d", "M " + x0 + " " + yy + " Q " + mid + " " + (yy + amp) + " " + x1 + " " + yy);
+    path.setAttribute("opacity", String(wr));
+  });
+  n.arrows.classList.remove("dir-hypo", "dir-iso", "dir-hyper");
+  n.arrows.classList.add(wp.dir);
+  n.massLab.textContent = fixed(s.mass, 2) + " g";
+  n.pctLab.textContent = fmtPct(s.massPct);
+  n.pctLab.className = "bk-pct " + pctClass(s.massPct);
+  const lenBit = fixed(s.len, 1) + " mm";
+  n.btn.setAttribute("aria-pressed", selected === i ? "true" : "false");
+  n.btn.classList.toggle("is-selected", selected === i);
+  n.btn.setAttribute("aria-label", "燒杯 " + b.id + "，" + b.conc.toFixed(1) + " mol 每立方分米" + (b.conc === 0 ? "，蒸餾水" : "蔗糖溶液") + "，質量 " + fixed(s.mass, 2) + " 克，長度 " + lenBit + "，質量變化 " + fmtPct(s.massPct) + (selected === i ? "，已選取" : ""));
+  const row = rows[i];
+  row.classList.toggle("is-selected", selected === i);
+  row.querySelector(".c-mass").textContent = fixed(s.mass, 2);
+  row.querySelector(".c-len").textContent = fixed(s.len, 1);
+  const mp = row.querySelector(".c-mp");
+  mp.textContent = fmtPct(s.massPct);
+  mp.className = "c-mp " + pctClass(s.massPct);
+  const lp = row.querySelector(".c-lp");
+  lp.textContent = fmtPct(s.lenPct);
+  lp.className = "c-lp " + pctClass(s.lenPct);
+  row.querySelector(".c-tx").textContent = textureShort(s.massPct);
+  row.querySelector(".c-wp").textContent = wp.short;
+  const pt = pointNodes[i];
+  const cx = chartX(b.conc);
+  const cy = chartY(s.massPct);
+  pt.c.setAttribute("cx", cx);
+  pt.c.setAttribute("cy", cy);
+  pt.c.setAttribute("r", selected === i ? "7" : "5");
+  pt.c.setAttribute("fill", pctClass(s.massPct) === "pos" ? "#1f6b3a" : (pctClass(s.massPct) === "neg" ? "#8d3d2a" : "#7a6a58"));
+  pt.c.setAttribute("stroke", selected === i ? "#2b241c" : "#fffaf3");
+  pt.c.setAttribute("stroke-width", "1.5");
+  let lx = cx;
+  let ly = cy + (s.massPct >= 0 ? -12 : 18);
+  let anchor = "middle";
+  if (b.conc <= 0) {
+    anchor = "start";
+    lx = cx + 8;
+    ly = cy + 4;
+  } else if (b.conc >= 0.8) {
+    anchor = "end";
+    lx = cx - 8;
+    ly = cy - 4;
+  }
+  pt.label.setAttribute("text-anchor", anchor);
+  pt.label.setAttribute("x", lx);
+  pt.label.setAttribute("y", ly);
+  pt.label.textContent = fmtPct(s.massPct);
+  pt.label.setAttribute("fill", "#2b241c");
+  return s;
+}
+function render() {
+  const samples = SERIES.map(function (_, i) { return renderBeaker(i); });
+  const line = document.getElementById("line");
+  line.setAttribute("points", SERIES.map(function (b, i) {
+    return chartX(b.conc) + "," + chartY(samples[i].massPct);
+  }).join(" "));
+  const slider = document.getElementById("slider");
+  const shown = fixed(Math.min(30, Math.max(0, t)), 1);
+  slider.value = String(Math.min(30, t));
+  slider.setAttribute("aria-valuetext", shown + " 分鐘");
+  slider.setAttribute("aria-valuenow", shown);
+  document.getElementById("timeText").textContent = shown + " 分鐘";
+  let phase = "浸漬中";
+  if (Number(shown) <= 0) phase = "剛浸入（初始讀數）";
+  else if (Number(shown) >= 30) phase = "浸滿 30 分鐘";
+  document.getElementById("phase").textContent = phase;
+  const b = SERIES[selected];
+  const s = samples[selected];
+  const wp = wpInfo(b.conc);
+  document.getElementById("inspectTitle").textContent = "燒杯 " + b.id + " · " + (b.conc === 0 ? "蒸餾水" : b.name);
+  document.getElementById("iConc").textContent = b.conc.toFixed(1) + " mol/dm³";
+  document.getElementById("iWp").textContent = wp.short;
+  document.getElementById("iTerm").textContent = wp.term;
+  document.getElementById("iMass").textContent = fixed(s.mass, 2) + " g（" + fmtPct(s.massPct) + "）";
+  document.getElementById("iLen").textContent = fixed(s.len, 1) + " mm（" + fmtPct(s.lenPct) + "）";
+  document.getElementById("iTex").textContent = textureLong(s.massPct);
+  document.getElementById("iMove").textContent = wp.detail + "。" + wp.move + "。質地：" + textureLong(s.massPct) + "。";
+  const play = document.getElementById("btnPlay");
+  play.textContent = t >= 29.999 ? "重播" : "播放";
+  play.disabled = playing;
+  document.getElementById("btnPause").disabled = !playing;
+}
+function select(i) {
+  selected = i;
+  render();
+}
+function loop(now) {
+  if (!playing) return;
+  const dt = Math.min(0.05, (now - lastTs) / 1000);
+  lastTs = now;
+  t = Math.min(30, t + dt * SIM_PER_SEC);
+  if (t >= 30) {
+    t = 30;
+    playing = false;
+  }
+  render();
+  if (playing) requestAnimationFrame(loop);
+}
+function play() {
+  if (playing) return;
+  if (t >= 29.999) t = 0;
+  playing = true;
+  lastTs = performance.now();
+  render();
+  requestAnimationFrame(loop);
+}
+function pause() {
+  playing = false;
+  render();
+}
+function reset() {
+  playing = false;
+  t = 0;
+  render();
+}
+function init() {
+  build();
+  document.getElementById("btnPlay").addEventListener("click", play);
+  document.getElementById("btnPause").addEventListener("click", pause);
+  document.getElementById("btnReset").addEventListener("click", reset);
+  document.getElementById("slider").addEventListener("input", function (e) {
+    playing = false;
+    t = Number(e.target.value);
+    render();
+  });
+  document.getElementById("row").addEventListener("click", function (e) {
+    const btn = e.target.closest(".beaker");
+    if (!btn) return;
+    select(Number(btn.dataset.i));
+  });
+  const tb = document.getElementById("tbody");
+  tb.addEventListener("click", function (e) {
+    const tr = e.target.closest("tr");
+    if (!tr) return;
+    select(Number(tr.dataset.i));
+  });
+  tb.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const tr = e.target.closest("tr");
+    if (!tr) return;
+    e.preventDefault();
+    select(Number(tr.dataset.i));
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.target.matches("input, textarea")) return;
+    if (e.key === "ArrowRight") select(Math.min(SERIES.length - 1, selected + 1));
+    if (e.key === "ArrowLeft") select(Math.max(0, selected - 1));
+  });
+  render();
+}
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", init);
+}
+</script>
+</body>
+</html>
