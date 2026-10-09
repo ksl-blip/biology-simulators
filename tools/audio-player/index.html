@@ -16,7 +16,6 @@
     --accent-dark: #0a5340;
     --accent-soft: #e5f4ee;
     --danger: #8e2f2a;
-    --danger-soft: #fbeceb;
     --shadow: 0 12px 32px rgba(48, 36, 18, 0.08);
     --radius: 18px;
     --sans: "PingFang HK", "PingFang TC", "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
@@ -70,22 +69,14 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow);
   }
-  .list-head, .admin-bar {
+  .list-head {
     display: flex; align-items: center; justify-content: space-between;
     gap: 10px; padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
   }
-  .list-head { border-bottom: 1px solid var(--line); }
   .list-head h2 { margin: 0; font-size: 1rem; }
   .count { color: var(--muted); font-size: 0.85rem; }
-  .admin-bar {
-    background: var(--accent-soft);
-    border-bottom: 1px solid #cfe6dc;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .admin-bar p { margin: 0 0 10px; font-size: 0.86rem; color: var(--accent-dark); flex: none; }
-  .actions { display: flex; flex-wrap: wrap; gap: 8px; }
-  button.btn, button.ghost, button.primary, button.danger {
+  button.btn, button.ghost, button.primary, button.small {
     border-radius: 999px;
     padding: 8px 14px;
     border: 1px solid var(--line);
@@ -93,12 +84,24 @@
     color: var(--ink);
     white-space: nowrap;
   }
-  #admin-open { flex: none; }
   button.primary { background: var(--accent); color: #f4fbf8; border-color: var(--accent); }
   button.primary:hover { background: var(--accent-dark); }
   button.ghost { background: transparent; }
-  button.danger { background: var(--danger-soft); color: var(--danger); border-color: #f0d0cd; }
+  button.small { padding: 4px 10px; font-size: 0.85rem; }
   button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .legacy {
+    padding: 14px 16px;
+    background: #f7f3ea;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.88rem;
+  }
+  .legacy p { margin: 0 0 8px; color: #4d463d; }
+  .legacy ul { list-style: none; margin: 0; padding: 0; }
+  .legacy li {
+    display: flex; justify-content: space-between; gap: 8px;
+    align-items: center; padding: 4px 0;
+  }
+  .legacy li span { word-break: break-word; }
   .empty {
     padding: 36px 20px 40px;
     text-align: center;
@@ -108,7 +111,7 @@
   ul.tracks { list-style: none; margin: 0; padding: 8px; }
   li.track {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr;
     gap: 10px;
     align-items: center;
     padding: 10px;
@@ -137,8 +140,6 @@
     0%, 100% { height: 4px; }
     50% { height: 12px; }
   }
-  .row-actions { display: flex; gap: 6px; align-items: center; }
-  .confirm { display: flex; gap: 6px; align-items: center; font-size: 0.85rem; color: var(--danger); }
   .dock { padding: 16px 16px 14px; }
   .dock .now-label { color: var(--muted); font-size: 0.78rem; letter-spacing: 0.08em; }
   .now-title { font-size: 1.15rem; font-weight: 700; margin: 2px 0 10px; min-height: 1.4em; word-break: break-word; }
@@ -189,7 +190,7 @@
   .presets button.on { background: var(--ink); color: #f6f3ec; border-color: var(--ink); }
   .hint { color: var(--muted); font-size: 0.8rem; margin: 10px 0 0; }
   dialog {
-    border: none; border-radius: 20px; padding: 0; width: min(440px, calc(100% - 28px));
+    border: none; border-radius: 20px; padding: 0; width: min(480px, calc(100% - 28px));
     box-shadow: 0 24px 60px rgba(30, 22, 10, .25);
   }
   dialog::backdrop { background: rgba(28, 25, 21, .45); }
@@ -199,14 +200,21 @@
     background: #f7f3ea; border-radius: 12px; padding: 10px 12px;
     color: #4d463d; font-size: 0.88rem; margin: 0 0 14px;
   }
-  label.field { display: block; font-size: 0.9rem; margin-bottom: 10px; }
-  label.field input {
-    display: block; width: 100%; margin-top: 4px;
-    padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line);
+  .steps { margin: 0 0 12px; padding-left: 1.2rem; font-size: 0.92rem; }
+  .steps li { margin: 8px 0; }
+  code.cmd {
+    display: block;
+    margin-top: 6px;
+    padding: 8px 10px;
     background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    word-break: break-all;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
   .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
-  .err { color: var(--danger); font-size: 0.88rem; margin: 0 0 8px; }
   .toast {
     position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom));
     transform: translateX(-50%);
@@ -238,29 +246,25 @@
         <div class="mark" aria-hidden="true">音</div>
         <div>
           <h1>課堂語音播放器</h1>
-          <p class="sub">鎖屏或者去咗其他分頁，都會繼續播。鎖屏可以控制播放。</p>
+          <p class="sub">同一條連結，任何人都聽得同呢批錄音。鎖屏或者去咗其他分頁，都會繼續播。</p>
         </div>
       </div>
-      <button type="button" class="btn" id="admin-open">管理</button>
+      <button type="button" class="btn" id="how-open">點樣加入</button>
     </header>
 
     <div class="layout">
       <section class="panel" aria-label="播放清單">
-        <div class="admin-bar" id="admin-bar" hidden>
-          <p>管理模式。密碼只係呢部裝置嘅本地鎖，錄音唔會上傳去任何伺服器。識得開瀏覽器儲存空間嘅人，一樣睇到檔案。</p>
-          <div class="actions">
-            <button type="button" class="primary" id="add-btn">加入聲音檔</button>
-            <button type="button" class="ghost" id="pw-open">更改密碼</button>
-            <button type="button" class="ghost" id="lock-btn">鎖定</button>
-          </div>
+        <div class="legacy" id="legacy" hidden>
+          <p>呢部裝置仲有以前上傳、只存在本機嘅錄音。而家播放清單係大家共用，舊檔唔會自動公開。下載之後，用「點樣加入」嘅方法放上網站。</p>
+          <ul id="legacy-list"></ul>
         </div>
         <div class="list-head">
           <h2>播放清單</h2>
           <span class="count" id="count">0 個</span>
         </div>
         <div class="empty" id="empty">
-          <strong>未有錄音</strong>
-          解鎖管理之後，就可以加入 mp3、m4a、wav 等聲音檔。檔案只會留喺呢部裝置。
+          <strong id="empty-title">載入播放清單…</strong>
+          <span id="empty-text"></span>
         </div>
         <ul class="tracks" id="tracks"></ul>
       </section>
@@ -270,10 +274,10 @@
           Kept in the document (not display:none) so mobile browsers
           continue playback with the screen locked or the tab in the background.
         -->
-        <audio id="player" class="keep" preload="metadata" playsinline webkit-playsinline x-webkit-airplay="allow"></audio>
+        <audio id="player" class="keep" preload="none" playsinline webkit-playsinline x-webkit-airplay="allow"></audio>
         <div class="now-label">而家播放</div>
         <div class="now-title" id="now-title">未揀錄音</div>
-        <label class="sr" for="seek" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">進度</label>
+        <label for="seek" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">進度</label>
         <input type="range" id="seek" min="0" max="1000" value="0" step="1" disabled aria-label="進度">
         <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
         <div class="transport">
@@ -294,55 +298,37 @@
           <button type="button" data-rate="2">2×</button>
         </div>
         <input type="range" id="speed" min="0.5" max="2" step="0.05" value="1" aria-label="播放速度">
-        <p class="hint">背景播放用瀏覽器本身嘅聲音播放器。鎖屏之後，系統會顯示播放、暫停同上一首、下一首。</p>
+        <p class="hint">背景播放用瀏覽器本身嘅聲音播放器。鎖屏之後，系統會顯示播放、暫停同上一首、下一首。播放速度只係記喺你自己部機。</p>
       </section>
     </div>
   </div>
 
-  <input type="file" id="file" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.flac,.webm,.opus" multiple hidden>
-
-  <dialog id="gate">
-    <form class="dialog-body" id="gate-form">
-      <h2>解鎖管理</h2>
-      <p class="note">密碼只係呢部裝置上嘅本地鎖，方便平時收起「加入」同「刪除」。錄音檔案留喺你部電腦或電話，唔會上傳。呢個網頁係喺你自己部機開，密碼擋唔到直接改瀏覽器儲存資料嘅人。第一次使用，預設密碼係 admin。</p>
-      <label class="field">密碼
-        <input type="password" id="gate-pw" autocomplete="current-password" required>
-      </label>
-      <p class="err" id="gate-err" hidden>密碼唔啱，再試一次。</p>
+  <dialog id="how">
+    <form class="dialog-body" method="dialog">
+      <h2>點樣加入錄音</h2>
+      <p class="note">播放清單同 mp3 放喺網站檔案入面，所以任何人開 <span id="public-url">呢條連結</span> 都聽得同同一批。網頁唔可以自己上傳：寫入儲存庫要有提交權限，金鑰唔可以放喺瀏覽器入面。</p>
+      <ol class="steps">
+        <li>準備 mp3，例如用 edge-tts 匯出。</li>
+        <li>喺儲存庫根目錄執行：
+          <code class="cmd">node tools/audio-player/add-track.mjs 錄音.mp3 --title "標題"</code>
+        </li>
+        <li>提交 <code>tracks.json</code> 同 <code>media/</code> 入面新檔，推上 main，或者開 pull request 合併。</li>
+        <li>GitHub Pages 更新之後，重新打開呢頁就會見到新錄音。</li>
+      </ol>
+      <p class="note">刪除都係改 <code>tracks.json</code> 同埋刪走 <code>media/</code> 對應檔案，再提交。詳細步驟喺儲存庫 <code>tools/audio-player/README.md</code>。</p>
       <div class="dialog-actions">
-        <button type="button" class="ghost" id="gate-cancel">取消</button>
-        <button type="submit" class="primary">解鎖</button>
-      </div>
-    </form>
-  </dialog>
-
-  <dialog id="pw-dialog">
-    <form class="dialog-body" id="pw-form">
-      <h2>更改密碼</h2>
-      <p class="note">新密碼一樣只係儲存喺呢部裝置。如果忘記密碼，清除呢個網站嘅瀏覽器資料就會重設，但錄音會一併刪除。</p>
-      <label class="field">而家密碼
-        <input type="password" id="old-pw" autocomplete="current-password" required>
-      </label>
-      <label class="field">新密碼
-        <input type="password" id="new-pw" autocomplete="new-password" required minlength="4">
-      </label>
-      <label class="field">再入一次新密碼
-        <input type="password" id="new-pw2" autocomplete="new-password" required minlength="4">
-      </label>
-      <p class="err" id="pw-err" hidden></p>
-      <div class="dialog-actions">
-        <button type="button" class="ghost" id="pw-cancel">取消</button>
-        <button type="submit" class="primary">儲存</button>
+        <button type="submit" class="primary">關閉</button>
       </div>
     </form>
   </dialog>
 
 <script>
 (function () {
-  const DB_NAME = "classroom-audio-player";
-  const DB_VERSION = 1;
-  const PRESETS = [0.5, 0.75, 1, 1.25, 1.5, 2];
-  const AUDIO_EXT = /\.(mp3|wav|m4a|aac|ogg|oga|flac|webm|opus|mp4|mpeg|m4b)$/i;
+  const PUBLIC_URL = "https://ksl-blip.github.io/biology-simulators/tools/audio-player/";
+  const SPEED_KEY = "classroom-audio-player:speed";
+  const LAST_KEY = "classroom-audio-player:last";
+  const LEGACY_DB = "classroom-audio-player";
+  const ID_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
   const audio = document.getElementById("player");
   const seek = document.getElementById("seek");
@@ -351,6 +337,8 @@
   const presets = document.getElementById("presets");
   const tracksEl = document.getElementById("tracks");
   const emptyEl = document.getElementById("empty");
+  const emptyTitle = document.getElementById("empty-title");
+  const emptyText = document.getElementById("empty-text");
   const countEl = document.getElementById("count");
   const nowTitle = document.getElementById("now-title");
   const curEl = document.getElementById("cur");
@@ -358,65 +346,17 @@
   const playBtn = document.getElementById("play");
   const prevBtn = document.getElementById("prev");
   const nextBtn = document.getElementById("next");
-  const adminBar = document.getElementById("admin-bar");
-  const adminOpen = document.getElementById("admin-open");
-  const fileInput = document.getElementById("file");
-  const gate = document.getElementById("gate");
-  const pwDialog = document.getElementById("pw-dialog");
+  const howDialog = document.getElementById("how");
 
-  let dbPromise = null;
   let tracks = [];
   let currentId = null;
-  let currentUrl = null;
   let speed = 1;
-  let admin = false;
   let seeking = false;
   let toastTimer = null;
   let positionTick = 0;
-  const pendingDelete = new Set();
+  let loadError = "";
 
-  function openDB() {
-    if (dbPromise) return dbPromise;
-    dbPromise = new Promise((resolve, reject) => {
-      const req = indexedDB.open(DB_NAME, DB_VERSION);
-      req.onupgradeneeded = () => {
-        const db = req.result;
-        if (!db.objectStoreNames.contains("tracks")) {
-          db.createObjectStore("tracks", { keyPath: "id" });
-        }
-        if (!db.objectStoreNames.contains("meta")) {
-          db.createObjectStore("meta");
-        }
-      };
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-    return dbPromise;
-  }
-
-  function txDone(tx) {
-    return new Promise((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-      tx.onabort = () => reject(tx.error || new Error("aborted"));
-    });
-  }
-
-  async function metaGet(key) {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const r = db.transaction("meta").objectStore("meta").get(key);
-      r.onsuccess = () => resolve(r.result);
-      r.onerror = () => reject(r.error);
-    });
-  }
-
-  async function metaSet(key, value) {
-    const db = await openDB();
-    const tx = db.transaction("meta", "readwrite");
-    tx.objectStore("meta").put(value, key);
-    await txDone(tx);
-  }
+  document.getElementById("public-url").textContent = PUBLIC_URL;
 
   function quantize(v) {
     const n = Math.round(Number(v) * 20) / 20;
@@ -434,13 +374,21 @@
   }
 
   function fmtSize(n) {
+    if (!Number.isFinite(n) || n < 0) return "";
     if (n < 1024) return n + " B";
     if (n < 1024 * 1024) return (n / 1024).toFixed(n < 10 * 1024 ? 1 : 0) + " KB";
     return (n / (1024 * 1024)).toFixed(1) + " MB";
   }
 
-  function displayName(name) {
-    return name.replace(/\.[^.]+$/, "");
+  function readLocal(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  function writeLocal(key, value) {
+    try {
+      if (value == null) localStorage.removeItem(key);
+      else localStorage.setItem(key, value);
+    } catch (e) {}
   }
 
   function toast(msg) {
@@ -454,7 +402,7 @@
     }
     el.textContent = msg;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.remove(), 2800);
+    toastTimer = setTimeout(() => el.remove(), 3200);
   }
 
   function artwork() {
@@ -472,19 +420,44 @@
   }
   const ART = artwork();
 
-  function setAdmin(on) {
-    admin = on;
-    adminBar.hidden = !on;
-    adminOpen.hidden = on;
-    try {
-      if (on) sessionStorage.setItem("classroomAudioAdmin", "1");
-      else sessionStorage.removeItem("classroomAudioAdmin");
-    } catch (e) {}
-    renderList();
+  function isSafeFile(file) {
+    if (typeof file !== "string" || file.length > 180) return false;
+    let decoded = file;
+    try { decoded = decodeURIComponent(file); } catch (e) { return false; }
+    if (decoded !== file) return false;
+    if (file.includes("..") || file.includes("\\") || file.includes("//")) return false;
+    if (/^[a-z]+:/i.test(file) || file.startsWith("/")) return false;
+    return /^media\/[A-Za-z0-9._-]+$/.test(file);
+  }
+
+  function trackUrl(file) {
+    if (!isSafeFile(file)) return null;
+    const url = new URL(file, document.baseURI);
+    const base = new URL("./", document.baseURI);
+    if (url.origin !== base.origin) return null;
+    if (!url.pathname.startsWith(base.pathname)) return null;
+    return url.href;
+  }
+
+  function normalize(raw, seen) {
+    if (!raw || typeof raw.id !== "string" || !ID_RE.test(raw.id) || seen.has(raw.id)) return null;
+    if (!isSafeFile(raw.file)) return null;
+    const title = typeof raw.title === "string" && raw.title.trim() ? raw.title.trim().slice(0, 200) : raw.id;
+    const bytes = Number(raw.bytes);
+    const duration = Number(raw.duration);
+    seen.add(raw.id);
+    return {
+      id: raw.id,
+      title: title,
+      file: raw.file,
+      bytes: Number.isFinite(bytes) && bytes >= 0 ? bytes : null,
+      duration: Number.isFinite(duration) && duration > 0 ? duration : null
+    };
   }
 
   function paintSpeed() {
-    speedLabel.textContent = formatSpeed(speed);
+    const rounded = Math.round(speed * 100) / 100;
+    speedLabel.textContent = String(rounded) + "×";
     speedInput.value = String(speed);
     speedInput.style.setProperty("--p", ((speed - 0.5) / 1.5) * 100 + "%");
     presets.querySelectorAll("button").forEach((b) => {
@@ -495,10 +468,10 @@
     try { audio.webkitPreservesPitch = true; } catch (e) {}
   }
 
-  function formatSpeed(v) {
-    const rounded = Math.round(v * 100) / 100;
-    const text = Number.isInteger(rounded) ? String(rounded) : String(rounded);
-    return text + "×";
+  function knownDuration(track) {
+    if (track && track.id === currentId && Number.isFinite(audio.duration)) return audio.duration;
+    if (track && Number.isFinite(track.duration)) return track.duration;
+    return NaN;
   }
 
   function updateTransport() {
@@ -514,6 +487,15 @@
   function renderList() {
     tracksEl.replaceChildren();
     emptyEl.hidden = tracks.length > 0;
+    if (!tracks.length) {
+      if (loadError) {
+        emptyTitle.textContent = "讀唔到播放清單";
+        emptyText.textContent = loadError;
+      } else {
+        emptyTitle.textContent = "未有錄音";
+        emptyText.textContent = "用「點樣加入」將 mp3 放上網站。提交之後，任何人打開呢頁都聽得。";
+      }
+    }
     countEl.textContent = tracks.length + " 個";
     const playing = !audio.paused && currentId != null;
     tracks.forEach((t) => {
@@ -524,14 +506,14 @@
       const mini = document.createElement("button");
       mini.type = "button";
       mini.className = "playmini";
-      mini.setAttribute("aria-label", (t.id === currentId && playing ? "暫停 " : "播放 ") + displayName(t.name));
+      mini.setAttribute("aria-label", (t.id === currentId && playing ? "暫停 " : "播放 ") + t.title);
       mini.textContent = t.id === currentId && playing ? "❚❚" : "▶";
       mini.addEventListener("click", () => onPick(t.id));
 
       const info = document.createElement("div");
       const name = document.createElement("div");
       name.className = "t-name";
-      name.textContent = displayName(t.name);
+      name.textContent = t.title;
       if (t.id === currentId && playing) {
         const eq = document.createElement("span");
         eq.className = "eq";
@@ -541,42 +523,14 @@
       }
       const meta = document.createElement("div");
       meta.className = "t-meta";
-      const dur = Number.isFinite(t.duration) ? fmt(t.duration) : "時長計算中";
-      meta.textContent = dur + " · " + fmtSize(t.size);
+      const dur = Number.isFinite(knownDuration(t)) ? fmt(knownDuration(t)) : "時長計算中";
+      const size = fmtSize(t.bytes);
+      meta.textContent = size ? dur + " · " + size : dur;
       info.append(name, meta);
       info.addEventListener("click", () => onPick(t.id));
       info.style.cursor = "pointer";
 
-      const actions = document.createElement("div");
-      actions.className = "row-actions";
-      if (admin) {
-        if (pendingDelete.has(t.id)) {
-          const box = document.createElement("div");
-          box.className = "confirm";
-          box.textContent = "刪除？";
-          const yes = document.createElement("button");
-          yes.type = "button";
-          yes.className = "danger";
-          yes.textContent = "確定";
-          yes.addEventListener("click", () => removeTrack(t.id));
-          const no = document.createElement("button");
-          no.type = "button";
-          no.className = "ghost";
-          no.textContent = "取消";
-          no.addEventListener("click", () => { pendingDelete.delete(t.id); renderList(); });
-          box.append(yes, no);
-          actions.append(box);
-        } else {
-          const del = document.createElement("button");
-          del.type = "button";
-          del.className = "danger";
-          del.textContent = "刪除";
-          del.setAttribute("aria-label", "刪除 " + displayName(t.name));
-          del.addEventListener("click", () => { pendingDelete.add(t.id); renderList(); });
-          actions.append(del);
-        }
-      }
-      li.append(mini, info, actions);
+      li.append(mini, info);
       tracksEl.append(li);
     });
     updateTransport();
@@ -584,9 +538,10 @@
 
   function updateNow() {
     const t = tracks.find((x) => x.id === currentId);
-    nowTitle.textContent = t ? displayName(t.name) : "未揀錄音";
-    document.title = t ? displayName(t.name) + " · 課堂語音" : "課堂語音播放器";
-    durEl.textContent = fmt(Number.isFinite(audio.duration) ? audio.duration : (t && t.duration));
+    nowTitle.textContent = t ? t.title : "未揀錄音";
+    document.title = t ? t.title + " · 課堂語音" : "課堂語音播放器";
+    const shown = Number.isFinite(audio.duration) ? audio.duration : knownDuration(t);
+    durEl.textContent = fmt(shown);
     if (!seeking) {
       const d = audio.duration;
       if (Number.isFinite(d) && d > 0) {
@@ -606,10 +561,9 @@
     if (!("mediaSession" in navigator)) return;
     const t = tracks.find((x) => x.id === currentId);
     if (!t) return;
-    const title = displayName(t.name);
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: title,
+        title: t.title,
         artist: "課堂語音",
         album: "課堂語音播放器",
         artwork: [
@@ -657,85 +611,114 @@
     updateMediaSession();
   }
 
-  async function probeDuration(track) {
-    if (Number.isFinite(track.duration)) return;
-    const a = document.createElement("audio");
-    a.preload = "metadata";
-    a.playsInline = true;
-    const url = URL.createObjectURL(track.blob);
-    try {
-      const d = await new Promise((resolve) => {
-        const done = (v) => resolve(v);
-        a.addEventListener("loadedmetadata", () => done(a.duration), { once: true });
-        a.addEventListener("error", () => done(NaN), { once: true });
-        a.src = url;
-      });
-      if (Number.isFinite(d)) {
-        track.duration = d;
-        const db = await openDB();
-        const tx = db.transaction("tracks", "readwrite");
-        tx.objectStore("tracks").put(track);
-        await txDone(tx);
-      }
-    } catch (e) {
-    } finally {
-      URL.revokeObjectURL(url);
-    }
-  }
-
-  async function loadTracks() {
-    const db = await openDB();
-    tracks = await new Promise((resolve, reject) => {
-      const r = db.transaction("tracks").objectStore("tracks").getAll();
-      r.onsuccess = () => resolve(r.result || []);
-      r.onerror = () => reject(r.error);
+  function probeDuration(track) {
+    if (Number.isFinite(track.duration)) return Promise.resolve();
+    const url = trackUrl(track.file);
+    if (!url) return Promise.resolve();
+    const probe = document.createElement("audio");
+    probe.preload = "metadata";
+    probe.playsInline = true;
+    return new Promise((resolve) => {
+      const done = () => {
+        if (Number.isFinite(probe.duration) && probe.duration > 0) track.duration = probe.duration;
+        probe.removeAttribute("src");
+        probe.load();
+        resolve();
+      };
+      probe.addEventListener("loadedmetadata", done, { once: true });
+      probe.addEventListener("error", done, { once: true });
+      probe.src = url;
     });
-    tracks.sort((a, b) => b.createdAt - a.createdAt);
-    const savedSpeed = await metaGet("lastSpeed");
-    if (typeof savedSpeed === "number" && savedSpeed >= 0.5 && savedSpeed <= 2) speed = quantize(savedSpeed);
-    paintSpeed();
-    const last = await metaGet("lastTrackId");
-    renderList();
-    if (last && tracks.some((t) => t.id === last)) {
-      await select(last, false);
-    } else {
+  }
+
+  async function loadPlaylist() {
+    loadError = "";
+    let response;
+    try {
+      response = await fetch("tracks.json?" + Date.now(), { cache: "no-store" });
+    } catch (e) {
+      loadError = location.protocol === "file:"
+        ? "請用網站網址開啟。本機直接開檔案時，瀏覽器會擋住播放清單。"
+        : "暫時連唔到播放清單，請再試。";
+      tracks = [];
+      renderList();
       updateNow();
+      return;
     }
-    for (const t of tracks) {
-      if (!Number.isFinite(t.duration)) {
-        await probeDuration(t);
-        renderList();
-        if (t.id === currentId) updateNow();
-      }
+    if (!response.ok) {
+      loadError = "tracks.json 回應 " + response.status + "。";
+      tracks = [];
+      renderList();
+      updateNow();
+      return;
+    }
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      loadError = "tracks.json 格式唔啱。";
+      tracks = [];
+      renderList();
+      updateNow();
+      return;
+    }
+    if (!data || !Array.isArray(data.tracks)) {
+      loadError = "tracks.json 必須有 tracks 陣列。";
+      tracks = [];
+      renderList();
+      updateNow();
+      return;
+    }
+    const seen = new Set();
+    const rawCount = data.tracks.length;
+    tracks = data.tracks.map((raw) => normalize(raw, seen)).filter(Boolean);
+    if (tracks.length !== rawCount) toast("有部分曲目路徑唔接受，已跳過。");
+    const saved = readLocal(SPEED_KEY);
+    const savedSpeed = saved == null ? NaN : Number(saved);
+    if (savedSpeed >= 0.5 && savedSpeed <= 2) speed = quantize(savedSpeed);
+    paintSpeed();
+    renderList();
+    const last = readLocal(LAST_KEY);
+    if (last && tracks.some((t) => t.id === last)) select(last, false);
+    else updateNow();
+    const missing = tracks.filter((t) => !Number.isFinite(t.duration));
+    if (missing.length) {
+      await Promise.all(missing.map((t) => probeDuration(t)));
+      renderList();
+      if (currentId) updateNow();
     }
   }
 
-  async function select(id, autoplay) {
+  function select(id, autoplay) {
     const t = tracks.find((x) => x.id === id);
     if (!t) return;
-    if (currentId === id && currentUrl) {
+    if (currentId === id && audio.getAttribute("src")) {
       if (autoplay) {
-        if (audio.paused) await playCurrent();
+        if (audio.paused) playCurrent();
         else audio.pause();
       }
       return;
     }
-    if (currentUrl) URL.revokeObjectURL(currentUrl);
-    currentUrl = URL.createObjectURL(t.blob);
+    const url = trackUrl(t.file);
+    if (!url) {
+      toast("呢段錄音嘅路徑唔接受。");
+      return;
+    }
     currentId = id;
-    audio.src = currentUrl;
+    audio.preload = "auto";
+    audio.src = url;
     audio.playbackRate = speed;
-    await metaSet("lastTrackId", id);
+    writeLocal(LAST_KEY, id);
     updateNow();
     renderList();
     updateMediaSession();
-    if (autoplay) await playCurrent();
+    if (autoplay) playCurrent();
   }
 
   async function playCurrent() {
     if (!currentId) {
       if (!tracks.length) return;
-      await select(tracks[0].id, true);
+      select(tracks[0].id, true);
       return;
     }
     try {
@@ -760,74 +743,74 @@
     select(tracks[i].id, true);
   }
 
-  async function setSpeed(v) {
+  function setSpeed(v) {
     speed = quantize(v);
     paintSpeed();
     updateMediaSession();
-    try { await metaSet("lastSpeed", speed); } catch (e) {}
+    writeLocal(SPEED_KEY, String(speed));
   }
 
-  function isAudioFile(file) {
-    return (file.type && file.type.startsWith("audio/")) || AUDIO_EXT.test(file.name || "");
+  function showLegacy(rows) {
+    const box = document.getElementById("legacy");
+    const list = document.getElementById("legacy-list");
+    list.replaceChildren();
+    rows.forEach((row) => {
+      const li = document.createElement("li");
+      const name = document.createElement("span");
+      name.textContent = row.name || "未命名";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "small";
+      btn.textContent = "下載";
+      btn.addEventListener("click", () => {
+        if (!row.blob) { toast("下載唔到呢個舊檔。"); return; }
+        const url = URL.createObjectURL(row.blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = row.name || "audio";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      });
+      li.append(name, btn);
+      list.append(li);
+    });
+    box.hidden = rows.length === 0;
   }
 
-  async function addFiles(fileList) {
-    const files = Array.from(fileList || []);
-    if (!files.length) return;
-    const skipped = [];
-    const db = await openDB();
-    let added = 0;
-    for (const file of files) {
-      if (!isAudioFile(file)) { skipped.push(file.name); continue; }
-      const rec = {
-        id: Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8),
-        name: file.name || "未命名",
-        mime: file.type || "audio/*",
-        size: file.size,
-        blob: file,
-        createdAt: Date.now(),
-        duration: null
+  async function loadLegacy() {
+    if (!indexedDB.databases) return;
+    let names = [];
+    try {
+      names = await indexedDB.databases();
+    } catch (e) {
+      return;
+    }
+    if (!names.some((d) => d && d.name === LEGACY_DB)) return;
+    const rows = await new Promise((resolve) => {
+      const req = indexedDB.open(LEGACY_DB);
+      req.onerror = () => resolve([]);
+      req.onsuccess = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains("tracks")) {
+          db.close();
+          resolve([]);
+          return;
+        }
+        const get = db.transaction("tracks").objectStore("tracks").getAll();
+        get.onsuccess = () => {
+          db.close();
+          resolve(get.result || []);
+        };
+        get.onerror = () => {
+          db.close();
+          resolve([]);
+        };
       };
-      const tx = db.transaction("tracks", "readwrite");
-      tx.objectStore("tracks").put(rec);
-      await txDone(tx);
-      tracks.unshift(rec);
-      added += 1;
-    }
-    renderList();
-    if (added && !currentId) await select(tracks[0].id, false);
-    if (added && skipped.length) toast("已加入 " + added + " 個；跳過：" + skipped.join("、"));
-    else if (added) toast("已加入 " + added + " 個聲音檔");
-    else if (skipped.length) toast("跳過唔係聲音嘅檔案：" + skipped.join("、"));
-    for (const t of tracks) {
-      if (!Number.isFinite(t.duration)) await probeDuration(t);
-    }
-    renderList();
-    updateNow();
-  }
-
-  async function removeTrack(id) {
-    pendingDelete.delete(id);
-    const db = await openDB();
-    const tx = db.transaction("tracks", "readwrite");
-    tx.objectStore("tracks").delete(id);
-    await txDone(tx);
-    const was = currentId === id;
-    tracks = tracks.filter((t) => t.id !== id);
-    if (was) {
-      audio.pause();
-      if (currentUrl) URL.revokeObjectURL(currentUrl);
-      currentUrl = null;
-      currentId = null;
-      audio.removeAttribute("src");
-      audio.load();
-      const next = tracks[0];
-      if (next) await select(next.id, false);
-      else await metaSet("lastTrackId", null);
-    }
-    renderList();
-    updateNow();
-    toast("已刪除");
+    });
+    const playable = rows.filter((row) => row && row.blob);
+    if (playable.length) showLegacy(playable);
   }
 
   audio.addEventListener("timeupdate", () => {
@@ -837,7 +820,7 @@
   });
   audio.addEventListener("loadedmetadata", () => {
     const t = tracks.find((x) => x.id === currentId);
-    if (t && Number.isFinite(audio.duration)) t.duration = audio.duration;
+    if (t && Number.isFinite(audio.duration) && audio.duration > 0) t.duration = audio.duration;
     updateNow();
     updateTransport();
     updateMediaSession();
@@ -845,6 +828,10 @@
   });
   audio.addEventListener("play", () => { updateTransport(); updateMediaSession(); renderList(); });
   audio.addEventListener("pause", () => { updateTransport(); updateMediaSession(); renderList(); });
+  audio.addEventListener("error", () => {
+    if (!currentId) return;
+    toast("呢段錄音載入唔到。");
+  });
   audio.addEventListener("ended", () => {
     const i = tracks.findIndex((t) => t.id === currentId);
     if (i >= 0 && i < tracks.length - 1) select(tracks[i + 1].id, true);
@@ -885,78 +872,28 @@
   });
   speedInput.addEventListener("input", () => setSpeed(speedInput.value));
 
-  adminOpen.addEventListener("click", () => {
-    document.getElementById("gate-err").hidden = true;
-    document.getElementById("gate-pw").value = "";
-    gate.showModal();
-    document.getElementById("gate-pw").focus();
-  });
-  document.getElementById("gate-cancel").addEventListener("click", () => gate.close());
-  document.getElementById("gate-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const typed = document.getElementById("gate-pw").value;
-    const pw = await metaGet("password");
-    if (typed === pw) {
-      gate.close();
-      setAdmin(true);
-    } else {
-      document.getElementById("gate-err").hidden = false;
-      document.getElementById("gate-pw").focus();
-    }
-  });
-  document.getElementById("lock-btn").addEventListener("click", () => {
-    pendingDelete.clear();
-    setAdmin(false);
-    toast("已鎖定管理");
-  });
-  document.getElementById("add-btn").addEventListener("click", () => {
-    if (!admin) return;
-    fileInput.click();
-  });
-  fileInput.addEventListener("change", async () => {
-    if (!admin) { fileInput.value = ""; return; }
-    await addFiles(fileInput.files);
-    fileInput.value = "";
-  });
-  document.getElementById("pw-open").addEventListener("click", () => {
-    document.getElementById("pw-err").hidden = true;
-    document.getElementById("pw-form").reset();
-    pwDialog.showModal();
-  });
-  document.getElementById("pw-cancel").addEventListener("click", () => pwDialog.close());
-  document.getElementById("pw-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const err = document.getElementById("pw-err");
-    const oldPw = document.getElementById("old-pw").value;
-    const n1 = document.getElementById("new-pw").value;
-    const n2 = document.getElementById("new-pw2").value;
-    const cur = await metaGet("password");
-    if (oldPw !== cur) { err.hidden = false; err.textContent = "而家密碼唔啱。"; return; }
-    if (n1.length < 4) { err.hidden = false; err.textContent = "新密碼至少四個字。"; return; }
-    if (n1 !== n2) { err.hidden = false; err.textContent = "兩次新密碼唔同。"; return; }
-    await metaSet("password", n1);
-    pwDialog.close();
-    toast("已更改密碼");
+  document.getElementById("how-open").addEventListener("click", () => {
+    howDialog.showModal();
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.target.closest("input, textarea") || gate.open || pwDialog.open) return;
+    if (e.target.closest("input, textarea") || howDialog.open) return;
     if (e.code === "Space") { e.preventDefault(); playBtn.click(); }
   });
 
-  async function init() {
-    const existing = await metaGet("password");
-    if (typeof existing !== "string" || !existing) await metaSet("password", "admin");
-    installMediaHandlers();
-    try {
-      if (sessionStorage.getItem("classroomAudioAdmin") === "1") setAdmin(true);
-    } catch (e) {}
-    await loadTracks();
+  installMediaHandlers();
+  const storedSpeed = readLocal(SPEED_KEY);
+  if (storedSpeed != null && Number(storedSpeed) >= 0.5 && Number(storedSpeed) <= 2) {
+    speed = quantize(storedSpeed);
   }
-
-  init().catch((err) => {
-    toast("開唔到本機儲存：" + (err && err.message ? err.message : "未知錯誤"));
+  paintSpeed();
+  loadPlaylist().catch((err) => {
+    loadError = err && err.message ? err.message : "未知錯誤";
+    tracks = [];
+    renderList();
+    updateNow();
   });
+  loadLegacy();
 })();
 </script>
 </body>
