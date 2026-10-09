@@ -1,27 +1,26 @@
 {
-  "version": 2,
-  "folderId": "1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0",
+  "version": 1,
   "tracks": [
     {
-      "id": "1fkG4kRa3_TU_fMBp-vo6nBWSTozZm15C",
+      "id": "pe02-mv157az7",
       "title": "PE02_生命的基本單位",
-      "driveId": "1fkG4kRa3_TU_fMBp-vo6nBWSTozZm15C",
-      "url": "https://www.googleapis.com/drive/v3/files/1fkG4kRa3_TU_fMBp-vo6nBWSTozZm15C?alt=media",
-      "bytes": 5889312
+      "file": "media/pe02-mv157az7.mp3",
+      "bytes": 5889312,
+      "duration": 981.552
     },
     {
-      "id": "17FdYo_rEbSn2-6buu6J4iZvxTo3BNLiF",
+      "id": "pee1-3-mv157aww",
       "title": "PEE1-3_血液內氣體成份的調節",
-      "driveId": "17FdYo_rEbSn2-6buu6J4iZvxTo3BNLiF",
-      "url": "https://www.googleapis.com/drive/v3/files/17FdYo_rEbSn2-6buu6J4iZvxTo3BNLiF?alt=media",
-      "bytes": 4754592
+      "file": "media/pee1-3-mv157aww.mp3",
+      "bytes": 4754592,
+      "duration": 792.432
     },
     {
-      "id": "1jZusuknMRR2g0uk97_4-bHtRSDEVdHW-",
+      "id": "pe02-audio-mv157au1",
       "title": "PE02 Audio",
-      "driveId": "1jZusuknMRR2g0uk97_4-bHtRSDEVdHW-",
-      "url": "https://www.googleapis.com/drive/v3/files/1jZusuknMRR2g0uk97_4-bHtRSDEVdHW-?alt=media",
-      "bytes": 3506112
+      "file": "media/pe02-audio-mv157au1.mp3",
+      "bytes": 3506112,
+      "duration": 584.352
     }
   ]
 }

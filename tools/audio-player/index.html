@@ -249,7 +249,7 @@
         <div class="mark" aria-hidden="true">音</div>
         <div>
           <h1>課堂語音播放器</h1>
-          <p class="sub">錄音由 Google Drive 串流。同一條連結，任何人都聽得同呢批錄音。鎖屏都會繼續播。</p>
+          <p class="sub">同一條連結，任何人都聽得同呢批錄音。鎖屏或者去咗其他分頁，都會繼續播。</p>
         </div>
       </div>
       <div class="header-actions">
@@ -260,9 +260,6 @@
 
     <div class="layout">
       <section class="panel" aria-label="播放清單">
-        <div class="notice" id="drive-key-note" hidden>
-          <p>Google 阻擋其他網站直接串流 Drive 檔案，所以未填 API 金鑰就播唔到。請喺 <code>sync-config.js</code> 填 <code>driveApiKey</code>：Google Cloud 建立 API 金鑰，只啟用 Drive API，HTTP 參照網址限制做 <code>https://ksl-blip.github.io/*</code>。每個 mp3 仍要設成「知道連結嘅人可以查看」。</p>
-        </div>
         <div class="legacy" id="legacy" hidden>
           <p>呢部裝置仲有以前上傳、只存在本機嘅錄音。而家播放清單係大家共用，舊檔唔會自動公開。下載之後，用「點樣加入」嘅方法放上網站。</p>
           <ul id="legacy-list"></ul>
@@ -307,7 +304,7 @@
           <button type="button" data-rate="2">2×</button>
         </div>
         <input type="range" id="speed" min="0.5" max="2" step="0.05" value="1" aria-label="播放速度">
-        <p class="hint">每個 Drive 檔案都要設成「知道連結嘅人可以查看」，否則播唔到。鎖屏同播放速度用瀏覽器本身嘅控制。播放速度只係記喺你自己部機。</p>
+        <p class="hint">背景播放用瀏覽器本身嘅聲音播放器。鎖屏之後，系統會顯示播放、暫停同上一首、下一首。播放速度只係記喺你自己部機。</p>
       </section>
     </div>
   </div>
@@ -315,13 +312,13 @@
   <dialog id="how">
     <form class="dialog-body" method="dialog">
       <h2>點樣加入錄音</h2>
-      <p class="note">播放清單只記標題同 Google Drive 連結，mp3 唔會放上呢個網站。任何人開 <span id="public-url">呢條連結</span> 都串流同一批錄音。網頁入面冇 Drive 或 GitHub 寫入金鑰。</p>
+      <p class="note">播放清單同 mp3 放喺網站檔案入面，所以任何人開 <span id="public-url">呢條連結</span> 都聽得同同一批。唔使 API 金鑰。網頁唔可以自己上傳：寫入儲存庫要有提交權限，金鑰唔可以放喺瀏覽器入面。</p>
       <ol class="steps">
-        <li>將 mp3 放進 Drive 資料夾「007 Classroom Audio」，並設成「知道連結嘅人可以查看」。</li>
-        <li>撳「同步」，或者喺儲存庫執行：
-          <code class="cmd">node tools/audio-player/add-track.mjs --drive-id 檔案ID --title "標題"</code>
+        <li>準備 mp3，例如用 edge-tts 匯出，或者撳「同步」叫機器人由課堂資料夾複製檔案。</li>
+        <li>喺儲存庫根目錄執行：
+          <code class="cmd">node tools/audio-player/add-track.mjs 錄音.mp3 --title "標題"</code>
         </li>
-        <li>同步只更新 <code>tracks.json</code> 嘅連結。提交並推上 main，唔好提交 mp3。</li>
+        <li>提交 <code>tracks.json</code> 同 <code>media/</code> 入面新檔，推上 main。同步都要複製 mp3，唔好只寫 Drive 連結。</li>
       </ol>
       <p class="note">未填 webhook 時，「同步」會話尚未設定。網址貼喺 <code>sync-config.js</code>。詳細步驟喺 <code>tools/audio-player/README.md</code>。</p>
       <div class="dialog-actions">
@@ -337,7 +334,7 @@
   const SPEED_KEY = "classroom-audio-player:speed";
   const LAST_KEY = "classroom-audio-player:last";
   const LEGACY_DB = "classroom-audio-player";
-  const DRIVE_ID_RE = /^[a-zA-Z0-9_-]{10,80}$/;
+  const ID_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
   const FOLDER_ID = "1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0";
 
   const audio = document.getElementById("player");
@@ -430,43 +427,36 @@
   }
   const ART = artwork();
 
-  function driveApiKey() {
-    const cfg = window.CLASSROOM_AUDIO_SYNC;
-    const key = cfg && typeof cfg.driveApiKey === "string" ? cfg.driveApiKey.trim() : "";
-    if (!/^[A-Za-z0-9_-]{20,200}$/.test(key)) return "";
-    return key;
+  function isSafeFile(file) {
+    if (typeof file !== "string" || file.length > 180) return false;
+    let decoded = file;
+    try { decoded = decodeURIComponent(file); } catch (e) { return false; }
+    if (decoded !== file) return false;
+    if (file.includes("..") || file.includes("\\") || file.includes("//")) return false;
+    if (/^[a-z]+:/i.test(file) || file.startsWith("/")) return false;
+    return /^media\/[A-Za-z0-9._-]+$/.test(file);
   }
 
-  function driveMediaUrl(driveId) {
-    const url = new URL("https://www.googleapis.com/drive/v3/files/" + encodeURIComponent(driveId));
-    url.searchParams.set("alt", "media");
-    const key = driveApiKey();
-    if (key) url.searchParams.set("key", key);
+  function trackUrl(file) {
+    if (!isSafeFile(file)) return null;
+    const url = new URL(file, document.baseURI);
+    const base = new URL("./", document.baseURI);
+    if (url.origin !== base.origin) return null;
+    if (!url.pathname.startsWith(base.pathname)) return null;
     return url.href;
   }
 
-  function trackUrl(track) {
-    const driveId = track && (track.driveId || track.id);
-    if (!DRIVE_ID_RE.test(driveId || "")) return null;
-    if (!driveApiKey()) return null;
-    return driveMediaUrl(driveId);
-  }
-
   function normalize(raw, seen) {
-    if (!raw) return null;
-    const driveId = DRIVE_ID_RE.test(raw.driveId) ? raw.driveId : (DRIVE_ID_RE.test(raw.id) ? raw.id : "");
-    if (!driveId || seen.has(driveId)) return null;
-    const title = typeof raw.title === "string" && raw.title.trim()
-      ? raw.title.replace(/\.mp3$/i, "").trim().slice(0, 200)
-      : driveId;
+    if (!raw || typeof raw.id !== "string" || !ID_RE.test(raw.id) || seen.has(raw.id)) return null;
+    if (!isSafeFile(raw.file)) return null;
+    const title = typeof raw.title === "string" && raw.title.trim() ? raw.title.trim().slice(0, 200) : raw.id;
     const bytes = Number(raw.bytes);
     const duration = Number(raw.duration);
-    seen.add(driveId);
+    seen.add(raw.id);
     return {
-      id: driveId,
+      id: raw.id,
       title: title,
-      driveId: driveId,
-      url: driveMediaUrl(driveId),
+      file: raw.file,
       bytes: Number.isFinite(bytes) && bytes >= 0 ? bytes : null,
       duration: Number.isFinite(duration) && duration > 0 ? duration : null
     };
@@ -510,7 +500,7 @@
         emptyText.textContent = loadError;
       } else {
         emptyTitle.textContent = "未有錄音";
-        emptyText.textContent = "用「同步」更新 Drive 資料夾入面嘅 mp3。檔案要設成知道連結嘅人可以查看。";
+        emptyText.textContent = "用「同步」或「點樣加入」將 mp3 放上網站。提交 media/ 同 tracks.json 之後，任何人打開呢頁都聽得。";
       }
     }
     countEl.textContent = tracks.length + " 個";
@@ -542,7 +532,7 @@
       meta.className = "t-meta";
       const dur = Number.isFinite(knownDuration(t)) ? fmt(knownDuration(t)) : "";
       const size = fmtSize(t.bytes);
-      meta.textContent = [dur, size].filter(Boolean).join(" · ") || "Google Drive";
+      meta.textContent = [dur, size].filter(Boolean).join(" · ");
       info.append(name, meta);
       info.addEventListener("click", () => onPick(t.id));
       info.style.cursor = "pointer";
@@ -628,6 +618,26 @@
     updateMediaSession();
   }
 
+  function probeDuration(track) {
+    if (Number.isFinite(track.duration)) return Promise.resolve();
+    const url = trackUrl(track.file);
+    if (!url) return Promise.resolve();
+    const probe = document.createElement("audio");
+    probe.preload = "metadata";
+    probe.playsInline = true;
+    return new Promise((resolve) => {
+      const done = () => {
+        if (Number.isFinite(probe.duration) && probe.duration > 0) track.duration = probe.duration;
+        probe.removeAttribute("src");
+        probe.load();
+        resolve();
+      };
+      probe.addEventListener("loadedmetadata", done, { once: true });
+      probe.addEventListener("error", done, { once: true });
+      probe.src = url;
+    });
+  }
+
   async function loadPlaylist() {
     loadError = "";
     let response;
@@ -669,7 +679,7 @@
     const seen = new Set();
     const rawCount = data.tracks.length;
     tracks = data.tracks.map((raw) => normalize(raw, seen)).filter(Boolean);
-    if (tracks.length !== rawCount) toast("有部分曲目冇有效 Drive 連結，已跳過。");
+    if (tracks.length !== rawCount) toast("有部分曲目路徑唔接受，已跳過。");
     const saved = readLocal(SPEED_KEY);
     const savedSpeed = saved == null ? NaN : Number(saved);
     if (savedSpeed >= 0.5 && savedSpeed <= 2) speed = quantize(savedSpeed);
@@ -678,6 +688,12 @@
     const last = readLocal(LAST_KEY);
     if (last && tracks.some((t) => t.id === last)) select(last, false);
     else updateNow();
+    const missing = tracks.filter((t) => !Number.isFinite(t.duration));
+    if (missing.length) {
+      await Promise.all(missing.map((t) => probeDuration(t)));
+      renderList();
+      if (currentId) updateNow();
+    }
   }
 
   function select(id, autoplay) {
@@ -690,12 +706,9 @@
       }
       return;
     }
-    const url = trackUrl(t);
+    const url = trackUrl(t.file);
     if (!url) {
-      toast(driveApiKey()
-        ? "呢段錄音嘅 Drive 連結唔接受。"
-        : "未設定 Drive API 金鑰，播唔到。請喺 sync-config.js 填 driveApiKey。");
-      document.getElementById("drive-key-note").hidden = !!driveApiKey();
+      toast("呢段錄音嘅路徑唔接受。");
       return;
     }
     currentId = id;
@@ -824,7 +837,7 @@
   audio.addEventListener("pause", () => { updateTransport(); updateMediaSession(); renderList(); });
   audio.addEventListener("error", () => {
     if (!currentId) return;
-    toast("呢段錄音載入唔到。請確認 Drive 檔案已設成知道連結嘅人可以查看。");
+    toast("呢段錄音載入唔到。");
   });
   audio.addEventListener("ended", () => {
     const i = tracks.findIndex((t) => t.id === currentId);
@@ -918,7 +931,6 @@
     if (e.code === "Space") { e.preventDefault(); playBtn.click(); }
   });
 
-  document.getElementById("drive-key-note").hidden = !!driveApiKey();
   installMediaHandlers();
   const storedSpeed = readLocal(SPEED_KEY);
   if (storedSpeed != null && Number(storedSpeed) >= 0.5 && Number(storedSpeed) <= 2) {

@@ -2,27 +2,27 @@
 
 公開網址：<https://ksl-blip.github.io/biology-simulators/tools/audio-player/>
 
-播放清單係 `tracks.json`，每首只記標題同 Google Drive 串流連結。mp3 留喺 Drive 資料夾「007 Classroom Audio」（`1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0`），唔好提交去呢個儲存庫。網頁入面冇 Drive 或 GitHub 寫入金鑰。
+任何人打開呢個網址都會聽到同一批 mp3。聲音檔放喺 `media/`，播放清單係 `tracks.json`（相對路徑，例如 `media/lesson.mp3`）。GitHub Pages 由 `main` 直接提供呢啲檔案。頁面唔使 Drive API 金鑰，入面亦冇寫入金鑰。
 
-## 分享設定
+## 加入錄音
 
-每個要播嘅檔案都要喺 Drive 設成 **知道連結嘅人可以查看**（Anyone with the link → Viewer）。未公開嘅檔，`<audio>` 會載入失敗。資料夾本身都可以用同一個分享設定，新檔先會跟住公開。
+喺儲存庫根目錄執行（`lesson.mp3` 可以係 edge-tts 匯出嘅檔）：
 
-由 2024 年開始，Google 會拒絕其他網站直接拎 `drive.google.com` / `drive.usercontent.google.com` 嘅檔案（瀏覽器會見到 403）。播放器用 Drive API 嘅媒體網址：
-
-```text
-https://www.googleapis.com/drive/v3/files/FILE_ID?alt=media&key=API_KEY
+```bash
+node tools/audio-player/add-track.mjs path/to/lesson.mp3 --title "標題"
 ```
 
-`tracks.json` 只記冇金鑰嘅網址。金鑰放喺 `sync-config.js` 嘅 `driveApiKey`，頁面播放時先拼上。建立方法：
+腳本會將檔案複製到 `media/`，並加到 `tracks.json` 最前面。佢唔會提交，亦唔會讀取 GitHub 金鑰。檢查變更之後：
 
-1. 用學校帳戶開 [Google Cloud Console](https://console.cloud.google.com/)，建立或揀一個專案。
-2. 啟用 [Google Drive API](https://console.cloud.google.com/apis/library/drive.googleapis.com)。
-3. 「憑證」→「建立憑證」→「API 金鑰」。
-4. 限制金鑰：API 限制只選 Google Drive API。應用程式限制選「HTTP 參照網址」，加入 `https://ksl-blip.github.io/*`。
-5. 將金鑰貼入 `sync-config.js` 嘅 `driveApiKey`，提交並推上 `main`。
+```bash
+git add tools/audio-player/tracks.json tools/audio-player/media
+git commit -m "Add classroom audio: 標題"
+git push
+```
 
-呢個金鑰會公開。佢只可以讀「知道連結嘅人」已經睇到嘅檔，唔係寫入密碼。唔好用冇有參照網址限制嘅金鑰。未填金鑰時，頁面會話播唔到。
+推上 `main`（或開 pull request 合併）之後，等 Pages 更新，再重新打開上面個網址。單個檔案請保持喺 50 MB 以下。
+
+刪除：喺 `tracks.json` 移除該項，刪除 `media/` 入面對應檔案，再提交。
 
 ## 同步
 
@@ -32,7 +32,7 @@ https://www.googleapis.com/drive/v3/files/FILE_ID?alt=media&key=API_KEY
 { "action": "sync", "source": "classroom-audio-player", "folderId": "1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0" }
 ```
 
-Grok Bot routine 收到之後，列出該資料夾入面嘅 mp3，用下面指令更新 `tracks.json`（只寫連結，唔下載聲音檔），然後提交並推上 `main`。
+Grok Bot routine 收到之後，應該下載 Drive 資料夾「007 Classroom Audio」入面嘅 mp3，複製入 `tools/audio-player/media/`，更新 `tracks.json` 做相對路徑，然後提交並推上 `main`。同步唔好只寫 Drive 串流網址；頁面係由網站自己嘅 mp3 播放。
 
 `tools/audio-player/sync-config.js`：
 
@@ -47,15 +47,6 @@ window.CLASSROOM_AUDIO_SYNC = {
 
 呢個檔案會公開。唔好放 Drive 金鑰、GitHub 金鑰或者其他寫入密碼。Webhook 只應該開始同步。佢要允許來自 `https://ksl-blip.github.io` 嘅 POST，瀏覽器先讀到回應。
 
-## 手動加一條連結
-
-```bash
-node tools/audio-player/add-track.mjs --drive-id FILE_ID --title "標題" --bytes 12345
-git add tools/audio-player/tracks.json
-git commit -m "Add classroom audio link: 標題"
-git push
-```
-
-刪除：喺 `tracks.json` 移除該項，再提交。唔使刪儲存庫入面嘅 mp3，因為聲音檔唔喺度。
-
 播放速度，同上次揀咗邊首，只會記喺你自己部瀏覽器。鎖屏同背景播放用瀏覽器本身嘅播放控制。
+
+以前用瀏覽器上傳、只存在呢部裝置嘅錄音，唔會自動變成共享。打開頁面如果仲見到舊檔，可以逐個下載，再用上面個指令加入。
