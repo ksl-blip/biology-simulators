@@ -2,6 +2,13 @@
   "version": 1,
   "tracks": [
     {
+      "id": "pe02-audio-mv134ltl",
+      "title": "PE02 Audio",
+      "file": "media/pe02-audio-mv134ltl.mp3",
+      "bytes": 3506112,
+      "duration": 584.352
+    },
+    {
       "id": "1-mv12yu0h",
       "title": "示範錄音 1",
       "file": "media/1-mv12yu0h.mp3",
