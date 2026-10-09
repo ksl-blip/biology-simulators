@@ -92,16 +92,16 @@ test("addTrack rejects a fake mp3, unsafe ids, and duplicate ids", async () => {
   });
 });
 
-test("published playlist is the three classroom files in media/", async () => {
+test("published playlist matches the Drive folder files in media/", async () => {
   const doc = JSON.parse(await readFile(path.join(playerDir, "tracks.json"), "utf8"));
   assert.equal(doc.version, 1);
   assert.equal(doc.folderId, undefined);
   const titles = doc.tracks.map((track) => track.title);
   assert.deepEqual(titles, [
     "PE02_生命的基本單位",
-    "PEE1-3_血液內氣體成份的調節",
-    "PE02 Audio"
+    "PEE1-3_血液內氣體成份的調節"
   ]);
+  assert.deepEqual(doc.tracks.map((track) => track.bytes), [5889312, 4754592]);
   for (const track of doc.tracks) {
     assert.match(track.id, /^[a-z0-9][a-z0-9-]{0,63}$/);
     assert.match(track.file, /^media\/[A-Za-z0-9._-]+$/);
@@ -113,7 +113,7 @@ test("published playlist is the three classroom files in media/", async () => {
     assert.equal(info.size, track.bytes);
     assert.ok(info.size > 0);
   }
-  const banned = ["示範錄音 1", "示範錄音 2", "連線測試"];
+  const banned = ["示範錄音 1", "示範錄音 2", "連線測試", "PE02 Audio"];
   for (const title of banned) assert.equal(titles.includes(title), false);
 });
 
