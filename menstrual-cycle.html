@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>H10 月經週期模擬 · HKDSE 生物</title>
+<style>
+:root {
+  --paper: #f3eee4;
+  --ink: #2b241c;
+  --muted: #5a493c;
+  --green: #1f6b3a;
+  --green-d: #174e2b;
+  --card: #fffaf3;
+  --line: #e0d2c0;
+  --fsh: #2563eb;
+  --lh: #7c3aed;
+  --est: #db2777;
+  --prg: #d97706;
+  --hl: #fff3c4;
+  --red: #b42318;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "PingFang HK", "Noto Sans CJK HK", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: clamp(22px, 3.2vw, 28px); line-height: 1.3; margin: 0 0 6px; }
+h2 { font-size: 18px; margin: 0 0 10px; }
+p { margin: 6px 0; }
+.kicker { letter-spacing: .08em; color: var(--muted); margin: 0 0 4px; font-size: 13px; font-weight: 700; }
+.banner {
+  background: #fff6e4;
+  border: 1px solid #e4c98a;
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin: 10px 0 14px;
+  font-size: 14px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 0;
+}
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button.act {
+  background: var(--green);
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+}
+button.ghost {
+  background: transparent;
+  color: var(--green-d);
+  border: 1px solid var(--green);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+}
+button.toggle.on {
+  background: #7c2d12;
+  color: #fff;
+  border-color: #7c2d12;
+}
+button:disabled { opacity: .42; cursor: not-allowed; }
+button:focus-visible, input:focus-visible {
+  outline: 3px solid #1f6b3a;
+  outline-offset: 2px;
+}
+.slider-line { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; }
+input[type="range"] { width: min(420px, 70vw); accent-color: #1f6b3a; }
+.day-big { font-variant-numeric: tabular-nums; font-weight: 800; min-width: 5.5em; font-size: 18px; }
+.phase-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #efe4d2;
+  font-size: 13px;
+  font-weight: 700;
+}
+.grid-main {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+.grid-viz {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.panel-title { font-size: 14px; font-weight: 800; margin: 0 0 8px; color: var(--muted); letter-spacing: .04em; }
+svg.chart, svg.organ { width: 100%; height: auto; display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 14px; margin-top: 8px; font-size: 13px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 14px; height: 4px; border-radius: 2px; display: inline-block; }
+.sw.fsh { background: var(--fsh); }
+.sw.lh { background: var(--lh); }
+.sw.est { background: var(--est); }
+.sw.prg { background: var(--prg); }
+.flow {
+  max-height: 520px;
+  overflow: auto;
+  padding-right: 4px;
+}
+.flow-phase {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: var(--muted);
+  margin: 12px 0 6px;
+  padding-bottom: 2px;
+  border-bottom: 1px dashed var(--line);
+}
+.flow-phase:first-child { margin-top: 0; }
+.step {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 8px;
+  align-items: start;
+  padding: 7px 8px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  margin: 3px 0;
+  transition: background .2s, border-color .2s;
+}
+.step .n {
+  width: 24px; height: 24px; border-radius: 999px;
+  background: #efe4d2; display: grid; place-items: center;
+  font-size: 12px; font-weight: 800; color: var(--muted);
+}
+.step.active {
+  background: var(--hl);
+  border-color: #e4c98a;
+  box-shadow: 0 0 0 1px #f0d58a inset;
+}
+.step.active .n { background: var(--green); color: #fff; }
+.step.key .txt strong, .step .key-word { color: var(--red); }
+.status {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.stat {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+.stat .lab { font-size: 12px; color: var(--muted); }
+.stat .val { font-weight: 800; font-variant-numeric: tabular-nums; font-size: 15px; }
+.note-fert {
+  display: none;
+  margin-top: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+.note-fert.show { display: block; }
+footer {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 13px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+@media (max-width: 900px) {
+  .grid-main, .grid-viz, .status { grid-template-columns: 1fr; }
+  .flow { max-height: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .step { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">HKDSE · 中四至中六 · H10</p>
+  <h1>月經週期模擬</h1>
+  <p class="muted small">拖動日子或按播放，對照流程圖、激素曲線、卵巢與子宮內膜的變化。主線為<strong>沒有受精</strong>的 28 天週期。</p>
+  <div class="banner">試對照流程圖：垂體前葉 → FSH / LH → 卵泡／黃體 → 雌激素／孕酮 → 子宮內膜。紅色字為關鍵句。</div>
+
+  <div class="card">
+    <div class="controls">
+      <button type="button" class="act" id="btnPlay" aria-pressed="false">播放</button>
+      <button type="button" class="ghost" id="btnReset">重設</button>
+      <button type="button" class="ghost toggle" id="btnFert" aria-pressed="false">若受精（次要）</button>
+      <span class="phase-tag" id="phaseTag">月經期 · 第 1–5 天</span>
+    </div>
+    <div class="slider-line">
+      <label for="daySlider" class="small muted">日子</label>
+      <input type="range" id="daySlider" min="1" max="28" step="1" value="1" aria-valuemin="1" aria-valuemax="28" aria-valuenow="1">
+      <span class="day-big" id="dayLabel">第 1 天</span>
+    </div>
+    <div class="note-fert" id="fertNote">
+      <strong>若卵子受精：</strong>胚泡分泌 <strong>HCG</strong>（人類絨毛膜促性腺激素），維持黃體繼續分泌雌激素及孕酮，子宮內膜不會脫落，月經不出現。本模擬主線仍以「沒有受精」為準。
+    </div>
+  </div>
+
+  <div class="grid-main">
+    <div>
+      <div class="card" style="margin-bottom:12px">
+        <p class="panel-title">激素水平（相對單位）</p>
+        <svg class="chart" id="hormoneChart" viewBox="0 0 560 220" role="img" aria-label="促卵泡激素、促黃體激素、雌激素、孕酮曲線">
+          <defs>
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#eadfce" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect x="48" y="16" width="480" height="160" fill="url(#grid)" stroke="#e0d2c0"/>
+          <text x="8" y="24" font-size="11" fill="#5a493c">高</text>
+          <text x="8" y="170" font-size="11" fill="#5a493c">低</text>
+          <g id="dayMarks"></g>
+          <path id="pathFSH" fill="none" stroke="#2563eb" stroke-width="2.4"/>
+          <path id="pathLH" fill="none" stroke="#7c3aed" stroke-width="2.4"/>
+          <path id="pathEST" fill="none" stroke="#db2777" stroke-width="2.4"/>
+          <path id="pathPRG" fill="none" stroke="#d97706" stroke-width="2.4"/>
+          <line id="dayCursor" x1="48" y1="16" x2="48" y2="176" stroke="#1f6b3a" stroke-width="2" stroke-dasharray="4 3"/>
+          <circle id="dotFSH" r="4" fill="#2563eb"/>
+          <circle id="dotLH" r="4" fill="#7c3aed"/>
+          <circle id="dotEST" r="4" fill="#db2777"/>
+          <circle id="dotPRG" r="4" fill="#d97706"/>
+        </svg>
+        <div class="legend">
+          <span><i class="sw fsh"></i>促卵泡激素 FSH</span>
+          <span><i class="sw lh"></i>促黃體激素 LH</span>
+          <span><i class="sw est"></i>雌激素</span>
+          <span><i class="sw prg"></i>孕酮</span>
+        </div>
+        <div class="status" id="hormoneStats"></div>
+      </div>
+
+      <div class="grid-viz">
+        <div class="card">
+          <p class="panel-title">卵巢 · 卵泡 → 排卵 → 黃體</p>
+          <svg class="organ" id="ovarySvg" viewBox="0 0 280 200" role="img" aria-label="卵巢結構示意">
+            <ellipse cx="140" cy="100" rx="108" ry="78" fill="#fce7f3" stroke="#be185d" stroke-width="2.5"/>
+            <text x="140" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#9d174d">卵巢</text>
+            <!-- immature follicles -->
+            <g id="smallFollicles" opacity=".45">
+              <circle cx="78" cy="70" r="8" fill="#fda4af" stroke="#e11d48"/>
+              <circle cx="95" cy="130" r="7" fill="#fda4af" stroke="#e11d48"/>
+              <circle cx="200" cy="68" r="6" fill="#fda4af" stroke="#e11d48"/>
+            </g>
+            <!-- dominant follicle -->
+            <g id="follicleG">
+              <circle id="follicle" cx="165" cy="105" r="22" fill="#fb7185" stroke="#be185d" stroke-width="2"/>
+              <circle id="oocyte" cx="165" cy="105" r="7" fill="#fff1f2" stroke="#9f1239"/>
+              <text id="follicleLabel" x="165" y="148" text-anchor="middle" font-size="12" font-weight="700" fill="#9f1239">卵泡</text>
+            </g>
+            <!-- ovulation burst -->
+            <g id="ovulationG" opacity="0">
+              <circle cx="230" cy="70" r="9" fill="#fff" stroke="#be185d" stroke-width="2"/>
+              <path d="M200 90 Q220 70 230 70" fill="none" stroke="#be185d" stroke-width="2" stroke-dasharray="3 2"/>
+              <text x="230" y="55" text-anchor="middle" font-size="12" font-weight="800" fill="#be185d">排卵</text>
+            </g>
+            <!-- corpus luteum -->
+            <g id="clG" opacity="0">
+              <ellipse id="clBody" cx="165" cy="105" rx="28" ry="24" fill="#fbbf24" stroke="#b45309" stroke-width="2"/>
+              <text id="clLabel" x="165" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">黃體</text>
+            </g>
+          </svg>
+          <p class="small muted" id="ovaryCaption">高水平的促卵泡激素使卵巢中卵泡發育。</p>
+        </div>
+        <div class="card">
+          <p class="panel-title">子宮內膜厚度</p>
+          <svg class="organ" id="endoSvg" viewBox="0 0 280 200" role="img" aria-label="子宮內膜厚度示意">
+            <rect x="40" y="30" width="200" height="140" rx="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+            <text x="140" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">子宮</text>
+            <rect x="55" y="150" width="170" height="8" fill="#fed7aa"/>
+            <rect id="endoLayer" x="55" y="110" width="170" height="40" fill="#fb7185" opacity=".85"/>
+            <text id="endoLabel" x="140" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#9f1239">子宮內膜</text>
+            <g id="shedMarks" opacity="0">
+              <path d="M70 155 l8 18 M100 155 l-6 16 M130 155 l10 18 M160 155 l-8 16 M190 155 l6 18" stroke="#be185d" stroke-width="2" stroke-linecap="round"/>
+            </g>
+          </svg>
+          <p class="small muted" id="endoCaption">子宮內膜脫落（月經）。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card flow" id="flowPanel" aria-label="月經週期流程圖">
+      <h2>流程圖 · 跟住日子走</h2>
+      <p class="small muted" style="margin-top:-4px">現時步驟會反黃。紅色為教師卡關鍵句。</p>
+      <div id="flowSteps"></div>
+    </div>
+  </div>
+
+  <footer>
+    模擬教學模型 · 激素曲線為簡化相對單位，非臨床數據。<br>
+    詞彙：垂體前葉、促卵泡激素（FSH）、促黃體激素（LH）、雌激素、孕酮、卵泡、排卵、黃體、子宮內膜。
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Relative hormone levels day 1..28 (index 0 unused)
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function hormonesAt(day) {
+    var d = clamp(day, 1, 28);
+    // FSH: rises early follicular, dips, surge ~14, then low luteal
+    var fsh;
+    if (d <= 5) fsh = lerp(0.45, 0.75, (d - 1) / 4);
+    else if (d <= 10) fsh = lerp(0.75, 0.35, (d - 5) / 5);
+    else if (d <= 13) fsh = lerp(0.35, 0.4, (d - 10) / 3);
+    else if (d === 14) fsh = 0.85;
+    else if (d <= 16) fsh = lerp(0.85, 0.25, (d - 14) / 2);
+    else fsh = lerp(0.25, 0.2, (d - 16) / 12);
+
+    // LH: low then sharp surge day 14
+    var lh;
+    if (d <= 12) lh = lerp(0.15, 0.28, (d - 1) / 11);
+    else if (d === 13) lh = 0.45;
+    else if (d === 14) lh = 1.0;
+    else if (d === 15) lh = 0.4;
+    else lh = lerp(0.22, 0.12, (d - 16) / 12);
+
+    // Estrogen: rises follicular, peak ~13, mid-luteal second peak, drop late
+    var est;
+    if (d <= 5) est = lerp(0.15, 0.25, (d - 1) / 4);
+    else if (d <= 13) est = lerp(0.25, 1.0, (d - 5) / 8);
+    else if (d === 14) est = 0.7;
+    else if (d <= 21) est = lerp(0.55, 0.85, (d - 15) / 6);
+    else est = lerp(0.85, 0.15, (d - 21) / 7);
+
+    // Progesterone: low until after ovulation, peak mid-luteal, crash
+    var prg;
+    if (d <= 14) prg = lerp(0.08, 0.12, (d - 1) / 13);
+    else if (d <= 21) prg = lerp(0.2, 1.0, (d - 14) / 7);
+    else prg = lerp(1.0, 0.12, (d - 21) / 7);
+
+    return { fsh: fsh, lh: lh, est: est, prg: prg };
+  }
+
+  function endometriumThickness(day, fertilized) {
+    // relative 0..1 height of lining
+    if (fertilized && day >= 15) {
+      return clamp(0.55 + (day - 15) * 0.02, 0.55, 0.95);
+    }
+    if (day <= 5) return lerp(0.15, 0.2, (day - 1) / 4); // shedding / thin
+    if (day <= 14) return lerp(0.25, 0.7, (day - 5) / 9);
+    if (day <= 25) return lerp(0.7, 0.95, (day - 14) / 11);
+    return lerp(0.95, 0.2, (day - 25) / 3); // about to shed / shedding start
+  }
+
+  function phaseName(day) {
+    if (day <= 5) return "月經期 · 第 1–5 天";
+    if (day <= 13) return "卵泡期 · 第 1–13 天";
+    if (day === 14) return "排卵 · 第 14 天";
+    return "黃體期 · 第 15–28 天";
+  }
+
+  // Flowchart steps from teacher card; activeDays: which days highlight this step
+  var STEPS = [
+    { phase: "標題", n: "題", text: "月經週期", days: [] },
+    { phase: "1–13 天", n: "1", text: "垂體前葉", days: [1, 2, 3, 4, 5, 6] },
+    { phase: "1–13 天", n: "2", text: "血液<strong>促卵泡激素</strong>上升", days: [1, 2, 3, 4, 5, 6] },
+    { phase: "1–13 天", n: "3", text: "<strong class='key-word'>高水平的促卵泡激素</strong>使卵巢中卵泡發育", days: [3, 4, 5, 6, 7, 8, 9], key: true },
+    { phase: "1–13 天", n: "4", text: "卵泡分泌<strong>雌激素</strong>上升", days: [7, 8, 9, 10, 11, 12, 13] },
+    { phase: "1–13 天", n: "5", text: "子宮內膜加厚", days: [7, 8, 9, 10, 11, 12, 13] },
+    { phase: "1–13 天", n: "6", text: "抑制垂體前葉", days: [9, 10, 11, 12] },
+    { phase: "1–13 天", n: "7", text: "促卵泡激素下降", days: [9, 10, 11, 12] },
+    { phase: "1–13 天", n: "8", text: "抑制其他卵泡發育", days: [9, 10, 11, 12, 13] },
+    { phase: "14 天", n: "9", text: "雌激素上升至最高", days: [13, 14] },
+    { phase: "14 天", n: "10", text: "刺激垂體前葉", days: [14] },
+    { phase: "14 天", n: "11", text: "促卵泡激素上升", days: [14] },
+    { phase: "14 天", n: "12", text: "促黃體激素上升", days: [14] },
+    { phase: "14 天", n: "13", text: "高水平黃體激素刺激<strong>排卵</strong>", days: [14], key: true },
+    { phase: "15–28 天", n: "14", text: "剩下卵泡細胞", days: [15, 16] },
+    { phase: "15–28 天", n: "15", text: "受促黃體激素刺激", days: [15, 16, 17] },
+    { phase: "15–28 天", n: "16", text: "形成<strong>黃體</strong>", days: [15, 16, 17, 18] },
+    { phase: "15–28 天", n: "17", text: "黃體分泌雌激素及<strong>孕酮</strong>", days: [16, 17, 18, 19, 20, 21, 22] },
+    { phase: "15–28 天", n: "18", text: "刺激子宮內膜加厚", days: [16, 17, 18, 19, 20, 21, 22, 23] },
+    { phase: "15–28 天", n: "19", text: "抑制促卵泡激素及促黃體激素", days: [17, 18, 19, 20, 21, 22] },
+    { phase: "15–28 天", n: "20", text: "<strong class='key-word'>沒有受精</strong>黃體退化", days: [24, 25, 26], key: true },
+    { phase: "15–28 天", n: "21", text: "雌激素及孕酮下跌", days: [25, 26, 27, 28] },
+    { phase: "15–28 天", n: "22", text: "子宮內膜脫落", days: [1, 2, 3, 4, 5, 28] }
+  ];
+
+  var day = 1;
+  var playing = false;
+  var fertilized = false;
+  var timer = null;
+  var chartBuilt = false;
+
+  var el = {
+    slider: document.getElementById("daySlider"),
+    dayLabel: document.getElementById("dayLabel"),
+    phaseTag: document.getElementById("phaseTag"),
+    btnPlay: document.getElementById("btnPlay"),
+    btnReset: document.getElementById("btnReset"),
+    btnFert: document.getElementById("btnFert"),
+    fertNote: document.getElementById("fertNote"),
+    flowSteps: document.getElementById("flowSteps"),
+    hormoneStats: document.getElementById("hormoneStats"),
+    pathFSH: document.getElementById("pathFSH"),
+    pathLH: document.getElementById("pathLH"),
+    pathEST: document.getElementById("pathEST"),
+    pathPRG: document.getElementById("pathPRG"),
+    dayCursor: document.getElementById("dayCursor"),
+    dayMarks: document.getElementById("dayMarks"),
+    dotFSH: document.getElementById("dotFSH"),
+    dotLH: document.getElementById("dotLH"),
+    dotEST: document.getElementById("dotEST"),
+    dotPRG: document.getElementById("dotPRG"),
+    follicle: document.getElementById("follicle"),
+    oocyte: document.getElementById("oocyte"),
+    follicleG: document.getElementById("follicleG"),
+    follicleLabel: document.getElementById("follicleLabel"),
+    ovulationG: document.getElementById("ovulationG"),
+    clG: document.getElementById("clG"),
+    clBody: document.getElementById("clBody"),
+    clLabel: document.getElementById("clLabel"),
+    smallFollicles: document.getElementById("smallFollicles"),
+    ovaryCaption: document.getElementById("ovaryCaption"),
+    endoLayer: document.getElementById("endoLayer"),
+    endoLabel: document.getElementById("endoLabel"),
+    shedMarks: document.getElementById("shedMarks"),
+    endoCaption: document.getElementById("endoCaption")
+  };
+
+  function xOfDay(d) {
+    return 48 + ((d - 1) / 27) * 480;
+  }
+  function yOf(level) {
+    return 176 - level * 150;
+  }
+
+  function buildChartPaths() {
+    var series = { fsh: [], lh: [], est: [], prg: [] };
+    for (var d = 1; d <= 28; d++) {
+      var h = hormonesAt(d);
+      series.fsh.push([xOfDay(d), yOf(h.fsh)]);
+      series.lh.push([xOfDay(d), yOf(h.lh)]);
+      series.est.push([xOfDay(d), yOf(h.est)]);
+      series.prg.push([xOfDay(d), yOf(h.prg)]);
+    }
+    function toPath(pts) {
+      return pts.map(function (p, i) {
+        return (i === 0 ? "M" : "L") + p[0].toFixed(1) + " " + p[1].toFixed(1);
+      }).join(" ");
+    }
+    el.pathFSH.setAttribute("d", toPath(series.fsh));
+    el.pathLH.setAttribute("d", toPath(series.lh));
+    el.pathEST.setAttribute("d", toPath(series.est));
+    el.pathPRG.setAttribute("d", toPath(series.prg));
+
+    var marks = "";
+    [1, 7, 14, 21, 28].forEach(function (d) {
+      var x = xOfDay(d);
+      marks += '<line x1="' + x + '" y1="176" x2="' + x + '" y2="180" stroke="#5a493c"/>';
+      marks += '<text x="' + x + '" y="196" text-anchor="middle" font-size="11" fill="#5a493c">' + d + '</text>';
+    });
+    el.dayMarks.innerHTML = marks;
+    chartBuilt = true;
+  }
+
+  function buildFlow() {
+    var html = "";
+    var lastPhase = null;
+    STEPS.forEach(function (s, i) {
+      if (s.phase && s.phase !== lastPhase) {
+        html += '<div class="flow-phase">' + s.phase + "</div>";
+        lastPhase = s.phase;
+      }
+      if (s.n === "題") {
+        html += '<div class="step" data-i="' + i + '"><span class="n">◎</span><div class="txt"><strong>' + s.text + "</strong></div></div>";
+        return;
+      }
+      html += '<div class="step' + (s.key ? " key" : "") + '" data-i="' + i + '"><span class="n">' + s.n + '</span><div class="txt">' + s.text + "</div></div>";
+    });
+    el.flowSteps.innerHTML = html;
+  }
+
+  function levelWord(v) {
+    if (v >= 0.75) return "高";
+    if (v >= 0.4) return "中";
+    return "低";
+  }
+
+  function updateOvary(d) {
+    var fert = fertilized;
+    if (d <= 13) {
+      var r = 12 + (d / 13) * 22;
+      el.follicleG.style.opacity = "1";
+      el.ovulationG.style.opacity = "0";
+      el.clG.style.opacity = "0";
+      el.follicle.setAttribute("r", r.toFixed(1));
+      el.oocyte.setAttribute("r", Math.max(4, r * 0.28).toFixed(1));
+      el.follicleLabel.textContent = "卵泡";
+      el.smallFollicles.style.opacity = d >= 9 ? "0.2" : "0.45";
+      el.ovaryCaption.textContent = d <= 6
+        ? "高水平的促卵泡激素使卵巢中卵泡發育。"
+        : "優勢卵泡長大，分泌雌激素；其他卵泡發育受抑制。";
+    } else if (d === 14) {
+      el.follicleG.style.opacity = "0.35";
+      el.ovulationG.style.opacity = "1";
+      el.clG.style.opacity = "0";
+      el.follicle.setAttribute("r", "28");
+      el.ovaryCaption.textContent = "高水平黃體激素刺激排卵：次級卵母細胞釋出。";
+    } else {
+      el.follicleG.style.opacity = "0";
+      el.ovulationG.style.opacity = "0";
+      el.clG.style.opacity = "1";
+      var deg = (!fert && d >= 24);
+      if (deg) {
+        var shrink = clamp(1 - (d - 24) / 5, 0.35, 1);
+        el.clBody.setAttribute("rx", (28 * shrink).toFixed(1));
+        el.clBody.setAttribute("ry", (24 * shrink).toFixed(1));
+        el.clBody.setAttribute("fill", "#d6d3d1");
+        el.clBody.setAttribute("stroke", "#78716c");
+        el.clLabel.textContent = "黃體退化";
+        el.clLabel.setAttribute("fill", "#57534e");
+        el.ovaryCaption.textContent = "沒有受精：黃體退化，雌激素及孕酮下跌。";
+      } else {
+        el.clBody.setAttribute("rx", "28");
+        el.clBody.setAttribute("ry", "24");
+        el.clBody.setAttribute("fill", "#fbbf24");
+        el.clBody.setAttribute("stroke", "#b45309");
+        el.clLabel.textContent = fert ? "黃體（HCG 維持）" : "黃體";
+        el.clLabel.setAttribute("fill", "#92400e");
+        el.ovaryCaption.textContent = fert
+          ? "若受精：HCG 維持黃體，繼續分泌雌激素及孕酮。"
+          : "剩下卵泡細胞受 LH 刺激形成黃體，分泌雌激素及孕酮。";
+      }
+    }
+  }
+
+  function updateEndo(d) {
+    var t = endometriumThickness(d, fertilized);
+    var maxH = 95;
+    var h = 12 + t * maxH;
+    var y = 158 - h;
+    el.endoLayer.setAttribute("y", y.toFixed(1));
+    el.endoLayer.setAttribute("height", h.toFixed(1));
+    el.endoLabel.setAttribute("y", Math.max(y - 6, 48));
+
+    var shedding = (!fertilized && (d <= 5 || d >= 28));
+    el.shedMarks.style.opacity = shedding ? "1" : "0";
+    if (shedding) {
+      el.endoLayer.setAttribute("fill", "#f43f5e");
+      el.endoCaption.textContent = "子宮內膜脫落（月經）。";
+    } else if (d <= 13) {
+      el.endoLayer.setAttribute("fill", "#fb7185");
+      el.endoCaption.textContent = "雌激素刺激子宮內膜加厚。";
+    } else if (fertilized) {
+      el.endoLayer.setAttribute("fill", "#e11d48");
+      el.endoCaption.textContent = "孕酮與雌激素維持肥厚內膜（若受精）。";
+    } else {
+      el.endoLayer.setAttribute("fill", "#e11d48");
+      el.endoCaption.textContent = d >= 24
+        ? "激素下跌，內膜即將脫落。"
+        : "黃體的雌激素及孕酮刺激子宮內膜加厚。";
+    }
+  }
+
+  function updateFlow(d) {
+    var nodes = el.flowSteps.querySelectorAll(".step");
+    var firstActive = null;
+    nodes.forEach(function (node) {
+      var i = +node.getAttribute("data-i");
+      var s = STEPS[i];
+      var on = s.days && s.days.indexOf(d) !== -1;
+      // If fertilized, mute the "no fert / shed" late steps after day 15
+      if (fertilized && d >= 15 && s.days && (s.n === "20" || s.n === "21" || (s.n === "22" && d > 5))) {
+        on = false;
+      }
+      node.classList.toggle("active", !!on);
+      if (on && !firstActive) firstActive = node;
+    });
+    if (firstActive && firstActive.scrollIntoView) {
+      var panel = document.getElementById("flowPanel");
+      var top = firstActive.offsetTop - panel.offsetTop - 40;
+      if (Math.abs(panel.scrollTop - top) > 30) {
+        panel.scrollTop = Math.max(0, top);
+      }
+    }
+  }
+
+  function render() {
+    if (!chartBuilt) buildChartPaths();
+    el.slider.value = String(day);
+    el.slider.setAttribute("aria-valuenow", String(day));
+    el.dayLabel.textContent = "第 " + day + " 天";
+    el.phaseTag.textContent = phaseName(day);
+
+    var h = hormonesAt(day);
+    var x = xOfDay(day);
+    el.dayCursor.setAttribute("x1", x);
+    el.dayCursor.setAttribute("x2", x);
+    el.dotFSH.setAttribute("cx", x);
+    el.dotFSH.setAttribute("cy", yOf(h.fsh));
+    el.dotLH.setAttribute("cx", x);
+    el.dotLH.setAttribute("cy", yOf(h.lh));
+    el.dotEST.setAttribute("cx", x);
+    el.dotEST.setAttribute("cy", yOf(h.est));
+    el.dotPRG.setAttribute("cx", x);
+    el.dotPRG.setAttribute("cy", yOf(h.prg));
+
+    el.hormoneStats.innerHTML =
+      '<div class="stat"><div class="lab">FSH</div><div class="val" style="color:#2563eb">' + levelWord(h.fsh) + "</div></div>" +
+      '<div class="stat"><div class="lab">LH</div><div class="val" style="color:#7c3aed">' + levelWord(h.lh) + "</div></div>" +
+      '<div class="stat"><div class="lab">雌激素</div><div class="val" style="color:#db2777">' + levelWord(h.est) + "</div></div>" +
+      '<div class="stat"><div class="lab">孕酮</div><div class="val" style="color:#d97706">' + levelWord(h.prg) + "</div></div>";
+
+    updateOvary(day);
+    updateEndo(day);
+    updateFlow(day);
+  }
+
+  function setPlaying(on) {
+    playing = on;
+    el.btnPlay.textContent = on ? "暫停" : "播放";
+    el.btnPlay.setAttribute("aria-pressed", on ? "true" : "false");
+    if (timer) { clearInterval(timer); timer = null; }
+    if (on) {
+      timer = setInterval(function () {
+        day = day >= 28 ? 1 : day + 1;
+        render();
+      }, 700);
+    }
+  }
+
+  el.slider.addEventListener("input", function () {
+    day = +el.slider.value;
+    render();
+  });
+  el.btnPlay.addEventListener("click", function () {
+    setPlaying(!playing);
+  });
+  el.btnReset.addEventListener("click", function () {
+    setPlaying(false);
+    day = 1;
+    fertilized = false;
+    el.btnFert.classList.remove("on");
+    el.btnFert.setAttribute("aria-pressed", "false");
+    el.fertNote.classList.remove("show");
+    render();
+  });
+  el.btnFert.addEventListener("click", function () {
+    fertilized = !fertilized;
+    el.btnFert.classList.toggle("on", fertilized);
+    el.btnFert.setAttribute("aria-pressed", fertilized ? "true" : "false");
+    el.fertNote.classList.toggle("show", fertilized);
+    render();
+  });
+
+  buildFlow();
+  buildChartPaths();
+  render();
+})();
+</script>
+</body>
+</html>
