@@ -102,6 +102,8 @@
     border-bottom: 1px solid #cfe6dc;
   }
   .admin-bar p { margin: 0; font-size: 0.86rem; color: var(--accent-dark); }
+  .admin-bar .folder-field { width: 100%; margin: 0; }
+  .admin-bar .folder-field input { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   .actions, .row-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .confirm { display: flex; gap: 6px; align-items: center; font-size: 0.85rem; color: var(--danger); }
   label.field { display: block; font-size: 0.9rem; margin-bottom: 10px; }
@@ -282,9 +284,13 @@
     <div class="layout">
       <section class="panel" aria-label="播放清單">
         <div class="admin-bar" id="admin-bar" hidden>
-          <p>管理模式。密碼只係呢部裝置嘅本地鎖，唔係伺服器登入。同步、刪除同換檔會經 webhook 叫機器人更新網站檔案。網頁入面冇寫入金鑰。</p>
+          <p>管理模式。密碼只係呢部裝置嘅本地鎖，唔係伺服器登入。立即同步、改資料夾、刪除同換檔會經 webhook 叫機器人更新網站檔案。每小時同步由機器人做。網頁入面冇寫入金鑰。</p>
+          <label class="field folder-field">Drive 資料夾
+            <input type="text" id="folder-input" autocomplete="off" spellcheck="false" placeholder="貼上資料夾連結或 ID">
+          </label>
           <div class="actions">
-            <button type="button" class="primary" id="sync-btn">同步</button>
+            <button type="button" class="primary" id="sync-btn">立即同步</button>
+            <button type="button" class="btn" id="folder-save">儲存資料夾</button>
             <button type="button" class="ghost" id="pw-open">更改密碼</button>
             <button type="button" class="ghost" id="lock-btn">鎖定</button>
           </div>
@@ -343,13 +349,13 @@
       <h2>點樣加入錄音</h2>
       <p class="note">播放清單同 mp3 放喺網站檔案入面，所以任何人開 <span id="public-url">呢條連結</span> 都聽得同同一批。唔使 API 金鑰。網頁唔可以自己上傳：寫入儲存庫要有提交權限，金鑰唔可以放喺瀏覽器入面。</p>
       <ol class="steps">
-        <li>撳「管理」，用密碼解鎖。未改過密碼時，預設係 admin。之後可以撳「同步」，叫機器人由課堂資料夾複製 mp3。</li>
+        <li>撳「管理」，用密碼解鎖。未改過密碼時，預設係 admin。可以改 Drive 資料夾，再撳「立即同步」，叫機器人由該資料夾複製 mp3。每小時同步由機器人做。</li>
         <li>喺儲存庫根目錄執行：
           <code class="cmd">node tools/audio-player/add-track.mjs 錄音.mp3 --title "標題"</code>
         </li>
         <li>提交 <code>tracks.json</code> 同 <code>media/</code> 入面新檔，推上 main。同步都要複製 mp3，唔好只寫 Drive 連結。</li>
       </ol>
-      <p class="note">未填 webhook 時，「同步」、「刪除」同「換檔」都會話尚未設定。網址貼喺 <code>sync-config.js</code>。密碼只鎖呢部裝置，詳細步驟喺 <code>tools/audio-player/README.md</code>。</p>
+      <p class="note">未填 webhook 時，「立即同步」、「儲存資料夾」、「刪除」同「換檔」都會話尚未設定。網址貼喺 <code>sync-config.js</code>。密碼只鎖呢部裝置，詳細步驟喺 <code>tools/audio-player/README.md</code>。</p>
       <div class="dialog-actions">
         <button type="submit" class="primary">關閉</button>
       </div>
@@ -361,7 +367,7 @@
   <dialog id="gate">
     <form class="dialog-body" id="gate-form">
       <h2>解鎖管理</h2>
-      <p class="note">密碼只係呢部裝置上嘅本地鎖，用來收起「同步」、「換檔」同「刪除」。播放唔使密碼。呢個鎖擋唔到直接改瀏覽器儲存資料嘅人。未改過密碼時，預設係 admin。</p>
+      <p class="note">密碼只係呢部裝置上嘅本地鎖，用來收起「立即同步」、「儲存資料夾」、「換檔」同「刪除」。播放唔使密碼。呢個鎖擋唔到直接改瀏覽器儲存資料嘅人。未改過密碼時，預設係 admin。</p>
       <label class="field">密碼
         <input type="password" id="gate-pw" autocomplete="current-password" required>
       </label>
@@ -580,7 +586,7 @@
         emptyText.textContent = loadError;
       } else {
         emptyTitle.textContent = "未有錄音";
-        emptyText.textContent = "解鎖「管理」之後可以同步，或者用「點樣加入」將 mp3 放上網站。提交 media/ 同 tracks.json 之後，任何人打開呢頁都聽得。";
+        emptyText.textContent = "解鎖「管理」之後可以改資料夾同立即同步，或者用「點樣加入」將 mp3 放上網站。提交 media/ 同 tracks.json 之後，任何人打開呢頁都聽得。";
       }
     }
     countEl.textContent = tracks.length + " 個";
@@ -1009,6 +1015,36 @@
     howDialog.showModal();
   });
 
+  const FOLDER_ID_RE = /^[a-zA-Z0-9_-]{10,80}$/;
+
+  function currentFolderId() {
+    const cfg = window.CLASSROOM_AUDIO_SYNC;
+    const id = cfg && typeof cfg.folderId === "string" ? cfg.folderId.trim() : "";
+    return FOLDER_ID_RE.test(id) ? id : FOLDER_ID;
+  }
+
+  function showFolder() {
+    const input = document.getElementById("folder-input");
+    if (!input || document.activeElement === input) return;
+    input.value = currentFolderId();
+  }
+
+  function parseFolderId(raw) {
+    const text = String(raw || "").trim();
+    if (!text || text.length > 500) return "";
+    if (FOLDER_ID_RE.test(text)) return text;
+    let url;
+    try { url = new URL(text); } catch (e) { return ""; }
+    if (url.protocol !== "https:" && url.protocol !== "http:") return "";
+    const fromQuery = url.searchParams.get("id");
+    if (fromQuery && FOLDER_ID_RE.test(fromQuery)) return fromQuery;
+    const parts = url.pathname.split("/").filter(Boolean);
+    const at = parts.lastIndexOf("folders");
+    const next = at >= 0 ? parts[at + 1] : "";
+    if (next && FOLDER_ID_RE.test(next)) return next;
+    return "";
+  }
+
   function syncWebhookUrl() {
     const cfg = window.CLASSROOM_AUDIO_SYNC;
     const raw = cfg && typeof cfg.webhookUrl === "string" ? cfg.webhookUrl.trim() : "";
@@ -1044,7 +1080,7 @@
         body: JSON.stringify(Object.assign({
           action: action,
           source: "classroom-audio-player",
-          folderId: (window.CLASSROOM_AUDIO_SYNC && window.CLASSROOM_AUDIO_SYNC.folderId) || FOLDER_ID
+          folderId: currentFolderId()
         }, extra || {}))
       });
       if (!response.ok) throw new Error("HTTP " + response.status);
@@ -1059,8 +1095,26 @@
 
   document.getElementById("sync-btn").addEventListener("click", async () => {
     if (!admin) return;
-    const ok = await postAdmin("sync", {}, document.getElementById("sync-btn"));
-    if (ok) toast("已送出同步要求。更新可能要等一陣，然後重新載入頁面。");
+    const ok = await postAdmin("sync", { immediate: true }, document.getElementById("sync-btn"));
+    if (ok) toast("已送出即時同步。更新可能要等一陣，然後重新載入頁面。");
+  });
+
+  document.getElementById("folder-save").addEventListener("click", async () => {
+    if (!admin) return;
+    const input = document.getElementById("folder-input");
+    const id = parseFolderId(input.value);
+    if (!id) {
+      toast("呢條資料夾連結唔正確。請貼 Drive 資料夾網址，或者資料夾 ID。");
+      return;
+    }
+    const ok = await postAdmin("set-folder", { folderId: id }, document.getElementById("folder-save"));
+    if (!ok) return;
+    if (!window.CLASSROOM_AUDIO_SYNC || typeof window.CLASSROOM_AUDIO_SYNC !== "object") {
+      window.CLASSROOM_AUDIO_SYNC = {};
+    }
+    window.CLASSROOM_AUDIO_SYNC.folderId = id;
+    input.value = id;
+    toast("已送出資料夾更新。機器人會寫入 sync-config.js，每小時同步都用呢個資料夾。");
   });
 
   async function requestDelete(track) {
@@ -1121,6 +1175,8 @@
     if (!on) {
       pendingDelete.clear();
       replaceTargetId = null;
+    } else {
+      showFolder();
     }
     try {
       if (on) sessionStorage.setItem(ADMIN_SESSION, "1");

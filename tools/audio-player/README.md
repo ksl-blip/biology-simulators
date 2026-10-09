@@ -26,7 +26,7 @@ git push
 
 ## 管理密碼
 
-右上角「管理」先至見到「同步」、每首嘅「刪除」同「換檔」。播放唔使密碼。
+右上角「管理」先至見到「立即同步」、「儲存資料夾」、每首嘅「刪除」同「換檔」。播放唔使密碼。每小時同步由機器人做，網頁唔會自己計時。
 
 密碼只係呢部裝置嘅本地鎖，唔係伺服器登入。頁面用 SHA-256 雜湊存在瀏覽器，唔留明文，亦唔會把密碼傳去 webhook。未改過密碼時，預設係 `admin`。解鎖狀態只係呢個分頁工作階段，撳「鎖定」或者關掉分頁就收起。如果以前嘅本機播放器改過密碼，而家會讀返嗰個舊密碼再存成雜湊。
 
@@ -34,13 +34,23 @@ git push
 
 ## 同步
 
-解鎖之後先見到「同步」。撳下去會向 webhook 送：
+解鎖之後可以改 Drive 資料夾，同埋撳「立即同步」。
+
+「儲存資料夾」接受資料夾 ID，或者 `https://drive.google.com/drive/folders/資料夾ID` 這類連結。頁面會向 webhook 送：
 
 ```json
-{ "action": "sync", "source": "classroom-audio-player", "folderId": "1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0" }
+{ "action": "set-folder", "source": "classroom-audio-player", "folderId": "新的資料夾ID" }
 ```
 
-Grok Bot routine 收到之後，應該下載 Drive 資料夾「007 Classroom Audio」入面嘅 mp3，複製入 `tools/audio-player/media/`，更新 `tracks.json` 做相對路徑，然後提交並推上 `main`。同步唔好只寫 Drive 串流網址；頁面係由網站自己嘅 mp3 播放。
+機器人要將 `tools/audio-player/sync-config.js` 入面嘅 `folderId` 改成呢個值，然後提交並推上 `main`。頁面自己改唔到呢個檔。`webhookUrl` 保持唔變。
+
+「立即同步」會送：
+
+```json
+{ "action": "sync", "source": "classroom-audio-player", "folderId": "資料夾ID", "immediate": true }
+```
+
+Grok Bot routine 收到之後，應該即時下載該 Drive 資料夾入面嘅 mp3，複製入 `tools/audio-player/media/`，更新 `tracks.json` 做相對路徑，然後提交並推上 `main`。每小時同步仍然由機器人自己做，唔使頁面再叫一次。同步唔好只寫 Drive 串流網址；頁面係由網站自己嘅 mp3 播放。
 
 `tools/audio-player/sync-config.js`：
 
@@ -51,7 +61,7 @@ window.CLASSROOM_AUDIO_SYNC = {
 };
 ```
 
-將 webhook 網址貼入 `webhookUrl` 對引號入面（要係 `https://` 開頭），提交並推上 `main`。留空時，撳「同步」、「刪除」或「換檔」會顯示「同步尚未設定」。
+將 webhook 網址貼入 `webhookUrl` 對引號入面（要係 `https://` 開頭），提交並推上 `main`。留空時，撳「立即同步」、「儲存資料夾」、「刪除」或「換檔」會顯示「同步尚未設定」。
 
 刪除會送 `action: "delete"`，同埋 `track`（`id`、`title`、`file`）。換檔會送 `action: "replace"`、同一個 `track`、新檔名、`bytes`、`contentType` 同 `dataBase64`。瀏覽器換檔上限 12 MB。機器人收到之後要更新 `media/` 同 `tracks.json` 再提交，唔好只寫 Drive 連結。頁面唔會自己改公開播放清單，要等提交完成再重新載入。
 

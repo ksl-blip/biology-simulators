@@ -127,6 +127,12 @@ test("player page plays hosted files and does not need a Drive API key", async (
   assert.match(html, /playsinline/);
   assert.match(html, /id="admin-bar" hidden/);
   assert.match(html, /id="sync-btn"/);
+  assert.match(html, /立即同步/);
+  assert.match(html, /id="folder-input"/);
+  assert.match(html, /id="folder-save"/);
+  assert.match(html, /parseFolderId/);
+  assert.match(html, /postAdmin\("set-folder"/);
+  assert.match(html, /immediate:\s*true/);
   assert.match(html, /id="admin-open"/);
   assert.match(html, /預設係 admin/);
   assert.match(html, /SHA-256/);
