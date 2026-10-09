@@ -231,10 +231,10 @@ footer {
           <text x="8" y="24" font-size="11" fill="#5a493c">高</text>
           <text x="8" y="170" font-size="11" fill="#5a493c">低</text>
           <g id="dayMarks"></g>
-          <path id="pathFSH" fill="none" stroke="#2563eb" stroke-width="2.4"/>
-          <path id="pathLH" fill="none" stroke="#7c3aed" stroke-width="2.4"/>
-          <path id="pathEST" fill="none" stroke="#db2777" stroke-width="2.4"/>
-          <path id="pathPRG" fill="none" stroke="#d97706" stroke-width="2.4"/>
+          <path id="pathFSH" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path id="pathLH" fill="none" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path id="pathEST" fill="none" stroke="#db2777" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path id="pathPRG" fill="none" stroke="#d97706" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
           <line id="dayCursor" x1="48" y1="16" x2="48" y2="176" stroke="#1f6b3a" stroke-width="2" stroke-dasharray="4 3"/>
           <circle id="dotFSH" r="4" fill="#2563eb"/>
           <circle id="dotLH" r="4" fill="#7c3aed"/>
@@ -316,42 +316,49 @@ footer {
 (function () {
   "use strict";
 
-  // Relative hormone levels day 1..28 (index 0 unused)
+  // Relative hormone levels (continuous, scientifically plausible DSE shapes)
   function lerp(a, b, t) { return a + (b - a) * t; }
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function gauss(d, mu, sigma, amp) {
+    var z = (d - mu) / sigma;
+    return amp * Math.exp(-0.5 * z * z);
+  }
+  function sigmoid(x) {
+    return 1 / (1 + Math.exp(-x));
+  }
 
   function hormonesAt(day) {
     var d = clamp(day, 1, 28);
-    // FSH: rises early follicular, dips, surge ~14, then low luteal
-    var fsh;
-    if (d <= 5) fsh = lerp(0.45, 0.75, (d - 1) / 4);
-    else if (d <= 10) fsh = lerp(0.75, 0.35, (d - 5) / 5);
-    else if (d <= 13) fsh = lerp(0.35, 0.4, (d - 10) / 3);
-    else if (d === 14) fsh = 0.85;
-    else if (d <= 16) fsh = lerp(0.85, 0.25, (d - 14) / 2);
-    else fsh = lerp(0.25, 0.2, (d - 16) / 12);
 
-    // LH: low then sharp surge day 14
-    var lh;
-    if (d <= 12) lh = lerp(0.15, 0.28, (d - 1) / 11);
-    else if (d === 13) lh = 0.45;
-    else if (d === 14) lh = 1.0;
-    else if (d === 15) lh = 0.4;
-    else lh = lerp(0.22, 0.12, (d - 16) / 12);
+    // FSH: early follicular rise, mid-follicular dip, smaller surge ~day 14, low luteal
+    var fsh = clamp(
+      0.18 + gauss(d, 3.8, 2.1, 0.55) + gauss(d, 14.0, 0.95, 0.58),
+      0, 1
+    );
 
-    // Estrogen: rises follicular, peak ~13, mid-luteal second peak, drop late
-    var est;
-    if (d <= 5) est = lerp(0.15, 0.25, (d - 1) / 4);
-    else if (d <= 13) est = lerp(0.25, 1.0, (d - 5) / 8);
-    else if (d === 14) est = 0.7;
-    else if (d <= 21) est = lerp(0.55, 0.85, (d - 15) / 6);
-    else est = lerp(0.85, 0.15, (d - 21) / 7);
+    // LH: low baseline with gentle pre-ovulatory rise, sharp surge ~day 14
+    var lh = clamp(
+      0.12
+        + 0.12 * sigmoid((d - 6) / 2.2) * (1 - sigmoid((d - 12.2) / 0.7))
+        + gauss(d, 14.0, 0.55, 0.88),
+      0, 1
+    );
 
-    // Progesterone: low until after ovulation, peak mid-luteal, crash
-    var prg;
-    if (d <= 14) prg = lerp(0.08, 0.12, (d - 1) / 13);
-    else if (d <= 21) prg = lerp(0.2, 1.0, (d - 14) / 7);
-    else prg = lerp(1.0, 0.12, (d - 21) / 7);
+    // Estrogen: primary peak just before ovulation (~12.5–13), then secondary mid-luteal rise
+    // Follicular lobe fades after ovulation via continuous weight; luteal lobe rises after day 14
+    var wLuteal = sigmoid(2.2 * (d - 14.2));
+    var est = clamp(
+      0.10
+        + gauss(d, 12.6, 2.55, 0.92) * (1 - 0.72 * wLuteal)
+        + gauss(d, 21.0, 3.25, 0.70) * wLuteal,
+      0, 1
+    );
+
+    // Progesterone: near-floor until after ovulation, rise to mid-luteal peak, then fall
+    var prg = clamp(
+      0.07 + gauss(d, 21.2, 3.5, 0.95) * sigmoid(2.8 * (d - 14.6)),
+      0, 1
+    );
 
     return { fsh: fsh, lh: lh, est: est, prg: prg };
   }
@@ -450,24 +457,50 @@ footer {
     return 176 - level * 150;
   }
 
+  // Catmull-Rom spline → cubic Bezier SVG path (smooth continuous curves)
+  function pointsToSmoothPath(pts) {
+    if (!pts.length) return "";
+    if (pts.length === 1) {
+      return "M" + pts[0][0].toFixed(2) + " " + pts[0][1].toFixed(2);
+    }
+    var d = "M" + pts[0][0].toFixed(2) + " " + pts[0][1].toFixed(2);
+    for (var i = 0; i < pts.length - 1; i++) {
+      var p0 = pts[i === 0 ? 0 : i - 1];
+      var p1 = pts[i];
+      var p2 = pts[i + 1];
+      var p3 = pts[i + 2 < pts.length ? i + 2 : i + 1];
+      var cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+      var cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+      var cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+      var cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+      d += " C" + cp1x.toFixed(2) + " " + cp1y.toFixed(2) + ","
+        + cp2x.toFixed(2) + " " + cp2y.toFixed(2) + ","
+        + p2[0].toFixed(2) + " " + p2[1].toFixed(2);
+    }
+    return d;
+  }
+
   function buildChartPaths() {
     var series = { fsh: [], lh: [], est: [], prg: [] };
-    for (var d = 1; d <= 28; d++) {
-      var h = hormonesAt(d);
-      series.fsh.push([xOfDay(d), yOf(h.fsh)]);
-      series.lh.push([xOfDay(d), yOf(h.lh)]);
-      series.est.push([xOfDay(d), yOf(h.est)]);
-      series.prg.push([xOfDay(d), yOf(h.prg)]);
+    // High-resolution sampling so Bezier curves stay smooth even at LH surge
+    var step = 0.25;
+    for (var d = 1; d <= 28.0001; d += step) {
+      var daySamp = Math.min(28, d);
+      var h = hormonesAt(daySamp);
+      series.fsh.push([xOfDay(daySamp), yOf(h.fsh)]);
+      series.lh.push([xOfDay(daySamp), yOf(h.lh)]);
+      series.est.push([xOfDay(daySamp), yOf(h.est)]);
+      series.prg.push([xOfDay(daySamp), yOf(h.prg)]);
     }
-    function toPath(pts) {
-      return pts.map(function (p, i) {
-        return (i === 0 ? "M" : "L") + p[0].toFixed(1) + " " + p[1].toFixed(1);
-      }).join(" ");
-    }
-    el.pathFSH.setAttribute("d", toPath(series.fsh));
-    el.pathLH.setAttribute("d", toPath(series.lh));
-    el.pathEST.setAttribute("d", toPath(series.est));
-    el.pathPRG.setAttribute("d", toPath(series.prg));
+    el.pathFSH.setAttribute("d", pointsToSmoothPath(series.fsh));
+    el.pathLH.setAttribute("d", pointsToSmoothPath(series.lh));
+    el.pathEST.setAttribute("d", pointsToSmoothPath(series.est));
+    el.pathPRG.setAttribute("d", pointsToSmoothPath(series.prg));
+    ["pathFSH", "pathLH", "pathEST", "pathPRG"].forEach(function (id) {
+      var p = el[id];
+      p.setAttribute("stroke-linecap", "round");
+      p.setAttribute("stroke-linejoin", "round");
+    });
 
     var marks = "";
     [1, 7, 14, 21, 28].forEach(function (d) {
