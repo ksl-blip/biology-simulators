@@ -137,7 +137,7 @@ test("player page plays hosted files and does not need a Drive API key", async (
   assert.match(html, /postAdmin\("replace"/);
   assert.match(html, /同步尚未設定/);
   assert.match(html, /node tools\/audio-player\/add-track\.mjs/);
-  assert.match(cfg, /webhookUrl:\s*""/);
+  assert.match(cfg, /webhookUrl:\s*"[^"]+"/);
   assert.match(cfg, /1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0/);
   assert.doesNotMatch(html + "\n" + cfg, /driveApiKey|googleapis\.com|github_pat_|ghp_|gho_|ya29\./);
 });
