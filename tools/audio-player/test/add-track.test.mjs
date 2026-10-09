@@ -125,7 +125,16 @@ test("player page plays hosted files and does not need a Drive API key", async (
   assert.match(html, /mediaSession/);
   assert.match(html, /playbackRate/);
   assert.match(html, /playsinline/);
+  assert.match(html, /id="admin-bar" hidden/);
   assert.match(html, /id="sync-btn"/);
+  assert.match(html, /id="admin-open"/);
+  assert.match(html, /預設係 admin/);
+  assert.match(html, /SHA-256/);
+  assert.match(html, /換檔/);
+  assert.match(html, /刪除/);
+  assert.match(html, /本地鎖/);
+  assert.match(html, /postAdmin\("delete"/);
+  assert.match(html, /postAdmin\("replace"/);
   assert.match(html, /同步尚未設定/);
   assert.match(html, /node tools\/audio-player\/add-track\.mjs/);
   assert.match(cfg, /webhookUrl:\s*""/);

@@ -24,9 +24,17 @@ git push
 
 刪除：喺 `tracks.json` 移除該項，刪除 `media/` 入面對應檔案，再提交。
 
+## 管理密碼
+
+右上角「管理」先至見到「同步」、每首嘅「刪除」同「換檔」。播放唔使密碼。
+
+密碼只係呢部裝置嘅本地鎖，唔係伺服器登入。頁面用 SHA-256 雜湊存在瀏覽器，唔留明文，亦唔會把密碼傳去 webhook。未改過密碼時，預設係 `admin`。解鎖狀態只係呢個分頁工作階段，撳「鎖定」或者關掉分頁就收起。如果以前嘅本機播放器改過密碼，而家會讀返嗰個舊密碼再存成雜湊。
+
+更改密碼要先解鎖。新密碼至少四個字。清除呢個網站嘅瀏覽器資料會重設做 `admin`，共享錄音唔會因此刪除。識得改瀏覽器儲存空間嘅人可以自己解開呢個鎖。
+
 ## 同步
 
-頁面右上角有「同步」。撳下去會向 webhook 送：
+解鎖之後先見到「同步」。撳下去會向 webhook 送：
 
 ```json
 { "action": "sync", "source": "classroom-audio-player", "folderId": "1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0" }
@@ -43,9 +51,11 @@ window.CLASSROOM_AUDIO_SYNC = {
 };
 ```
 
-將 webhook 網址貼入 `webhookUrl` 對引號入面（要係 `https://` 開頭），提交並推上 `main`。留空時，撳「同步」會顯示「同步尚未設定」。
+將 webhook 網址貼入 `webhookUrl` 對引號入面（要係 `https://` 開頭），提交並推上 `main`。留空時，撳「同步」、「刪除」或「換檔」會顯示「同步尚未設定」。
 
-呢個檔案會公開。唔好放 Drive 金鑰、GitHub 金鑰或者其他寫入密碼。Webhook 只應該開始同步。佢要允許來自 `https://ksl-blip.github.io` 嘅 POST，瀏覽器先讀到回應。
+刪除會送 `action: "delete"`，同埋 `track`（`id`、`title`、`file`）。換檔會送 `action: "replace"`、同一個 `track`、新檔名、`bytes`、`contentType` 同 `dataBase64`。瀏覽器換檔上限 12 MB。機器人收到之後要更新 `media/` 同 `tracks.json` 再提交，唔好只寫 Drive 連結。頁面唔會自己改公開播放清單，要等提交完成再重新載入。
+
+呢個檔案會公開。唔好放 Drive 金鑰、GitHub 金鑰或者其他寫入密碼。Webhook 只應該開始同步、刪除或換檔。佢要允許來自 `https://ksl-blip.github.io` 嘅 POST，瀏覽器先讀到回應。
 
 播放速度，同上次揀咗邊首，只會記喺你自己部瀏覽器。鎖屏同背景播放用瀏覽器本身嘅播放控制。
 

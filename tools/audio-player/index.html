@@ -16,6 +16,7 @@
     --accent-dark: #0a5340;
     --accent-soft: #e5f4ee;
     --danger: #8e2f2a;
+    --danger-soft: #fbeceb;
     --shadow: 0 12px 32px rgba(48, 36, 18, 0.08);
     --radius: 18px;
     --sans: "PingFang HK", "PingFang TC", "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
@@ -77,7 +78,7 @@
   }
   .list-head h2 { margin: 0; font-size: 1rem; }
   .count { color: var(--muted); font-size: 0.85rem; }
-  button.btn, button.ghost, button.primary, button.small {
+  button.btn, button.ghost, button.primary, button.small, button.danger {
     border-radius: 999px;
     padding: 8px 14px;
     border: 1px solid var(--line);
@@ -89,7 +90,27 @@
   button.primary:hover { background: var(--accent-dark); }
   button.ghost { background: transparent; }
   button.small { padding: 4px 10px; font-size: 0.85rem; }
+  button.danger { background: var(--danger-soft); color: var(--danger); border-color: #f0d0cd; }
   button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .admin-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--accent-soft);
+    border-bottom: 1px solid #cfe6dc;
+  }
+  .admin-bar p { margin: 0; font-size: 0.86rem; color: var(--accent-dark); }
+  .actions, .row-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .confirm { display: flex; gap: 6px; align-items: center; font-size: 0.85rem; color: var(--danger); }
+  label.field { display: block; font-size: 0.9rem; margin-bottom: 10px; }
+  label.field input {
+    display: block; width: 100%; margin-top: 4px;
+    padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line);
+    background: #fff;
+  }
+  .err { color: var(--danger); font-size: 0.88rem; margin: 0 0 8px; }
   .legacy, .notice {
     padding: 14px 16px;
     background: #f7f3ea;
@@ -114,7 +135,7 @@
   ul.tracks { list-style: none; margin: 0; padding: 8px; }
   li.track {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
     gap: 10px;
     align-items: center;
     padding: 10px;
@@ -253,13 +274,21 @@
         </div>
       </div>
       <div class="header-actions">
-        <button type="button" class="btn" id="sync-btn">同步</button>
+        <button type="button" class="btn" id="admin-open">管理</button>
         <button type="button" class="btn" id="how-open">點樣加入</button>
       </div>
     </header>
 
     <div class="layout">
       <section class="panel" aria-label="播放清單">
+        <div class="admin-bar" id="admin-bar" hidden>
+          <p>管理模式。密碼只係呢部裝置嘅本地鎖，唔係伺服器登入。同步、刪除同換檔會經 webhook 叫機器人更新網站檔案。網頁入面冇寫入金鑰。</p>
+          <div class="actions">
+            <button type="button" class="primary" id="sync-btn">同步</button>
+            <button type="button" class="ghost" id="pw-open">更改密碼</button>
+            <button type="button" class="ghost" id="lock-btn">鎖定</button>
+          </div>
+        </div>
         <div class="legacy" id="legacy" hidden>
           <p>呢部裝置仲有以前上傳、只存在本機嘅錄音。而家播放清單係大家共用，舊檔唔會自動公開。下載之後，用「點樣加入」嘅方法放上網站。</p>
           <ul id="legacy-list"></ul>
@@ -314,15 +343,53 @@
       <h2>點樣加入錄音</h2>
       <p class="note">播放清單同 mp3 放喺網站檔案入面，所以任何人開 <span id="public-url">呢條連結</span> 都聽得同同一批。唔使 API 金鑰。網頁唔可以自己上傳：寫入儲存庫要有提交權限，金鑰唔可以放喺瀏覽器入面。</p>
       <ol class="steps">
-        <li>準備 mp3，例如用 edge-tts 匯出，或者撳「同步」叫機器人由課堂資料夾複製檔案。</li>
+        <li>撳「管理」，用密碼解鎖。未改過密碼時，預設係 admin。之後可以撳「同步」，叫機器人由課堂資料夾複製 mp3。</li>
         <li>喺儲存庫根目錄執行：
           <code class="cmd">node tools/audio-player/add-track.mjs 錄音.mp3 --title "標題"</code>
         </li>
         <li>提交 <code>tracks.json</code> 同 <code>media/</code> 入面新檔，推上 main。同步都要複製 mp3，唔好只寫 Drive 連結。</li>
       </ol>
-      <p class="note">未填 webhook 時，「同步」會話尚未設定。網址貼喺 <code>sync-config.js</code>。詳細步驟喺 <code>tools/audio-player/README.md</code>。</p>
+      <p class="note">未填 webhook 時，「同步」、「刪除」同「換檔」都會話尚未設定。網址貼喺 <code>sync-config.js</code>。密碼只鎖呢部裝置，詳細步驟喺 <code>tools/audio-player/README.md</code>。</p>
       <div class="dialog-actions">
         <button type="submit" class="primary">關閉</button>
+      </div>
+    </form>
+  </dialog>
+
+  <input type="file" id="replace-file" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.oga,.flac,.webm,.opus" hidden>
+
+  <dialog id="gate">
+    <form class="dialog-body" id="gate-form">
+      <h2>解鎖管理</h2>
+      <p class="note">密碼只係呢部裝置上嘅本地鎖，用來收起「同步」、「換檔」同「刪除」。播放唔使密碼。呢個鎖擋唔到直接改瀏覽器儲存資料嘅人。未改過密碼時，預設係 admin。</p>
+      <label class="field">密碼
+        <input type="password" id="gate-pw" autocomplete="current-password" required>
+      </label>
+      <p class="err" id="gate-err" hidden>密碼唔啱，再試一次。</p>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" id="gate-cancel">取消</button>
+        <button type="submit" class="primary">解鎖</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="pw-dialog">
+    <form class="dialog-body" id="pw-form">
+      <h2>更改密碼</h2>
+      <p class="note">新密碼一樣只係儲存喺呢部裝置，頁面只留 SHA-256 雜湊，唔留明文。清除呢個網站嘅瀏覽器資料會重設做 admin。共享錄音唔會因此刪除。</p>
+      <label class="field">而家密碼
+        <input type="password" id="old-pw" autocomplete="current-password" required>
+      </label>
+      <label class="field">新密碼
+        <input type="password" id="new-pw" autocomplete="new-password" required minlength="4">
+      </label>
+      <label class="field">再入一次新密碼
+        <input type="password" id="new-pw2" autocomplete="new-password" required minlength="4">
+      </label>
+      <p class="err" id="pw-err" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" id="pw-cancel">取消</button>
+        <button type="submit" class="primary">儲存</button>
       </div>
     </form>
   </dialog>
@@ -333,6 +400,11 @@
   const PUBLIC_URL = "https://ksl-blip.github.io/biology-simulators/tools/audio-player/";
   const SPEED_KEY = "classroom-audio-player:speed";
   const LAST_KEY = "classroom-audio-player:last";
+  const ADMIN_HASH_KEY = "classroom-audio-player:admin";
+  const ADMIN_SESSION = "classroom-audio-player:admin-session";
+  const DEFAULT_PASSWORD = "admin";
+  const REPLACE_MAX = 12 * 1024 * 1024;
+  const AUDIO_NAME = /\.(mp3|m4a|aac|wav|ogg|oga|flac|webm|opus)$/i;
   const LEGACY_DB = "classroom-audio-player";
   const ID_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
   const FOLDER_ID = "1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0";
@@ -354,6 +426,11 @@
   const prevBtn = document.getElementById("prev");
   const nextBtn = document.getElementById("next");
   const howDialog = document.getElementById("how");
+  const gateDialog = document.getElementById("gate");
+  const pwDialog = document.getElementById("pw-dialog");
+  const adminBar = document.getElementById("admin-bar");
+  const adminOpen = document.getElementById("admin-open");
+  const replaceInput = document.getElementById("replace-file");
 
   let tracks = [];
   let currentId = null;
@@ -362,6 +439,9 @@
   let toastTimer = null;
   let positionTick = 0;
   let loadError = "";
+  let admin = false;
+  let replaceTargetId = null;
+  const pendingDelete = new Set();
 
   document.getElementById("public-url").textContent = PUBLIC_URL;
 
@@ -500,14 +580,14 @@
         emptyText.textContent = loadError;
       } else {
         emptyTitle.textContent = "未有錄音";
-        emptyText.textContent = "用「同步」或「點樣加入」將 mp3 放上網站。提交 media/ 同 tracks.json 之後，任何人打開呢頁都聽得。";
+        emptyText.textContent = "解鎖「管理」之後可以同步，或者用「點樣加入」將 mp3 放上網站。提交 media/ 同 tracks.json 之後，任何人打開呢頁都聽得。";
       }
     }
     countEl.textContent = tracks.length + " 個";
     const playing = !audio.paused && currentId != null;
     tracks.forEach((t) => {
       const li = document.createElement("li");
-      li.className = "track" + (t.id === currentId ? " active" : "");
+      li.className = "track" + (t.id === currentId ? " active" : "") + (admin ? " manage" : "");
       li.dataset.id = t.id;
 
       const mini = document.createElement("button");
@@ -537,7 +617,53 @@
       info.addEventListener("click", () => onPick(t.id));
       info.style.cursor = "pointer";
 
-      li.append(mini, info);
+      const actions = document.createElement("div");
+      actions.className = "row-actions";
+      if (admin) {
+        const swap = document.createElement("button");
+        swap.type = "button";
+        swap.className = "small";
+        swap.textContent = "換檔";
+        swap.setAttribute("aria-label", "換檔 " + t.title);
+        swap.addEventListener("click", () => {
+          if (!admin) return;
+          replaceTargetId = t.id;
+          replaceInput.value = "";
+          replaceInput.click();
+        });
+        actions.append(swap);
+        if (pendingDelete.has(t.id)) {
+          const box = document.createElement("div");
+          box.className = "confirm";
+          box.textContent = "刪除？";
+          const yes = document.createElement("button");
+          yes.type = "button";
+          yes.className = "danger small";
+          yes.textContent = "確定";
+          yes.addEventListener("click", () => requestDelete(t));
+          const no = document.createElement("button");
+          no.type = "button";
+          no.className = "ghost small";
+          no.textContent = "取消";
+          no.addEventListener("click", () => { pendingDelete.delete(t.id); renderList(); });
+          box.append(yes, no);
+          actions.append(box);
+        } else {
+          const del = document.createElement("button");
+          del.type = "button";
+          del.className = "danger small";
+          del.textContent = "刪除";
+          del.setAttribute("aria-label", "刪除 " + t.title);
+          del.addEventListener("click", () => {
+            if (!admin) return;
+            pendingDelete.add(t.id);
+            renderList();
+          });
+          actions.append(del);
+        }
+      }
+
+      li.append(mini, info, actions);
       tracksEl.append(li);
     });
     updateTransport();
@@ -896,42 +1022,218 @@
     return { url: "", reason: "invalid" };
   }
 
-  document.getElementById("sync-btn").addEventListener("click", async () => {
-    const button = document.getElementById("sync-btn");
+  function webhookToast(reason) {
+    toast(reason === "invalid"
+      ? "同步網址唔正確。請喺 sync-config.js 填一個 https webhook。"
+      : "同步尚未設定。請喺 sync-config.js 填上 Grok Bot 嘅 webhook 網址。");
+  }
+
+  async function postAdmin(action, extra, button) {
+    if (!admin) return false;
     const target = syncWebhookUrl();
     if (!target.url) {
-      toast(target.reason === "invalid"
-        ? "同步網址唔正確。請喺 sync-config.js 填一個 https webhook。"
-        : "同步尚未設定。請喺 sync-config.js 填上 Grok Bot 嘅 webhook 網址。");
-      return;
+      webhookToast(target.reason);
+      return false;
     }
-    button.disabled = true;
+    if (button) button.disabled = true;
     try {
       const response = await fetch(target.url, {
         method: "POST",
         mode: "cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "sync",
+        body: JSON.stringify(Object.assign({
+          action: action,
           source: "classroom-audio-player",
           folderId: (window.CLASSROOM_AUDIO_SYNC && window.CLASSROOM_AUDIO_SYNC.folderId) || FOLDER_ID
-        })
+        }, extra || {}))
       });
       if (!response.ok) throw new Error("HTTP " + response.status);
-      toast("已送出同步要求。更新可能要等一陣，然後重新載入頁面。");
+      return true;
     } catch (e) {
-      toast("同步要求送唔出。請稍後再試。");
+      toast("要求送唔出。請稍後再試。");
+      return false;
     } finally {
-      button.disabled = false;
+      if (button) button.disabled = false;
     }
+  }
+
+  document.getElementById("sync-btn").addEventListener("click", async () => {
+    if (!admin) return;
+    const ok = await postAdmin("sync", {}, document.getElementById("sync-btn"));
+    if (ok) toast("已送出同步要求。更新可能要等一陣，然後重新載入頁面。");
+  });
+
+  async function requestDelete(track) {
+    if (!admin) return;
+    pendingDelete.delete(track.id);
+    renderList();
+    const ok = await postAdmin("delete", {
+      track: { id: track.id, title: track.title, file: track.file }
+    });
+    if (ok) toast("已送出刪除要求。機器人提交之後，重新載入先會喺大家嘅播放清單消失。");
+  }
+
+  function toBase64(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let binary = "";
+    const size = 0x8000;
+    for (let i = 0; i < bytes.length; i += size) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + size));
+    }
+    return btoa(binary);
+  }
+
+  replaceInput.addEventListener("change", async () => {
+    const track = tracks.find((item) => item.id === replaceTargetId);
+    const file = replaceInput.files && replaceInput.files[0];
+    replaceTargetId = null;
+    replaceInput.value = "";
+    if (!admin || !track || !file) return;
+    if (!AUDIO_NAME.test(file.name || "")) {
+      toast("只接受 mp3、m4a、aac、wav、ogg、flac、webm、opus。");
+      return;
+    }
+    if (file.size <= 0 || file.size > REPLACE_MAX) {
+      toast("呢個檔太大或者係空嘅。瀏覽器換檔上限係 12 MB，更大請用 add-track 再提交。");
+      return;
+    }
+    let dataBase64 = "";
+    try {
+      dataBase64 = toBase64(await file.arrayBuffer());
+    } catch (e) {
+      toast("讀唔到呢個檔案。");
+      return;
+    }
+    const ok = await postAdmin("replace", {
+      track: { id: track.id, title: track.title, file: track.file },
+      filename: file.name.replace(/^.*[\\/]/, "").slice(0, 180),
+      contentType: file.type || "application/octet-stream",
+      bytes: file.size,
+      dataBase64: dataBase64
+    });
+    if (ok) toast("已送出換檔要求。機器人提交之後，重新載入先會聽到新檔。");
+  });
+
+  function setAdmin(on) {
+    admin = on;
+    adminBar.hidden = !on;
+    adminOpen.hidden = on;
+    if (!on) {
+      pendingDelete.clear();
+      replaceTargetId = null;
+    }
+    try {
+      if (on) sessionStorage.setItem(ADMIN_SESSION, "1");
+      else sessionStorage.removeItem(ADMIN_SESSION);
+    } catch (e) {}
+    renderList();
+  }
+
+  async function sha256Hex(text) {
+    const data = new TextEncoder().encode(text);
+    const buf = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  async function expectedAdminHash() {
+    const stored = readLocal(ADMIN_HASH_KEY);
+    if (stored && /^[0-9a-f]{64}$/.test(stored)) return stored;
+    return sha256Hex(DEFAULT_PASSWORD);
+  }
+
+  async function migrateLegacyPassword() {
+    if (readLocal(ADMIN_HASH_KEY)) return;
+    if (!indexedDB.databases) return;
+    let names = [];
+    try { names = await indexedDB.databases(); } catch (e) { return; }
+    if (!names.some((d) => d && d.name === LEGACY_DB)) return;
+    const pw = await new Promise((resolve) => {
+      const req = indexedDB.open(LEGACY_DB);
+      req.onerror = () => resolve(null);
+      req.onsuccess = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains("meta")) {
+          db.close();
+          resolve(null);
+          return;
+        }
+        const get = db.transaction("meta").objectStore("meta").get("password");
+        get.onsuccess = () => { db.close(); resolve(get.result); };
+        get.onerror = () => { db.close(); resolve(null); };
+      };
+    });
+    if (typeof pw !== "string" || !pw) return;
+    if (readLocal(ADMIN_HASH_KEY)) return;
+    try { writeLocal(ADMIN_HASH_KEY, await sha256Hex(pw)); } catch (e) {}
+  }
+
+  adminOpen.addEventListener("click", () => {
+    document.getElementById("gate-err").hidden = true;
+    document.getElementById("gate-pw").value = "";
+    gateDialog.showModal();
+    document.getElementById("gate-pw").focus();
+  });
+  document.getElementById("gate-cancel").addEventListener("click", () => gateDialog.close());
+  document.getElementById("gate-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const err = document.getElementById("gate-err");
+    let matches = false;
+    try {
+      matches = await sha256Hex(document.getElementById("gate-pw").value) === await expectedAdminHash();
+    } catch (error) {
+      toast("呢個網頁環境唔支援密碼鎖。");
+      return;
+    }
+    if (matches) {
+      gateDialog.close();
+      setAdmin(true);
+    } else {
+      err.hidden = false;
+      document.getElementById("gate-pw").focus();
+    }
+  });
+  document.getElementById("lock-btn").addEventListener("click", () => {
+    setAdmin(false);
+    toast("已鎖定管理");
+  });
+  document.getElementById("pw-open").addEventListener("click", () => {
+    if (!admin) return;
+    document.getElementById("pw-err").hidden = true;
+    document.getElementById("pw-form").reset();
+    pwDialog.showModal();
+  });
+  document.getElementById("pw-cancel").addEventListener("click", () => pwDialog.close());
+  document.getElementById("pw-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const err = document.getElementById("pw-err");
+    const oldPw = document.getElementById("old-pw").value;
+    const n1 = document.getElementById("new-pw").value;
+    const n2 = document.getElementById("new-pw2").value;
+    let oldOk = false;
+    try {
+      oldOk = await sha256Hex(oldPw) === await expectedAdminHash();
+    } catch (error) {
+      toast("呢個網頁環境唔支援密碼鎖。");
+      return;
+    }
+    if (!oldOk) { err.hidden = false; err.textContent = "而家密碼唔啱。"; return; }
+    if (n1.length < 4) { err.hidden = false; err.textContent = "新密碼至少四個字。"; return; }
+    if (n1 !== n2) { err.hidden = false; err.textContent = "兩次新密碼唔同。"; return; }
+    writeLocal(ADMIN_HASH_KEY, await sha256Hex(n1));
+    pwDialog.close();
+    toast("已更改密碼");
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.target.closest("input, textarea, button") || howDialog.open) return;
+    if (e.target.closest("input, textarea, button") || howDialog.open || gateDialog.open || pwDialog.open) return;
     if (e.code === "Space") { e.preventDefault(); playBtn.click(); }
   });
 
   installMediaHandlers();
+  try {
+    if (sessionStorage.getItem(ADMIN_SESSION) === "1") setAdmin(true);
+  } catch (e) {}
+  migrateLegacyPassword();
   const storedSpeed = readLocal(SPEED_KEY);
   if (storedSpeed != null && Number(storedSpeed) >= 0.5 && Number(storedSpeed) <= 2) {
     speed = quantize(storedSpeed);
