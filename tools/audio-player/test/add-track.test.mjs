@@ -98,10 +98,17 @@ test("published playlist matches the Drive folder files in media/", async () => 
   assert.equal(doc.folderId, undefined);
   const titles = doc.tracks.map((track) => track.title);
   assert.deepEqual(titles, [
+    "《中華人民共和國國歌》官方錄音版本（管弦樂合唱版）",
+    "PEE1-4 生殖週期的激素調節",
+    "PEE4-3 生物倫理",
+    "PEE4-2 生物工程的應用",
+    "PEE4-1 傳統和現代生物工程",
     "PE02_生命的基本單位",
     "PEE1-3_血液內氣體成份的調節"
   ]);
-  assert.deepEqual(doc.tracks.map((track) => track.bytes), [5889312, 4754592]);
+  assert.deepEqual(doc.tracks.map((track) => track.bytes), [
+    1145706, 4343132, 4598876, 4919708, 4959020, 5889312, 4754592
+  ]);
   for (const track of doc.tracks) {
     assert.match(track.id, /^[a-z0-9][a-z0-9-]{0,63}$/);
     assert.match(track.file, /^media\/[A-Za-z0-9._-]+$/);
