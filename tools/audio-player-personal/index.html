@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>個人語音播放器</title>
+<style>
+  :root {
+    --bg: #f3efe6;
+    --ink: #1c1915;
+    --muted: #6e675e;
+    --line: #e3dbcf;
+    --card: #fffdf8;
+    --accent: #0e6b52;
+    --accent-dark: #0a5340;
+    --accent-soft: #e5f4ee;
+    --danger: #8e2f2a;
+    --danger-soft: #fbeceb;
+    --shadow: 0 12px 32px rgba(48, 36, 18, 0.08);
+    --radius: 18px;
+    --sans: "PingFang HK", "PingFang TC", "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 400px at 10% -10%, #e7f3ec 0%, transparent 55%),
+      var(--bg);
+    min-height: 100vh;
+    line-height: 1.45;
+  }
+  button, input { font-family: inherit; font-size: 16px; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wrap {
+    width: min(1080px, calc(100% - 28px));
+    margin: 0 auto;
+    padding: calc(18px + env(safe-area-inset-top)) 0 calc(28px + env(safe-area-inset-bottom));
+  }
+  header.top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .brand { display: flex; gap: 12px; align-items: center; min-width: 0; }
+  .header-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; flex: none; }
+  .mark {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: var(--accent); color: #f6f3ec;
+    display: grid; place-items: center;
+    font-weight: 700; letter-spacing: 0.04em;
+    flex: none;
+  }
+  h1 { font-size: 1.35rem; margin: 0; letter-spacing: 0.01em; }
+  .sub { margin: 2px 0 0; color: var(--muted); font-size: 0.92rem; }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .list-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .list-head h2 { margin: 0; font-size: 1rem; }
+  .count { color: var(--muted); font-size: 0.85rem; }
+  button.btn, button.ghost, button.primary, button.small, button.danger {
+    border-radius: 999px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  button.primary { background: var(--accent); color: #f4fbf8; border-color: var(--accent); }
+  button.primary:hover { background: var(--accent-dark); }
+  button.ghost { background: transparent; }
+  button.small { padding: 4px 10px; font-size: 0.85rem; }
+  button.danger { background: var(--danger-soft); color: var(--danger); border-color: #f0d0cd; }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .admin-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--accent-soft);
+    border-bottom: 1px solid #cfe6dc;
+  }
+  .admin-bar p { margin: 0; font-size: 0.86rem; color: var(--accent-dark); }
+  .admin-bar .folder-field { width: 100%; margin: 0; }
+  .admin-bar .folder-field input { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .actions, .row-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .confirm { display: flex; gap: 6px; align-items: center; font-size: 0.85rem; color: var(--danger); }
+  label.field { display: block; font-size: 0.9rem; margin-bottom: 10px; }
+  label.field input {
+    display: block; width: 100%; margin-top: 4px;
+    padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line);
+    background: #fff;
+  }
+  .err { color: var(--danger); font-size: 0.88rem; margin: 0 0 8px; }
+  .legacy, .notice {
+    padding: 14px 16px;
+    background: #f7f3ea;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.88rem;
+  }
+  .notice p, .legacy p { margin: 0 0 8px; color: #4d463d; }
+  .notice p:last-child, .legacy p:last-child { margin-bottom: 0; }
+  .notice code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.84em; }
+  .legacy ul { list-style: none; margin: 0; padding: 0; }
+  .legacy li {
+    display: flex; justify-content: space-between; gap: 8px;
+    align-items: center; padding: 4px 0;
+  }
+  .legacy li span { word-break: break-word; }
+  .empty {
+    padding: 36px 20px 40px;
+    text-align: center;
+    color: var(--muted);
+  }
+  .empty strong { display: block; color: var(--ink); font-size: 1.05rem; margin-bottom: 6px; }
+  ul.tracks { list-style: none; margin: 0; padding: 8px; }
+  li.track {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 14px;
+  }
+  li.track + li.track { margin-top: 2px; }
+  li.track.active { background: var(--accent-soft); }
+  li.track:hover { background: #f7f4ee; }
+  li.track.active:hover { background: #dcede4; }
+  button.playmini {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: none; background: var(--accent); color: white;
+    display: grid; place-items: center;
+  }
+  li.track.active button.playmini { background: var(--accent-dark); }
+  .t-name { font-weight: 650; word-break: break-word; }
+  .t-meta { color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
+  .eq { display: inline-flex; gap: 2px; height: 12px; align-items: flex-end; margin-left: 6px; vertical-align: middle; }
+  .eq i {
+    display: block; width: 3px; background: var(--accent); border-radius: 2px;
+    height: 4px; animation: bounce 0.9s ease-in-out infinite;
+  }
+  .eq i:nth-child(2) { animation-delay: 0.15s; }
+  .eq i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce {
+    0%, 100% { height: 4px; }
+    50% { height: 12px; }
+  }
+  .dock { padding: 16px 16px 14px; }
+  .dock .now-label { color: var(--muted); font-size: 0.78rem; letter-spacing: 0.08em; }
+  .now-title { font-size: 1.15rem; font-weight: 700; margin: 2px 0 10px; min-height: 1.4em; word-break: break-word; }
+  .times { display: flex; justify-content: space-between; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 0.85rem; margin-top: 6px; }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 28px; background: transparent; margin: 0;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 99px;
+    background: linear-gradient(to right, var(--accent) var(--p, 0%), #e6dfd4 var(--p, 0%));
+  }
+  input[type="range"]::-moz-range-track {
+    height: 6px; border-radius: 99px; background: #e6dfd4;
+  }
+  input[type="range"]::-moz-range-progress {
+    height: 6px; border-radius: 99px; background: var(--accent);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; margin-top: -6px;
+    border-radius: 50%; background: var(--accent); border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent); border: 2px solid #fff;
+  }
+  .transport {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin: 8px 0 12px;
+  }
+  button.round {
+    width: 48px; height: 48px; border-radius: 50%;
+    border: 1px solid var(--line); background: #fff;
+    display: grid; place-items: center;
+  }
+  button.round.big {
+    width: 68px; height: 68px; background: var(--accent); color: white; border: none;
+  }
+  .speed-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .speed-head strong { font-variant-numeric: tabular-nums; color: var(--accent-dark); }
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+  .presets button {
+    border: 1px solid var(--line); background: #fff; border-radius: 999px;
+    padding: 6px 10px; min-width: 52px;
+  }
+  .presets button.on { background: var(--ink); color: #f6f3ec; border-color: var(--ink); }
+  .hint { color: var(--muted); font-size: 0.8rem; margin: 10px 0 0; }
+  dialog {
+    border: none; border-radius: 20px; padding: 0; width: min(480px, calc(100% - 28px));
+    box-shadow: 0 24px 60px rgba(30, 22, 10, .25);
+  }
+  dialog::backdrop { background: rgba(28, 25, 21, .45); }
+  .dialog-body { padding: 20px 20px 16px; }
+  dialog h2 { margin: 0 0 8px; font-size: 1.15rem; }
+  .note {
+    background: #f7f3ea; border-radius: 12px; padding: 10px 12px;
+    color: #4d463d; font-size: 0.88rem; margin: 0 0 14px;
+  }
+  .steps { margin: 0 0 12px; padding-left: 1.2rem; font-size: 0.92rem; }
+  .steps li { margin: 8px 0; }
+  code.cmd {
+    display: block;
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    word-break: break-all;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+  .toast {
+    position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    background: var(--ink); color: #f6f3ec;
+    padding: 10px 14px; border-radius: 999px;
+    font-size: 0.9rem; z-index: 5;
+    max-width: calc(100% - 28px);
+  }
+  audio.keep {
+    position: absolute; width: 4px; height: 4px; opacity: 0.02;
+    pointer-events: none; bottom: 0; left: 0;
+  }
+  @media (min-width: 880px) {
+    .layout { grid-template-columns: minmax(0, 1fr) 380px; gap: 18px; }
+    .dock { position: sticky; top: 16px; }
+  }
+  @media (max-width: 879px) {
+    .layout { display: flex; flex-direction: column; }
+    .dock { order: -1; position: static; }
+    header.top { align-items: center; }
+    h1 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">音</div>
+        <div>
+          <h1>個人語音播放器</h1>
+          <p class="sub">同一條連結，任何人都聽得同呢批錄音。鎖屏或者去咗其他分頁，都會繼續播。</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn" id="admin-open">管理</button>
+        <button type="button" class="btn" id="how-open">點樣加入</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="panel" aria-label="播放清單">
+        <div class="admin-bar" id="admin-bar" hidden>
+          <p>管理模式。密碼只係呢部裝置嘅本地鎖，唔係伺服器登入。立即同步、改資料夾、刪除同換檔會經 webhook 叫機器人更新網站檔案。每小時同步由機器人做。網頁入面冇寫入金鑰。</p>
+          <label class="field folder-field">Drive 資料夾
+            <input type="text" id="folder-input" autocomplete="off" spellcheck="false" placeholder="貼上資料夾連結或 ID">
+          </label>
+          <div class="actions">
+            <button type="button" class="primary" id="sync-btn">立即同步</button>
+            <button type="button" class="btn" id="folder-save">儲存資料夾</button>
+            <button type="button" class="ghost" id="pw-open">更改密碼</button>
+            <button type="button" class="ghost" id="lock-btn">鎖定</button>
+          </div>
+        </div>
+        <div class="legacy" id="legacy" hidden>
+          <p>呢部裝置仲有以前上傳、只存在本機嘅錄音。而家播放清單係大家共用，舊檔唔會自動公開。下載之後，用「點樣加入」嘅方法放上網站。</p>
+          <ul id="legacy-list"></ul>
+        </div>
+        <div class="list-head">
+          <h2>播放清單</h2>
+          <span class="count" id="count">0 個</span>
+        </div>
+        <div class="empty" id="empty">
+          <strong id="empty-title">載入播放清單…</strong>
+          <span id="empty-text"></span>
+        </div>
+        <ul class="tracks" id="tracks"></ul>
+      </section>
+
+      <section class="panel dock" aria-label="播放器">
+        <!--
+          Kept in the document (not display:none) so mobile browsers
+          continue playback with the screen locked or the tab in the background.
+        -->
+        <audio id="player" class="keep" preload="none" playsinline webkit-playsinline x-webkit-airplay="allow"></audio>
+        <div class="now-label">而家播放</div>
+        <div class="now-title" id="now-title">未揀錄音</div>
+        <label for="seek" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">進度</label>
+        <input type="range" id="seek" min="0" max="1000" value="0" step="1" disabled aria-label="進度">
+        <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+        <div class="transport">
+          <button type="button" class="round" id="prev" aria-label="上一首" disabled>上</button>
+          <button type="button" class="round big" id="play" aria-label="播放" disabled>▶</button>
+          <button type="button" class="round" id="next" aria-label="下一首" disabled>下</button>
+        </div>
+        <div class="speed-head">
+          <span>播放速度</span>
+          <strong id="speed-label">1×</strong>
+        </div>
+        <div class="presets" id="presets" role="group" aria-label="速度預設">
+          <button type="button" data-rate="0.5">0.5×</button>
+          <button type="button" data-rate="0.75">0.75×</button>
+          <button type="button" data-rate="1" class="on">1×</button>
+          <button type="button" data-rate="1.25">1.25×</button>
+          <button type="button" data-rate="1.5">1.5×</button>
+          <button type="button" data-rate="2">2×</button>
+        </div>
+        <input type="range" id="speed" min="0.5" max="2" step="0.05" value="1" aria-label="播放速度">
+        <p class="hint">背景播放用瀏覽器本身嘅聲音播放器。鎖屏之後，系統會顯示播放、暫停同上一首、下一首。播放速度只係記喺你自己部機。</p>
+      </section>
+    </div>
+  </div>
+
+  <dialog id="how">
+    <form class="dialog-body" method="dialog">
+      <h2>點樣加入錄音</h2>
+      <p class="note">播放清單同 mp3 放喺網站檔案入面，所以任何人開 <span id="public-url">呢條連結</span> 都聽得同同一批。唔使 API 金鑰。網頁唔可以自己上傳：寫入儲存庫要有提交權限，金鑰唔可以放喺瀏覽器入面。</p>
+      <ol class="steps">
+        <li>撳「管理」，用密碼解鎖。未改過密碼時，預設係 admin。可以改 Drive 資料夾，再撳「立即同步」，叫機器人由該資料夾複製 mp3。每小時同步由機器人做。</li>
+        <li>喺儲存庫根目錄執行：
+          <code class="cmd">node tools/audio-player-personal/add-track.mjs 錄音.mp3 --title "標題"</code>
+        </li>
+        <li>提交 <code>tracks.json</code> 同 <code>media/</code> 入面新檔，推上 main。同步都要複製 mp3，唔好只寫 Drive 連結。</li>
+      </ol>
+      <p class="note">未填 webhook 時，「立即同步」、「儲存資料夾」、「刪除」同「換檔」都會話尚未設定。網址貼喺 <code>sync-config.js</code>。密碼只鎖呢部裝置，詳細步驟喺 <code>tools/audio-player-personal/README.md</code>。</p>
+      <div class="dialog-actions">
+        <button type="submit" class="primary">關閉</button>
+      </div>
+    </form>
+  </dialog>
+
+  <input type="file" id="replace-file" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.oga,.flac,.webm,.opus" hidden>
+
+  <dialog id="gate">
+    <form class="dialog-body" id="gate-form">
+      <h2>解鎖管理</h2>
+      <p class="note">密碼只係呢部裝置上嘅本地鎖，用來收起「立即同步」、「儲存資料夾」、「換檔」同「刪除」。播放唔使密碼。呢個鎖擋唔到直接改瀏覽器儲存資料嘅人。未改過密碼時，預設係 admin。</p>
+      <label class="field">密碼
+        <input type="password" id="gate-pw" autocomplete="current-password" required>
+      </label>
+      <p class="err" id="gate-err" hidden>密碼唔啱，再試一次。</p>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" id="gate-cancel">取消</button>
+        <button type="submit" class="primary">解鎖</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="pw-dialog">
+    <form class="dialog-body" id="pw-form">
+      <h2>更改密碼</h2>
+      <p class="note">新密碼一樣只係儲存喺呢部裝置，頁面只留 SHA-256 雜湊，唔留明文。清除呢個網站嘅瀏覽器資料會重設做 admin。共享錄音唔會因此刪除。</p>
+      <label class="field">而家密碼
+        <input type="password" id="old-pw" autocomplete="current-password" required>
+      </label>
+      <label class="field">新密碼
+        <input type="password" id="new-pw" autocomplete="new-password" required minlength="4">
+      </label>
+      <label class="field">再入一次新密碼
+        <input type="password" id="new-pw2" autocomplete="new-password" required minlength="4">
+      </label>
+      <p class="err" id="pw-err" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" id="pw-cancel">取消</button>
+        <button type="submit" class="primary">儲存</button>
+      </div>
+    </form>
+  </dialog>
+
+<script src="sync-config.js"></script>
+<script>
+(function () {
+  const PUBLIC_URL = "https://ksl-blip.github.io/biology-simulators/tools/audio-player-personal/";
+  const SPEED_KEY = "personal-audio-player:speed";
+  const LAST_KEY = "personal-audio-player:last";
+  const ADMIN_HASH_KEY = "personal-audio-player:admin";
+  const ADMIN_SESSION = "personal-audio-player:admin-session";
+  const DEFAULT_PASSWORD = "admin";
+  const REPLACE_MAX = 12 * 1024 * 1024;
+  const AUDIO_NAME = /\.(mp3|m4a|aac|wav|ogg|oga|flac|webm|opus)$/i;
+  const LEGACY_DB = "personal-audio-player";
+  const ID_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
+  const FOLDER_ID = "1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0";
+
+  const audio = document.getElementById("player");
+  const seek = document.getElementById("seek");
+  const speedInput = document.getElementById("speed");
+  const speedLabel = document.getElementById("speed-label");
+  const presets = document.getElementById("presets");
+  const tracksEl = document.getElementById("tracks");
+  const emptyEl = document.getElementById("empty");
+  const emptyTitle = document.getElementById("empty-title");
+  const emptyText = document.getElementById("empty-text");
+  const countEl = document.getElementById("count");
+  const nowTitle = document.getElementById("now-title");
+  const curEl = document.getElementById("cur");
+  const durEl = document.getElementById("dur");
+  const playBtn = document.getElementById("play");
+  const prevBtn = document.getElementById("prev");
+  const nextBtn = document.getElementById("next");
+  const howDialog = document.getElementById("how");
+  const gateDialog = document.getElementById("gate");
+  const pwDialog = document.getElementById("pw-dialog");
+  const adminBar = document.getElementById("admin-bar");
+  const adminOpen = document.getElementById("admin-open");
+  const replaceInput = document.getElementById("replace-file");
+
+  let tracks = [];
+  let currentId = null;
+  let speed = 1;
+  let seeking = false;
+  let toastTimer = null;
+  let positionTick = 0;
+  let loadError = "";
+  let admin = false;
+  let replaceTargetId = null;
+  const pendingDelete = new Set();
+
+  document.getElementById("public-url").textContent = PUBLIC_URL;
+
+  function quantize(v) {
+    const n = Math.round(Number(v) * 20) / 20;
+    return Math.min(2, Math.max(0.5, n));
+  }
+
+  function fmt(sec) {
+    if (!Number.isFinite(sec) || sec < 0) return "0:00";
+    const s = Math.floor(sec);
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const r = s % 60;
+    const pad = (n) => String(n).padStart(2, "0");
+    return h > 0 ? h + ":" + pad(m) + ":" + pad(r) : m + ":" + pad(r);
+  }
+
+  function fmtSize(n) {
+    if (!Number.isFinite(n) || n < 0) return "";
+    if (n < 1024) return n + " B";
+    if (n < 1024 * 1024) return (n / 1024).toFixed(n < 10 * 1024 ? 1 : 0) + " KB";
+    return (n / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  function readLocal(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  function writeLocal(key, value) {
+    try {
+      if (value == null) localStorage.removeItem(key);
+      else localStorage.setItem(key, value);
+    } catch (e) {}
+  }
+
+  function toast(msg) {
+    let el = document.getElementById("toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "toast";
+      el.className = "toast";
+      el.setAttribute("role", "status");
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.remove(), 3200);
+  }
+
+  function artwork() {
+    const c = document.createElement("canvas");
+    c.width = c.height = 256;
+    const g = c.getContext("2d");
+    g.fillStyle = "#0e6b52";
+    g.fillRect(0, 0, 256, 256);
+    g.fillStyle = "#f3efe6";
+    g.font = "700 148px sans-serif";
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.fillText("音", 128, 142);
+    return c.toDataURL("image/png");
+  }
+  const ART = artwork();
+
+  function isSafeFile(file) {
+    if (typeof file !== "string" || file.length > 180) return false;
+    let decoded = file;
+    try { decoded = decodeURIComponent(file); } catch (e) { return false; }
+    if (decoded !== file) return false;
+    if (file.includes("..") || file.includes("\\") || file.includes("//")) return false;
+    if (/^[a-z]+:/i.test(file) || file.startsWith("/")) return false;
+    return /^media\/[A-Za-z0-9._-]+$/.test(file);
+  }
+
+  function trackUrl(file) {
+    if (!isSafeFile(file)) return null;
+    const url = new URL(file, document.baseURI);
+    const base = new URL("./", document.baseURI);
+    if (url.origin !== base.origin) return null;
+    if (!url.pathname.startsWith(base.pathname)) return null;
+    return url.href;
+  }
+
+  function normalize(raw, seen) {
+    if (!raw || typeof raw.id !== "string" || !ID_RE.test(raw.id) || seen.has(raw.id)) return null;
+    if (!isSafeFile(raw.file)) return null;
+    const title = typeof raw.title === "string" && raw.title.trim() ? raw.title.trim().slice(0, 200) : raw.id;
+    const bytes = Number(raw.bytes);
+    const duration = Number(raw.duration);
+    seen.add(raw.id);
+    return {
+      id: raw.id,
+      title: title,
+      file: raw.file,
+      bytes: Number.isFinite(bytes) && bytes >= 0 ? bytes : null,
+      duration: Number.isFinite(duration) && duration > 0 ? duration : null
+    };
+  }
+
+  function paintSpeed() {
+    const rounded = Math.round(speed * 100) / 100;
+    speedLabel.textContent = String(rounded) + "×";
+    speedInput.value = String(speed);
+    speedInput.style.setProperty("--p", ((speed - 0.5) / 1.5) * 100 + "%");
+    presets.querySelectorAll("button").forEach((b) => {
+      b.classList.toggle("on", Math.abs(Number(b.dataset.rate) - speed) < 0.001);
+    });
+    audio.playbackRate = speed;
+    audio.preservesPitch = true;
+    try { audio.webkitPreservesPitch = true; } catch (e) {}
+  }
+
+  function knownDuration(track) {
+    if (track && track.id === currentId && Number.isFinite(audio.duration)) return audio.duration;
+    if (track && Number.isFinite(track.duration)) return track.duration;
+    return NaN;
+  }
+
+  function updateTransport() {
+    const has = tracks.length > 0 && currentId != null;
+    playBtn.disabled = !has;
+    prevBtn.disabled = tracks.length < 2;
+    nextBtn.disabled = tracks.length < 2;
+    seek.disabled = !has || !Number.isFinite(audio.duration);
+    playBtn.textContent = audio.paused ? "▶" : "❚❚";
+    playBtn.setAttribute("aria-label", audio.paused ? "播放" : "暫停");
+  }
+
+  function renderList() {
+    tracksEl.replaceChildren();
+    emptyEl.hidden = tracks.length > 0;
+    if (!tracks.length) {
+      if (loadError) {
+        emptyTitle.textContent = "讀唔到播放清單";
+        emptyText.textContent = loadError;
+      } else {
+        emptyTitle.textContent = "未有錄音";
+        emptyText.textContent = "解鎖「管理」之後可以改資料夾同立即同步，或者用「點樣加入」將 mp3 放上網站。提交 media/ 同 tracks.json 之後，任何人打開呢頁都聽得。";
+      }
+    }
+    countEl.textContent = tracks.length + " 個";
+    const playing = !audio.paused && currentId != null;
+    tracks.forEach((t) => {
+      const li = document.createElement("li");
+      li.className = "track" + (t.id === currentId ? " active" : "") + (admin ? " manage" : "");
+      li.dataset.id = t.id;
+
+      const mini = document.createElement("button");
+      mini.type = "button";
+      mini.className = "playmini";
+      mini.setAttribute("aria-label", (t.id === currentId && playing ? "暫停 " : "播放 ") + t.title);
+      mini.textContent = t.id === currentId && playing ? "❚❚" : "▶";
+      mini.addEventListener("click", () => onPick(t.id));
+
+      const info = document.createElement("div");
+      const name = document.createElement("div");
+      name.className = "t-name";
+      name.textContent = t.title;
+      if (t.id === currentId && playing) {
+        const eq = document.createElement("span");
+        eq.className = "eq";
+        eq.setAttribute("aria-hidden", "true");
+        eq.append(document.createElement("i"), document.createElement("i"), document.createElement("i"));
+        name.append(eq);
+      }
+      const meta = document.createElement("div");
+      meta.className = "t-meta";
+      const dur = Number.isFinite(knownDuration(t)) ? fmt(knownDuration(t)) : "";
+      const size = fmtSize(t.bytes);
+      meta.textContent = [dur, size].filter(Boolean).join(" · ");
+      info.append(name, meta);
+      info.addEventListener("click", () => onPick(t.id));
+      info.style.cursor = "pointer";
+
+      const actions = document.createElement("div");
+      actions.className = "row-actions";
+      if (admin) {
+        const swap = document.createElement("button");
+        swap.type = "button";
+        swap.className = "small";
+        swap.textContent = "換檔";
+        swap.setAttribute("aria-label", "換檔 " + t.title);
+        swap.addEventListener("click", () => {
+          if (!admin) return;
+          replaceTargetId = t.id;
+          replaceInput.value = "";
+          replaceInput.click();
+        });
+        actions.append(swap);
+        if (pendingDelete.has(t.id)) {
+          const box = document.createElement("div");
+          box.className = "confirm";
+          box.textContent = "刪除？";
+          const yes = document.createElement("button");
+          yes.type = "button";
+          yes.className = "danger small";
+          yes.textContent = "確定";
+          yes.addEventListener("click", () => requestDelete(t));
+          const no = document.createElement("button");
+          no.type = "button";
+          no.className = "ghost small";
+          no.textContent = "取消";
+          no.addEventListener("click", () => { pendingDelete.delete(t.id); renderList(); });
+          box.append(yes, no);
+          actions.append(box);
+        } else {
+          const del = document.createElement("button");
+          del.type = "button";
+          del.className = "danger small";
+          del.textContent = "刪除";
+          del.setAttribute("aria-label", "刪除 " + t.title);
+          del.addEventListener("click", () => {
+            if (!admin) return;
+            pendingDelete.add(t.id);
+            renderList();
+          });
+          actions.append(del);
+        }
+      }
+
+      li.append(mini, info, actions);
+      tracksEl.append(li);
+    });
+    updateTransport();
+  }
+
+  function updateNow() {
+    const t = tracks.find((x) => x.id === currentId);
+    nowTitle.textContent = t ? t.title : "未揀錄音";
+    document.title = t ? t.title + " · 個人語音" : "個人語音播放器";
+    const shown = Number.isFinite(audio.duration) ? audio.duration : knownDuration(t);
+    durEl.textContent = fmt(shown);
+    if (!seeking) {
+      const d = audio.duration;
+      if (Number.isFinite(d) && d > 0) {
+        const p = audio.currentTime / d;
+        seek.value = String(Math.round(p * 1000));
+        seek.style.setProperty("--p", (p * 100) + "%");
+        curEl.textContent = fmt(audio.currentTime);
+      } else {
+        seek.value = "0";
+        seek.style.setProperty("--p", "0%");
+        curEl.textContent = "0:00";
+      }
+    }
+  }
+
+  function updateMediaSession() {
+    if (!("mediaSession" in navigator)) return;
+    const t = tracks.find((x) => x.id === currentId);
+    if (!t) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: t.title,
+        artist: "個人語音",
+        album: "個人語音播放器",
+        artwork: [
+          { src: ART, sizes: "256x256", type: "image/png" }
+        ]
+      });
+    } catch (e) {}
+    navigator.mediaSession.playbackState = audio.paused ? "paused" : "playing";
+    try {
+      if (Number.isFinite(audio.duration) && audio.duration > 0) {
+        navigator.mediaSession.setPositionState({
+          duration: audio.duration,
+          playbackRate: audio.playbackRate || speed,
+          position: Math.min(audio.currentTime || 0, audio.duration)
+        });
+      }
+    } catch (e) {}
+  }
+
+  function installMediaHandlers() {
+    if (!("mediaSession" in navigator) || !navigator.mediaSession.setActionHandler) return;
+    const safe = (name, fn) => {
+      try { navigator.mediaSession.setActionHandler(name, fn); } catch (e) {}
+    };
+    safe("play", () => { playCurrent(); });
+    safe("pause", () => { audio.pause(); });
+    safe("previoustrack", () => step(-1));
+    safe("nexttrack", () => step(1));
+    safe("seekbackward", (d) => seekBy(-((d && d.seekOffset) || 10)));
+    safe("seekforward", (d) => seekBy((d && d.seekOffset) || 10));
+    safe("seekto", (d) => {
+      if (d && typeof d.seekTime === "number" && Number.isFinite(audio.duration)) {
+        audio.currentTime = Math.min(Math.max(0, d.seekTime), audio.duration);
+        updateNow();
+        updateMediaSession();
+      }
+    });
+    safe("stop", () => { audio.pause(); audio.currentTime = 0; });
+  }
+
+  function seekBy(delta) {
+    if (!Number.isFinite(audio.duration)) return;
+    audio.currentTime = Math.min(audio.duration, Math.max(0, audio.currentTime + delta));
+    updateNow();
+    updateMediaSession();
+  }
+
+  function probeDuration(track) {
+    if (Number.isFinite(track.duration)) return Promise.resolve();
+    const url = trackUrl(track.file);
+    if (!url) return Promise.resolve();
+    const probe = document.createElement("audio");
+    probe.preload = "metadata";
+    probe.playsInline = true;
+    return new Promise((resolve) => {
+      const done = () => {
+        if (Number.isFinite(probe.duration) && probe.duration > 0) track.duration = probe.duration;
+        probe.removeAttribute("src");
+        probe.load();
+        resolve();
+      };
+      probe.addEventListener("loadedmetadata", done, { once: true });
+      probe.addEventListener("error", done, { once: true });
+      probe.src = url;
+    });
+  }
+
+  async function loadPlaylist() {
+    loadError = "";
+    let response;
+    try {
+      response = await fetch("tracks.json?" + Date.now(), { cache: "no-store" });
+    } catch (e) {
+      loadError = location.protocol === "file:"
+        ? "請用網站網址開啟。本機直接開檔案時，瀏覽器會擋住播放清單。"
+        : "暫時連唔到播放清單，請再試。";
+      tracks = [];
+      renderList();
+      updateNow();
+      return;
+    }
+    if (!response.ok) {
+      loadError = "tracks.json 回應 " + response.status + "。";
+      tracks = [];
+      renderList();
+      updateNow();
+      return;
+    }
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      loadError = "tracks.json 格式唔啱。";
+      tracks = [];
+      renderList();
+      updateNow();
+      return;
+    }
+    if (!data || !Array.isArray(data.tracks)) {
+      loadError = "tracks.json 必須有 tracks 陣列。";
+      tracks = [];
+      renderList();
+      updateNow();
+      return;
+    }
+    const seen = new Set();
+    const rawCount = data.tracks.length;
+    tracks = data.tracks.map((raw) => normalize(raw, seen)).filter(Boolean);
+    if (tracks.length !== rawCount) toast("有部分曲目路徑唔接受，已跳過。");
+    const saved = readLocal(SPEED_KEY);
+    const savedSpeed = saved == null ? NaN : Number(saved);
+    if (savedSpeed >= 0.5 && savedSpeed <= 2) speed = quantize(savedSpeed);
+    paintSpeed();
+    renderList();
+    const last = readLocal(LAST_KEY);
+    if (last && tracks.some((t) => t.id === last)) select(last, false);
+    else updateNow();
+    const missing = tracks.filter((t) => !Number.isFinite(t.duration));
+    if (missing.length) {
+      await Promise.all(missing.map((t) => probeDuration(t)));
+      renderList();
+      if (currentId) updateNow();
+    }
+  }
+
+  function select(id, autoplay) {
+    const t = tracks.find((x) => x.id === id);
+    if (!t) return;
+    if (currentId === id && audio.getAttribute("src")) {
+      if (autoplay) {
+        if (audio.paused) playCurrent();
+        else audio.pause();
+      }
+      return;
+    }
+    const url = trackUrl(t.file);
+    if (!url) {
+      toast("呢段錄音嘅路徑唔接受。");
+      return;
+    }
+    currentId = id;
+    audio.preload = "auto";
+    audio.src = url;
+    audio.playbackRate = speed;
+    writeLocal(LAST_KEY, id);
+    updateNow();
+    renderList();
+    updateMediaSession();
+    if (autoplay) playCurrent();
+  }
+
+  async function playCurrent() {
+    if (!currentId) {
+      if (!tracks.length) return;
+      select(tracks[0].id, true);
+      return;
+    }
+    try {
+      audio.playbackRate = speed;
+      await audio.play();
+    } catch (e) {
+      toast("未能播放，請再撳一次。");
+    }
+    updateMediaSession();
+    renderList();
+  }
+
+  function onPick(id) {
+    select(id, true);
+  }
+
+  function step(dir) {
+    if (!tracks.length) return;
+    let i = tracks.findIndex((t) => t.id === currentId);
+    if (i < 0) i = 0;
+    else i = (i + dir + tracks.length) % tracks.length;
+    select(tracks[i].id, true);
+  }
+
+  function setSpeed(v) {
+    speed = quantize(v);
+    paintSpeed();
+    updateMediaSession();
+    writeLocal(SPEED_KEY, String(speed));
+  }
+
+  function showLegacy(rows) {
+    const box = document.getElementById("legacy");
+    const list = document.getElementById("legacy-list");
+    list.replaceChildren();
+    rows.forEach((row) => {
+      const li = document.createElement("li");
+      const name = document.createElement("span");
+      name.textContent = row.name || "未命名";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "small";
+      btn.textContent = "下載";
+      btn.addEventListener("click", () => {
+        if (!row.blob) { toast("下載唔到呢個舊檔。"); return; }
+        const url = URL.createObjectURL(row.blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = row.name || "audio";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      });
+      li.append(name, btn);
+      list.append(li);
+    });
+    box.hidden = rows.length === 0;
+  }
+
+  async function loadLegacy() {
+    if (!indexedDB.databases) return;
+    let names = [];
+    try {
+      names = await indexedDB.databases();
+    } catch (e) {
+      return;
+    }
+    if (!names.some((d) => d && d.name === LEGACY_DB)) return;
+    const rows = await new Promise((resolve) => {
+      const req = indexedDB.open(LEGACY_DB);
+      req.onerror = () => resolve([]);
+      req.onsuccess = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains("tracks")) {
+          db.close();
+          resolve([]);
+          return;
+        }
+        const get = db.transaction("tracks").objectStore("tracks").getAll();
+        get.onsuccess = () => {
+          db.close();
+          resolve(get.result || []);
+        };
+        get.onerror = () => {
+          db.close();
+          resolve([]);
+        };
+      };
+    });
+    const playable = rows.filter((row) => row && row.blob);
+    if (playable.length) showLegacy(playable);
+  }
+
+  audio.addEventListener("timeupdate", () => {
+    updateNow();
+    positionTick += 1;
+    if (positionTick % 4 === 0) updateMediaSession();
+  });
+  audio.addEventListener("loadedmetadata", () => {
+    const t = tracks.find((x) => x.id === currentId);
+    if (t && Number.isFinite(audio.duration) && audio.duration > 0) t.duration = audio.duration;
+    updateNow();
+    updateTransport();
+    updateMediaSession();
+    renderList();
+  });
+  audio.addEventListener("play", () => { updateTransport(); updateMediaSession(); renderList(); });
+  audio.addEventListener("pause", () => { updateTransport(); updateMediaSession(); renderList(); });
+  audio.addEventListener("error", () => {
+    if (!currentId) return;
+    toast("呢段錄音載入唔到。");
+  });
+  audio.addEventListener("ended", () => {
+    const i = tracks.findIndex((t) => t.id === currentId);
+    if (i >= 0 && i < tracks.length - 1) select(tracks[i + 1].id, true);
+    else { updateTransport(); updateMediaSession(); renderList(); }
+  });
+
+  seek.addEventListener("pointerdown", () => { seeking = true; });
+  seek.addEventListener("input", () => {
+    seeking = true;
+    const d = audio.duration;
+    if (!Number.isFinite(d) || d <= 0) return;
+    const t = (Number(seek.value) / 1000) * d;
+    seek.style.setProperty("--p", (Number(seek.value) / 10) + "%");
+    curEl.textContent = fmt(t);
+  });
+  seek.addEventListener("change", () => {
+    const d = audio.duration;
+    if (Number.isFinite(d) && d > 0) {
+      audio.currentTime = (Number(seek.value) / 1000) * d;
+    }
+    seeking = false;
+    updateNow();
+    updateMediaSession();
+  });
+  seek.addEventListener("pointerup", () => { seeking = false; });
+  seek.addEventListener("keyup", () => { seeking = false; });
+
+  playBtn.addEventListener("click", () => {
+    if (audio.paused) playCurrent();
+    else audio.pause();
+  });
+  prevBtn.addEventListener("click", () => step(-1));
+  nextBtn.addEventListener("click", () => step(1));
+  presets.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-rate]");
+    if (!b) return;
+    setSpeed(Number(b.dataset.rate));
+  });
+  speedInput.addEventListener("input", () => setSpeed(speedInput.value));
+
+  document.getElementById("how-open").addEventListener("click", () => {
+    howDialog.showModal();
+  });
+
+  const FOLDER_ID_RE = /^[a-zA-Z0-9_-]{10,80}$/;
+
+  function currentFolderId() {
+    const cfg = window.PERSONAL_AUDIO_SYNC;
+    const id = cfg && typeof cfg.folderId === "string" ? cfg.folderId.trim() : "";
+    return FOLDER_ID_RE.test(id) ? id : FOLDER_ID;
+  }
+
+  function showFolder() {
+    const input = document.getElementById("folder-input");
+    if (!input || document.activeElement === input) return;
+    input.value = currentFolderId();
+  }
+
+  function parseFolderId(raw) {
+    const text = String(raw || "").trim();
+    if (!text || text.length > 500) return "";
+    if (FOLDER_ID_RE.test(text)) return text;
+    let url;
+    try { url = new URL(text); } catch (e) { return ""; }
+    if (url.protocol !== "https:" && url.protocol !== "http:") return "";
+    const fromQuery = url.searchParams.get("id");
+    if (fromQuery && FOLDER_ID_RE.test(fromQuery)) return fromQuery;
+    const parts = url.pathname.split("/").filter(Boolean);
+    const at = parts.lastIndexOf("folders");
+    const next = at >= 0 ? parts[at + 1] : "";
+    if (next && FOLDER_ID_RE.test(next)) return next;
+    return "";
+  }
+
+  function syncWebhookUrl() {
+    const cfg = window.PERSONAL_AUDIO_SYNC;
+    const raw = cfg && typeof cfg.webhookUrl === "string" ? cfg.webhookUrl.trim() : "";
+    if (!raw) return { url: "", reason: "empty" };
+    let parsed;
+    try { parsed = new URL(raw); } catch (e) { return { url: "", reason: "invalid" }; }
+    const local = parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1";
+    if (parsed.protocol === "https:" || (parsed.protocol === "http:" && local)) {
+      return { url: parsed.href, reason: "" };
+    }
+    return { url: "", reason: "invalid" };
+  }
+
+  function webhookToast(reason) {
+    toast(reason === "invalid"
+      ? "同步網址唔正確。請喺 sync-config.js 填一個 https webhook。"
+      : "同步尚未設定。請喺 sync-config.js 填上 Grok Bot 嘅 webhook 網址。");
+  }
+
+  async function postAdmin(action, extra, button) {
+    if (!admin) return false;
+    const target = syncWebhookUrl();
+    if (!target.url) {
+      webhookToast(target.reason);
+      return false;
+    }
+    if (button) button.disabled = true;
+    try {
+      const response = await fetch(target.url, {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.assign({
+          action: action,
+          source: "personal-audio-player",
+          folderId: currentFolderId()
+        }, extra || {}))
+      });
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      return true;
+    } catch (e) {
+      toast("要求送唔出。請稍後再試。");
+      return false;
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }
+
+  document.getElementById("sync-btn").addEventListener("click", async () => {
+    if (!admin) return;
+    const ok = await postAdmin("sync", { immediate: true }, document.getElementById("sync-btn"));
+    if (ok) toast("已送出即時同步。更新可能要等一陣，然後重新載入頁面。");
+  });
+
+  document.getElementById("folder-save").addEventListener("click", async () => {
+    if (!admin) return;
+    const input = document.getElementById("folder-input");
+    const id = parseFolderId(input.value);
+    if (!id) {
+      toast("呢條資料夾連結唔正確。請貼 Drive 資料夾網址，或者資料夾 ID。");
+      return;
+    }
+    const ok = await postAdmin("set-folder", { folderId: id }, document.getElementById("folder-save"));
+    if (!ok) return;
+    if (!window.PERSONAL_AUDIO_SYNC || typeof window.PERSONAL_AUDIO_SYNC !== "object") {
+      window.PERSONAL_AUDIO_SYNC = {};
+    }
+    window.PERSONAL_AUDIO_SYNC.folderId = id;
+    input.value = id;
+    toast("已送出資料夾更新。機器人會寫入 sync-config.js，每小時同步都用呢個資料夾。");
+  });
+
+  async function requestDelete(track) {
+    if (!admin) return;
+    pendingDelete.delete(track.id);
+    renderList();
+    const ok = await postAdmin("delete", {
+      track: { id: track.id, title: track.title, file: track.file }
+    });
+    if (ok) toast("已送出刪除要求。機器人提交之後，重新載入先會喺大家嘅播放清單消失。");
+  }
+
+  function toBase64(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let binary = "";
+    const size = 0x8000;
+    for (let i = 0; i < bytes.length; i += size) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + size));
+    }
+    return btoa(binary);
+  }
+
+  replaceInput.addEventListener("change", async () => {
+    const track = tracks.find((item) => item.id === replaceTargetId);
+    const file = replaceInput.files && replaceInput.files[0];
+    replaceTargetId = null;
+    replaceInput.value = "";
+    if (!admin || !track || !file) return;
+    if (!AUDIO_NAME.test(file.name || "")) {
+      toast("只接受 mp3、m4a、aac、wav、ogg、flac、webm、opus。");
+      return;
+    }
+    if (file.size <= 0 || file.size > REPLACE_MAX) {
+      toast("呢個檔太大或者係空嘅。瀏覽器換檔上限係 12 MB，更大請用 add-track 再提交。");
+      return;
+    }
+    let dataBase64 = "";
+    try {
+      dataBase64 = toBase64(await file.arrayBuffer());
+    } catch (e) {
+      toast("讀唔到呢個檔案。");
+      return;
+    }
+    const ok = await postAdmin("replace", {
+      track: { id: track.id, title: track.title, file: track.file },
+      filename: file.name.replace(/^.*[\\/]/, "").slice(0, 180),
+      contentType: file.type || "application/octet-stream",
+      bytes: file.size,
+      dataBase64: dataBase64
+    });
+    if (ok) toast("已送出換檔要求。機器人提交之後，重新載入先會聽到新檔。");
+  });
+
+  function setAdmin(on) {
+    admin = on;
+    adminBar.hidden = !on;
+    adminOpen.hidden = on;
+    if (!on) {
+      pendingDelete.clear();
+      replaceTargetId = null;
+    } else {
+      showFolder();
+    }
+    try {
+      if (on) sessionStorage.setItem(ADMIN_SESSION, "1");
+      else sessionStorage.removeItem(ADMIN_SESSION);
+    } catch (e) {}
+    renderList();
+  }
+
+  async function sha256Hex(text) {
+    const data = new TextEncoder().encode(text);
+    const buf = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  async function expectedAdminHash() {
+    const stored = readLocal(ADMIN_HASH_KEY);
+    if (stored && /^[0-9a-f]{64}$/.test(stored)) return stored;
+    return sha256Hex(DEFAULT_PASSWORD);
+  }
+
+  async function migrateLegacyPassword() {
+    if (readLocal(ADMIN_HASH_KEY)) return;
+    if (!indexedDB.databases) return;
+    let names = [];
+    try { names = await indexedDB.databases(); } catch (e) { return; }
+    if (!names.some((d) => d && d.name === LEGACY_DB)) return;
+    const pw = await new Promise((resolve) => {
+      const req = indexedDB.open(LEGACY_DB);
+      req.onerror = () => resolve(null);
+      req.onsuccess = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains("meta")) {
+          db.close();
+          resolve(null);
+          return;
+        }
+        const get = db.transaction("meta").objectStore("meta").get("password");
+        get.onsuccess = () => { db.close(); resolve(get.result); };
+        get.onerror = () => { db.close(); resolve(null); };
+      };
+    });
+    if (typeof pw !== "string" || !pw) return;
+    if (readLocal(ADMIN_HASH_KEY)) return;
+    try { writeLocal(ADMIN_HASH_KEY, await sha256Hex(pw)); } catch (e) {}
+  }
+
+  adminOpen.addEventListener("click", () => {
+    document.getElementById("gate-err").hidden = true;
+    document.getElementById("gate-pw").value = "";
+    gateDialog.showModal();
+    document.getElementById("gate-pw").focus();
+  });
+  document.getElementById("gate-cancel").addEventListener("click", () => gateDialog.close());
+  document.getElementById("gate-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const err = document.getElementById("gate-err");
+    let matches = false;
+    try {
+      matches = await sha256Hex(document.getElementById("gate-pw").value) === await expectedAdminHash();
+    } catch (error) {
+      toast("呢個網頁環境唔支援密碼鎖。");
+      return;
+    }
+    if (matches) {
+      gateDialog.close();
+      setAdmin(true);
+    } else {
+      err.hidden = false;
+      document.getElementById("gate-pw").focus();
+    }
+  });
+  document.getElementById("lock-btn").addEventListener("click", () => {
+    setAdmin(false);
+    toast("已鎖定管理");
+  });
+  document.getElementById("pw-open").addEventListener("click", () => {
+    if (!admin) return;
+    document.getElementById("pw-err").hidden = true;
+    document.getElementById("pw-form").reset();
+    pwDialog.showModal();
+  });
+  document.getElementById("pw-cancel").addEventListener("click", () => pwDialog.close());
+  document.getElementById("pw-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const err = document.getElementById("pw-err");
+    const oldPw = document.getElementById("old-pw").value;
+    const n1 = document.getElementById("new-pw").value;
+    const n2 = document.getElementById("new-pw2").value;
+    let oldOk = false;
+    try {
+      oldOk = await sha256Hex(oldPw) === await expectedAdminHash();
+    } catch (error) {
+      toast("呢個網頁環境唔支援密碼鎖。");
+      return;
+    }
+    if (!oldOk) { err.hidden = false; err.textContent = "而家密碼唔啱。"; return; }
+    if (n1.length < 4) { err.hidden = false; err.textContent = "新密碼至少四個字。"; return; }
+    if (n1 !== n2) { err.hidden = false; err.textContent = "兩次新密碼唔同。"; return; }
+    writeLocal(ADMIN_HASH_KEY, await sha256Hex(n1));
+    pwDialog.close();
+    toast("已更改密碼");
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.target.closest("input, textarea, button") || howDialog.open || gateDialog.open || pwDialog.open) return;
+    if (e.code === "Space") { e.preventDefault(); playBtn.click(); }
+  });
+
+  installMediaHandlers();
+  try {
+    if (sessionStorage.getItem(ADMIN_SESSION) === "1") setAdmin(true);
+  } catch (e) {}
+  migrateLegacyPassword();
+  const storedSpeed = readLocal(SPEED_KEY);
+  if (storedSpeed != null && Number(storedSpeed) >= 0.5 && Number(storedSpeed) <= 2) {
+    speed = quantize(storedSpeed);
+  }
+  paintSpeed();
+  loadPlaylist().catch((err) => {
+    loadError = err && err.message ? err.message : "未知錯誤";
+    tracks = [];
+    renderList();
+    updateNow();
+  });
+  loadLegacy();
+})();
+</script>
+</body>
+</html>
