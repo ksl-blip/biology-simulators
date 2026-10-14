@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>M25 DNA 指紋分析（選修） · HKDSE 生物</title>
+<style>
+
+:root {
+  --paper: #f3eee4;
+  --ink: #2b241c;
+  --muted: #5a493c;
+  --green: #1f6b3a;
+  --green-d: #174e2b;
+  --card: #fffaf3;
+  --line: #e0d2c0;
+  --hl: #fff3c4;
+  --red: #b42318;
+  --blue: #1d4ed8;
+  --purple: #7c3aed;
+  --amber: #d97706;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "PingFang HK", "Noto Sans CJK HK", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: clamp(22px, 3.2vw, 28px); line-height: 1.3; margin: 0 0 6px; }
+h2 { font-size: 18px; margin: 0 0 10px; }
+p { margin: 6px 0; }
+.kicker { letter-spacing: .08em; color: var(--muted); margin: 0 0 4px; font-size: 13px; font-weight: 700; }
+.banner {
+  background: #fff6e4;
+  border: 1px solid #e4c98a;
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin: 10px 0 14px;
+  font-size: 14px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 0;
+}
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button.act {
+  background: var(--green); color: #fff; border: 0; border-radius: 999px;
+  padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700;
+}
+button.ghost {
+  background: transparent; color: var(--green-d); border: 1px solid var(--green);
+  border-radius: 999px; padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700;
+}
+button:disabled { opacity: .42; cursor: not-allowed; }
+button:focus-visible { outline: 3px solid #1f6b3a; outline-offset: 2px; }
+.step-tag {
+  display: inline-block; padding: 4px 10px; border-radius: 999px;
+  background: #efe4d2; font-size: 13px; font-weight: 700;
+}
+.slider-line { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; }
+input[type="range"] { width: min(420px, 70vw); accent-color: #1f6b3a; }
+.day-big { font-variant-numeric: tabular-nums; font-weight: 800; min-width: 6.5em; font-size: 17px; }
+.grid-main {
+  display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 14px; margin-top: 14px;
+}
+.panel-title { font-size: 14px; font-weight: 800; margin: 0 0 8px; color: var(--muted); letter-spacing: .04em; }
+.stage {
+  background: linear-gradient(#f7f1e6, #efe2d0 72%, #e6d4bb);
+  border: 1px solid var(--line); border-radius: 16px; padding: 10px; min-height: 320px;
+  position: relative; overflow: hidden;
+}
+.stage svg { width: 100%; height: auto; display: block; }
+.caption {
+  margin-top: 10px; background: #fff; border: 1px solid var(--line);
+  border-radius: 12px; padding: 10px 12px; font-size: 14px; min-height: 3.4em;
+}
+.caption strong.key { color: var(--red); }
+.flow { max-height: 620px; overflow: auto; padding-right: 4px; }
+.flow-phase {
+  font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--muted);
+  margin: 12px 0 6px; padding-bottom: 2px; border-bottom: 1px dashed var(--line);
+}
+.flow-phase:first-child { margin-top: 0; }
+.step {
+  display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: start;
+  padding: 7px 8px; border-radius: 10px; border: 1px solid transparent; margin: 3px 0;
+  transition: background .2s, border-color .2s; cursor: pointer;
+}
+.step .n {
+  width: 24px; height: 24px; border-radius: 999px; background: #efe4d2;
+  display: grid; place-items: center; font-size: 12px; font-weight: 800; color: var(--muted);
+}
+.step.active { background: var(--hl); border-color: #e4c98a; box-shadow: 0 0 0 1px #f0d58a inset; }
+.step.active .n { background: var(--green); color: #fff; }
+.step.done .n { background: #86efac; color: #14532d; }
+.step .txt strong.key, .step.key .txt { color: inherit; }
+.step .txt .key { color: var(--red); font-weight: 800; }
+.status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.stat {
+  background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px;
+}
+.stat .lab { font-size: 12px; color: var(--muted); }
+.stat .val { font-weight: 800; font-size: 15px; }
+footer {
+  margin-top: 18px; color: var(--muted); font-size: 13px;
+  border-top: 1px solid var(--line); padding-top: 12px;
+}
+.back { color: var(--green-d); font-weight: 700; text-decoration: none; font-size: 14px; }
+.back:hover { text-decoration: underline; }
+@media (max-width: 900px) {
+  .grid-main, .status { grid-template-columns: 1fr; }
+  .flow { max-height: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .step { transition: none; }
+}
+
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a class="back" href="index.html">← 返回實驗室</a></p>
+  <p class="kicker">HKDSE · 中四至中六 · M25</p>
+  <h1>DNA 指紋分析（選修）</h1>
+  <p class="muted small">樣本 → PCR → 限制酶／VNTR → 電泳 → 轉膜 → 探針 → 曝光 → 比較條帶。</p>
+  <div class="banner">題目：繪一流程圖以顯示 DNA 指紋分析。重點：小片段跑得快；探針標示 VNTR 條帶。</div>
+
+  <div class="card">
+    <div class="controls">
+      <button type="button" class="act" id="btnPlay" aria-pressed="false">播放</button>
+      <button type="button" class="ghost" id="btnPrev">上一步</button>
+      <button type="button" class="ghost" id="btnNext">下一步</button>
+      <button type="button" class="ghost" id="btnReset">重設</button>
+      <span class="step-tag" id="stepTag">步驟 1</span>
+    </div>
+    <div class="slider-line">
+      <label for="stepSlider" class="small muted">步驟</label>
+      <input type="range" id="stepSlider" min="0" max="10" step="1" value="0" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+      <span class="day-big" id="stepLabel">步驟 1</span>
+    </div>
+    <div class="status">
+      <div class="stat"><div class="lab">步驟</div><div class="val" id="statA">—</div></div>
+      <div class="stat"><div class="lab">技術</div><div class="val" id="statB">—</div></div>
+      <div class="stat"><div class="lab">觀察</div><div class="val" id="statC">—</div></div>
+    </div>
+  </div>
+
+  <div class="grid-main">
+    <div>
+      <div class="card">
+        <p class="panel-title">互動場景</p>
+        <div class="stage" id="stage">
+          <svg id="scene" viewBox="0 0 560 340" role="img" aria-label="DNA 指紋分析（選修）示意"></svg>
+        </div>
+        <div class="caption" id="caption"></div>
+      </div>
+    </div>
+    <div class="card flow" aria-label="流程圖">
+      <h2>流程圖 · 跟住步驟走</h2>
+      <p class="small muted" style="margin-top:-4px">現時步驟會反黃。紅色為教師卡關鍵句。<br>題目：繪一流程圖以顯示 DNA 指紋分析。</p>
+      <div id="flowSteps"></div>
+    </div>
+  </div>
+
+  <footer>
+    模擬教學模型 · 用來顯示過程次序與概念，不是實驗協議或臨床數據。<br>
+    詞彙：PCR、限制酶、VNTR、凝膠電泳、條帶、尼龍膜、Southern blot、DNA 探針、放射自顯影。
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var STEPS = [
+  {phase:"樣本", tag:"DNA 樣本", flow:"取得 <span class='key'>DNA 樣本</span>", caption:"從血液、口腔細胞等取得<strong class='key'>DNA 樣本</strong>。", statA:"樣本", statB:"基因組 DNA", statC:"待處理"},
+  {phase:"擴增", tag:"PCR", flow:"<span class='key'>聚合酶鏈反應（PCR）</span>", caption:"用 <strong class='key'>PCR</strong> 擴增樣本中的目標 DNA 區段。", statA:"PCR", statB:"擴增中", statC:"拷貝↑"},
+  {phase:"擴增", tag:"DNA 增加", flow:"<span class='key'>DNA 增加</span>", caption:"目標片段數量<strong class='key'>大幅增加</strong>，方便後續分析。", statA:"足量 DNA", statB:"片段就緒", statC:"可酶切"},
+  {phase:"電泳準備", tag:"凝膠電泳", flow:"進行 <span class='key'>凝膠電泳</span>", caption:"把 DNA 片段放入<strong class='key'>凝膠</strong>，在電場中分離。", statA:"凝膠", statB:"電場", statC:"分離中"},
+  {phase:"酶切", tag:"限制酶", flow:"用<span class='key'>特定限制酶</span>切割", caption:"以<strong class='key'>特定限制酶</strong>在特定位置切割 DNA，產生長度不同的片段。", statA:"限制酶", statB:"識別序列", statC:"片段化"},
+  {phase:"VNTR", tag:"VNTR 片段", flow:"部份片段為 <span class='key'>VNTR</span>", caption:"部份片段含<strong class='key'>VNTR</strong>（可變數目串聯重複），不同個體長度不同。", statA:"VNTR", statB:"重複次數異", statC:"個體差異"},
+  {phase:"電泳", tag:"陰極→陽極", flow:"DNA 片段由 <span class='key'>（－）移向（＋）</span>", caption:"DNA 帶負電，在電場中由<strong class='key'>陰極（－）移向陽極（＋）</strong>。", statA:"－ → ＋", statB:"負電荷", statC:"遷移中"},
+  {phase:"電泳", tag:"較小較快", flow:"<span class='key'>較小片段移動較快</span>", caption:"<strong class='key'>較小的 DNA 片段</strong>在凝膠孔隙中移動<strong class='key'>較快、較遠</strong>。", statA:"小片段快", statB:"大片段慢", statC:"按大小分開"},
+  {phase:"條帶", tag:"形成條帶", flow:"<span class='key'>形成條帶</span>", caption:"相同長度的片段聚集，在凝膠上<strong class='key'>形成條帶</strong>。", statA:"條帶圖譜", statB:"長度分佈", statC:"可見圖案"},
+  {phase:"轉膜", tag:"尼龍膜", flow:"轉移至 <span class='key'>尼龍膜</span>", caption:"把 DNA 條帶<strong class='key'>轉移到尼龍膜</strong>上（Southern blot 轉印）。", statA:"Southern blot", statB:"尼龍膜", statC:"已轉印"},
+  {phase:"探針", tag:"放射性探針", flow:"加入<span class='key'>放射性 DNA 探針</span>", caption:"加入帶<strong class='key'>放射性標記</strong>的 DNA <strong class='key'>探針</strong>。", statA:"探針", statB:"放射性標記", statC:"雜交準備"},
+  {phase:"雜交", tag:"探針結合 VNTR", flow:"探針與 <span class='key'>VNTR 的 DNA 結合</span>", caption:"探針依鹼基配對，與膜上<strong class='key'>VNTR 相關 DNA</strong>結合（雜交）。", statA:"雜交", statB:"專一結合", statC:"標記定位"},
+  {phase:"曝光", tag:"底片曝光", flow:"放射性探針使<span class='key'>底片曝光</span>", caption:"放射性使 X 光<strong class='key'>底片曝光</strong>，顯出條帶位置（放射自顯影）。", statA:"自顯影", statB:"底片", statC:"指紋圖譜"},
+  {phase:"比較", tag:"比較條帶", flow:"<span class='key'>比較分析條帶位置</span>", caption:"<strong class='key'>比較</strong>不同樣本的條帶位置與圖案，用作身份鑑別或親緣分析。", statA:"比對", statB:"條帶位置", statC:"結論"}
+];
+
+  function drawScene(i) {
+
+    var svg = $("scene");
+    var left = "";
+    if (i <= 2) {
+      left = '<rect x="40" y="80" width="70" height="90" rx="8" fill="#fee2e2" stroke="#b91c1c" stroke-width="2"/>'
+        + '<text x="75" y="130" text-anchor="middle" font-size="12" font-weight="700">DNA</text>'
+        + '<text x="75" y="190" text-anchor="middle" font-size="12">樣本</text>';
+      if (i >= 1) left += '<rect x="140" y="90" width="80" height="70" rx="8" fill="#dbeafe" stroke="#1d4ed8"/>'
+        + '<text x="180" y="130" text-anchor="middle" font-size="12" font-weight="700">PCR</text>';
+      if (i >= 2) left += '<text x="180" y="185" text-anchor="middle" font-size="12" fill="#1f6b3a" font-weight="700">DNA ↑</text>';
+    }
+    // enzyme
+    if (i >= 4 && i <= 5) {
+      left += '<text x="120" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#7c3aed">限制酶切割 → VNTR 片段</text>'
+        + '<path d="M60 100 h160" stroke="#2563eb" stroke-width="6"/>'
+        + '<path d="M100 95 v10 M140 95 v10" stroke="#b42318" stroke-width="3"/>'
+        + '<rect x="60" y="130" width="40" height="10" fill="#2563eb"/><rect x="110" y="130" width="70" height="10" fill="#2563eb"/><rect x="190" y="130" width="25" height="10" fill="#2563eb"/>'
+        + (i >= 5 ? '<text x="145" y="165" text-anchor="middle" font-size="12" fill="#b42318" font-weight="700">含 VNTR 的片段長度因人而異</text>' : '');
+    }
+    // gel
+    var gel = "";
+    if (i >= 3 || i >= 6) {
+      var showBands = i >= 8;
+      var moving = i >= 6 && i < 8;
+      gel = '<rect x="280" y="40" width="120" height="260" rx="8" fill="#ecfdf5" stroke="#047857" stroke-width="2"/>'
+        + '<text x="300" y="35" font-size="12" font-weight="700" fill="#b91c1c">－</text>'
+        + '<text x="300" y="315" font-size="12" font-weight="700" fill="#1d4ed8">＋</text>'
+        + '<text x="340" y="30" text-anchor="middle" font-size="12" font-weight="700">凝膠電泳</text>';
+      var bandYs = showBands ? [70, 110, 160, 210, 250] : (moving ? [90, 130, 150, 180] : [55, 55, 55, 55]);
+      var widths = [70, 70, 50, 70, 40];
+      for (var b = 0; b < bandYs.length; b++) {
+        gel += '<rect x="305" y="'+bandYs[b]+'" width="'+widths[b]+'" height="8" rx="2" fill="#14532d" opacity="'+(showBands||moving?1:0.4)+'"/>';
+      }
+      if (i >= 7) gel += '<text x="340" y="280" text-anchor="middle" font-size="11" fill="#1f6b3a" font-weight="700">小片段↓較快</text>';
+    }
+    // blot / probe / film
+    var right = "";
+    if (i >= 9) {
+      right += '<rect x="430" y="60" width="90" height="160" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>'
+        + '<text x="475" y="50" text-anchor="middle" font-size="12" font-weight="700">尼龍膜</text>';
+      if (i >= 8) {
+        var by = [80, 110, 140, 170, 200];
+        for (var t = 0; t < by.length; t++) right += '<rect x="445" y="'+by[t]+'" width="60" height="6" fill="#78350f"/>';
+      }
+    }
+    if (i >= 10) {
+      right += '<circle cx="475" cy="250" r="10" fill="#ef4444"/><text x="475" y="275" text-anchor="middle" font-size="11" fill="#b91c1c">探針</text>';
+    }
+    if (i >= 12) {
+      right += '<rect x="430" y="290" width="90" height="40" rx="4" fill="#111" stroke="#000"/>'
+        + '<rect x="445" y="300" width="50" height="4" fill="#f8fafc"/><rect x="445" y="310" width="35" height="4" fill="#f8fafc"/><rect x="445" y="320" width="55" height="4" fill="#f8fafc"/>'
+        + '<text x="475" y="285" text-anchor="middle" font-size="11" fill="#fff">底片</text>';
+    }
+    if (i >= 13) {
+      right += '<text x="200" y="320" text-anchor="middle" font-size="13" font-weight="800" fill="#b42318">比較不同樣本的條帶位置</text>';
+    }
+    svg.innerHTML = left + gel + right;
+
+  }
+
+
+  function $(id) { return document.getElementById(id); }
+  var playing = false;
+  var timer = null;
+  var step = 0;
+  var playBtn = $("btnPlay");
+  var nextBtn = $("btnNext");
+  var prevBtn = $("btnPrev");
+  var resetBtn = $("btnReset");
+  var slider = $("stepSlider");
+  var stepLabel = $("stepLabel");
+  var stepTag = $("stepTag");
+  var flowEl = $("flowSteps");
+  var captionEl = $("caption");
+
+  function stopPlay() {
+    playing = false;
+    if (timer) { clearInterval(timer); timer = null; }
+    playBtn.textContent = "播放";
+    playBtn.setAttribute("aria-pressed", "false");
+  }
+
+  function renderFlow() {
+    flowEl.innerHTML = "";
+    var lastPhase = null;
+    STEPS.forEach(function (s, i) {
+      if (s.phase && s.phase !== lastPhase) {
+        lastPhase = s.phase;
+        var ph = document.createElement("div");
+        ph.className = "flow-phase";
+        ph.textContent = s.phase;
+        flowEl.appendChild(ph);
+      }
+      var d = document.createElement("div");
+      d.className = "step" + (i === step ? " active" : "") + (i < step ? " done" : "");
+      d.setAttribute("role", "button");
+      d.setAttribute("tabindex", "0");
+      d.dataset.i = String(i);
+      d.innerHTML = '<span class="n">' + (i + 1) + '</span><div class="txt">' + s.flow + '</div>';
+      d.addEventListener("click", function () { stopPlay(); setStep(i); });
+      d.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); stopPlay(); setStep(i); }
+      });
+      flowEl.appendChild(d);
+    });
+  }
+
+  function setStep(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    slider.value = String(step);
+    slider.setAttribute("aria-valuenow", String(step));
+    stepLabel.textContent = "步驟 " + (step + 1) + " / " + STEPS.length;
+    stepTag.textContent = STEPS[step].tag || ("步驟 " + (step + 1));
+    captionEl.innerHTML = STEPS[step].caption;
+    $("statA").textContent = STEPS[step].statA || "—";
+    $("statB").textContent = STEPS[step].statB || "—";
+    $("statC").textContent = STEPS[step].statC || "—";
+    renderFlow();
+    drawScene(step);
+    prevBtn.disabled = step === 0;
+    nextBtn.disabled = step === STEPS.length - 1;
+  }
+
+  playBtn.addEventListener("click", function () {
+    if (playing) { stopPlay(); return; }
+    if (step >= STEPS.length - 1) setStep(0);
+    playing = true;
+    playBtn.textContent = "暫停";
+    playBtn.setAttribute("aria-pressed", "true");
+    timer = setInterval(function () {
+      if (step >= STEPS.length - 1) { stopPlay(); return; }
+      setStep(step + 1);
+    }, 1600);
+  });
+  nextBtn.addEventListener("click", function () { stopPlay(); setStep(step + 1); });
+  prevBtn.addEventListener("click", function () { stopPlay(); setStep(step - 1); });
+  resetBtn.addEventListener("click", function () { stopPlay(); setStep(0); });
+  slider.addEventListener("input", function () { stopPlay(); setStep(parseInt(slider.value, 10) || 0); });
+
+  slider.max = String(STEPS.length - 1);
+  slider.setAttribute("aria-valuemax", String(STEPS.length - 1));
+  setStep(0);
+
+})();
+</script>
+</body>
+</html>

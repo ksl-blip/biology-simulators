@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>M27 植物克隆 · HKDSE 生物</title>
+<style>
+
+:root {
+  --paper: #f3eee4;
+  --ink: #2b241c;
+  --muted: #5a493c;
+  --green: #1f6b3a;
+  --green-d: #174e2b;
+  --card: #fffaf3;
+  --line: #e0d2c0;
+  --hl: #fff3c4;
+  --red: #b42318;
+  --blue: #1d4ed8;
+  --purple: #7c3aed;
+  --amber: #d97706;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "PingFang HK", "Noto Sans CJK HK", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: clamp(22px, 3.2vw, 28px); line-height: 1.3; margin: 0 0 6px; }
+h2 { font-size: 18px; margin: 0 0 10px; }
+p { margin: 6px 0; }
+.kicker { letter-spacing: .08em; color: var(--muted); margin: 0 0 4px; font-size: 13px; font-weight: 700; }
+.banner {
+  background: #fff6e4;
+  border: 1px solid #e4c98a;
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin: 10px 0 14px;
+  font-size: 14px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 0;
+}
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button.act {
+  background: var(--green); color: #fff; border: 0; border-radius: 999px;
+  padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700;
+}
+button.ghost {
+  background: transparent; color: var(--green-d); border: 1px solid var(--green);
+  border-radius: 999px; padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700;
+}
+button:disabled { opacity: .42; cursor: not-allowed; }
+button:focus-visible { outline: 3px solid #1f6b3a; outline-offset: 2px; }
+.step-tag {
+  display: inline-block; padding: 4px 10px; border-radius: 999px;
+  background: #efe4d2; font-size: 13px; font-weight: 700;
+}
+.slider-line { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; }
+input[type="range"] { width: min(420px, 70vw); accent-color: #1f6b3a; }
+.day-big { font-variant-numeric: tabular-nums; font-weight: 800; min-width: 6.5em; font-size: 17px; }
+.grid-main {
+  display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 14px; margin-top: 14px;
+}
+.panel-title { font-size: 14px; font-weight: 800; margin: 0 0 8px; color: var(--muted); letter-spacing: .04em; }
+.stage {
+  background: linear-gradient(#f7f1e6, #efe2d0 72%, #e6d4bb);
+  border: 1px solid var(--line); border-radius: 16px; padding: 10px; min-height: 320px;
+  position: relative; overflow: hidden;
+}
+.stage svg { width: 100%; height: auto; display: block; }
+.caption {
+  margin-top: 10px; background: #fff; border: 1px solid var(--line);
+  border-radius: 12px; padding: 10px 12px; font-size: 14px; min-height: 3.4em;
+}
+.caption strong.key { color: var(--red); }
+.flow { max-height: 620px; overflow: auto; padding-right: 4px; }
+.flow-phase {
+  font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--muted);
+  margin: 12px 0 6px; padding-bottom: 2px; border-bottom: 1px dashed var(--line);
+}
+.flow-phase:first-child { margin-top: 0; }
+.step {
+  display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: start;
+  padding: 7px 8px; border-radius: 10px; border: 1px solid transparent; margin: 3px 0;
+  transition: background .2s, border-color .2s; cursor: pointer;
+}
+.step .n {
+  width: 24px; height: 24px; border-radius: 999px; background: #efe4d2;
+  display: grid; place-items: center; font-size: 12px; font-weight: 800; color: var(--muted);
+}
+.step.active { background: var(--hl); border-color: #e4c98a; box-shadow: 0 0 0 1px #f0d58a inset; }
+.step.active .n { background: var(--green); color: #fff; }
+.step.done .n { background: #86efac; color: #14532d; }
+.step .txt strong.key, .step.key .txt { color: inherit; }
+.step .txt .key { color: var(--red); font-weight: 800; }
+.status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.stat {
+  background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px;
+}
+.stat .lab { font-size: 12px; color: var(--muted); }
+.stat .val { font-weight: 800; font-size: 15px; }
+footer {
+  margin-top: 18px; color: var(--muted); font-size: 13px;
+  border-top: 1px solid var(--line); padding-top: 12px;
+}
+.back { color: var(--green-d); font-weight: 700; text-decoration: none; font-size: 14px; }
+.back:hover { text-decoration: underline; }
+@media (max-width: 900px) {
+  .grid-main, .status { grid-template-columns: 1fr; }
+  .flow { max-height: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .step { transition: none; }
+}
+
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a class="back" href="index.html">← 返回實驗室</a></p>
+  <p class="kicker">HKDSE · 中四至中六 · M27</p>
+  <h1>植物克隆</h1>
+  <p class="muted small">跟住六步流程：切割 → 消毒 → 激素 → 培養基 → 新個體 → 移至泥土。</p>
+  <div class="banner">題目：繪一流程圖以顯示植物克隆。新植株與親本遺傳物質相同。</div>
+
+  <div class="card">
+    <div class="controls">
+      <button type="button" class="act" id="btnPlay" aria-pressed="false">播放</button>
+      <button type="button" class="ghost" id="btnPrev">上一步</button>
+      <button type="button" class="ghost" id="btnNext">下一步</button>
+      <button type="button" class="ghost" id="btnReset">重設</button>
+      <span class="step-tag" id="stepTag">步驟 1</span>
+    </div>
+    <div class="slider-line">
+      <label for="stepSlider" class="small muted">步驟</label>
+      <input type="range" id="stepSlider" min="0" max="10" step="1" value="0" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+      <span class="day-big" id="stepLabel">步驟 1</span>
+    </div>
+    <div class="status">
+      <div class="stat"><div class="lab">材料</div><div class="val" id="statA">—</div></div>
+      <div class="stat"><div class="lab">處理</div><div class="val" id="statB">—</div></div>
+      <div class="stat"><div class="lab">進度</div><div class="val" id="statC">—</div></div>
+    </div>
+  </div>
+
+  <div class="grid-main">
+    <div>
+      <div class="card">
+        <p class="panel-title">互動場景</p>
+        <div class="stage" id="stage">
+          <svg id="scene" viewBox="0 0 560 340" role="img" aria-label="植物克隆示意"></svg>
+        </div>
+        <div class="caption" id="caption"></div>
+      </div>
+    </div>
+    <div class="card flow" aria-label="流程圖">
+      <h2>流程圖 · 跟住步驟走</h2>
+      <p class="small muted" style="margin-top:-4px">現時步驟會反黃。紅色為教師卡關鍵句。<br>題目：繪一流程圖以顯示植物克隆。</p>
+      <div id="flowSteps"></div>
+    </div>
+  </div>
+
+  <footer>
+    模擬教學模型 · 用來顯示過程次序與概念，不是實驗協議或臨床數據。<br>
+    詞彙：外植體、消毒、植物激素、生長素、細胞分裂素、培養基、組織培養、克隆。
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var STEPS = [
+  {phase:"取材", tag:"切割親本組織", flow:"<span class='key'>切割親本組織</span>", caption:"從親本植物<strong class='key'>切割</strong>一小塊組織（例如莖尖／葉片），作為外植體。", statA:"親本植物", statB:"外植體", statC:"已取材"},
+  {phase:"無菌", tag:"消毒", flow:"<span class='key'>消毒</span>", caption:"把外植體<strong class='key'>消毒</span>，避免微生物污染，保持無菌條件。", statA:"無菌操作", statB:"消毒劑", statC:"污染↓"},
+  {phase:"誘導", tag:"加入激素", flow:"<span class='key'>加入激素</span>", caption:"在培養基中<strong class='key'>加入植物激素</strong>（如生長素、細胞分裂素），誘導細胞分裂與分化。", statA:"激素調控", statB:"生長素／細胞分裂素", statC:"誘導中"},
+  {phase:"培養", tag:"培養基", flow:"置於<span class='key'>培養基</span>", caption:"外植體放在含營養與激素的<strong class='key'>培養基</strong>上，在控制條件下培養。", statA:"培養基", statB:"營養＋激素", statC:"體外培養"},
+  {phase:"發育", tag:"發育成新個體", flow:"<span class='key'>發育成新個體</span>", caption:"細胞分裂、分化，逐漸<strong class='key'>發育成完整的新植株</strong>（與親本遺傳相同）。", statA:"再生植株", statB:"克隆", statC:"遺傳相同"},
+  {phase:"移栽", tag:"移至泥土", flow:"<span class='key'>移至泥土</span>", caption:"把幼苗<strong class='key'>移至泥土</strong>（或盆土）繼續生長，完成植物克隆。", statA:"馴化移栽", statB:"泥土", statC:"獨立植株"}
+];
+
+  function drawScene(i) {
+
+    var svg = $("scene");
+    var plant = '<path d="M80 260 Q80 180 80 120" stroke="#166534" stroke-width="6" fill="none"/>'
+      + '<ellipse cx="55" cy="150" rx="22" ry="10" fill="#22c55e" transform="rotate(-35 55 150)"/>'
+      + '<ellipse cx="105" cy="140" rx="22" ry="10" fill="#16a34a" transform="rotate(30 105 140)"/>'
+      + '<ellipse cx="60" cy="200" rx="24" ry="11" fill="#22c55e" transform="rotate(-20 60 200)"/>'
+      + '<circle cx="80" cy="108" r="10" fill="#86efac" stroke="#166534"/>'
+      + '<text x="80" y="290" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">親本</text>';
+    var explant = i >= 0
+      ? '<rect x="160" y="150" width="40" height="28" rx="6" fill="#86efac" stroke="#166534" stroke-width="2"/>'
+        + '<text x="180" y="200" text-anchor="middle" font-size="12" fill="#14532d">外植體</text>'
+      : '';
+    var spray = i >= 1
+      ? '<path d="M220 120 Q240 140 220 160" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3 2"/>'
+        + '<text x="250" y="145" font-size="12" font-weight="700" fill="#0369a1">消毒</text>'
+      : '';
+    var hormones = i >= 2
+      ? '<circle cx="300" cy="100" r="8" fill="#f472b6"/><circle cx="318" cy="112" r="8" fill="#a78bfa"/>'
+        + '<text x="310" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#9d174d">激素</text>'
+      : '';
+    var dish = i >= 3
+      ? '<ellipse cx="360" cy="200" rx="70" ry="18" fill="#fde68a" stroke="#b45309" stroke-width="2"/>'
+        + '<path d="M290 200 v-50 h140 v50" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>'
+        + '<text x="360" y="235" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">培養基</text>'
+      : '';
+    var baby = '';
+    if (i >= 4) {
+      baby = '<path d="M360 190 v-55" stroke="#166534" stroke-width="3"/>'
+        + '<ellipse cx="345" cy="150" rx="12" ry="6" fill="#22c55e"/><ellipse cx="375" cy="145" rx="12" ry="6" fill="#16a34a"/>'
+        + '<circle cx="360" cy="130" r="6" fill="#86efac"/>'
+        + '<text x="360" y="255" text-anchor="middle" font-size="12" font-weight="700" fill="#14532d">新個體（克隆）</text>';
+    }
+    var pot = '';
+    if (i >= 5) {
+      pot = '<rect x="455" y="210" width="60" height="40" rx="4" fill="#a16207" stroke="#713f12"/>'
+        + '<path d="M485 210 v-50" stroke="#166534" stroke-width="3"/>'
+        + '<ellipse cx="470" cy="175" rx="14" ry="7" fill="#22c55e"/><ellipse cx="500" cy="170" rx="14" ry="7" fill="#16a34a"/>'
+        + '<text x="485" y="270" text-anchor="middle" font-size="12" font-weight="700" fill="#713f12">泥土</text>';
+    }
+    var scissors = i === 0
+      ? '<path d="M140 130 l30 40 M155 130 l-20 40" stroke="#64748b" stroke-width="3"/><text x="155" y="120" font-size="12" fill="#475569">切割</text>'
+      : '';
+    svg.innerHTML = plant + scissors + explant + spray + hormones + dish + baby + pot
+      + (i >= 3 && i < 5 ? '<path d="M210 164 H285" stroke="#1f6b3a" stroke-width="2" marker-end="url(#arr)"/>' : '')
+      + (i >= 5 ? '<path d="M430 180 H450" stroke="#1f6b3a" stroke-width="2"/>' : '')
+      + '<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1f6b3a"/></marker></defs>';
+
+  }
+
+
+  function $(id) { return document.getElementById(id); }
+  var playing = false;
+  var timer = null;
+  var step = 0;
+  var playBtn = $("btnPlay");
+  var nextBtn = $("btnNext");
+  var prevBtn = $("btnPrev");
+  var resetBtn = $("btnReset");
+  var slider = $("stepSlider");
+  var stepLabel = $("stepLabel");
+  var stepTag = $("stepTag");
+  var flowEl = $("flowSteps");
+  var captionEl = $("caption");
+
+  function stopPlay() {
+    playing = false;
+    if (timer) { clearInterval(timer); timer = null; }
+    playBtn.textContent = "播放";
+    playBtn.setAttribute("aria-pressed", "false");
+  }
+
+  function renderFlow() {
+    flowEl.innerHTML = "";
+    var lastPhase = null;
+    STEPS.forEach(function (s, i) {
+      if (s.phase && s.phase !== lastPhase) {
+        lastPhase = s.phase;
+        var ph = document.createElement("div");
+        ph.className = "flow-phase";
+        ph.textContent = s.phase;
+        flowEl.appendChild(ph);
+      }
+      var d = document.createElement("div");
+      d.className = "step" + (i === step ? " active" : "") + (i < step ? " done" : "");
+      d.setAttribute("role", "button");
+      d.setAttribute("tabindex", "0");
+      d.dataset.i = String(i);
+      d.innerHTML = '<span class="n">' + (i + 1) + '</span><div class="txt">' + s.flow + '</div>';
+      d.addEventListener("click", function () { stopPlay(); setStep(i); });
+      d.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); stopPlay(); setStep(i); }
+      });
+      flowEl.appendChild(d);
+    });
+  }
+
+  function setStep(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    slider.value = String(step);
+    slider.setAttribute("aria-valuenow", String(step));
+    stepLabel.textContent = "步驟 " + (step + 1) + " / " + STEPS.length;
+    stepTag.textContent = STEPS[step].tag || ("步驟 " + (step + 1));
+    captionEl.innerHTML = STEPS[step].caption;
+    $("statA").textContent = STEPS[step].statA || "—";
+    $("statB").textContent = STEPS[step].statB || "—";
+    $("statC").textContent = STEPS[step].statC || "—";
+    renderFlow();
+    drawScene(step);
+    prevBtn.disabled = step === 0;
+    nextBtn.disabled = step === STEPS.length - 1;
+  }
+
+  playBtn.addEventListener("click", function () {
+    if (playing) { stopPlay(); return; }
+    if (step >= STEPS.length - 1) setStep(0);
+    playing = true;
+    playBtn.textContent = "暫停";
+    playBtn.setAttribute("aria-pressed", "true");
+    timer = setInterval(function () {
+      if (step >= STEPS.length - 1) { stopPlay(); return; }
+      setStep(step + 1);
+    }, 1600);
+  });
+  nextBtn.addEventListener("click", function () { stopPlay(); setStep(step + 1); });
+  prevBtn.addEventListener("click", function () { stopPlay(); setStep(step - 1); });
+  resetBtn.addEventListener("click", function () { stopPlay(); setStep(0); });
+  slider.addEventListener("input", function () { stopPlay(); setStep(parseInt(slider.value, 10) || 0); });
+
+  slider.max = String(STEPS.length - 1);
+  slider.setAttribute("aria-valuemax", String(STEPS.length - 1));
+  setStep(0);
+
+})();
+</script>
+</body>
+</html>

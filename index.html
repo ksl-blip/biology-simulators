@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>身體調節實驗室 · HKDSE 生物</title>
-<meta name="description" content="香港中學文憑試生物互動模擬：呼吸控制、心輸出量，以及月經週期激素與流程圖。">
+<meta name="description" content="香港中學文憑試生物互動模擬：身體調節、滲透作用、月經週期、抗生素篩選、克隆、PCR、DNA 指紋。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230f766e'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -141,6 +141,19 @@
     .hero, .grid, .how { grid-template-columns: 1fr; }
     .hero-art { min-height: 220px; }
   }
+
+  .se01 .code { background: #0369a1; }
+  .e30 .code { background: #b45309; }
+  .m27 .code { background: #15803d; }
+  .m26 .code { background: #7c2d12; }
+  .m24 .code { background: #6d28d9; }
+  .m25 .code { background: #0f766e; }
+  .se01 .go { color: #0369a1; }
+  .e30 .go { color: #b45309; }
+  .m27 .go { color: #15803d; }
+  .m26 .go { color: #7c2d12; }
+  .m24 .go { color: #6d28d9; }
+  .m25 .go { color: #0f766e; }
   @media (prefers-reduced-motion: reduce) {
     .lung, .heart, .card { animation: none; transition: none; }
   }
@@ -152,7 +165,7 @@
     <div>
       <p class="eyebrow">香港中學文憑試 · 生物學</p>
       <h1>身體調節實驗室</h1>
-      <p class="lead">四個給中四至中六的互動模擬。選一個情境、看動畫：呼吸與心跳的負反饋，以及月經週期的激素與流程圖。</p>
+      <p class="lead">多個給中四至中六的互動模擬：身體調節、滲透作用、生殖週期，以及基因工程與生物科技流程。</p>
       <ul class="pills">
         <li>平板和投影都適用</li>
         <li>即時圖表</li>
@@ -198,6 +211,44 @@
       <p>拖動 1–28 天，對照 FSH、LH、雌激素、孕酮曲線，以及卵泡、排卵、黃體與子宮內膜的變化。</p>
       <span class="go">開始模擬 →</span>
     </a>
+
+    <a class="card se01" href="osmosis-fries.html">
+      <span class="code">SE01</span>
+      <h2>滲透作用：薯條</h2>
+      <p>五杯不同濃度蔗糖溶液，看薯條質量、長度和質地怎樣隨時間改變。</p>
+      <span class="go">開始模擬 →</span>
+    </a>
+    <a class="card e30" href="antibiotic-screen.html">
+      <span class="code">E30</span>
+      <h2>抗生素篩選目標細菌</h2>
+      <p>重組質粒帶目標基因與抗性基因，抗生素殺死未轉化菌，存活後代製造產物。</p>
+      <span class="go">開始模擬 →</span>
+    </a>
+    <a class="card m27" href="plant-cloning.html">
+      <span class="code">M27</span>
+      <h2>植物克隆</h2>
+      <p>切割、消毒、激素、培養基、再生新個體，再移至泥土——六步植物組織培養。</p>
+      <span class="go">開始模擬 →</span>
+    </a>
+    <a class="card m26" href="animal-cloning.html">
+      <span class="code">M26</span>
+      <h2>動物克隆</h2>
+      <p>體細胞核移植：A 核、B 去核卵、C 代母。小羊核 DNA 與 A 相同。</p>
+      <span class="go">開始模擬 →</span>
+    </a>
+    <a class="card m24" href="pcr.html">
+      <span class="code">M24</span>
+      <h2>聚合酶鏈反應 PCR</h2>
+      <p>變性 95°C、退火 55–60°C、延伸 70°C，循環後約得 2ⁿ 複本。</p>
+      <span class="go">開始模擬 →</span>
+    </a>
+    <a class="card m25" href="dna-fingerprint.html">
+      <span class="code">M25</span>
+      <h2>DNA 指紋分析</h2>
+      <p>PCR、限制酶、VNTR、電泳、轉膜、探針與曝光，比較條帶位置。</p>
+      <span class="go">開始模擬 →</span>
+    </a>
+
   </nav>
 
   <section class="how">
@@ -208,7 +259,7 @@
       <li>最後做排序和三題選擇，核對考試用字。</li>
     </ol>
   </section>
-  <footer>模擬數值經過簡化，用來顯示變化方向和調節次序，不是臨床讀數。名詞跟香港中學文憑試生物課程：延腦、竇房結、迷走神經、交感神經、膈神經、肋間神經、化學感受器、牽張感受器、心搏量、心輸出量、負反饋；垂體前葉、促卵泡激素、促黃體激素、雌激素、孕酮、卵泡、排卵、黃體、子宮內膜。</footer>
+  <footer>模擬數值與流程經過簡化，用來顯示變化方向和過程次序，不是臨床讀數或實驗協議。名詞跟香港中學文憑試生物課程，包括身體調節、滲透作用、月經週期，以及重組 DNA、抗生素篩選、植物／動物克隆、PCR、DNA 指紋（VNTR、凝膠電泳、探針）等。</footer>
 </div>
 </body>
 </html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>E30 抗生素用於篩選目標細菌 · HKDSE 生物</title>
+<style>
+
+:root {
+  --paper: #f3eee4;
+  --ink: #2b241c;
+  --muted: #5a493c;
+  --green: #1f6b3a;
+  --green-d: #174e2b;
+  --card: #fffaf3;
+  --line: #e0d2c0;
+  --hl: #fff3c4;
+  --red: #b42318;
+  --blue: #1d4ed8;
+  --purple: #7c3aed;
+  --amber: #d97706;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "PingFang HK", "Noto Sans CJK HK", "Noto Sans TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: clamp(22px, 3.2vw, 28px); line-height: 1.3; margin: 0 0 6px; }
+h2 { font-size: 18px; margin: 0 0 10px; }
+p { margin: 6px 0; }
+.kicker { letter-spacing: .08em; color: var(--muted); margin: 0 0 4px; font-size: 13px; font-weight: 700; }
+.banner {
+  background: #fff6e4;
+  border: 1px solid #e4c98a;
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin: 10px 0 14px;
+  font-size: 14px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 0;
+}
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button.act {
+  background: var(--green); color: #fff; border: 0; border-radius: 999px;
+  padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700;
+}
+button.ghost {
+  background: transparent; color: var(--green-d); border: 1px solid var(--green);
+  border-radius: 999px; padding: 10px 16px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700;
+}
+button:disabled { opacity: .42; cursor: not-allowed; }
+button:focus-visible { outline: 3px solid #1f6b3a; outline-offset: 2px; }
+.step-tag {
+  display: inline-block; padding: 4px 10px; border-radius: 999px;
+  background: #efe4d2; font-size: 13px; font-weight: 700;
+}
+.slider-line { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; }
+input[type="range"] { width: min(420px, 70vw); accent-color: #1f6b3a; }
+.day-big { font-variant-numeric: tabular-nums; font-weight: 800; min-width: 6.5em; font-size: 17px; }
+.grid-main {
+  display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 14px; margin-top: 14px;
+}
+.panel-title { font-size: 14px; font-weight: 800; margin: 0 0 8px; color: var(--muted); letter-spacing: .04em; }
+.stage {
+  background: linear-gradient(#f7f1e6, #efe2d0 72%, #e6d4bb);
+  border: 1px solid var(--line); border-radius: 16px; padding: 10px; min-height: 320px;
+  position: relative; overflow: hidden;
+}
+.stage svg { width: 100%; height: auto; display: block; }
+.caption {
+  margin-top: 10px; background: #fff; border: 1px solid var(--line);
+  border-radius: 12px; padding: 10px 12px; font-size: 14px; min-height: 3.4em;
+}
+.caption strong.key { color: var(--red); }
+.flow { max-height: 620px; overflow: auto; padding-right: 4px; }
+.flow-phase {
+  font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--muted);
+  margin: 12px 0 6px; padding-bottom: 2px; border-bottom: 1px dashed var(--line);
+}
+.flow-phase:first-child { margin-top: 0; }
+.step {
+  display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: start;
+  padding: 7px 8px; border-radius: 10px; border: 1px solid transparent; margin: 3px 0;
+  transition: background .2s, border-color .2s; cursor: pointer;
+}
+.step .n {
+  width: 24px; height: 24px; border-radius: 999px; background: #efe4d2;
+  display: grid; place-items: center; font-size: 12px; font-weight: 800; color: var(--muted);
+}
+.step.active { background: var(--hl); border-color: #e4c98a; box-shadow: 0 0 0 1px #f0d58a inset; }
+.step.active .n { background: var(--green); color: #fff; }
+.step.done .n { background: #86efac; color: #14532d; }
+.step .txt strong.key, .step.key .txt { color: inherit; }
+.step .txt .key { color: var(--red); font-weight: 800; }
+.status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.stat {
+  background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px;
+}
+.stat .lab { font-size: 12px; color: var(--muted); }
+.stat .val { font-weight: 800; font-size: 15px; }
+footer {
+  margin-top: 18px; color: var(--muted); font-size: 13px;
+  border-top: 1px solid var(--line); padding-top: 12px;
+}
+.back { color: var(--green-d); font-weight: 700; text-decoration: none; font-size: 14px; }
+.back:hover { text-decoration: underline; }
+@media (max-width: 900px) {
+  .grid-main, .status { grid-template-columns: 1fr; }
+  .flow { max-height: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .step { transition: none; }
+}
+
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a class="back" href="index.html">← 返回實驗室</a></p>
+  <p class="kicker">HKDSE · 中四至中六 · E30</p>
+  <h1>抗生素用於篩選目標細菌</h1>
+  <p class="muted small">按播放或逐步前進，看重組質粒、抗生素篩選與後代表達目標產物。</p>
+  <div class="banner">題目：試繪流程圖以顯示抗生素如何用於篩選目標細菌的過程。紅色字為教師卡關鍵句。</div>
+
+  <div class="card">
+    <div class="controls">
+      <button type="button" class="act" id="btnPlay" aria-pressed="false">播放</button>
+      <button type="button" class="ghost" id="btnPrev">上一步</button>
+      <button type="button" class="ghost" id="btnNext">下一步</button>
+      <button type="button" class="ghost" id="btnReset">重設</button>
+      <span class="step-tag" id="stepTag">步驟 1</span>
+    </div>
+    <div class="slider-line">
+      <label for="stepSlider" class="small muted">步驟</label>
+      <input type="range" id="stepSlider" min="0" max="10" step="1" value="0" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+      <span class="day-big" id="stepLabel">步驟 1</span>
+    </div>
+    <div class="status">
+      <div class="stat"><div class="lab">培養狀況</div><div class="val" id="statA">—</div></div>
+      <div class="stat"><div class="lab">基因狀態</div><div class="val" id="statB">—</div></div>
+      <div class="stat"><div class="lab">篩選結果</div><div class="val" id="statC">—</div></div>
+    </div>
+  </div>
+
+  <div class="grid-main">
+    <div>
+      <div class="card">
+        <p class="panel-title">互動場景</p>
+        <div class="stage" id="stage">
+          <svg id="scene" viewBox="0 0 560 340" role="img" aria-label="抗生素用於篩選目標細菌示意"></svg>
+        </div>
+        <div class="caption" id="caption"></div>
+      </div>
+    </div>
+    <div class="card flow" aria-label="流程圖">
+      <h2>流程圖 · 跟住步驟走</h2>
+      <p class="small muted" style="margin-top:-4px">現時步驟會反黃。紅色為教師卡關鍵句。<br>題目：試繪流程圖以顯示抗生素如何用於篩選目標細菌的過程。</p>
+      <div id="flowSteps"></div>
+    </div>
+  </div>
+
+  <footer>
+    模擬教學模型 · 用來顯示過程次序與概念，不是實驗協議或臨床數據。<br>
+    詞彙：重組 DNA、質粒、目標基因、抗生素抗性基因、轉化、篩選、菌落、基因產物。
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var STEPS = [
+  {phase:"準備", tag:"重組 DNA", flow:"<strong>重組 DNA 技術</strong>", caption:"科學家用<strong class='key'>重組 DNA 技術</strong>，把目標基因接入質粒，準備轉化細菌。", statA:"質粒準備中", statB:"目標基因", statC:"未篩選"},
+  {phase:"準備", tag:"雙基因質粒", flow:"質粒同時獲得<span class='key'>目標基因</span>及<span class='key'>抗生素抗性基因</span>", caption:"同一條質粒同時帶有<strong class='key'>目標基因</strong>和<strong class='key'>抗生素抗性基因</strong>（篩選標記）。", statA:"重組質粒", statB:"目標＋抗性", statC:"轉化中"},
+  {phase:"篩選", tag:"抗生素平板", flow:"<span class='key'>抗生素殺死</span>全部沒有獲得目標 DNA 的細菌", caption:"把細菌塗在含<strong class='key'>抗生素</strong>的培養基上：沒有質粒的細菌<strong class='key'>全部被殺死</strong>。", statA:"加抗生素", statB:"無質粒→死", statC:"篩選中"},
+  {phase:"篩選", tag:"只有轉化菌存活", flow:"只有獲得目標基因及抗生素抗性基因的細菌<span class='key'>繼續生存</span>", caption:"只有成功獲得質粒（同時有目標基因和抗性基因）的細菌能<strong class='key'>繼續生存</strong>。", statA:"存活菌落", statB:"已轉化", statC:"篩選完成"},
+  {phase:"繁殖", tag:"後代皆有目標基因", flow:"所繁殖的全部後代<span class='key'>擁有目標基因</span>", caption:"存活細菌分裂繁殖，全部後代都<strong class='key'>擁有目標基因</strong>（隨質粒複製傳遞）。", statA:"菌落擴大", statB:"質粒複製", statC:"後代同基因型"},
+  {phase:"產物", tag:"製造目標產物", flow:"全部後代可以<span class='key'>製造目標基因的產物</span>", caption:"這些後代都能<strong class='key'>製造目標基因的產物</strong>（例如蛋白質／酶／激素）。", statA:"表達產物", statB:"目標蛋白", statC:"篩選成功"}
+];
+
+  function drawScene(i) {
+
+    var svg = $("scene");
+    var s = STEPS[i];
+    var cells = "";
+    // petri dish
+    var kill = i >= 2;
+    var survivors = i >= 3;
+    var grow = i >= 4;
+    var product = i >= 5;
+    // left: mixture of bacteria
+    for (var n = 0; n < 12; n++) {
+      var cx = 70 + (n % 4) * 28;
+      var cy = 90 + Math.floor(n / 4) * 32;
+      var hasPlasmid = (n % 3 === 0);
+      var alive = !kill || hasPlasmid;
+      var fill = !alive ? "#9ca3af" : (hasPlasmid ? "#34d399" : "#fca5a5");
+      var op = !alive ? "0.35" : "1";
+      cells += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="11" ry="7" fill="'+fill+'" opacity="'+op+'" stroke="#374151" stroke-width="1"/>';
+      if (hasPlasmid && alive) cells += '<circle cx="'+(cx+4)+'" cy="'+(cy-2)+'" r="3" fill="#2563eb"/>';
+      if (!alive) cells += '<path d="M'+(cx-6)+' '+(cy-6)+' l12 12 M'+(cx+6)+' '+(cy-6)+' l-12 12" stroke="#7f1d1d" stroke-width="1.5"/>';
+    }
+    // antibiotic plate
+    var plateOp = i >= 2 ? 1 : 0.35;
+    var colonies = "";
+    if (survivors) {
+      var count = grow ? 8 : 3;
+      for (var c = 0; c < count; c++) {
+        var px = 340 + (c % 4) * 36;
+        var py = 100 + Math.floor(c / 4) * 40;
+        var r = grow ? 12 : 8;
+        colonies += '<circle cx="'+px+'" cy="'+py+'" r="'+r+'" fill="#34d399" stroke="#065f46" stroke-width="1.5"/>';
+        colonies += '<circle cx="'+(px+3)+'" cy="'+(py-2)+'" r="2.5" fill="#2563eb"/>';
+        if (product) colonies += '<text x="'+px+'" y="'+(py+3)+'" text-anchor="middle" font-size="10" fill="#7c2d12">P</text>';
+      }
+    }
+    // plasmid diagram top
+    var plasmid = i >= 1
+      ? '<circle cx="280" cy="48" r="28" fill="none" stroke="#2563eb" stroke-width="3"/>'
+        + '<path d="M260 40 h20" stroke="#db2777" stroke-width="4"/>'
+        + '<path d="M290 55 h18" stroke="#d97706" stroke-width="4"/>'
+        + '<text x="280" y="88" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">質粒：目標基因＋抗性基因</text>'
+      : '<text x="280" y="50" text-anchor="middle" font-size="13" fill="#5a493c">重組 DNA 技術準備中…</text>';
+
+    svg.innerHTML =
+      '<rect x="20" y="60" width="200" height="200" rx="12" fill="#fff" stroke="#c4b5a0" stroke-width="2"/>'
+      + '<text x="120" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#5a493c">細菌混合物</text>'
+      + cells
+      + '<text x="120" y="280" text-anchor="middle" font-size="11" fill="#5a493c">綠＝有質粒　紅＝無質粒</text>'
+      + '<ellipse cx="400" cy="160" rx="120" ry="110" fill="#fef3c7" stroke="#b45309" stroke-width="3" opacity="'+plateOp+'"/>'
+      + '<text x="400" y="70" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e" opacity="'+plateOp+'">抗生素培養基</text>'
+      + colonies
+      + (i >= 2 ? '<text x="400" y="290" text-anchor="middle" font-size="12" font-weight="700" fill="#b42318">抗生素殺死無抗性菌</text>' : '')
+      + (product ? '<text x="400" y="310" text-anchor="middle" font-size="12" font-weight="700" fill="#1f6b3a">後代製造目標產物（P）</text>' : '')
+      + plasmid
+      + '<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1f6b3a"/></marker></defs>'
+      + (i >= 2 ? '<path d="M230 160 H270" stroke="#1f6b3a" stroke-width="2.5" marker-end="url(#arr)"/>' : '');
+
+  }
+
+
+  function $(id) { return document.getElementById(id); }
+  var playing = false;
+  var timer = null;
+  var step = 0;
+  var playBtn = $("btnPlay");
+  var nextBtn = $("btnNext");
+  var prevBtn = $("btnPrev");
+  var resetBtn = $("btnReset");
+  var slider = $("stepSlider");
+  var stepLabel = $("stepLabel");
+  var stepTag = $("stepTag");
+  var flowEl = $("flowSteps");
+  var captionEl = $("caption");
+
+  function stopPlay() {
+    playing = false;
+    if (timer) { clearInterval(timer); timer = null; }
+    playBtn.textContent = "播放";
+    playBtn.setAttribute("aria-pressed", "false");
+  }
+
+  function renderFlow() {
+    flowEl.innerHTML = "";
+    var lastPhase = null;
+    STEPS.forEach(function (s, i) {
+      if (s.phase && s.phase !== lastPhase) {
+        lastPhase = s.phase;
+        var ph = document.createElement("div");
+        ph.className = "flow-phase";
+        ph.textContent = s.phase;
+        flowEl.appendChild(ph);
+      }
+      var d = document.createElement("div");
+      d.className = "step" + (i === step ? " active" : "") + (i < step ? " done" : "");
+      d.setAttribute("role", "button");
+      d.setAttribute("tabindex", "0");
+      d.dataset.i = String(i);
+      d.innerHTML = '<span class="n">' + (i + 1) + '</span><div class="txt">' + s.flow + '</div>';
+      d.addEventListener("click", function () { stopPlay(); setStep(i); });
+      d.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); stopPlay(); setStep(i); }
+      });
+      flowEl.appendChild(d);
+    });
+  }
+
+  function setStep(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    slider.value = String(step);
+    slider.setAttribute("aria-valuenow", String(step));
+    stepLabel.textContent = "步驟 " + (step + 1) + " / " + STEPS.length;
+    stepTag.textContent = STEPS[step].tag || ("步驟 " + (step + 1));
+    captionEl.innerHTML = STEPS[step].caption;
+    $("statA").textContent = STEPS[step].statA || "—";
+    $("statB").textContent = STEPS[step].statB || "—";
+    $("statC").textContent = STEPS[step].statC || "—";
+    renderFlow();
+    drawScene(step);
+    prevBtn.disabled = step === 0;
+    nextBtn.disabled = step === STEPS.length - 1;
+  }
+
+  playBtn.addEventListener("click", function () {
+    if (playing) { stopPlay(); return; }
+    if (step >= STEPS.length - 1) setStep(0);
+    playing = true;
+    playBtn.textContent = "暫停";
+    playBtn.setAttribute("aria-pressed", "true");
+    timer = setInterval(function () {
+      if (step >= STEPS.length - 1) { stopPlay(); return; }
+      setStep(step + 1);
+    }, 1600);
+  });
+  nextBtn.addEventListener("click", function () { stopPlay(); setStep(step + 1); });
+  prevBtn.addEventListener("click", function () { stopPlay(); setStep(step - 1); });
+  resetBtn.addEventListener("click", function () { stopPlay(); setStep(0); });
+  slider.addEventListener("input", function () { stopPlay(); setStep(parseInt(slider.value, 10) || 0); });
+
+  slider.max = String(STEPS.length - 1);
+  slider.setAttribute("aria-valuemax", String(STEPS.length - 1));
+  setStep(0);
+
+})();
+</script>
+</body>
+</html>
