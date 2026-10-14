@@ -6,7 +6,6 @@
 <meta name="color-scheme" content="light">
 <title>M25 DNA 指紋分析（選修） · HKDSE 生物</title>
 <style>
-
 :root {
   --paper: #f3eee4;
   --ink: #2b241c;
@@ -77,7 +76,7 @@ input[type="range"] { width: min(420px, 70vw); accent-color: #1f6b3a; }
 .panel-title { font-size: 14px; font-weight: 800; margin: 0 0 8px; color: var(--muted); letter-spacing: .04em; }
 .stage {
   background: linear-gradient(#f7f1e6, #efe2d0 72%, #e6d4bb);
-  border: 1px solid var(--line); border-radius: 16px; padding: 10px; min-height: 320px;
+  border: 1px solid var(--line); border-radius: 16px; padding: 10px; min-height: 360px;
   position: relative; overflow: hidden;
 }
 .stage svg { width: 100%; height: auto; display: block; }
@@ -104,7 +103,6 @@ input[type="range"] { width: min(420px, 70vw); accent-color: #1f6b3a; }
 .step.active { background: var(--hl); border-color: #e4c98a; box-shadow: 0 0 0 1px #f0d58a inset; }
 .step.active .n { background: var(--green); color: #fff; }
 .step.done .n { background: #86efac; color: #14532d; }
-.step .txt strong.key, .step.key .txt { color: inherit; }
 .step .txt .key { color: var(--red); font-weight: 800; }
 .status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
 .stat {
@@ -118,15 +116,28 @@ footer {
 }
 .back { color: var(--green-d); font-weight: 700; text-decoration: none; font-size: 14px; }
 .back:hover { text-decoration: underline; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .55; }
+}
+@keyframes cutPulse {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-18deg); }
+}
+@keyframes race {
+  0% { opacity: .7; }
+  100% { opacity: 1; }
+}
+.anim-pulse { animation: pulse 1.2s ease-in-out infinite; }
+.anim-cut { transform-origin: 12px 20px; animation: cutPulse 0.9s ease-in-out infinite; }
+.anim-race { animation: race 1s ease-in-out infinite alternate; }
 @media (max-width: 900px) {
   .grid-main, .status { grid-template-columns: 1fr; }
   .flow { max-height: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .step { transition: none; }
+  .step, .anim-pulse, .anim-cut, .anim-race { transition: none; animation: none; }
 }
-
-
 </style>
 </head>
 <body>
@@ -134,8 +145,8 @@ footer {
   <p><a class="back" href="index.html">← 返回實驗室</a></p>
   <p class="kicker">HKDSE · 中四至中六 · M25</p>
   <h1>DNA 指紋分析（選修）</h1>
-  <p class="muted small">樣本 → PCR → 限制酶／VNTR → 電泳 → 轉膜 → 探針 → 曝光 → 比較條帶。</p>
-  <div class="banner">題目：繪一流程圖以顯示 DNA 指紋分析。重點：小片段跑得快；探針標示 VNTR 條帶。</div>
+  <p class="muted small">樣本 → PCR 增量 → 限制酶切斷 → VNTR → 電泳（小快大慢）→ 轉膜 → 探針 → 曝光 → 比較條帶。</p>
+  <div class="banner">題目：繪一流程圖以顯示 DNA 指紋分析。重點：<strong>PCR 使 DNA 增量</strong>；<strong>限制酶切斷 DNA</strong>；電泳時<strong>較小片段較快、較大片段較慢</strong>。</div>
 
   <div class="card">
     <div class="controls">
@@ -147,7 +158,7 @@ footer {
     </div>
     <div class="slider-line">
       <label for="stepSlider" class="small muted">步驟</label>
-      <input type="range" id="stepSlider" min="0" max="10" step="1" value="0" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+      <input type="range" id="stepSlider" min="0" max="13" step="1" value="0" aria-valuemin="0" aria-valuemax="13" aria-valuenow="0">
       <span class="day-big" id="stepLabel">步驟 1</span>
     </div>
     <div class="status">
@@ -162,14 +173,14 @@ footer {
       <div class="card">
         <p class="panel-title">互動場景</p>
         <div class="stage" id="stage">
-          <svg id="scene" viewBox="0 0 560 340" role="img" aria-label="DNA 指紋分析（選修）示意"></svg>
+          <svg id="scene" viewBox="0 0 560 400" role="img" aria-label="DNA 指紋分析示意"></svg>
         </div>
         <div class="caption" id="caption"></div>
       </div>
     </div>
     <div class="card flow" aria-label="流程圖">
       <h2>流程圖 · 跟住步驟走</h2>
-      <p class="small muted" style="margin-top:-4px">現時步驟會反黃。紅色為教師卡關鍵句。<br>題目：繪一流程圖以顯示 DNA 指紋分析。</p>
+      <p class="small muted" style="margin-top:-4px">現時步驟會反黃。紅色為教師卡關鍵句。</p>
       <div id="flowSteps"></div>
     </div>
   </div>
@@ -184,85 +195,320 @@ footer {
 (function () {
   "use strict";
   var STEPS = [
-  {phase:"樣本", tag:"DNA 樣本", flow:"取得 <span class='key'>DNA 樣本</span>", caption:"從血液、口腔細胞等取得<strong class='key'>DNA 樣本</strong>。", statA:"樣本", statB:"基因組 DNA", statC:"待處理"},
-  {phase:"擴增", tag:"PCR", flow:"<span class='key'>聚合酶鏈反應（PCR）</span>", caption:"用 <strong class='key'>PCR</strong> 擴增樣本中的目標 DNA 區段。", statA:"PCR", statB:"擴增中", statC:"拷貝↑"},
-  {phase:"擴增", tag:"DNA 增加", flow:"<span class='key'>DNA 增加</span>", caption:"目標片段數量<strong class='key'>大幅增加</strong>，方便後續分析。", statA:"足量 DNA", statB:"片段就緒", statC:"可酶切"},
-  {phase:"電泳準備", tag:"凝膠電泳", flow:"進行 <span class='key'>凝膠電泳</span>", caption:"把 DNA 片段放入<strong class='key'>凝膠</strong>，在電場中分離。", statA:"凝膠", statB:"電場", statC:"分離中"},
-  {phase:"酶切", tag:"限制酶", flow:"用<span class='key'>特定限制酶</span>切割", caption:"以<strong class='key'>特定限制酶</strong>在特定位置切割 DNA，產生長度不同的片段。", statA:"限制酶", statB:"識別序列", statC:"片段化"},
-  {phase:"VNTR", tag:"VNTR 片段", flow:"部份片段為 <span class='key'>VNTR</span>", caption:"部份片段含<strong class='key'>VNTR</strong>（可變數目串聯重複），不同個體長度不同。", statA:"VNTR", statB:"重複次數異", statC:"個體差異"},
-  {phase:"電泳", tag:"陰極→陽極", flow:"DNA 片段由 <span class='key'>（－）移向（＋）</span>", caption:"DNA 帶負電，在電場中由<strong class='key'>陰極（－）移向陽極（＋）</strong>。", statA:"－ → ＋", statB:"負電荷", statC:"遷移中"},
-  {phase:"電泳", tag:"較小較快", flow:"<span class='key'>較小片段移動較快</span>", caption:"<strong class='key'>較小的 DNA 片段</strong>在凝膠孔隙中移動<strong class='key'>較快、較遠</strong>。", statA:"小片段快", statB:"大片段慢", statC:"按大小分開"},
-  {phase:"條帶", tag:"形成條帶", flow:"<span class='key'>形成條帶</span>", caption:"相同長度的片段聚集，在凝膠上<strong class='key'>形成條帶</strong>。", statA:"條帶圖譜", statB:"長度分佈", statC:"可見圖案"},
-  {phase:"轉膜", tag:"尼龍膜", flow:"轉移至 <span class='key'>尼龍膜</span>", caption:"把 DNA 條帶<strong class='key'>轉移到尼龍膜</strong>上（Southern blot 轉印）。", statA:"Southern blot", statB:"尼龍膜", statC:"已轉印"},
-  {phase:"探針", tag:"放射性探針", flow:"加入<span class='key'>放射性 DNA 探針</span>", caption:"加入帶<strong class='key'>放射性標記</strong>的 DNA <strong class='key'>探針</strong>。", statA:"探針", statB:"放射性標記", statC:"雜交準備"},
-  {phase:"雜交", tag:"探針結合 VNTR", flow:"探針與 <span class='key'>VNTR 的 DNA 結合</span>", caption:"探針依鹼基配對，與膜上<strong class='key'>VNTR 相關 DNA</strong>結合（雜交）。", statA:"雜交", statB:"專一結合", statC:"標記定位"},
-  {phase:"曝光", tag:"底片曝光", flow:"放射性探針使<span class='key'>底片曝光</span>", caption:"放射性使 X 光<strong class='key'>底片曝光</strong>，顯出條帶位置（放射自顯影）。", statA:"自顯影", statB:"底片", statC:"指紋圖譜"},
-  {phase:"比較", tag:"比較條帶", flow:"<span class='key'>比較分析條帶位置</span>", caption:"<strong class='key'>比較</strong>不同樣本的條帶位置與圖案，用作身份鑑別或親緣分析。", statA:"比對", statB:"條帶位置", statC:"結論"}
-];
-
-  function drawScene(i) {
-
-    var svg = $("scene");
-    var left = "";
-    if (i <= 2) {
-      left = '<rect x="40" y="80" width="70" height="90" rx="8" fill="#fee2e2" stroke="#b91c1c" stroke-width="2"/>'
-        + '<text x="75" y="130" text-anchor="middle" font-size="12" font-weight="700">DNA</text>'
-        + '<text x="75" y="190" text-anchor="middle" font-size="12">樣本</text>';
-      if (i >= 1) left += '<rect x="140" y="90" width="80" height="70" rx="8" fill="#dbeafe" stroke="#1d4ed8"/>'
-        + '<text x="180" y="130" text-anchor="middle" font-size="12" font-weight="700">PCR</text>';
-      if (i >= 2) left += '<text x="180" y="185" text-anchor="middle" font-size="12" fill="#1f6b3a" font-weight="700">DNA ↑</text>';
-    }
-    // enzyme
-    if (i >= 4 && i <= 5) {
-      left += '<text x="120" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#7c3aed">限制酶切割 → VNTR 片段</text>'
-        + '<path d="M60 100 h160" stroke="#2563eb" stroke-width="6"/>'
-        + '<path d="M100 95 v10 M140 95 v10" stroke="#b42318" stroke-width="3"/>'
-        + '<rect x="60" y="130" width="40" height="10" fill="#2563eb"/><rect x="110" y="130" width="70" height="10" fill="#2563eb"/><rect x="190" y="130" width="25" height="10" fill="#2563eb"/>'
-        + (i >= 5 ? '<text x="145" y="165" text-anchor="middle" font-size="12" fill="#b42318" font-weight="700">含 VNTR 的片段長度因人而異</text>' : '');
-    }
-    // gel
-    var gel = "";
-    if (i >= 3 || i >= 6) {
-      var showBands = i >= 8;
-      var moving = i >= 6 && i < 8;
-      gel = '<rect x="280" y="40" width="120" height="260" rx="8" fill="#ecfdf5" stroke="#047857" stroke-width="2"/>'
-        + '<text x="300" y="35" font-size="12" font-weight="700" fill="#b91c1c">－</text>'
-        + '<text x="300" y="315" font-size="12" font-weight="700" fill="#1d4ed8">＋</text>'
-        + '<text x="340" y="30" text-anchor="middle" font-size="12" font-weight="700">凝膠電泳</text>';
-      var bandYs = showBands ? [70, 110, 160, 210, 250] : (moving ? [90, 130, 150, 180] : [55, 55, 55, 55]);
-      var widths = [70, 70, 50, 70, 40];
-      for (var b = 0; b < bandYs.length; b++) {
-        gel += '<rect x="305" y="'+bandYs[b]+'" width="'+widths[b]+'" height="8" rx="2" fill="#14532d" opacity="'+(showBands||moving?1:0.4)+'"/>';
-      }
-      if (i >= 7) gel += '<text x="340" y="280" text-anchor="middle" font-size="11" fill="#1f6b3a" font-weight="700">小片段↓較快</text>';
-    }
-    // blot / probe / film
-    var right = "";
-    if (i >= 9) {
-      right += '<rect x="430" y="60" width="90" height="160" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>'
-        + '<text x="475" y="50" text-anchor="middle" font-size="12" font-weight="700">尼龍膜</text>';
-      if (i >= 8) {
-        var by = [80, 110, 140, 170, 200];
-        for (var t = 0; t < by.length; t++) right += '<rect x="445" y="'+by[t]+'" width="60" height="6" fill="#78350f"/>';
-      }
-    }
-    if (i >= 10) {
-      right += '<circle cx="475" cy="250" r="10" fill="#ef4444"/><text x="475" y="275" text-anchor="middle" font-size="11" fill="#b91c1c">探針</text>';
-    }
-    if (i >= 12) {
-      right += '<rect x="430" y="290" width="90" height="40" rx="4" fill="#111" stroke="#000"/>'
-        + '<rect x="445" y="300" width="50" height="4" fill="#f8fafc"/><rect x="445" y="310" width="35" height="4" fill="#f8fafc"/><rect x="445" y="320" width="55" height="4" fill="#f8fafc"/>'
-        + '<text x="475" y="285" text-anchor="middle" font-size="11" fill="#fff">底片</text>';
-    }
-    if (i >= 13) {
-      right += '<text x="200" y="320" text-anchor="middle" font-size="13" font-weight="800" fill="#b42318">比較不同樣本的條帶位置</text>';
-    }
-    svg.innerHTML = left + gel + right;
-
-  }
-
+    {phase:"樣本", tag:"DNA 樣本", flow:"取得 <span class='key'>DNA 樣本</span>", caption:"從血液、口腔細胞等取得<strong class='key'>DNA 樣本</strong>。", statA:"樣本", statB:"基因組 DNA", statC:"待處理"},
+    {phase:"擴增", tag:"PCR", flow:"<span class='key'>聚合酶鏈反應（PCR）</span>", caption:"用 <strong class='key'>PCR</strong> 擴增樣本中的目標 DNA 區段。", statA:"PCR", statB:"擴增中", statC:"拷貝↑"},
+    {phase:"擴增", tag:"DNA 增量", flow:"<span class='key'>DNA 增量</span>（複本大幅增加）", caption:"目標片段數量<strong class='key'>大幅增加</strong>（DNA 增量），方便後續限制酶切割與電泳分析。", statA:"足量 DNA", statB:"複本↑↑", statC:"可酶切"},
+    {phase:"酶切", tag:"限制酶切斷", flow:"用<span class='key'>特定限制酶切斷 DNA</span>", caption:"<strong class='key'>限制酶</strong>在特定識別序列<strong class='key'>切斷 DNA</strong>，把長鏈切成不同長度的片段。", statA:"限制酶", statB:"識別並切斷", statC:"片段化"},
+    {phase:"VNTR", tag:"VNTR 片段", flow:"部份片段為 <span class='key'>VNTR</span>", caption:"部份片段含<strong class='key'>VNTR</strong>（可變數目串聯重複），不同個體長度不同。", statA:"VNTR", statB:"重複次數異", statC:"個體差異"},
+    {phase:"電泳", tag:"放入凝膠", flow:"進行 <span class='key'>凝膠電泳</span>", caption:"把切斷後的 DNA 片段放入<strong class='key'>凝膠</strong>孔洞，接通電場準備分離。", statA:"凝膠", statB:"上樣", statC:"待遷移"},
+    {phase:"電泳", tag:"陰極→陽極", flow:"DNA 片段由 <span class='key'>（－）移向（＋）</span>", caption:"DNA 帶負電，在電場中由<strong class='key'>陰極（－）移向陽極（＋）</strong>。", statA:"－ → ＋", statB:"負電荷", statC:"遷移中"},
+    {phase:"電泳", tag:"小快大慢", flow:"<span class='key'>較小較快</span> · <span class='key'>較大較慢</span>", caption:"<strong class='key'>較小的 DNA 分子移動較快、較遠</strong>；<strong class='key'>較大的 DNA 分子移動較慢、較近陰極</strong>。", statA:"小片段快", statB:"大片段慢", statC:"按大小分開"},
+    {phase:"條帶", tag:"形成條帶", flow:"<span class='key'>形成條帶</span>", caption:"相同長度的片段聚集，在凝膠上<strong class='key'>形成條帶</strong>。", statA:"條帶圖譜", statB:"長度分佈", statC:"可見圖案"},
+    {phase:"轉膜", tag:"尼龍膜", flow:"轉移至 <span class='key'>尼龍膜</span>", caption:"把 DNA 條帶<strong class='key'>轉移到尼龍膜</strong>上（Southern blot 轉印）。", statA:"Southern blot", statB:"尼龍膜", statC:"已轉印"},
+    {phase:"探針", tag:"放射性探針", flow:"加入<span class='key'>放射性 DNA 探針</span>", caption:"加入帶<strong class='key'>放射性標記</strong>的 DNA <strong class='key'>探針</strong>。", statA:"探針", statB:"放射性標記", statC:"雜交準備"},
+    {phase:"雜交", tag:"探針結合 VNTR", flow:"探針與 <span class='key'>VNTR 的 DNA 結合</span>", caption:"探針依鹼基配對，與膜上<strong class='key'>VNTR 相關 DNA</strong>結合（雜交）。", statA:"雜交", statB:"專一結合", statC:"標記定位"},
+    {phase:"曝光", tag:"底片曝光", flow:"放射性探針使<span class='key'>底片曝光</span>", caption:"放射性使 X 光<strong class='key'>底片曝光</strong>，顯出條帶位置（放射自顯影）。", statA:"自顯影", statB:"底片", statC:"指紋圖譜"},
+    {phase:"比較", tag:"比較條帶", flow:"<span class='key'>比較分析條帶位置</span>", caption:"<strong class='key'>比較</strong>不同樣本的條帶位置與圖案，用作身份鑑別或親緣分析。", statA:"比對", statB:"條帶位置", statC:"結論"}
+  ];
 
   function $(id) { return document.getElementById(id); }
+
+  function miniHelix(x, y, s) {
+    s = s || 1;
+    return '<g transform="translate(' + x + ',' + y + ') scale(' + s + ')">'
+      + '<path d="M0 0 Q4 -6 8 0 Q12 6 16 0 Q20 -6 24 0" fill="none" stroke="#2563eb" stroke-width="2"/>'
+      + '<path d="M0 0 Q4 6 8 0 Q12 -6 16 0 Q20 6 24 0" fill="none" stroke="#db2777" stroke-width="2"/>'
+      + '</g>';
+  }
+
+  function scissors(x, y) {
+    return '<g class="anim-cut" transform="translate(' + x + ',' + y + ')">'
+      + '<circle cx="0" cy="0" r="7" fill="#fef2f2" stroke="#b42318" stroke-width="2"/>'
+      + '<path d="M-2 -2 L8 -10 M2 -2 L12 -8" stroke="#b42318" stroke-width="2.5" stroke-linecap="round"/>'
+      + '<path d="M-2 2 L8 10 M2 2 L12 8" stroke="#b42318" stroke-width="2.5" stroke-linecap="round"/>'
+      + '<text x="18" y="4" font-size="11" font-weight="800" fill="#7c3aed">限制酶</text>'
+      + '</g>';
+  }
+
+  function dnaPile(cx, cy, count, label) {
+    var html = "";
+    var cols = Math.min(count, 8);
+    var rows = Math.ceil(count / 8);
+    var i, r, c, x, y;
+    for (i = 0; i < count; i++) {
+      r = Math.floor(i / 8);
+      c = i % 8;
+      x = cx - (cols * 14) / 2 + c * 28;
+      y = cy - rows * 10 + r * 22;
+      html += miniHelix(x, y, 0.9);
+    }
+    if (label) {
+      html += '<text x="' + cx + '" y="' + (cy + rows * 14 + 18) + '" text-anchor="middle" font-size="13" font-weight="800" fill="#14532d">' + label + '</text>';
+    }
+    return html;
+  }
+
+  function drawGel(opts) {
+    var gx = opts.x || 300;
+    var gy = opts.y || 50;
+    var gw = opts.w || 200;
+    var gh = opts.h || 300;
+    var html = "";
+    html += '<rect x="' + gx + '" y="' + gy + '" width="' + gw + '" height="' + gh + '" rx="10" fill="#ecfdf5" stroke="#047857" stroke-width="2.5"/>';
+    html += '<text x="' + (gx + gw / 2) + '" y="' + (gy - 10) + '" text-anchor="middle" font-size="13" font-weight="800" fill="#14532d">凝膠電泳</text>';
+    // poles
+    html += '<rect x="' + (gx - 8) + '" y="' + gy + '" width="18" height="28" rx="4" fill="#fecaca" stroke="#b91c1c"/>';
+    html += '<text x="' + (gx + 1) + '" y="' + (gy + 19) + '" text-anchor="middle" font-size="14" font-weight="900" fill="#b91c1c">－</text>';
+    html += '<rect x="' + (gx - 8) + '" y="' + (gy + gh - 28) + '" width="18" height="28" rx="4" fill="#bfdbfe" stroke="#1d4ed8"/>';
+    html += '<text x="' + (gx + 1) + '" y="' + (gy + gh - 9) + '" text-anchor="middle" font-size="14" font-weight="900" fill="#1d4ed8">＋</text>';
+    html += '<text x="' + (gx - 22) + '" y="' + (gy + 18) + '" text-anchor="end" font-size="11" fill="#b91c1c" font-weight="700">陰極</text>';
+    html += '<text x="' + (gx - 22) + '" y="' + (gy + gh - 10) + '" text-anchor="end" font-size="11" fill="#1d4ed8" font-weight="700">陽極</text>';
+    return html;
+  }
+
+  function drawScene(i) {
+    var svg = $("scene");
+    var html = "";
+
+    // ===== 0 Sample =====
+    if (i === 0) {
+      html += '<rect x="60" y="80" width="100" height="120" rx="12" fill="#fee2e2" stroke="#b91c1c" stroke-width="2.5"/>';
+      html += '<text x="110" y="140" text-anchor="middle" font-size="16" font-weight="800">DNA</text>';
+      html += '<text x="110" y="165" text-anchor="middle" font-size="13">樣本管</text>';
+      html += miniHelix(95, 220, 1.4);
+      html += '<text x="280" y="120" font-size="14" fill="#5a493c">血液／口腔細胞 → 提取 DNA</text>';
+      html += '<text x="280" y="200" font-size="20" font-weight="900" fill="#b42318">複本數：少</text>';
+    }
+
+    // ===== 1 PCR running =====
+    else if (i === 1) {
+      html += '<rect x="40" y="70" width="160" height="140" rx="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.5"/>';
+      html += '<text x="120" y="105" text-anchor="middle" font-size="18" font-weight="900" fill="#1e3a8a">PCR</text>';
+      html += '<text x="120" y="130" text-anchor="middle" font-size="12" fill="#1e40af">熱循環擴增中</text>';
+      html += '<g class="anim-pulse">' + miniHelix(80, 160, 1) + miniHelix(120, 160, 1) + miniHelix(100, 185, 1) + '</g>';
+      html += '<text x="320" y="100" font-size="14" font-weight="800" fill="#1d4ed8">目標區段不斷複製…</text>';
+      html += '<rect x="240" y="130" width="260" height="70" rx="12" fill="#eff6ff" stroke="#93c5fd"/>';
+      html += '<text x="370" y="160" text-anchor="middle" font-size="15" font-weight="800" fill="#1e3a8a">複本：1 → 2 → 4 → 8…</text>';
+      html += '<text x="370" y="185" text-anchor="middle" font-size="12" fill="#5a493c">DNA 數量開始上升</text>';
+    }
+
+    // ===== 2 DNA amount increased =====
+    else if (i === 2) {
+      html += '<text x="280" y="36" text-anchor="middle" font-size="16" font-weight="900" fill="#14532d">PCR 完成 · DNA 增量形象化</text>';
+      // before
+      html += '<rect x="30" y="60" width="150" height="160" rx="12" fill="#fff" stroke="#e0d2c0"/>';
+      html += '<text x="105" y="85" text-anchor="middle" font-size="13" font-weight="800" fill="#64748b">PCR 前</text>';
+      html += dnaPile(105, 130, 2, "");
+      html += '<text x="105" y="200" text-anchor="middle" font-size="18" font-weight="900" fill="#64748b">≈ 1–2</text>';
+      // arrow
+      html += '<text x="210" y="140" text-anchor="middle" font-size="36" font-weight="900" fill="#b42318">→</text>';
+      html += '<text x="210" y="170" text-anchor="middle" font-size="12" font-weight="800" fill="#b42318">增量</text>';
+      // after - thick pile
+      html += '<rect x="250" y="50" width="280" height="200" rx="12" fill="#ecfdf5" stroke="#34d399" stroke-width="2.5"/>';
+      html += '<text x="390" y="75" text-anchor="middle" font-size="13" font-weight="800" fill="#14532d">PCR 後 · DNA 大量增加</text>';
+      html += dnaPile(390, 130, 16, "");
+      html += '<text x="390" y="230" text-anchor="middle" font-size="20" font-weight="900" fill="#14532d">複本數 ↑↑↑（足量）</text>';
+      html += '<text x="280" y="290" text-anchor="middle" font-size="13" font-weight="700" fill="#5a493c">鏈條變多、堆積變厚 → 方便後續分析</text>';
+      html += '<rect x="120" y="310" width="320" height="50" rx="12" fill="#fef3c7" stroke="#f59e0b"/>';
+      html += '<text x="280" y="340" text-anchor="middle" font-size="14" font-weight="800" fill="#92400e">重點：PCR 令目標 DNA 數量大幅增加</text>';
+    }
+
+    // ===== 3 Restriction enzyme cutting =====
+    else if (i === 3) {
+      html += '<text x="280" y="32" text-anchor="middle" font-size="15" font-weight="900" fill="#7c3aed">限制酶切斷 DNA</text>';
+      // long DNA with cut sites
+      html += '<text x="40" y="70" font-size="12" font-weight="700" fill="#5a493c">長鏈 DNA（含多個識別序列）</text>';
+      html += '<rect x="40" y="90" width="480" height="22" rx="6" fill="#93c5fd" stroke="#1d4ed8" stroke-width="2"/>';
+      // cut site markers
+      var sites = [140, 260, 380];
+      var si;
+      for (si = 0; si < sites.length; si++) {
+        html += '<line x1="' + sites[si] + '" y1="85" x2="' + sites[si] + '" y2="117" stroke="#b42318" stroke-width="3" stroke-dasharray="4 2"/>';
+        html += '<text x="' + sites[si] + '" y="80" text-anchor="middle" font-size="10" font-weight="800" fill="#b42318">切點</text>';
+        html += scissors(sites[si] - 6, 140);
+      }
+      html += '<text x="280" y="175" text-anchor="middle" font-size="13" font-weight="800" fill="#7c3aed" class="anim-pulse">限制酶在切點切開磷酸二酯鍵</text>';
+      // fragments separating
+      html += '<text x="280" y="210" text-anchor="middle" font-size="13" font-weight="800" fill="#14532d">切斷後 → 片段分開</text>';
+      var frags = [
+        {x: 50, w: 80, lab: "短"},
+        {x: 150, w: 140, lab: "中"},
+        {x: 310, w: 100, lab: "中"},
+        {x: 430, w: 70, lab: "短"}
+      ];
+      for (si = 0; si < frags.length; si++) {
+        html += '<rect x="' + frags[si].x + '" y="230" width="' + frags[si].w + '" height="18" rx="4" fill="#2563eb" stroke="#1e3a8a"/>';
+        html += '<text x="' + (frags[si].x + frags[si].w / 2) + '" y="270" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">' + frags[si].lab + '片段</text>';
+      }
+      html += '<rect x="80" y="300" width="400" height="55" rx="12" fill="#faf5ff" stroke="#c4b5fd"/>';
+      html += '<text x="280" y="325" text-anchor="middle" font-size="13" font-weight="800" fill="#6b21a8">形象化：剪刀／酶在切點切開 → 長鏈變成多段</text>';
+      html += '<text x="280" y="345" text-anchor="middle" font-size="12" fill="#5a493c">不同切點距離 → 片段長度不同</text>';
+    }
+
+    // ===== 4 VNTR =====
+    else if (i === 4) {
+      html += '<text x="280" y="36" text-anchor="middle" font-size="15" font-weight="900" fill="#b42318">VNTR：重複次數因人而異</text>';
+      html += '<text x="40" y="80" font-size="13" font-weight="700">個體 A（重複少 → 片段較短）</text>';
+      html += '<rect x="40" y="95" width="160" height="20" rx="4" fill="#2563eb"/>';
+      html += '<text x="220" y="110" font-size="12" fill="#5a493c">＝｜｜｜｜｜＝</text>';
+      html += '<text x="40" y="160" font-size="13" font-weight="700">個體 B（重複多 → 片段較長）</text>';
+      html += '<rect x="40" y="175" width="280" height="20" rx="4" fill="#7c3aed"/>';
+      html += '<text x="340" y="190" font-size="12" fill="#5a493c">＝｜｜｜｜｜｜｜｜｜｜｜＝</text>';
+      html += '<rect x="60" y="240" width="440" height="80" rx="12" fill="#fff7ed" stroke="#fdba74"/>';
+      html += '<text x="280" y="275" text-anchor="middle" font-size="14" font-weight="800" fill="#c2410c">VNTR 長度不同 → 電泳後位置不同 → 指紋圖譜</text>';
+      html += '<text x="280" y="300" text-anchor="middle" font-size="12" fill="#5a493c">（可變數目串聯重複）</text>';
+    }
+
+    // ===== 5 Load gel =====
+    else if (i === 5) {
+      html += drawGel({x: 180, y: 40, w: 220, h: 300});
+      // wells at top
+      html += '<rect x="210" y="55" width="40" height="14" rx="2" fill="#1e3a8a"/>';
+      html += '<rect x="270" y="55" width="40" height="14" rx="2" fill="#1e3a8a"/>';
+      html += '<rect x="330" y="55" width="40" height="14" rx="2" fill="#1e3a8a"/>';
+      html += '<text x="290" y="100" text-anchor="middle" font-size="13" font-weight="800" fill="#14532d">DNA 片段已放入孔洞</text>';
+      html += '<text x="80" y="180" font-size="13" font-weight="700" fill="#5a493c">準備接通電場</text>';
+      html += '<text x="80" y="210" font-size="12" fill="#5a493c">片段尚未移動</text>';
+    }
+
+    // ===== 6 Moving - to + =====
+    else if (i === 6) {
+      html += drawGel({x: 200, y: 40, w: 220, h: 310});
+      html += '<text x="100" y="100" text-anchor="middle" font-size="14" font-weight="900" fill="#b91c1c">－</text>';
+      html += '<text x="100" y="140" text-anchor="middle" font-size="28" font-weight="900" fill="#b42318">↓</text>';
+      html += '<text x="100" y="180" text-anchor="middle" font-size="13" font-weight="800" fill="#1d4ed8">移向</text>';
+      html += '<text x="100" y="210" text-anchor="middle" font-size="28" font-weight="900" fill="#1d4ed8">↓</text>';
+      html += '<text x="100" y="250" text-anchor="middle" font-size="14" font-weight="900" fill="#1d4ed8">＋</text>';
+      // bands mid-migration
+      html += '<rect class="anim-race" x="230" y="100" width="50" height="10" rx="2" fill="#14532d"/>';
+      html += '<rect class="anim-race" x="290" y="130" width="70" height="10" rx="2" fill="#14532d"/>';
+      html += '<rect class="anim-race" x="240" y="160" width="40" height="10" rx="2" fill="#14532d"/>';
+      html += '<rect class="anim-race" x="300" y="190" width="55" height="10" rx="2" fill="#14532d"/>';
+      html += '<text x="310" y="370" text-anchor="middle" font-size="13" font-weight="800" fill="#1e3a8a">DNA 帶負電：由（－）移向（＋）</text>';
+    }
+
+    // ===== 7 Small fast / large slow — KEY visual =====
+    else if (i === 7) {
+      html += '<text x="280" y="28" text-anchor="middle" font-size="15" font-weight="900" fill="#b42318">較小較快　·　較大較慢</text>';
+      html += drawGel({x: 160, y: 45, w: 240, h: 300});
+
+      // LARGE fragment - near cathode (top), slow
+      html += '<rect x="200" y="85" width="100" height="16" rx="3" fill="#7c3aed" stroke="#5b21b6" stroke-width="2"/>';
+      html += '<text x="420" y="90" font-size="13" font-weight="900" fill="#7c3aed">較大分子</text>';
+      html += '<text x="420" y="108" font-size="14" font-weight="900" fill="#b42318">較慢 ← 仍近陰極</text>';
+      html += '<path d="M310 93 H405" stroke="#7c3aed" stroke-width="2" marker-end="url(#arrowP)"/>';
+
+      // MEDIUM
+      html += '<rect x="210" y="170" width="70" height="12" rx="3" fill="#2563eb" stroke="#1e3a8a" stroke-width="2"/>';
+      html += '<text x="420" y="178" font-size="12" font-weight="700" fill="#2563eb">中等大小</text>';
+
+      // SMALL fragment - near anode (bottom), fast
+      html += '<rect class="anim-race" x="220" y="280" width="40" height="10" rx="3" fill="#16a34a" stroke="#14532d" stroke-width="2"/>';
+      html += '<text x="420" y="275" font-size="13" font-weight="900" fill="#16a34a">較小分子</text>';
+      html += '<text x="420" y="295" font-size="14" font-weight="900" fill="#14532d">較快 → 靠近陽極</text>';
+
+      // speed arrows inside gel
+      html += '<text x="185" y="95" text-anchor="end" font-size="11" font-weight="800" fill="#7c3aed">慢</text>';
+      html += '<text x="185" y="180" text-anchor="end" font-size="11" font-weight="800" fill="#2563eb">中</text>';
+      html += '<text x="185" y="288" text-anchor="end" font-size="11" font-weight="800" fill="#16a34a">快</text>';
+
+      // legend box
+      html += '<rect x="30" y="330" width="500" height="55" rx="12" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>';
+      html += '<text x="280" y="355" text-anchor="middle" font-size="14" font-weight="900" fill="#b42318">較小分子移動較快（跑得遠）　｜　較大分子移動較慢（留得近）</text>';
+      html += '<text x="280" y="375" text-anchor="middle" font-size="12" fill="#5a493c">凝膠孔隙像篩子：小分子易穿過，大分子被卡住</text>';
+    }
+
+    // ===== 8 Bands formed =====
+    else if (i === 8) {
+      html += drawGel({x: 170, y: 40, w: 220, h: 280});
+      var bands = [
+        {y: 80, w: 90, c: "#7c3aed"},
+        {y: 130, w: 70, c: "#2563eb"},
+        {y: 180, w: 55, c: "#0891b2"},
+        {y: 230, w: 40, c: "#16a34a"},
+        {y: 275, w: 30, c: "#65a30d"}
+      ];
+      var bi;
+      for (bi = 0; bi < bands.length; bi++) {
+        html += '<rect x="' + (280 - bands[bi].w / 2) + '" y="' + bands[bi].y + '" width="' + bands[bi].w + '" height="10" rx="2" fill="' + bands[bi].c + '"/>';
+      }
+      html += '<text x="420" y="90" font-size="12" font-weight="700" fill="#7c3aed">大 · 近－</text>';
+      html += '<text x="420" y="280" font-size="12" font-weight="700" fill="#16a34a">小 · 近＋</text>';
+      html += '<text x="280" y="350" text-anchor="middle" font-size="14" font-weight="800" fill="#14532d">相同長度聚集 → 形成條帶</text>';
+    }
+
+    // ===== 9 Membrane =====
+    else if (i === 9) {
+      html += drawGel({x: 40, y: 50, w: 160, h: 240});
+      html += '<rect x="70" y="90" width="50" height="8" fill="#14532d"/><rect x="70" y="140" width="40" height="8" fill="#14532d"/><rect x="70" y="200" width="30" height="8" fill="#14532d"/>';
+      html += '<text x="200" y="160" font-size="28" font-weight="900" fill="#b45309">→</text>';
+      html += '<rect x="250" y="50" width="160" height="240" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2.5"/>';
+      html += '<text x="330" y="40" text-anchor="middle" font-size="13" font-weight="800">尼龍膜</text>';
+      html += '<rect x="280" y="90" width="50" height="8" fill="#78350f"/><rect x="280" y="140" width="40" height="8" fill="#78350f"/><rect x="280" y="200" width="30" height="8" fill="#78350f"/>';
+      html += '<text x="280" y="340" text-anchor="middle" font-size="13" font-weight="800" fill="#92400e">Southern blot：條帶轉印至尼龍膜</text>';
+    }
+
+    // ===== 10 Probe =====
+    else if (i === 10) {
+      html += '<rect x="180" y="50" width="160" height="220" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>';
+      html += '<text x="260" y="40" text-anchor="middle" font-size="13" font-weight="800">尼龍膜</text>';
+      html += '<rect x="210" y="90" width="50" height="8" fill="#78350f"/><rect x="210" y="140" width="40" height="8" fill="#78350f"/><rect x="210" y="190" width="30" height="8" fill="#78350f"/>';
+      html += '<g class="anim-pulse">';
+      html += '<circle cx="400" cy="120" r="16" fill="#ef4444" stroke="#991b1b" stroke-width="2"/>';
+      html += '<text x="400" y="125" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">*P</text>';
+      html += '<text x="400" y="155" text-anchor="middle" font-size="12" font-weight="800" fill="#b91c1c">放射性探針</text>';
+      html += '</g>';
+      html += '<text x="280" y="320" text-anchor="middle" font-size="13" font-weight="700" fill="#5a493c">加入帶放射性標記的 DNA 探針</text>';
+    }
+
+    // ===== 11 Hybridization =====
+    else if (i === 11) {
+      html += '<rect x="180" y="50" width="200" height="240" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>';
+      html += '<text x="280" y="40" text-anchor="middle" font-size="13" font-weight="800">探針與 VNTR DNA 雜交</text>';
+      html += '<rect x="220" y="100" width="50" height="10" fill="#78350f"/>';
+      html += '<circle cx="245" cy="105" r="8" fill="#ef4444"/><text x="245" y="109" text-anchor="middle" font-size="9" fill="#fff" font-weight="800">*</text>';
+      html += '<rect x="220" y="160" width="40" height="10" fill="#78350f"/>';
+      html += '<circle cx="240" cy="165" r="8" fill="#ef4444"/><text x="240" y="169" text-anchor="middle" font-size="9" fill="#fff" font-weight="800">*</text>';
+      html += '<rect x="220" y="220" width="30" height="10" fill="#a8a29e"/>';
+      html += '<text x="280" y="330" text-anchor="middle" font-size="13" font-weight="800" fill="#b91c1c">探針專一結合 VNTR 相關序列</text>';
+    }
+
+    // ===== 12 Film =====
+    else if (i === 12) {
+      html += '<rect x="80" y="60" width="160" height="200" rx="8" fill="#fef3c7" stroke="#b45309"/>';
+      html += '<text x="160" y="50" text-anchor="middle" font-size="12" font-weight="700">尼龍膜（已雜交）</text>';
+      html += '<circle cx="140" cy="110" r="6" fill="#ef4444"/><circle cx="140" cy="160" r="6" fill="#ef4444"/>';
+      html += '<text x="280" y="160" font-size="28" font-weight="900" fill="#64748b">→</text>';
+      html += '<rect x="320" y="60" width="160" height="200" rx="8" fill="#111" stroke="#000"/>';
+      html += '<text x="400" y="50" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">X 光底片</text>';
+      html += '<rect x="360" y="105" width="50" height="6" fill="#f8fafc"/><rect x="360" y="155" width="40" height="6" fill="#f8fafc"/>';
+      html += '<text x="280" y="310" text-anchor="middle" font-size="14" font-weight="800" fill="#b42318">放射性使底片曝光 → 顯出條帶</text>';
+    }
+
+    // ===== 13 Compare =====
+    else {
+      html += '<text x="280" y="36" text-anchor="middle" font-size="15" font-weight="900" fill="#b42318">比較不同樣本的條帶位置</text>';
+      var samples = [
+        {x: 80, name: "犯人", bands: [80, 140, 200]},
+        {x: 200, name: "嫌疑人甲", bands: [80, 160, 220]},
+        {x: 320, name: "嫌疑人乙", bands: [80, 140, 200]},
+        {x: 440, name: "現場", bands: [80, 140, 200]}
+      ];
+      var s, bb;
+      for (s = 0; s < samples.length; s++) {
+        html += '<rect x="' + samples[s].x + '" y="55" width="70" height="240" rx="6" fill="#111"/>';
+        html += '<text x="' + (samples[s].x + 35) + '" y="50" text-anchor="middle" font-size="11" font-weight="700">' + samples[s].name + '</text>';
+        for (bb = 0; bb < samples[s].bands.length; bb++) {
+          html += '<rect x="' + (samples[s].x + 10) + '" y="' + samples[s].bands[bb] + '" width="50" height="5" fill="#f8fafc"/>';
+        }
+      }
+      html += '<rect x="60" y="320" width="440" height="50" rx="12" fill="#ecfdf5" stroke="#86efac"/>';
+      html += '<text x="280" y="350" text-anchor="middle" font-size="14" font-weight="800" fill="#14532d">條帶圖案吻合 → 可作身份／親緣推斷</text>';
+    }
+
+    svg.innerHTML = html;
+  }
+
   var playing = false;
   var timer = null;
   var step = 0;
@@ -286,7 +532,7 @@ footer {
   function renderFlow() {
     flowEl.innerHTML = "";
     var lastPhase = null;
-    STEPS.forEach(function (s, i) {
+    STEPS.forEach(function (s, idx) {
       if (s.phase && s.phase !== lastPhase) {
         lastPhase = s.phase;
         var ph = document.createElement("div");
@@ -295,14 +541,14 @@ footer {
         flowEl.appendChild(ph);
       }
       var d = document.createElement("div");
-      d.className = "step" + (i === step ? " active" : "") + (i < step ? " done" : "");
+      d.className = "step" + (idx === step ? " active" : "") + (idx < step ? " done" : "");
       d.setAttribute("role", "button");
       d.setAttribute("tabindex", "0");
-      d.dataset.i = String(i);
-      d.innerHTML = '<span class="n">' + (i + 1) + '</span><div class="txt">' + s.flow + '</div>';
-      d.addEventListener("click", function () { stopPlay(); setStep(i); });
+      d.dataset.i = String(idx);
+      d.innerHTML = '<span class="n">' + (idx + 1) + '</span><div class="txt">' + s.flow + '</div>';
+      d.addEventListener("click", function () { stopPlay(); setStep(idx); });
       d.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); stopPlay(); setStep(i); }
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); stopPlay(); setStep(idx); }
       });
       flowEl.appendChild(d);
     });
@@ -333,7 +579,7 @@ footer {
     timer = setInterval(function () {
       if (step >= STEPS.length - 1) { stopPlay(); return; }
       setStep(step + 1);
-    }, 1600);
+    }, 1800);
   });
   nextBtn.addEventListener("click", function () { stopPlay(); setStep(step + 1); });
   prevBtn.addEventListener("click", function () { stopPlay(); setStep(step - 1); });
@@ -343,7 +589,6 @@ footer {
   slider.max = String(STEPS.length - 1);
   slider.setAttribute("aria-valuemax", String(STEPS.length - 1));
   setStep(0);
-
 })();
 </script>
 </body>
