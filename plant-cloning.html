@@ -77,7 +77,7 @@ input[type="range"] { width: min(420px, 70vw); accent-color: #1f6b3a; }
 .panel-title { font-size: 14px; font-weight: 800; margin: 0 0 8px; color: var(--muted); letter-spacing: .04em; }
 .stage {
   background: linear-gradient(#f7f1e6, #efe2d0 72%, #e6d4bb);
-  border: 1px solid var(--line); border-radius: 16px; padding: 10px; min-height: 320px;
+  border: 1px solid var(--line); border-radius: 16px; padding: 10px; min-height: 360px;
   position: relative; overflow: hidden;
 }
 .stage svg { width: 100%; height: auto; display: block; }
@@ -112,20 +112,44 @@ input[type="range"] { width: min(420px, 70vw); accent-color: #1f6b3a; }
 }
 .stat .lab { font-size: 12px; color: var(--muted); }
 .stat .val { font-weight: 800; font-size: 15px; }
+.legend-row {
+  display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 8px;
+  font-size: 12px; color: var(--muted); font-weight: 600;
+}
+.legend-row .swatch {
+  display: inline-block; width: 12px; height: 12px; border-radius: 3px;
+  margin-right: 4px; vertical-align: -1px; border: 1px solid rgba(0,0,0,.15);
+}
 footer {
   margin-top: 18px; color: var(--muted); font-size: 13px;
   border-top: 1px solid var(--line); padding-top: 12px;
 }
 .back { color: var(--green-d); font-weight: 700; text-decoration: none; font-size: 14px; }
 .back:hover { text-decoration: underline; }
+@keyframes mistPulse {
+  0%, 100% { opacity: .55; }
+  50% { opacity: 1; }
+}
+@keyframes sprayDrop {
+  0% { opacity: 0; transform: translateY(-4px); }
+  40% { opacity: 1; }
+  100% { opacity: .35; transform: translateY(6px); }
+}
+@keyframes growUp {
+  from { transform: scaleY(0.2); opacity: .4; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+.mist-anim { animation: mistPulse 1.4s ease-in-out infinite; }
+.drop-anim { animation: sprayDrop 1.2s ease-in-out infinite; }
+.grow-anim { transform-origin: center bottom; animation: growUp .9s ease-out both; }
 @media (max-width: 900px) {
   .grid-main, .status { grid-template-columns: 1fr; }
   .flow { max-height: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .step { transition: none; }
+  .mist-anim, .drop-anim, .grow-anim { animation: none !important; }
 }
-
 
 </style>
 </head>
@@ -134,8 +158,8 @@ footer {
   <p><a class="back" href="index.html">← 返回實驗室</a></p>
   <p class="kicker">HKDSE · 中四至中六 · M27</p>
   <h1>植物克隆</h1>
-  <p class="muted small">跟住六步流程：切割 → 消毒 → 激素 → 培養基 → 新個體 → 移至泥土。</p>
-  <div class="banner">題目：繪一流程圖以顯示植物克隆。新植株與親本遺傳物質相同。</div>
+  <p class="muted small">跟住六步流程：切割 → 消毒（噴霧）→ 噴灑激素 → 放入培養基 → 每細胞長成一株 → 移至泥土。</p>
+  <div class="banner">題目：繪一流程圖以顯示植物克隆。新植株與親本遺傳物質相同。注意：每個植物細胞各自發育成一棵新植株。</div>
 
   <div class="card">
     <div class="controls">
@@ -147,7 +171,7 @@ footer {
     </div>
     <div class="slider-line">
       <label for="stepSlider" class="small muted">步驟</label>
-      <input type="range" id="stepSlider" min="0" max="10" step="1" value="0" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+      <input type="range" id="stepSlider" min="0" max="5" step="1" value="0" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
       <span class="day-big" id="stepLabel">步驟 1</span>
     </div>
     <div class="status">
@@ -162,7 +186,13 @@ footer {
       <div class="card">
         <p class="panel-title">互動場景</p>
         <div class="stage" id="stage">
-          <svg id="scene" viewBox="0 0 560 340" role="img" aria-label="植物克隆示意"></svg>
+          <svg id="scene" viewBox="0 0 580 400" role="img" aria-label="植物克隆示意"></svg>
+        </div>
+        <div class="legend-row" aria-hidden="true">
+          <span><i class="swatch" style="background:#38bdf8"></i>消毒劑噴霧</span>
+          <span><i class="swatch" style="background:#f472b6"></i>植物激素</span>
+          <span><i class="swatch" style="background:#86efac"></i>植物細胞</span>
+          <span><i class="swatch" style="background:#fde68a"></i>培養基（瓊脂）</span>
         </div>
         <div class="caption" id="caption"></div>
       </div>
@@ -185,63 +215,263 @@ footer {
   "use strict";
   var STEPS = [
   {phase:"取材", tag:"切割親本組織", flow:"<span class='key'>切割親本組織</span>", caption:"從親本植物<strong class='key'>切割</strong>一小塊組織（例如莖尖／葉片），作為外植體。", statA:"親本植物", statB:"外植體", statC:"已取材"},
-  {phase:"無菌", tag:"消毒", flow:"<span class='key'>消毒</span>", caption:"把外植體<strong class='key'>消毒</span>，避免微生物污染，保持無菌條件。", statA:"無菌操作", statB:"消毒劑", statC:"污染↓"},
-  {phase:"誘導", tag:"加入激素", flow:"<span class='key'>加入激素</span>", caption:"在培養基中<strong class='key'>加入植物激素</strong>（如生長素、細胞分裂素），誘導細胞分裂與分化。", statA:"激素調控", statB:"生長素／細胞分裂素", statC:"誘導中"},
-  {phase:"培養", tag:"培養基", flow:"置於<span class='key'>培養基</span>", caption:"外植體放在含營養與激素的<strong class='key'>培養基</strong>上，在控制條件下培養。", statA:"培養基", statB:"營養＋激素", statC:"體外培養"},
-  {phase:"發育", tag:"發育成新個體", flow:"<span class='key'>發育成新個體</span>", caption:"細胞分裂、分化，逐漸<strong class='key'>發育成完整的新植株</strong>（與親本遺傳相同）。", statA:"再生植株", statB:"克隆", statC:"遺傳相同"},
-  {phase:"移栽", tag:"移至泥土", flow:"<span class='key'>移至泥土</span>", caption:"把幼苗<strong class='key'>移至泥土</strong>（或盆土）繼續生長，完成植物克隆。", statA:"馴化移栽", statB:"泥土", statC:"獨立植株"}
+  {phase:"無菌", tag:"消毒", flow:"<span class='key'>消毒</span>", caption:"用<strong class='key'>消毒劑噴瓶</span>向外植體<strong class='key'>噴灑消毒劑</span>（液滴落在組織上），殺死表面微生物，保持無菌。", statA:"無菌操作", statB:"消毒劑噴霧", statC:"污染↓"},
+  {phase:"誘導", tag:"加入激素", flow:"<span class='key'>加入激素</span>／噴灑激素", caption:"用<strong class='key'>激素噴瓶</span>向組織／細胞<strong class='key'>噴灑植物激素</strong>（生長素、細胞分裂素），誘導細胞分裂與分化。", statA:"激素調控", statB:"噴灑生長素／細胞分裂素", statC:"誘導中"},
+  {phase:"培養", tag:"放入培養基", flow:"把植物細胞<span class='key'>放入培養基</span>", caption:"把已處理的<strong class='key'>植物細胞逐一放入培養皿</strong>（含營養與激素的瓊脂培養基）中，在控制條件下培養。", statA:"培養皿＋瓊脂", statB:"細胞放入培養基", statC:"體外培養"},
+  {phase:"發育", tag:"發育成新個體", flow:"<span class='key'>每個細胞發育成一棵新植株</span>", caption:"<strong class='key'>每一個植物細胞各自發育成一棵完整新植株</strong>（一細胞→一株）；多個細胞→多株克隆，遺傳物質與親本相同。", statA:"多株再生", statB:"一細胞→一植株", statC:"遺傳相同"},
+  {phase:"移栽", tag:"移至泥土", flow:"<span class='key'>移至泥土</span>", caption:"把各株幼苗分別<strong class='key'>移至泥土</strong>（或盆土）繼續生長，完成植物克隆。", statA:"馴化移栽", statB:"泥土（多盆）", statC:"獨立植株"}
 ];
 
-  function drawScene(i) {
-
-    var svg = $("scene");
-    var plant = '<path d="M80 260 Q80 180 80 120" stroke="#166534" stroke-width="6" fill="none"/>'
-      + '<ellipse cx="55" cy="150" rx="22" ry="10" fill="#22c55e" transform="rotate(-35 55 150)"/>'
-      + '<ellipse cx="105" cy="140" rx="22" ry="10" fill="#16a34a" transform="rotate(30 105 140)"/>'
-      + '<ellipse cx="60" cy="200" rx="24" ry="11" fill="#22c55e" transform="rotate(-20 60 200)"/>'
-      + '<circle cx="80" cy="108" r="10" fill="#86efac" stroke="#166534"/>'
-      + '<text x="80" y="290" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">親本</text>';
-    var explant = i >= 0
-      ? '<rect x="160" y="150" width="40" height="28" rx="6" fill="#86efac" stroke="#166534" stroke-width="2"/>'
-        + '<text x="180" y="200" text-anchor="middle" font-size="12" fill="#14532d">外植體</text>'
-      : '';
-    var spray = i >= 1
-      ? '<path d="M220 120 Q240 140 220 160" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3 2"/>'
-        + '<text x="250" y="145" font-size="12" font-weight="700" fill="#0369a1">消毒</text>'
-      : '';
-    var hormones = i >= 2
-      ? '<circle cx="300" cy="100" r="8" fill="#f472b6"/><circle cx="318" cy="112" r="8" fill="#a78bfa"/>'
-        + '<text x="310" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#9d174d">激素</text>'
-      : '';
-    var dish = i >= 3
-      ? '<ellipse cx="360" cy="200" rx="70" ry="18" fill="#fde68a" stroke="#b45309" stroke-width="2"/>'
-        + '<path d="M290 200 v-50 h140 v50" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>'
-        + '<text x="360" y="235" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">培養基</text>'
-      : '';
-    var baby = '';
-    if (i >= 4) {
-      baby = '<path d="M360 190 v-55" stroke="#166534" stroke-width="3"/>'
-        + '<ellipse cx="345" cy="150" rx="12" ry="6" fill="#22c55e"/><ellipse cx="375" cy="145" rx="12" ry="6" fill="#16a34a"/>'
-        + '<circle cx="360" cy="130" r="6" fill="#86efac"/>'
-        + '<text x="360" y="255" text-anchor="middle" font-size="12" font-weight="700" fill="#14532d">新個體（克隆）</text>';
-    }
-    var pot = '';
-    if (i >= 5) {
-      pot = '<rect x="455" y="210" width="60" height="40" rx="4" fill="#a16207" stroke="#713f12"/>'
-        + '<path d="M485 210 v-50" stroke="#166534" stroke-width="3"/>'
-        + '<ellipse cx="470" cy="175" rx="14" ry="7" fill="#22c55e"/><ellipse cx="500" cy="170" rx="14" ry="7" fill="#16a34a"/>'
-        + '<text x="485" y="270" text-anchor="middle" font-size="12" font-weight="700" fill="#713f12">泥土</text>';
-    }
-    var scissors = i === 0
-      ? '<path d="M140 130 l30 40 M155 130 l-20 40" stroke="#64748b" stroke-width="3"/><text x="155" y="120" font-size="12" fill="#475569">切割</text>'
-      : '';
-    svg.innerHTML = plant + scissors + explant + spray + hormones + dish + baby + pot
-      + (i >= 3 && i < 5 ? '<path d="M210 164 H285" stroke="#1f6b3a" stroke-width="2" marker-end="url(#arr)"/>' : '')
-      + (i >= 5 ? '<path d="M430 180 H450" stroke="#1f6b3a" stroke-width="2"/>' : '')
-      + '<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1f6b3a"/></marker></defs>';
-
+  function parentPlant(ox) {
+    return '<g transform="translate(' + ox + ',0)">'
+      + '<ellipse cx="80" cy="318" rx="48" ry="12" fill="#c4a574" opacity=".5"/>'
+      + '<path d="M80 300 Q80 200 80 120" stroke="#166534" stroke-width="7" fill="none" stroke-linecap="round"/>'
+      + '<ellipse cx="48" cy="155" rx="26" ry="11" fill="#22c55e" transform="rotate(-38 48 155)"/>'
+      + '<ellipse cx="112" cy="145" rx="26" ry="11" fill="#16a34a" transform="rotate(32 112 145)"/>'
+      + '<ellipse cx="50" cy="210" rx="28" ry="12" fill="#22c55e" transform="rotate(-22 50 210)"/>'
+      + '<ellipse cx="110" cy="200" rx="26" ry="11" fill="#4ade80" transform="rotate(24 110 200)"/>'
+      + '<circle cx="80" cy="108" r="12" fill="#86efac" stroke="#166534" stroke-width="2"/>'
+      + '<text x="80" y="345" text-anchor="middle" font-size="13" font-weight="800" fill="#14532d">親本植物</text>'
+      + '</g>';
   }
 
+  function explantPiece(cx, cy, label) {
+    return '<g>'
+      + '<rect x="'+(cx-22)+'" y="'+(cy-14)+'" width="44" height="28" rx="8" fill="#86efac" stroke="#166534" stroke-width="2"/>'
+      + '<ellipse cx="'+(cx-8)+'" cy="'+cy+'" rx="6" ry="4" fill="#4ade80" opacity=".7"/>'
+      + '<ellipse cx="'+(cx+6)+'" cy="'+(cy-2)+'" rx="5" ry="3.5" fill="#22c55e" opacity=".7"/>'
+      + (label ? '<text x="'+cx+'" y="'+(cy+32)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#14532d">'+label+'</text>' : '')
+      + '</g>';
+  }
+
+  function cellDot(cx, cy, r, label, delay) {
+    var d = delay != null ? ' style="animation-delay:'+delay+'s"' : '';
+    return '<g class="grow-anim"'+d+'>'
+      + '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#86efac" stroke="#166534" stroke-width="1.6"/>'
+      + '<circle cx="'+(cx-2)+'" cy="'+(cy-2)+'" r="'+(r*0.35)+'" fill="#bbf7d0"/>'
+      + (label ? '<text x="'+cx+'" y="'+(cy+r+14)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">'+label+'</text>' : '')
+      + '</g>';
+  }
+
+  function sprayBottle(cx, cy, color, label, mistColor) {
+    // Bottle body + nozzle + mist cloud
+    var html = '<g transform="translate('+cx+','+cy+')">'
+      + '<rect x="-14" y="10" width="28" height="48" rx="4" fill="'+color+'" stroke="#334155" stroke-width="1.5"/>'
+      + '<rect x="-10" y="0" width="20" height="12" rx="2" fill="#94a3b8" stroke="#334155"/>'
+      + '<rect x="-4" y="-8" width="8" height="10" rx="1" fill="#64748b"/>'
+      + '<path d="M0 -8 L18 -18" stroke="#475569" stroke-width="3" stroke-linecap="round"/>'
+      + '<circle cx="20" cy="-20" r="4" fill="#64748b"/>'
+      // Mist cloud
+      + '<g class="mist-anim">'
+      + '<ellipse cx="42" cy="-28" rx="22" ry="14" fill="'+mistColor+'" opacity=".35"/>'
+      + '<ellipse cx="58" cy="-22" rx="16" ry="10" fill="'+mistColor+'" opacity=".28"/>'
+      + '<ellipse cx="48" cy="-12" rx="18" ry="9" fill="'+mistColor+'" opacity=".22"/>'
+      + '</g>'
+      // Droplets flying right
+      + '<g class="drop-anim">'
+      + '<circle cx="36" cy="-18" r="2.5" fill="'+mistColor+'"/>'
+      + '<circle cx="48" cy="-26" r="2" fill="'+mistColor+'" opacity=".8"/>'
+      + '<circle cx="55" cy="-14" r="2.2" fill="'+mistColor+'" opacity=".7"/>'
+      + '<circle cx="64" cy="-22" r="1.8" fill="'+mistColor+'"/>'
+      + '<circle cx="42" cy="-8" r="1.6" fill="'+mistColor+'" opacity=".6"/>'
+      + '</g>'
+      + '<text x="0" y="74" text-anchor="middle" font-size="11" font-weight="800" fill="#334155">'+label+'</text>'
+      + '</g>';
+    return html;
+  }
+
+  function dropletsOnExplant(cx, cy, color) {
+    var drops = [
+      [cx-12, cy-18], [cx+4, cy-22], [cx+16, cy-14],
+      [cx-8, cy-6], [cx+10, cy-4], [cx-2, cy+8], [cx+14, cy+4]
+    ];
+    var html = '<g class="mist-anim">';
+    for (var i = 0; i < drops.length; i++) {
+      html += '<circle cx="'+drops[i][0]+'" cy="'+drops[i][1]+'" r="'+(2+i%2)+'" fill="'+color+'" opacity="'+(0.55+i*0.05)+'"/>';
+      // teardrop tip
+      html += '<ellipse cx="'+drops[i][0]+'" cy="'+(drops[i][1]-3)+'" rx="1.2" ry="2.5" fill="'+color+'" opacity=".5"/>';
+    }
+    html += '</g>';
+    return html;
+  }
+
+  function cultureDish(cx, cy, withCells) {
+    var html = '<g>'
+      // Petri dish lid hint
+      + '<ellipse cx="'+cx+'" cy="'+(cy-42)+'" rx="78" ry="14" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3" opacity=".5"/>'
+      // Dish wall
+      + '<path d="M'+(cx-80)+' '+cy+' v-38 q0 -8 8 -8 h144 q8 0 8 8 v38" fill="#fffbeb" stroke="#b45309" stroke-width="2.5"/>'
+      // Agar surface
+      + '<ellipse cx="'+cx+'" cy="'+cy+'" rx="80" ry="18" fill="#fde68a" stroke="#b45309" stroke-width="2.5"/>'
+      + '<ellipse cx="'+cx+'" cy="'+(cy-4)+'" rx="70" ry="12" fill="#fef3c7" opacity=".7"/>'
+      + '<text x="'+cx+'" y="'+(cy+36)+'" text-anchor="middle" font-size="13" font-weight="800" fill="#92400e">培養基（瓊脂）</text>';
+    if (withCells) {
+      var positions = [
+        [cx-36, cy-8], [cx-12, cy-14], [cx+14, cy-10], [cx+38, cy-6]
+      ];
+      for (var i = 0; i < positions.length; i++) {
+        html += cellDot(positions[i][0], positions[i][1], 9, '', i * 0.12);
+        html += '<text x="'+positions[i][0]+'" y="'+(positions[i][1]+22)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">細胞'+(i+1)+'</text>';
+      }
+      // Arrows showing placement
+      html += '<text x="'+cx+'" y="'+(cy-58)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#b45309">植物細胞放入培養基 ↓</text>';
+    }
+    html += '</g>';
+    return html;
+  }
+
+  function miniPlant(cx, baseY, scale, delay, label) {
+    var s = scale || 1;
+    var d = delay != null ? ' style="animation-delay:'+delay+'s"' : '';
+    return '<g class="grow-anim" transform="translate('+cx+','+baseY+') scale('+s+')"'+d+'>'
+      + '<path d="M0 0 v-48" stroke="#166534" stroke-width="3.5" stroke-linecap="round"/>'
+      + '<ellipse cx="-14" cy="-32" rx="13" ry="6" fill="#22c55e" transform="rotate(-30 -14 -32)"/>'
+      + '<ellipse cx="14" cy="-36" rx="13" ry="6" fill="#16a34a" transform="rotate(28 14 -36)"/>'
+      + '<ellipse cx="-10" cy="-18" rx="11" ry="5" fill="#4ade80" transform="rotate(-20 -10 -18)"/>'
+      + '<circle cx="0" cy="-50" r="6" fill="#86efac" stroke="#166534" stroke-width="1.2"/>'
+      + (label ? '<text x="0" y="16" text-anchor="middle" font-size="'+(12/s)+'" font-weight="800" fill="#14532d">'+label+'</text>' : '')
+      + '</g>';
+  }
+
+  function pot(cx, cy) {
+    return '<path d="M'+(cx-22)+' '+cy+' L'+(cx-18)+' '+(cy+32)+' h36 L'+(cx+22)+' '+cy+' Z" fill="#a16207" stroke="#713f12" stroke-width="1.5"/>'
+      + '<rect x="'+(cx-26)+'" y="'+(cy-4)+'" width="52" height="8" rx="2" fill="#854d0e" stroke="#713f12"/>'
+      + '<ellipse cx="'+cx+'" cy="'+cy+'" rx="20" ry="4" fill="#78350f" opacity=".4"/>';
+  }
+
+  function drawScene(i) {
+    var svg = $("scene");
+    var html = '<defs>'
+      + '<marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1f6b3a"/></marker>'
+      + '<marker id="arrBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0369a1"/></marker>'
+      + '<marker id="arrPink" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#9d174d"/></marker>'
+      + '</defs>';
+
+    // ===== Step 0: Cutting =====
+    if (i === 0) {
+      html += parentPlant(10);
+      // Scissors
+      html += '<g transform="translate(155,95)">'
+        + '<circle cx="0" cy="0" r="7" fill="none" stroke="#64748b" stroke-width="2.5"/>'
+        + '<circle cx="18" cy="0" r="7" fill="none" stroke="#64748b" stroke-width="2.5"/>'
+        + '<line x1="6" y1="5" x2="28" y2="48" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>'
+        + '<line x1="12" y1="5" x2="40" y2="42" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>'
+        + '<text x="20" y="-14" text-anchor="middle" font-size="12" font-weight="800" fill="#475569">切割</text>'
+        + '</g>';
+      // Cut explant flying off
+      html += explantPiece(260, 160, "外植體");
+      html += '<path d="M130 130 Q180 140 230 155" fill="none" stroke="#1f6b3a" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arr)"/>';
+      html += '<text x="290" y="200" font-size="12" fill="#5a493c">從親本切下一小塊組織</text>';
+    }
+
+    // ===== Step 1: Disinfection with spray bottle =====
+    if (i === 1) {
+      html += sprayBottle(90, 140, "#bae6fd", "消毒劑", "#38bdf8");
+      // Explant being sprayed
+      html += explantPiece(280, 170, "外植體");
+      html += dropletsOnExplant(280, 170, "#38bdf8");
+      // Spray stream arrow
+      html += '<path d="M160 130 Q210 140 250 155" fill="none" stroke="#0369a1" stroke-width="2.5" marker-end="url(#arrBlue)"/>';
+      html += '<rect x="200" y="40" width="160" height="36" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>'
+        + '<text x="280" y="63" text-anchor="middle" font-size="13" font-weight="800" fill="#0369a1">噴灑消毒劑 · 液滴落在組織上</text>';
+      // Dead microbes hint
+      html += '<g opacity=".7">'
+        + '<circle cx="250" cy="240" r="5" fill="#fca5a5"/><line x1="246" y1="236" x2="254" y2="244" stroke="#b91c1c" stroke-width="1.5"/><line x1="254" y1="236" x2="246" y2="244" stroke="#b91c1c" stroke-width="1.5"/>'
+        + '<circle cx="275" cy="255" r="4" fill="#fca5a5"/><line x1="272" y1="252" x2="278" y2="258" stroke="#b91c1c" stroke-width="1.5"/><line x1="278" y1="252" x2="272" y2="258" stroke="#b91c1c" stroke-width="1.5"/>'
+        + '<circle cx="310" cy="245" r="5" fill="#fca5a5"/><line x1="306" y1="241" x2="314" y2="249" stroke="#b91c1c" stroke-width="1.5"/><line x1="314" y1="241" x2="306" y2="249" stroke="#b91c1c" stroke-width="1.5"/>'
+        + '<text x="280" y="280" text-anchor="middle" font-size="11" font-weight="700" fill="#b91c1c">微生物被消毒劑殺死</text>'
+        + '</g>';
+    }
+
+    // ===== Step 2: Hormone spray =====
+    if (i === 2) {
+      html += sprayBottle(90, 140, "#fbcfe8", "激素噴瓶", "#f472b6");
+      // Tissue / cells being sprayed
+      html += explantPiece(280, 155, "");
+      // Cells on tissue
+      html += cellDot(265, 155, 7, "", 0);
+      html += cellDot(285, 150, 7, "", 0.1);
+      html += cellDot(300, 160, 7, "", 0.2);
+      html += dropletsOnExplant(280, 155, "#f472b6");
+      html += '<path d="M160 130 Q210 135 250 145" fill="none" stroke="#9d174d" stroke-width="2.5" marker-end="url(#arrPink)"/>';
+      html += '<rect x="175" y="40" width="220" height="36" rx="10" fill="#fce7f3" stroke="#db2777" stroke-width="1.5"/>'
+        + '<text x="285" y="63" text-anchor="middle" font-size="13" font-weight="800" fill="#9d174d">噴灑植物激素 · 誘導細胞分裂</text>';
+      // Hormone legend pills
+      html += '<g transform="translate(200,250)">'
+        + '<circle cx="0" cy="0" r="10" fill="#f472b6"/><text x="18" y="4" font-size="12" font-weight="700" fill="#9d174d">生長素</text>'
+        + '<circle cx="100" cy="0" r="10" fill="#a78bfa"/><text x="118" y="4" font-size="12" font-weight="700" fill="#5b21b6">細胞分裂素</text>'
+        + '</g>';
+      html += '<text x="290" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#14532d">外植體／植物細胞</text>';
+    }
+
+    // ===== Step 3: Place cells into culture medium =====
+    if (i === 3) {
+      // Cells waiting to be placed (left)
+      html += '<text x="100" y="55" text-anchor="middle" font-size="12" font-weight="800" fill="#166534">已處理細胞</text>';
+      var waitCells = [[70,90],[100,85],[130,95],[90,120]];
+      for (var w = 0; w < waitCells.length; w++) {
+        html += cellDot(waitCells[w][0], waitCells[w][1], 10, "", w * 0.08);
+      }
+      // Big arrow into dish
+      html += '<path d="M160 110 H230" fill="none" stroke="#1f6b3a" stroke-width="3" marker-end="url(#arr)"/>';
+      html += '<text x="195" y="100" text-anchor="middle" font-size="11" font-weight="800" fill="#1f6b3a">放入</text>';
+      // Culture dish with cells inside
+      html += cultureDish(380, 200, true);
+      html += '<rect x="250" y="300" width="260" height="32" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>'
+        + '<text x="380" y="321" text-anchor="middle" font-size="12" font-weight="800" fill="#92400e">每個細胞置於培養基表面生長</text>';
+    }
+
+    // ===== Step 4: Each cell → one plant =====
+    if (i === 4) {
+      html += '<rect x="60" y="28" width="460" height="34" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>'
+        + '<text x="290" y="50" text-anchor="middle" font-size="14" font-weight="800" fill="#14532d">每個細胞 → 各自發育成一棵新植株（一對一）</text>';
+
+      // Culture dish base (smaller)
+      html += '<ellipse cx="290" cy="320" rx="200" ry="22" fill="#fde68a" stroke="#b45309" stroke-width="2"/>'
+        + '<text x="290" y="355" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">培養基</text>';
+
+      var plants = [
+        {cx: 120, cellLabel: "細胞1", plantLabel: "植株1"},
+        {cx: 230, cellLabel: "細胞2", plantLabel: "植株2"},
+        {cx: 340, cellLabel: "細胞3", plantLabel: "植株3"},
+        {cx: 450, cellLabel: "細胞4", plantLabel: "植株4"}
+      ];
+      for (var p = 0; p < plants.length; p++) {
+        var px = plants[p].cx;
+        // Original cell at bottom
+        html += cellDot(px, 300, 8, "", 0);
+        html += '<text x="'+px+'" y="318" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">'+plants[p].cellLabel+'</text>';
+        // Arrow up
+        html += '<path d="M'+px+' 280 v-30" fill="none" stroke="#1f6b3a" stroke-width="2" marker-end="url(#arr)"/>';
+        html += '<text x="'+(px+18)+'" y="265" font-size="10" fill="#1f6b3a" font-weight="700">→</text>';
+        // Plant grown from that cell
+        html += miniPlant(px, 230, 1.05, p * 0.15, plants[p].plantLabel);
+      }
+      html += '<text x="290" y="90" text-anchor="middle" font-size="12" fill="#5a493c">4 個細胞 → 4 棵克隆植株（遺傳相同）</text>';
+    }
+
+    // ===== Step 5: Transfer to soil =====
+    if (i === 5) {
+      html += '<text x="290" y="40" text-anchor="middle" font-size="14" font-weight="800" fill="#713f12">各株幼苗分別移至泥土繼續生長</text>';
+      var pots = [
+        {cx: 100, label: "克隆1"},
+        {cx: 230, label: "克隆2"},
+        {cx: 360, label: "克隆3"},
+        {cx: 490, label: "克隆4"}
+      ];
+      for (var t = 0; t < pots.length; t++) {
+        var tx = pots[t].cx;
+        html += pot(tx, 260);
+        html += miniPlant(tx, 258, 1.15, t * 0.12, pots[t].label);
+      }
+      html += '<text x="290" y="360" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">完成植物克隆 · 與親本遺傳物質相同</text>';
+      // Small parent reminder
+      html += '<g transform="translate(20,50) scale(0.45)">' + parentPlant(0).replace(/親本植物/g, "親本") + '</g>';
+      html += '<text x="55" y="200" text-anchor="middle" font-size="11" fill="#5a493c">親本</text>';
+    }
+
+    svg.innerHTML = html;
+  }
 
   function $(id) { return document.getElementById(id); }
   var playing = false;
@@ -314,7 +544,7 @@ footer {
     timer = setInterval(function () {
       if (step >= STEPS.length - 1) { stopPlay(); return; }
       setStep(step + 1);
-    }, 1600);
+    }, 1800);
   });
   nextBtn.addEventListener("click", function () { stopPlay(); setStep(step + 1); });
   prevBtn.addEventListener("click", function () { stopPlay(); setStep(step - 1); });
