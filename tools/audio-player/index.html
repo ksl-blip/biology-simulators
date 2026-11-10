@@ -337,8 +337,10 @@
           <button type="button" data-rate="1.25">1.25×</button>
           <button type="button" data-rate="1.5">1.5×</button>
           <button type="button" data-rate="2">2×</button>
+          <button type="button" data-rate="2.5">2.5×</button>
+          <button type="button" data-rate="3">3×</button>
         </div>
-        <input type="range" id="speed" min="0.5" max="2" step="0.05" value="1" aria-label="播放速度">
+        <input type="range" id="speed" min="0.5" max="3" step="0.05" value="1" aria-label="播放速度">
         <p class="hint">背景播放用瀏覽器本身嘅聲音播放器。鎖屏之後，系統會顯示播放、暫停同上一首、下一首。播放速度只係記喺你自己部機。</p>
       </section>
     </div>
@@ -453,7 +455,7 @@
 
   function quantize(v) {
     const n = Math.round(Number(v) * 20) / 20;
-    return Math.min(2, Math.max(0.5, n));
+    return Math.min(3, Math.max(0.5, n));
   }
 
   function fmt(sec) {
@@ -552,7 +554,7 @@
     const rounded = Math.round(speed * 100) / 100;
     speedLabel.textContent = String(rounded) + "×";
     speedInput.value = String(speed);
-    speedInput.style.setProperty("--p", ((speed - 0.5) / 1.5) * 100 + "%");
+    speedInput.style.setProperty("--p", ((speed - 0.5) / 2.5) * 100 + "%");
     presets.querySelectorAll("button").forEach((b) => {
       b.classList.toggle("on", Math.abs(Number(b.dataset.rate) - speed) < 0.001);
     });
@@ -814,7 +816,7 @@
     if (tracks.length !== rawCount) toast("有部分曲目路徑唔接受，已跳過。");
     const saved = readLocal(SPEED_KEY);
     const savedSpeed = saved == null ? NaN : Number(saved);
-    if (savedSpeed >= 0.5 && savedSpeed <= 2) speed = quantize(savedSpeed);
+    if (savedSpeed >= 0.5 && savedSpeed <= 3) speed = quantize(savedSpeed);
     paintSpeed();
     renderList();
     const last = readLocal(LAST_KEY);
@@ -1291,7 +1293,7 @@
   } catch (e) {}
   migrateLegacyPassword();
   const storedSpeed = readLocal(SPEED_KEY);
-  if (storedSpeed != null && Number(storedSpeed) >= 0.5 && Number(storedSpeed) <= 2) {
+  if (storedSpeed != null && Number(storedSpeed) >= 0.5 && Number(storedSpeed) <= 3) {
     speed = quantize(storedSpeed);
   }
   paintSpeed();
