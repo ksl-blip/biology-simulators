@@ -1,0 +1,938 @@
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>迪士尼奇幻顯微鏡操作順序挑戰 - Disney Magic Microscope Game</title>
+    <!-- Import Google Fonts 'Fredoka' and 'Quicksand' -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-night: #0d1b2a;
+            --bg-deep-purple: #1b0c2e;
+            --magic-gold: #ffd700;
+            --magic-gold-dark: #b8860b;
+            --dream-purple: #4a154b;
+            --crystal-blue: #00b4d8;
+            --sparkle-white: #ffffff;
+            --card-bg: rgba(26, 38, 57, 0.85);
+            --font-family: 'Fredoka', 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, var(--bg-night) 0%, var(--dream-purple) 50%, #050a14 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px 15px;
+        }
+
+        /* Canvas background for stars and fireworks */
+        #effects-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* App container */
+        .app-container {
+            max-width: 860px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Glassmorphism & Gold Border Panels */
+        .disney-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 3px solid var(--magic-gold);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.2);
+            position: relative;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Gold Ornaments */
+        .disney-card::before {
+            content: "✨";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            font-size: 20px;
+            background: var(--bg-night);
+            padding: 0 8px;
+            border-radius: 50%;
+            border: 1px solid var(--magic-gold);
+        }
+
+        .disney-card::after {
+            content: "✨";
+            position: absolute;
+            bottom: -12px;
+            right: 20px;
+            font-size: 20px;
+            background: var(--bg-night);
+            padding: 0 8px;
+            border-radius: 50%;
+            border: 1px solid var(--magic-gold);
+        }
+
+        h1, h2, h3 {
+            color: var(--magic-gold);
+            text-shadow: 0 2px 8px rgba(255, 215, 0, 0.4), 0 0 20px rgba(0, 180, 216, 0.3);
+            text-align: center;
+        }
+
+        p {
+            color: #d1d5db;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .disney-btn {
+            background: linear-gradient(135deg, var(--magic-gold) 0%, var(--magic-gold-dark) 100%);
+            color: #1a0f00;
+            font-family: var(--font-family);
+            font-weight: 700;
+            font-size: 1.05rem;
+            border: 2px solid #fff;
+            border-radius: 50px;
+            padding: 12px 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .disney-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.7);
+            background: linear-gradient(135deg, #ffe033 0%, #d49b00 100%);
+        }
+
+        .disney-btn:active {
+            transform: translateY(1px);
+        }
+
+        .disney-btn-blue {
+            background: linear-gradient(135deg, var(--crystal-blue) 0%, #0077b6 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.4);
+        }
+
+        .disney-btn-blue:hover {
+            background: linear-gradient(135deg, #33c5e0 0%, #005f92 100%);
+            box-shadow: 0 6px 25px rgba(0, 180, 216, 0.7);
+        }
+
+        /* Login Form Inputs */
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            color: var(--crystal-blue);
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            background: rgba(13, 27, 42, 0.7);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--magic-gold);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Game Screen Layout */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: rgba(10, 18, 30, 0.8);
+            border: 2px solid var(--crystal-blue);
+            border-radius: 16px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+        }
+
+        .player-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .timer-badge {
+            background: linear-gradient(135deg, #3a0ca3 0%, var(--dream-purple) 100%);
+            border: 1px solid var(--magic-gold);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            color: var(--magic-gold);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .step-item {
+            background: linear-gradient(135deg, rgba(20, 35, 55, 0.9) 0%, rgba(35, 20, 50, 0.9) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            cursor: grab;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .step-item:hover {
+            border-color: var(--magic-gold);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .step-item.dragging {
+            opacity: 0.4;
+            transform: scale(0.98);
+        }
+
+        .step-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--magic-gold);
+            color: #1a0f00;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+        }
+
+        .step-text {
+            font-size: 0.95rem;
+            color: #f0f6fc;
+            text-align: left;
+        }
+
+        .step-title {
+            color: var(--crystal-blue);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .step-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .btn-arrow {
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid var(--magic-gold);
+            color: var(--magic-gold);
+            border-radius: 8px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-arrow:hover:not(:disabled) {
+            background: var(--magic-gold);
+            color: #000;
+        }
+
+        .btn-arrow:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+            border-color: #666;
+        }
+
+        /* Modal Style */
+        .disney-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 10, 20, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .disney-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .disney-modal {
+            background: linear-gradient(135deg, #18283b 0%, #2a1236 100%);
+            border: 3px solid var(--magic-gold);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .disney-modal-overlay.active .disney-modal {
+            transform: scale(1);
+        }
+
+        /* Certificate Styling */
+        .certificate-wrapper {
+            background: #fff;
+            color: #1a1a1a;
+            border: 12px double var(--magic-gold-dark);
+            border-radius: 16px;
+            padding: 40px 30px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            margin-bottom: 25px;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .certificate-watermark {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.04;
+            font-size: 220px;
+            pointer-events: none;
+        }
+
+        .certificate-title {
+            font-size: 2rem;
+            color: #1b0c2e;
+            margin-bottom: 5px;
+            font-family: 'Fredoka', serif;
+            letter-spacing: 2px;
+        }
+
+        .certificate-subtitle {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--magic-gold-dark);
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .cert-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+            background: #fdfbf7;
+            border: 1px solid #e0d0b0;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .cert-info-item label {
+            font-size: 0.75rem;
+            color: #666;
+            display: block;
+        }
+
+        .cert-info-item span {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .cert-seal {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #ffe066 0%, #d49b00 100%);
+            border: 3px solid #fff;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Fade Animations */
+        .fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .fade-in {
+            opacity: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Print optimization */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                padding: 0 !important;
+            }
+
+            #effects-canvas, .no-print {
+                display: none !important;
+            }
+
+            .app-container {
+                max-width: 100% !important;
+            }
+
+            .certificate-wrapper {
+                box-shadow: none !important;
+                border: 8px double #b8860b !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas background for dynamic Disney fireworks and starry particles -->
+    <canvas id="effects-canvas"></canvas>
+
+    <div class="app-container">
+
+        <!-- MODULE 1: LOGIN SCREEN -->
+        <div id="login-screen" class="disney-card">
+            <h2>🏰 迪士尼奇幻顯微鏡探索樂園</h2>
+            <p style="margin-top: 8px; margin-bottom: 25px; text-align: center;">
+                歡迎來到皇家生物學實驗室！請輸入你的魔法師資料，開啟顯微鏡操作順序挑戰。
+            </p>
+
+            <form id="login-form" onsubmit="event.preventDefault(); handleLogin();">
+                <div class="form-group">
+                    <label for="student-name">✨ 魔法師姓名 (Student Name)</label>
+                    <input type="text" id="student-name" class="form-control" placeholder="例如：米奇 / 張小明">
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="student-class">🏰 班別 (Class)</label>
+                        <input type="text" id="student-class" class="form-control" placeholder="例如：1A">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="student-number">📜 班號 (Class No.)</label>
+                        <input type="text" id="student-number" class="form-control" placeholder="例如：05">
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 15px;">
+                    <button type="submit" class="disney-btn" style="width: 100%;">
+                        <span>🌟 開始魔法挑戰 🌟</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- MODULE 2 & 3: GAME SCREEN -->
+        <div id="game-screen" class="disney-card hidden">
+            <!-- Header Info Bar -->
+            <div class="game-header">
+                <div class="player-badge">
+                    <span>🧙‍♂️</span>
+                    <div>
+                        <strong id="display-player-name" style="color: var(--magic-gold);">---</strong>
+                        <span id="display-player-class" style="font-size: 0.85rem; color: var(--crystal-blue); margin-left: 6px;">(--)</span>
+                    </div>
+                </div>
+                <div class="timer-badge">
+                    ⏱️ 魔法探索用時：<span id="timer-count">0</span> 秒
+                </div>
+            </div>
+
+            <h3>🪄 排列正確的顯微鏡操作順序</h3>
+            <p style="font-size: 0.85rem; text-align: center; margin-bottom: 15px; color: #a0aec0;">
+                使用滑鼠拖曳卡片，或點擊右側的「▲ / ▼」按鈕調整位置：
+            </p>
+
+            <!-- Step Cards List -->
+            <div id="steps-container" class="steps-container">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <!-- Submit Action -->
+            <div style="text-align: center;">
+                <button onclick="submitGameAnswer()" class="disney-btn disney-btn-blue" style="width: 100%; font-size: 1.1rem;">
+                    ✨ 驗證魔法答案 ✨
+                </button>
+            </div>
+        </div>
+
+        <!-- MODULE 4: CERTIFICATE SCREEN -->
+        <div id="cert-screen" class="hidden">
+            <div class="certificate-wrapper">
+                <div class="certificate-watermark">🏰</div>
+                
+                <div class="certificate-subtitle">Royal Microscope Academy</div>
+                <h1 class="certificate-title">迪士尼奇幻榮譽證書</h1>
+                <p style="color: #555; font-size: 0.95rem;">Certificate of Achievement</p>
+
+                <div style="margin: 25px 0;">
+                    <p style="color: #333; font-size: 1rem;">茲證明魔法師</p>
+                    <h2 id="cert-student-name" style="font-size: 2rem; color: var(--dream-purple); margin: 8px 0; text-shadow: none;">
+                        ---
+                    </h2>
+                    <p style="color: #555; font-size: 0.9rem;">
+                        （<span id="cert-student-class">--</span> 班 <span id="cert-student-number">--</span> 號）
+                    </p>
+                </div>
+
+                <p style="color: #444; font-size: 0.95rem; max-w: 500px; margin: 0 auto; line-height: 1.6;">
+                    在「光學顯微鏡標準操作順序挑戰」中成功破解所有魔法難題，展現卓越的生物學知識與嚴謹的科學精神！
+                </p>
+
+                <!-- Stats Grid -->
+                <div class="cert-info-grid">
+                    <div class="cert-info-item">
+                        <label>⏱️ 完成用時</label>
+                        <span id="cert-time">0 秒</span>
+                    </div>
+                    <div class="cert-info-item">
+                        <label>⭐ 最終得分</label>
+                        <span id="cert-score">100 分</span>
+                    </div>
+                    <div class="cert-info-item" style="grid-column: span 2;">
+                        <label>👑 迪士尼榮譽評級</label>
+                        <span id="cert-rank" style="color: #b8860b;">SSS級</span>
+                    </div>
+                </div>
+
+                <!-- Seal & Date -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+                    <div style="text-align: left; font-size: 0.85rem; color: #666;">
+                        <p>頒發日期：<strong id="cert-date">2026-01-01</strong></p>
+                        <p>發證單位：皇家奇幻生物實驗室</p>
+                    </div>
+                    <div class="cert-seal">
+                        🏰
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificate Control Buttons -->
+            <div class="no-print" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="window.print()" class="disney-btn">
+                    🖨️ 列印 / 儲存為 PDF 證書
+                </button>
+                <button onclick="restartGame()" class="disney-btn disney-btn-blue">
+                    🔄 再次挑戰
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Disney Style Modal -->
+    <div id="disney-modal" class="disney-modal-overlay">
+        <div class="disney-modal">
+            <div style="font-size: 40px; margin-bottom: 10px;">✨</div>
+            <h3 id="modal-title" style="margin-bottom: 12px;">迪士尼魔法溫馨提示</h3>
+            <p id="modal-body" style="font-size: 0.95rem; margin-bottom: 20px; color: #e2e8f0;"></p>
+            <button onclick="closeModal()" class="disney-btn" style="padding: 8px 24px; font-size: 0.95rem;">
+                明白！
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================
+           1. GAME DATA & STATE VARIABLES
+        ========================================================== */
+        const standardSteps = [
+            { id: 1, title: "Step 1: 取鏡安放", desc: "右手握臂、左手托座，將顯微鏡平穩置於桌面偏左處。" },
+            { id: 2, title: "Step 2: 對光調亮", desc: "轉至低倍物鏡並調整光源，使視野呈現明亮的白色光圈。" },
+            { id: 3, title: "Step 3: 固定玻片", desc: "將標本放上載物台夾緊，並將觀察目標正對通光孔中心。" },
+            { id: 4, title: "Step 4: 側視靠近", desc: "從側面注視，轉動粗調節器使載物台升至最高（玻片貼近物鏡）。" },
+            { id: 5, title: "Step 5: 遠離尋像", desc: "看著目鏡並轉動粗調節器使載物台逐漸下降（遠離物鏡）尋找物像，再轉細調節器調至清晰。" },
+            { id: 6, title: "Step 6: 目標居中", desc: "移動玻片，將欲放大觀察的部位移至視野正中央。" },
+            { id: 7, title: "Step 7: 高倍微調", desc: "轉至高倍物鏡並加大光圈，僅使用細調節器微調至清晰。" },
+            { id: 8, title: "Step 8: 復原歸位", desc: "取下玻片，將物鏡轉至兩側八字形，載物台降至最低後收納。" }
+        ];
+
+        let currentSteps = [];
+        let player = { name: "", class: "", number: "" };
+        let timer = 0;
+        let timerInterval = null;
+        let currentScore = 100;
+        let dragSrcIndex = null;
+
+        /* ==========================================================
+           2. CANVAS BACKGROUND & FIREWORKS ENGINE
+        ========================================================== */
+        const canvas = document.getElementById('effects-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let fireworks = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Background floating stars
+        class Star {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.alpha = Math.random();
+                this.speed = Math.random() * 0.02 + 0.005;
+            }
+            update() {
+                this.alpha += this.speed;
+                if (this.alpha > 1 || this.alpha < 0) {
+                    this.speed = -this.speed;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 215, 0, ${Math.abs(this.alpha)})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const stars = Array.from({ length: 60 }, () => new Star());
+
+        // Firework particles for victory
+        class FireworkParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.friction = 0.95;
+                this.gravity = 0.1;
+            }
+            update() {
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= 0.015;
+            }
+            draw() {
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function triggerVictoryFireworks() {
+            const colors = ['#ffd700', '#00b4d8', '#ffffff', '#ff4d6d', '#7000ff'];
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const cx = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
+                    const cy = Math.random() * canvas.height * 0.4 + canvas.height * 0.1;
+                    for (let p = 0; p < 50; p++) {
+                        fireworks.push(new FireworkParticle(cx, cy, colors[Math.floor(Math.random() * colors.length)]));
+                    }
+                }, i * 200);
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw floating stars
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+
+            // Draw fireworks particles
+            for (let i = fireworks.length - 1; i >= 0; i--) {
+                fireworks[i].update();
+                fireworks[i].draw();
+                if (fireworks[i].alpha <= 0) {
+                    fireworks.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        /* ==========================================================
+           3. LOGIN & TIMER LOGIC
+        ========================================================== */
+        function showModal(message, title = "迪士尼魔法溫馨提示") {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').textContent = message;
+            document.getElementById('disney-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('disney-modal').classList.remove('active');
+        }
+
+        function handleLogin() {
+            const name = document.getElementById('student-name').value.trim();
+            const cls = document.getElementById('student-class').value.trim();
+            const num = document.getElementById('student-number').value.trim();
+
+            if (!name || !cls || !num) {
+                showModal("請填寫完整的魔法師資料（姓名、班別、班號），才能開啟探索之旅！");
+                return;
+            }
+
+            player = { name, class: cls, number: num };
+
+            // Render Header Data
+            document.getElementById('display-player-name').textContent = player.name;
+            document.getElementById('display-player-class').textContent = `${player.class} 班 ${player.number} 號`;
+
+            // Transition
+            const loginScreen = document.getElementById('login-screen');
+            const gameScreen = document.getElementById('game-screen');
+
+            loginScreen.classList.add('fade-out');
+            setTimeout(() => {
+                loginScreen.classList.add('hidden');
+                loginScreen.classList.remove('fade-out');
+                gameScreen.classList.remove('hidden');
+                gameScreen.classList.add('fade-in');
+                initGame();
+            }, 300);
+        }
+
+        /* ==========================================================
+           4. GAME INTERACTION & SORTING ENGINE
+        ========================================================== */
+        function initGame() {
+            currentScore = 100;
+            timer = 0;
+            document.getElementById('timer-count').textContent = timer;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timer++;
+                document.getElementById('timer-count').textContent = timer;
+            }, 1000);
+
+            // Shuffle Steps Array
+            currentSteps = [...standardSteps];
+            shuffleArray(currentSteps);
+            renderStepCards();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function renderStepCards() {
+            const container = document.getElementById('steps-container');
+            container.innerHTML = '';
+
+            currentSteps.forEach((step, index) => {
+                const item = document.createElement('div');
+                item.className = 'step-item';
+                item.draggable = true;
+                item.dataset.index = index;
+
+                item.innerHTML = `
+                    <div class="step-content">
+                        <div class="step-number">${index + 1}</div>
+                        <div class="step-text">
+                            <span class="step-title">${step.title}</span>
+                            ${step.desc}
+                        </div>
+                    </div>
+                    <div class="step-controls">
+                        <button class="btn-arrow" onclick="moveStep(${index}, -1)" ${index === 0 ? 'disabled' : ''}>▲</button>
+                        <button class="btn-arrow" onclick="moveStep(${index}, 1)" ${index === currentSteps.length - 1 ? 'disabled' : ''}>▼</button>
+                    </div>
+                `;
+
+                // Drag & Drop Events
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('drop', handleDrop);
+                item.addEventListener('dragend', handleDragEnd);
+
+                container.appendChild(item);
+            });
+        }
+
+        function moveStep(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= currentSteps.length) return;
+            [currentSteps[index], currentSteps[newIndex]] = [currentSteps[newIndex], currentSteps[index]];
+            renderStepCards();
+        }
+
+        function handleDragStart(e) {
+            dragSrcIndex = Number(this.dataset.index);
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const targetIndex = Number(this.dataset.index);
+            if (dragSrcIndex !== null && dragSrcIndex !== targetIndex) {
+                const draggedItem = currentSteps.splice(dragSrcIndex, 1)[0];
+                currentSteps.splice(targetIndex, 0, draggedItem);
+                renderStepCards();
+            }
+        }
+
+        function handleDragEnd() {
+            this.classList.remove('dragging');
+        }
+
+        /* ==========================================================
+           5. SCORING & CERTIFICATE LOGIC
+        ========================================================== */
+        function submitGameAnswer() {
+            let incorrectCount = 0;
+
+            currentSteps.forEach((step, idx) => {
+                if (step.id !== standardSteps[idx].id) {
+                    incorrectCount++;
+                }
+            });
+
+            if (incorrectCount > 0) {
+                currentScore = Math.max(0, currentScore - 5);
+                showModal(`✨ 魔法尚未完全施展！共有 ${incorrectCount} 個步驟位置不正確，請重新調整！\n（目前得分扣至：${currentScore} 分）`);
+            } else {
+                // Perfect Match
+                clearInterval(timerInterval);
+                triggerVictoryFireworks();
+                
+                setTimeout(() => {
+                    showCertificate();
+                }, 800);
+            }
+        }
+
+        function getRankTitle(score) {
+            if (score === 100) return "👑 SSS級 迪士尼顯微鏡首席大師";
+            if (score >= 85) return "🌟 SS級 皇家生物學探索家";
+            if (score >= 70) return "📜 S級 奇幻實驗室助手";
+            if (score >= 60) return "🎈 A級 魔法學徒";
+            return "🪄 B級 努力中的小巫師";
+        }
+
+        function showCertificate() {
+            document.getElementById('game-screen').classList.add('hidden');
+            const certScreen = document.getElementById('cert-screen');
+            certScreen.classList.remove('hidden');
+
+            // Populate Certificate
+            document.getElementById('cert-student-name').textContent = player.name;
+            document.getElementById('cert-student-class').textContent = player.class;
+            document.getElementById('cert-student-number').textContent = player.number;
+            document.getElementById('cert-time').textContent = `${timer} 秒`;
+            document.getElementById('cert-score').textContent = `${currentScore} 分`;
+            document.getElementById('cert-rank').textContent = getRankTitle(currentScore);
+
+            // Format current date YYYY-MM-DD
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            document.getElementById('cert-date').textContent = dateStr;
+        }
+
+        function restartGame() {
+            document.getElementById('cert-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('login-form').reset();
+        }
+    </script>
+</body>
+</html>

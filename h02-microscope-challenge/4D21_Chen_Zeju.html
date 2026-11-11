@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-HK" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顯微鏡操作順序挑戰 - 頂級生物實驗評量</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti for Victory Celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', '"Outfit"', 'sans-serif'],
+                        mono: ['"Outfit"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #e0f2fe 0%, #bae6fd 30%, #f8fafc 100%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(186, 230, 253, 0.6);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.1), 0 8px 10px -6px rgba(2, 132, 199, 0.1);
+        }
+        .dragging {
+            opacity: 0.4;
+            transform: scale(0.98);
+            border: 2px dashed #0284c7 !important;
+            background: #e0f2fe !important;
+        }
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 2s infinite ease-in-out;
+        }
+        /* Certificate Print Styling */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #certificateScreen, #certificateScreen * {
+                visibility: visible;
+            }
+            #certificateScreen {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 30px;
+                box-shadow: none !important;
+                background: white !important;
+                border: 8px double #0e7490 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col justify-between min-h-screen">
+
+    <header class="bg-gradient-to-r from-cyan-800 via-cyan-700 to-blue-800 text-white shadow-xl py-4 px-6 md:px-10 flex flex-wrap justify-between items-center gap-4 border-b border-cyan-600">
+        <div class="flex items-center space-x-3">
+            <div class="bg-white/10 p-2.5 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
+                <i class="fa-solid fa-microscope text-2xl text-cyan-200"></i>
+            </div>
+            <div>
+                <h1 class="text-xl md:text-2xl font-black tracking-wide">光學顯微鏡操作順序挑戰</h1>
+                <p class="text-xs text-cyan-200 font-medium">中學生物實驗技能標準化考核系統 v2.6</p>
+            </div>
+        </div>
+        <div id="headerUserInfo" class="hidden text-xs md:text-sm bg-cyan-900/80 px-5 py-2.5 rounded-xl border border-cyan-500/40 backdrop-blur-md flex items-center space-x-4 shadow-sm">
+            <span><i class="fa-solid fa-user-graduate text-cyan-300 mr-1.5"></i> <strong id="dispName"></strong></span>
+            <span><i class="fa-solid fa-school text-cyan-300 mr-1.5"></i> <span id="dispClass"></span></span>
+            <span><i class="fa-solid fa-id-badge text-cyan-300 mr-1.5"></i> 號碼：<span id="dispNo"></span></span>
+            <button onclick="confirmReset()" class="ml-2 text-rose-300 hover:text-rose-100 transition" title="登出 / 重新開始">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl flex items-center justify-center">
+
+        <!-- 1. Login Screen Module -->
+        <section id="loginScreen" class="glass-card rounded-3xl card-shadow p-8 md:p-12 w-full max-w-lg transition-all duration-300 animate-fadeIn">
+            <div class="text-center mb-8">
+                <div class="inline-block bg-gradient-to-br from-cyan-500 to-blue-600 text-white p-5 rounded-3xl mb-4 shadow-lg shadow-cyan-500/30">
+                    <i class="fa-solid fa-graduation-cap text-4xl"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-800">學生身分登入驗證</h2>
+                <p class="text-sm text-slate-500 mt-2">請正確填寫個人資料，以便系統記錄您的實驗考核成績與產生榮譽證書</p>
+            </div>
+
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2" for="inputName">
+                        <i class="fa-solid fa-user text-cyan-600 mr-1.5"></i> 學生姓名 <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" id="inputName" required placeholder="例如：陳大文" 
+                           class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 bg-white/80 focus:ring-4 focus:ring-cyan-400/30 focus:border-cyan-600 focus:outline-none transition shadow-sm text-base">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2" for="inputClass">
+                            <i class="fa-solid fa-school text-cyan-600 mr-1.5"></i> 班別 <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="inputClass" required placeholder="例如：3A" 
+                               class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 bg-white/80 focus:ring-4 focus:ring-cyan-400/30 focus:border-cyan-600 focus:outline-none transition shadow-sm text-base">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2" for="inputNo">
+                            <i class="fa-solid fa-hashtag text-cyan-600 mr-1.5"></i> 班號 <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="inputNo" required placeholder="例如：12" 
+                               class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 bg-white/80 focus:ring-4 focus:ring-cyan-400/30 focus:border-cyan-600 focus:outline-none transition shadow-sm text-base">
+                    </div>
+                </div>
+
+                <div id="loginError" class="hidden bg-rose-50 border border-rose-200 text-rose-600 text-sm font-medium p-3 rounded-xl text-center flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>請完整填寫所有欄位（姓名、班別、班號），不可留空！</span>
+                </div>
+
+                <button type="submit" 
+                        class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-2xl shadow-xl shadow-cyan-600/30 hover:shadow-cyan-600/50 transition-all duration-200 flex items-center justify-center space-x-3 text-lg transform hover:-translate-y-0.5">
+                    <span>開始挑戰</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </section>
+
+        <!-- 2. Interactive Game Engine Screen -->
+        <section id="gameScreen" class="hidden w-full space-y-6">
+            <!-- Top Dashboard Stats -->
+            <div class="glass-card rounded-2xl card-shadow p-4 md:px-6 flex flex-wrap justify-between items-center gap-4 border border-cyan-100">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 bg-amber-50 text-amber-800 px-4 py-2.5 rounded-xl border border-amber-200 font-bold shadow-sm">
+                        <i class="fa-solid fa-star text-amber-500 text-lg"></i>
+                        <span>當前得分：<span id="currentScore" class="text-xl font-black">100</span> 分</span>
+                    </div>
+                    <div class="text-xs md:text-sm text-slate-500 bg-slate-100 px-3 py-2 rounded-xl">
+                        提交嘗試：<span id="attemptCount" class="font-bold text-slate-700">0</span> 次
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3 bg-cyan-50 text-cyan-900 px-5 py-2.5 rounded-xl border border-cyan-200 shadow-sm">
+                    <i class="fa-solid fa-stopwatch text-cyan-600 text-xl animate-pulse"></i>
+                    <span class="font-medium">實驗用時：<span id="timerDisplay" class="font-bold font-mono text-xl">0</span> 秒</span>
+                </div>
+            </div>
+
+            <!-- Instruction Banner -->
+            <div class="bg-gradient-to-r from-sky-50 to-cyan-50 border-l-4 border-cyan-600 p-4 md:p-5 rounded-r-2xl shadow-sm text-sm md:text-base text-cyan-950 flex items-start space-x-3">
+                <i class="fa-solid fa-circle-info text-cyan-600 text-lg mt-0.5"></i>
+                <div>
+                    <p class="font-bold mb-1">實驗操作指引：</p>
+                    <p class="text-slate-600 leading-relaxed">請將以下 8 個光學顯微鏡標準操作步驟卡片重新排序。您可透過滑鼠<strong>拖曳卡片</strong>，或點擊右側的<strong>「▲」「▼」按鈕</strong>上下調整。特別注意<strong>「側視靠近」必須在「遠離尋像」之前</strong>以防壓碎玻片！排列完畢後點擊下方按鈕進行檢查。</p>
+                </div>
+            </div>
+
+            <!-- Dynamic Feedback Box -->
+            <div id="feedbackBox" class="hidden p-4 rounded-2xl border text-sm md:text-base font-semibold shadow-md transition-all duration-300"></div>
+
+            <!-- Cards Container -->
+            <div id="cardsContainer" class="space-y-3.5">
+                <!-- Cards injected dynamically via JS -->
+            </div>
+
+            <!-- Submit Button Area -->
+            <div class="pt-4 flex justify-center">
+                <button id="submitBtn" 
+                        class="bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-700 hover:to-indigo-700 text-white font-bold py-4 px-12 rounded-2xl shadow-xl shadow-cyan-600/30 hover:shadow-cyan-600/50 transition-all duration-200 flex items-center space-x-3 text-lg transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-check-double text-xl"></i>
+                    <span>檢查答案 / 提交評分</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 4. Completion Certificate Screen -->
+        <section id="certificateScreen" class="hidden glass-card rounded-3xl card-shadow p-8 md:p-14 w-full max-w-2xl border-8 border-double border-cyan-700 text-center relative overflow-hidden transition-all duration-300">
+            <!-- Background Watermark Icon -->
+            <div class="absolute -right-12 -bottom-12 text-cyan-600 opacity-10 pointer-events-none transform rotate-12">
+                <i class="fa-solid fa-award text-9xl"></i>
+            </div>
+
+            <div class="border-b-2 border-cyan-200 pb-6 mb-6">
+                <div class="inline-flex bg-gradient-to-br from-amber-400 to-amber-600 text-white p-4 rounded-full mb-3 shadow-lg shadow-amber-500/30">
+                    <i class="fa-solid fa-medal text-3xl"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-black text-cyan-900 tracking-wider">電子榮譽證書</h2>
+                <p class="text-xs uppercase tracking-widest text-slate-400 font-semibold mt-1">Official Certificate of Microscope Mastery</p>
+            </div>
+
+            <div class="space-y-4 text-slate-700 text-base md:text-lg leading-relaxed text-justify md:text-center px-4">
+                <p>茲證明學生 <strong id="certName" class="text-cyan-800 border-b-2 border-cyan-400 px-1.5 font-bold"></strong> 於班別 <strong id="certClass" class="text-cyan-800"></strong>（座號：<strong id="certNo" class="text-cyan-800"></strong>），參與中學生物科「光學顯微鏡操作順序挑戰」表現卓越，順利通過嚴格的實驗技能考核！特此頒發本證書以茲鼓勵。</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 my-8 bg-white/90 p-6 rounded-2xl border border-cyan-200 shadow-inner text-left">
+                <div>
+                    <span class="block text-xs font-semibold text-slate-400 uppercase">完成實驗用時</span>
+                    <strong id="certTime" class="text-2xl text-cyan-900 font-mono font-black">0 秒</strong>
+                </div>
+                <div>
+                    <span class="block text-xs font-semibold text-slate-400 uppercase">最終考核得分</span>
+                    <strong id="certScore" class="text-2xl text-amber-600 font-black">100 分</strong>
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                    <span class="block text-xs font-semibold text-slate-400 uppercase">評級結果</span>
+                    <strong id="certGrade" class="text-xl text-emerald-600 font-black">卓越 A+</strong>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-center text-xs text-slate-500 mb-8 px-2 border-t border-cyan-100 pt-4">
+                <div>發證日期：<span id="certDate" class="font-bold text-slate-700"></span></div>
+                <div class="font-bold text-cyan-800 tracking-wide">生物實驗技能檢定委員會核發</div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 no-print">
+                <button onclick="window.print()" 
+                        class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold py-3.5 px-7 rounded-2xl shadow-lg shadow-cyan-600/30 transition flex items-center space-x-2.5 text-base">
+                    <i class="fa-solid fa-print"></i>
+                    <span>列印 / 存為 PDF 證書</span>
+                </button>
+                <button onclick="restartGame()" 
+                        class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3.5 px-7 rounded-2xl transition flex items-center space-x-2.5 text-base">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>重新挑戰</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 text-xs text-slate-500 no-print border-t border-cyan-200/60 bg-white/40">
+        &copy; 2026 光學顯微鏡互動實驗教學系統 | Designed for Biologically Precise & Flawless Learning
+    </footer>
+
+    <script>
+        // Standard 8 Microscope Steps with absolute biological precision
+        const standardSteps = [
+            { id: 1, text: "取鏡安放：右手握臂、左手托座，將顯微鏡平穩置於桌面偏左處。" },
+            { id: 2, text: "對光調亮：轉至低倍物鏡並調整光源，使視野呈現明亮的白色光圈。" },
+            { id: 3, text: "固定玻片：將標本放上載物台夾緊，並將觀察目標正對通光孔中心。" },
+            { id: 4, text: "側視靠近：從側面注視，轉動粗調節器使載物台升至最高（玻片貼近物鏡）。" },
+            { id: 5, text: "遠離尋像：看著目鏡並轉動粗調節器使載物台逐漸下降（遠離物鏡）尋找物像，再轉細調節器調至清晰。" },
+            { id: 6, text: "目標居中：移動玻片，將欲放大觀察的部位移至視野正中央。" },
+            { id: 7, text: "高倍微調：轉至高倍物鏡並加大光圈，僅使用細調節器微調至清晰。" },
+            { id: 8, text: "復原歸位：取下玻片，將物鏡轉至兩側八字形，載物台降至最低後收納。" }
+        ];
+
+        let studentData = { name: '', classGroup: '', studentNo: '' };
+        let currentCards = [];
+        let score = 100;
+        let attemptCount = 0;
+        let timerInterval = null;
+        let secondsElapsed = 0;
+        let draggedIndex = null;
+
+        // DOM Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const certificateScreen = document.getElementById('certificateScreen');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const cardsContainer = document.getElementById('cardsContainer');
+        const submitBtn = document.getElementById('submitBtn');
+        const feedbackBox = document.getElementById('feedbackBox');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const currentScoreEl = document.getElementById('currentScore');
+        const attemptCountEl = document.getElementById('attemptCount');
+        const headerUserInfo = document.getElementById('headerUserInfo');
+        const dispName = document.getElementById('dispName');
+        const dispClass = document.getElementById('dispClass');
+        const dispNo = document.getElementById('dispNo');
+
+        // Handle Login Submission with validation
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('inputName').value.trim();
+            const classGroup = document.getElementById('inputClass').value.trim();
+            const studentNo = document.getElementById('inputNo').value.trim();
+
+            if (!name || !classGroup || !studentNo) {
+                loginError.classList.remove('hidden');
+                return;
+            }
+            loginError.classList.add('hidden');
+
+            studentData = { name, classGroup, studentNo };
+            dispName.textContent = name;
+            dispClass.textContent = classGroup;
+            dispNo.textContent = studentNo;
+
+            // Screen transition
+            loginScreen.classList.add('hidden');
+            headerUserInfo.classList.remove('hidden');
+            gameScreen.classList.remove('hidden');
+
+            initGame();
+        });
+
+        // Initialize Game State & Shuffle Cards
+        function initGame() {
+            score = 100;
+            attemptCount = 0;
+            secondsElapsed = 0;
+            currentScoreEl.textContent = score;
+            attemptCountEl.textContent = attemptCount;
+            feedbackBox.classList.add('hidden');
+
+            // Deep shuffle ensuring cards are not in correct sequence
+            currentCards = [...standardSteps];
+            do {
+                currentCards.sort(() => Math.random() - 0.5);
+            } while (isCurrentOrderCorrect());
+
+            renderCards();
+            startTimer();
+        }
+
+        // Timer Control
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                timerDisplay.textContent = secondsElapsed;
+            }, 1000);
+        }
+
+        // Render Sortable Cards with touch/mouse support
+        function renderCards() {
+            cardsContainer.innerHTML = '';
+            currentCards.forEach((card, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'glass-card p-4 md:p-5 rounded-2xl card-shadow flex items-center justify-between cursor-grab active:cursor-grabbing hover:border-cyan-400 transition-all transform hover:-translate-y-0.5';
+                cardEl.setAttribute('draggable', 'true');
+                cardEl.dataset.index = index;
+
+                cardEl.innerHTML = `
+                    <div class="flex items-center space-x-3.5 md:space-x-4 flex-grow mr-2">
+                        <div class="bg-gradient-to-br from-cyan-600 to-blue-700 text-white font-black w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-sm shadow-md">
+                            ${index + 1}
+                        </div>
+                        <div class="text-sm md:text-base text-slate-800 font-semibold leading-relaxed">
+                            ${card.text}
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-1.5 flex-shrink-0">
+                        <button type="button" onclick="moveCard(${index}, -1)" class="p-2 text-slate-400 hover:text-cyan-700 hover:bg-cyan-100/70 rounded-xl transition" title="往上移動">
+                            <i class="fa-solid fa-chevron-up text-sm"></i>
+                        </button>
+                        <button type="button" onclick="moveCard(${index}, 1)" class="p-2 text-slate-400 hover:text-cyan-700 hover:bg-cyan-100/70 rounded-xl transition" title="往下移動">
+                            <i class="fa-solid fa-chevron-down text-sm"></i>
+                        </button>
+                        <div class="text-slate-300 ml-1 hidden sm:block">
+                            <i class="fa-solid fa-grip-vertical"></i>
+                        </div>
+                    </div>
+                `;
+
+                // HTML5 Drag and Drop Event Listeners
+                cardEl.addEventListener('dragstart', handleDragStart);
+                cardEl.addEventListener('dragover', handleDragOver);
+                cardEl.addEventListener('drop', handleDrop);
+                cardEl.addEventListener('dragend', handleDragEnd);
+
+                cardsContainer.appendChild(cardEl);
+            });
+        }
+
+        // Drag and Drop Logic
+        function handleDragStart(e) {
+            draggedIndex = parseInt(this.dataset.index);
+            this.classList.add('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const targetIndex = parseInt(this.dataset.index);
+            if (draggedIndex !== null && draggedIndex !== targetIndex) {
+                const movedItem = currentCards.splice(draggedIndex, 1)[0];
+                currentCards.splice(targetIndex, 0, movedItem);
+                renderCards();
+            }
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            draggedIndex = null;
+        }
+
+        // Move card via Up/Down buttons
+        window.moveCard = function(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= currentCards.length) return;
+            const item = currentCards.splice(index, 1)[0];
+            currentCards.splice(newIndex, 0, item);
+            renderCards();
+        }
+
+        // Check if current order is correct
+        function isCurrentOrderCorrect() {
+            for (let i = 0; i < currentCards.length; i++) {
+                if (currentCards[i].id !== standardSteps[i].id) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Submit & Evaluation Mechanism
+        submitBtn.addEventListener('click', () => {
+            attemptCount++;
+            attemptCountEl.textContent = attemptCount;
+
+            let incorrectCount = 0;
+            for (let i = 0; i < currentCards.length; i++) {
+                if (currentCards[i].id !== standardSteps[i].id) {
+                    incorrectCount++;
+                }
+            }
+
+            feedbackBox.classList.remove('hidden');
+
+            if (incorrectCount === 0) {
+                // All Correct! Stop timer and trigger celebration
+                clearInterval(timerInterval);
+                feedbackBox.className = "p-4 rounded-2xl border bg-emerald-50 border-emerald-300 text-emerald-900 text-sm md:text-base font-bold flex items-center space-x-3 shadow-md";
+                feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-2xl"></i> <span>太棒了！所有 8 個顯微鏡步驟完全正確！恭喜完美通關！</span>`;
+                
+                // Trigger celebratory confetti
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+
+                setTimeout(() => {
+                    showCertificate();
+                }, 1500);
+            } else {
+                // Has errors, deduct 5 points (minimum 0)
+                score = Math.max(0, score - 5);
+                currentScoreEl.textContent = score;
+
+                feedbackBox.className = "p-4 rounded-2xl border bg-rose-50 border-rose-300 text-rose-900 text-sm md:text-base font-medium flex items-center space-x-3 shadow-md animate-pulse-soft";
+                feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600 text-2xl"></i> <span>答案有誤：目前有 <strong>${incorrectCount}</strong> 個步驟位置不正確！本次提交已扣 5 分，請調整順序後重新提交。</span>`;
+            }
+        });
+
+        // Show Certificate Screen with dynamic evaluation
+        function showCertificate() {
+            gameScreen.classList.add('hidden');
+            certificateScreen.classList.remove('hidden');
+
+            document.getElementById('certName').textContent = studentData.name;
+            document.getElementById('certClass').textContent = studentData.classGroup;
+            document.getElementById('certNo').textContent = studentData.studentNo;
+            document.getElementById('certTime').textContent = secondsElapsed + " 秒";
+            document.getElementById('certScore').textContent = score + " 分";
+
+            // Dynamic Grade Assessment
+            let gradeText = "卓越 A+ (顯微鏡操作大師)";
+            if (score < 60) {
+                gradeText = "及格 C (操作熟練度需加強)";
+            } else if (score < 80) {
+                gradeText = "良好 B (實驗技巧不俗)";
+            } else if (score < 95) {
+                gradeText = "優秀 A (標準掌握流暢)";
+            }
+            document.getElementById('certGrade').textContent = gradeText;
+
+            // Format date
+            const today = new Date();
+            const dateStr = `${today.getFullYear()} 年 ${today.getMonth() + 1} 月 ${today.getDate()} 日`;
+            document.getElementById('certDate').textContent = dateStr;
+        }
+
+        // Restart or Reset Game
+        window.restartGame = function() {
+            certificateScreen.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+            headerUserInfo.classList.add('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        window.confirmReset = function() {
+            if (confirm("確定要重新登入並放棄當前進度嗎？")) {
+                restartGame();
+            }
+        }
+    </script>
+</body>
+</html>
