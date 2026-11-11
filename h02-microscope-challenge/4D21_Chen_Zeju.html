@@ -50,6 +50,45 @@
         .animate-pulse-soft {
             animation: pulse-soft 2s infinite ease-in-out;
         }
+        .student-identity {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            z-index: 50;
+            margin: 0;
+            padding: 10px 16px;
+            max-width: calc(100vw - 32px);
+            box-sizing: border-box;
+            background: #ffffff;
+            color: #111827;
+            border: 1px solid rgba(17, 24, 39, 0.16);
+            border-radius: 14px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+            font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", "Noto Sans CJK TC", "WenQuanYi Micro Hei", sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        body:has(#loginScreen.hidden) .student-identity {
+            display: none;
+        }
+
+        body:not(:has(#loginScreen.hidden)) {
+            padding-bottom: 76px;
+        }
+
+        @media (max-width: 480px), (max-height: 640px) {
+            .student-identity {
+                right: 10px;
+                bottom: 10px;
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+        }
+
         /* Certificate Print Styling */
         @media print {
             body * {
@@ -76,6 +115,7 @@
     </style>
 </head>
 <body class="text-slate-800 flex flex-col justify-between min-h-screen">
+    <p class="student-identity">陳澤駒 (Chen Zeju)4D21</p>
 
     <header class="bg-gradient-to-r from-cyan-800 via-cyan-700 to-blue-800 text-white shadow-xl py-4 px-6 md:px-10 flex flex-wrap justify-between items-center gap-4 border-b border-cyan-600">
         <div class="flex items-center space-x-3">
