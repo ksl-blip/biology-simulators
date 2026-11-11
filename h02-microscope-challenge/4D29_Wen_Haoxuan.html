@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#eef5f7">
+<title>微觀實驗室｜顯微鏡操作順序挑戰</title>
+<style>
+:root{--paper:#eef5f7;--ink:#173541;--muted:#52707c;--blue:#12657d;--line:#cfdee3;--white:#fff;--red:#a63336;--soft:#e0eef2;--radius:20px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.65}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(#648e9e21 1px,transparent 1px);background-size:24px 24px;z-index:-1}
+[hidden]{display:none!important}
+button,input{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+button:disabled{cursor:default;opacity:.3}
+button,input,a{-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #b07018;outline-offset:4px}
+h1,h2,h3,p{margin:0}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.2;letter-spacing:-1.5px}
+h2{font-size:clamp(24px,3vw,32px);line-height:1.3}
+h3{font-size:18px}
+small{font-size:13px}
+.shell{max-width:1152px;margin:auto;padding:0 28px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 0;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;font-size:17px;font-weight:700}
+.mark{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--blue);border-radius:50%;font-size:23px;color:var(--blue)}
+.micro{font:11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:2px}
+.tag{border:1px solid var(--line);border-radius:99px;padding:5px 12px;font-size:12px;white-space:nowrap}
+.muted{color:var(--muted)}
+.eyebrow{display:flex;align-items:center;gap:9px;color:var(--blue);margin-bottom:20px}
+.eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:#25818c;box-shadow:0 0 0 4px #25818c12}
+.intro{display:grid;grid-template-columns:1.08fr 1fr;gap:60px;align-items:center;padding:50px 0 32px}
+.lead{font-size:17px;color:var(--muted);max-width:390px;margin:22px 0}
+.hero-visual{height:260px;position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 65%,#d3e8ec 0,transparent 66%)}
+.hero-visual:before,.hero-visual:after{content:"";position:absolute;width:224px;height:224px;border:1px solid #afccd377;border-radius:50%}
+.hero-visual:after{width:166px;height:166px}
+.instrument{width:270px;height:260px;z-index:1;filter:drop-shadow(0 12px 8px #193c4410)}
+.visual-note{position:absolute;font-size:11px;color:var(--muted);font-family:monospace;right:0;bottom:25px;text-align:right}
+.hero-meta{display:flex;gap:25px;border-top:1px solid var(--line);padding-top:20px}
+.hero-meta strong{display:block;font-size:23px;line-height:1.2}
+.hero-meta span{font-size:12px;color:var(--muted)}
+.panel{background:#ffffffeb;border:1px solid var(--line);border-radius:var(--radius);padding:30px;box-shadow:0 14px 50px #20455206}
+.form-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.form-heading .micro{color:var(--muted)}
+label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}
+input{width:100%;min-width:0;border:1px solid #bfced5;border-radius:9px;background:#f9fcfd;padding:12px 13px;font-size:16px;color:var(--ink)}
+input:focus{border-color:var(--blue)}
+.field{margin-bottom:18px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.btn{border:1px solid var(--blue);border-radius:10px;padding:13px 20px;min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:16px;background:var(--blue);color:white;font-weight:600;transition:background .18s,transform .18s}
+.btn:hover{background:#0e4b60}
+.btn:active{transform:translateY(1px)}
+.btn.secondary{background:transparent;color:var(--blue);border-color:var(--line)}
+.btn.secondary:hover{background:var(--soft)}
+.btn.full{width:100%;justify-content:space-between}
+.privacy{font-size:12px;color:var(--muted);margin-top:12px}
+.error{color:var(--red);font-size:14px;margin:10px 0}
+.rules{border-top:1px solid var(--line);margin-top:24px;padding-top:20px}
+.rules summary{cursor:pointer;font-size:14px;color:var(--blue);min-height:34px}
+.rules ul{padding-left:20px;font-size:14px;color:var(--muted);margin:8px 0 0}
+.foot{display:flex;gap:12px;justify-content:space-between;padding:24px 0;color:var(--muted);font-size:12px;border-top:1px solid var(--line);margin-top:24px}
+.game-heading{display:flex;justify-content:space-between;gap:20px;align-items:center;margin:30px 0 22px}
+.identity{font-size:14px;color:var(--muted);overflow-wrap:anywhere}
+.game-layout{display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:start}
+.telemetry{position:sticky;top:20px}
+.metric{display:flex;align-items:baseline;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
+.metric strong{font:600 28px ui-monospace,SFMono-Regular,Consolas,monospace;font-variant-numeric:tabular-nums}
+.metric span{font-size:13px;color:var(--muted)}
+.meter-title{font-size:12px;letter-spacing:1px;color:var(--blue)}
+.safety{font-size:13px;line-height:1.8;background:var(--soft);padding:16px;border-radius:12px;margin-top:22px}
+.safety strong{display:block;margin-bottom:4px}
+.sort-area{min-width:0}
+.sort-help{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;font-size:13px;color:var(--muted)}
+.sort-help .micro{font-size:10px;white-space:nowrap}
+.step-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.step{display:grid;grid-template-columns:36px 1fr 48px;gap:13px;align-items:center;border:1px solid var(--line);border-radius:13px;background:var(--white);padding:16px;position:relative;transition:border-color .18s,box-shadow .18s}
+.step.dragging{border:2px solid var(--blue);background:#e8f4f7;box-shadow:0 8px 24px #1b5d701c}
+.step.over{box-shadow:0 -4px 0 var(--blue)}
+.step .position{font:12px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted);text-align:center;margin-bottom:4px}
+.grip{border:0;background:#eff5f7;color:var(--blue);border-radius:8px;min-width:36px;min-height:48px;font-size:22px;touch-action:none;cursor:grab;user-select:none}
+.grip:active{cursor:grabbing}
+.step-title{font-size:17px;font-weight:700;line-height:1.4;margin-bottom:5px}
+.step-desc{font-size:14px;line-height:1.7;color:var(--muted);overflow-wrap:anywhere}
+.arrows{display:flex;flex-direction:column;gap:4px}
+.arrow{border:1px solid var(--line);background:#f9fcfd;color:var(--blue);border-radius:8px;width:48px;height:44px;font-size:16px}
+.arrow:hover:not(:disabled){background:var(--soft)}
+.submit-bar{position:sticky;bottom:0;z-index:3;padding:14px 0 max(14px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#eef5ff 16%,var(--paper) 35%);display:flex;align-items:center;gap:16px;margin-top:10px}
+.submit-bar .btn{flex:1}
+.submit-note{font-size:12px;color:var(--muted)}
+.feedback{padding:14px 17px;border-radius:10px;background:#fbecee;border:1px solid #ebc9ce;color:#822d32;font-size:14px;margin-bottom:14px}
+.feedback:empty{display:none}
+.move-live{min-height:23px;font-size:12px;color:var(--blue);margin-top:8px}
+.mini-scope{width:100%;height:150px;margin-top:16px}
+.certificate-wrap{max-width:880px;margin:35px auto}
+.success-heading{text-align:center;margin-bottom:26px}
+.success-heading .eyebrow{justify-content:center;margin-bottom:12px}
+.certificate{background:#fffef9;border:1px solid #adbec1;box-shadow:0 15px 60px #16354009;padding:42px;position:relative;text-align:center;overflow:hidden}
+.certificate:before{content:"";position:absolute;inset:11px;border:1px solid #d7dfdc;pointer-events:none}
+.cert-kicker{font:11px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:3px;color:var(--muted);margin-top:10px}
+.certificate h2{font-size:36px;letter-spacing:5px;margin:18px 0 6px}
+.cert-sub{color:var(--muted);font-size:14px}
+.cert-name{font-size:clamp(26px,5vw,38px);font-weight:700;margin:23px 0 2px;overflow-wrap:anywhere}
+.cert-identity{font-size:14px;color:var(--muted)}
+.cert-text{max-width:530px;margin:22px auto;color:var(--muted);font-size:15px;line-height:1.9}
+.cert-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;margin:22px 0}
+.cert-stats strong{display:block;font-size:24px;line-height:1.4}
+.cert-stats span{font-size:12px;color:var(--muted)}
+.cert-bottom{display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;font-size:12px;color:var(--muted)}
+.seal{width:84px;height:84px;border:3px double #407784;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--blue);transform:rotate(-9deg);flex-shrink:0;background:#e9f3f320}
+.seal b{font-size:22px}
+.seal span{font-size:10px;letter-spacing:2px}
+.cert-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:24px 0 12px}
+.print-help{text-align:center;font-size:12px;color:var(--muted)}
+.review{margin-top:24px}
+.review summary{cursor:pointer;font-weight:600;color:var(--blue);padding:12px 0}
+.review ol{padding-left:27px;font-size:14px}
+.review li{padding:7px 0;color:var(--muted)}
+.review li strong{color:var(--ink)}
+.restart-link{font-size:13px;background:none;border:0;color:var(--blue);padding:12px;min-height:44px;text-decoration:underline}
+.fade-in{animation:reveal .35s ease-out}
+@keyframes reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.js-notice{padding:12px;border:1px solid #ceab74;background:#fff7e6;font-size:14px;margin-top:20px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+@media(min-width:1000px){
+ .intro{min-height:690px}
+ .intro-copy{padding-right:20px}
+}
+@media(max-width:760px){
+ .shell{padding:0 18px}
+ .topbar{padding:18px 0}
+ .topbar>.micro,.topbar>.tag,.form-heading>.micro{display:none}
+ .intro{grid-template-columns:1fr;gap:26px;padding:30px 0}
+ .intro-copy h1 br{display:none}
+ h1{font-size:36px}
+ .lead{margin:16px 0}
+ .hero-visual{height:185px}
+ .instrument{height:190px;width:200px}
+ .hero-visual:before{width:170px;height:170px}
+ .hero-visual:after{width:128px;height:128px}
+ .visual-note{bottom:10px}
+ .hero-meta{gap:30px}
+ .panel{padding:23px}
+ .game-layout{grid-template-columns:1fr;gap:14px}
+ .telemetry{position:static;display:grid;grid-template-columns:repeat(3,1fr);padding:14px 16px;gap:12px}
+ .meter-title,.mini-scope{display:none}
+ .metric{padding:0;border:0;display:block}
+ .metric strong{font-size:24px;display:block;margin-top:5px}
+ .safety{grid-column:1/-1;margin:0;font-size:12px;padding:10px 12px}
+ .safety strong{display:inline}
+ .game-heading{align-items:flex-start;margin:24px 0 18px}
+ .game-heading h2{font-size:25px}
+ .game-heading .restart-link{white-space:nowrap;padding:6px}
+ .sort-help .micro{display:none}
+ .step{padding:12px;gap:10px;grid-template-columns:36px 1fr 44px}
+ .arrow{width:44px}
+ .step-title{font-size:16px}
+ .step-desc{font-size:14px}
+ .submit-note{max-width:96px}
+ .certificate{padding:29px 23px}
+ .certificate h2{font-size:29px;letter-spacing:2px}
+ .cert-stats strong{font-size:20px}
+ .cert-text{font-size:14px}
+ .cert-bottom{gap:8px;flex-wrap:wrap;justify-content:center}
+ .cert-bottom>div:not(.seal){flex:1;min-width:115px}
+ .foot{flex-wrap:wrap}
+ .cert-actions .btn{flex:1;white-space:nowrap}
+ .certificate-wrap{margin-top:25px}
+ .form-heading h2{font-size:25px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+@page{size:A4 portrait;margin:18mm}
+@media print{
+ body{background:#fff;color:#173541;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ body:before,.topbar,.foot,#login-screen,#game-screen,.success-heading,.cert-actions,.print-help,.review,.js-notice{display:none!important}
+ .shell{padding:0;max-width:none}
+ #result-screen{display:block!important}
+ .certificate-wrap{margin:15mm 0 0;max-width:none}
+ .certificate{padding:15mm 10mm;box-shadow:none;break-inside:avoid;border:1px solid #66808a}
+ .certificate h2{font-size:32pt}
+ .cert-name{font-size:28pt}
+ .cert-text{font-size:12pt}
+ .cert-stats{margin:10mm 0;padding:8mm 0}
+ .cert-stats strong{font-size:20pt}
+ .cert-bottom{margin-top:10mm}
+ .cert-kicker{font-size:9pt}
+}
+</style>
+</head>
+<body>
+
+<!-- 所有圖像、樣式與程式均在此檔案內，毋須載入外部資源。 -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+<defs>
+ <linearGradient id="body-metal" x1="0" x2="1">
+  <stop stop-color="#9bb9c5"/>
+  <stop offset=".48" stop-color="#f8fcfd"/>
+  <stop offset="1" stop-color="#bcd0d8"/>
+ </linearGradient>
+ <linearGradient id="arm-metal" x1="0" x2="1">
+  <stop stop-color="#2b6071"/>
+  <stop offset="1" stop-color="#123747"/>
+ </linearGradient>
+ <symbol id="microscope" viewBox="0 0 300 290">
+  <ellipse cx="150" cy="268" rx="109" ry="8" fill="#bdcfd5" opacity=".5"/>
+  <path d="M186 98C247 111 255 189 213 233L203 249H143L164 225C204 188 205 148 174 133Z" fill="url(#arm-metal)" stroke="#163e4b" stroke-width="2"/>
+  <path d="M84 247H208L234 265H62Z" fill="url(#body-metal)" stroke="#668e9e" stroke-width="2"/>
+  <path d="M105 221H164L173 247H91Z" fill="#cadde3" stroke="#7f9ca8"/>
+  <ellipse cx="132" cy="223" rx="21" ry="7" fill="#e9ffff" stroke="#84adb9"/>
+  <path d="M124 185V218" stroke="#8cb6c5" stroke-width="7" opacity=".35"/>
+  <path d="M77 179H194V191H77Z" fill="#234b5b"/>
+  <path d="M88 177H143" stroke="#59abc4" stroke-width="3"/>
+  <path d="M91 175V168H111M144 175V168H124" fill="none" stroke="#a2bac1" stroke-width="3"/>
+  <path d="M140 67L161 80L134 130L112 117Z" fill="url(#body-metal)" stroke="#648899" stroke-width="2"/>
+  <path d="M139 60L151 39L174 53L162 74Z" fill="#1e4656"/>
+  <path d="M149 38L177 53" stroke="#102e3b" stroke-width="8"/>
+  <path d="M118 115L145 130L135 141L108 127Z" fill="#315d6e"/>
+  <path d="M110 129L99 150L107 156L119 134M130 140V162H140V136" fill="#b9d3dc" stroke="#5b8697" stroke-width="3"/>
+  <path d="M129 158H141" stroke="#baaa64" stroke-width="4"/>
+  <circle cx="203" cy="160" r="21" fill="#c7dce3" stroke="#153b4a" stroke-width="5"/>
+  <circle cx="203" cy="160" r="10" fill="#315c6e"/>
+  <circle cx="211" cy="182" r="8" fill="#d9e7ec" stroke="#315c6e" stroke-width="3"/>
+  <path d="M36 212H72M54 194V230M229 64H257M243 50V78" stroke="#83a7b4" stroke-width="1" opacity=".6"/>
+ </symbol>
+</defs>
+</svg>
+
+<div class="shell">
+ <header class="topbar">
+  <div class="brand">
+   <span class="mark" aria-hidden="true">⌖</span>
+   微觀實驗室
+   <span class="micro muted">MICRO LAB</span>
+  </div>
+  <span class="micro muted">BIOLOGY / PRACTICAL 02</span>
+  <span class="tag">顯微鏡操作挑戰</span>
+ </header>
+
+ <div id="startup-notice" class="js-notice">
+  遊戲程式尚未啟動。若此提示持續出現，請下載完整 HTML 並用支援 JavaScript 的瀏覽器開啟；檔案預覽模式未必可操作。
+ </div>
+
+ <main>
+  <!-- 學生資料及開始畫面 -->
+  <section id="login-screen" class="intro fade-in" aria-labelledby="login-title">
+   <div class="intro-copy">
+    <div class="eyebrow micro">A SMALL WORLD. A PRECISE START.</div>
+    <h1 id="login-title">看見微小世界，<br>從正確操作開始。</h1>
+    <p class="lead">
+     八個步驟，一次完整觀察。<br>
+     重新排列顯微鏡操作流程，完成你的實驗室挑戰。
+    </p>
+
+    <div class="hero-visual">
+     <svg class="instrument" role="img" aria-label="光學顯微鏡示意圖">
+      <use href="#microscope"/>
+     </svg>
+     <span class="visual-note">OPTICAL MICROSCOPE<br>升降載物台式</span>
+    </div>
+
+    <div class="hero-meta">
+     <div><strong>08</strong><span>標準操作步驟</span></div>
+     <div><strong>100</strong><span>起始分數</span></div>
+     <div><strong>−5</strong><span>每次提交錯誤</span></div>
+    </div>
+   </div>
+
+   <div class="panel">
+    <div class="form-heading">
+     <h2>準備進入實驗室</h2>
+     <span class="micro">01 / CHECK IN</span>
+    </div>
+    <p class="muted" style="font-size:14px;margin-bottom:22px">
+     填寫學生資料，完成後將印在你的榮譽證書上。
+    </p>
+
+    <form id="student-form" novalidate>
+     <div class="field">
+      <label for="student-name">姓名</label>
+      <input id="student-name" name="studentName"
+       placeholder="請輸入姓名" required maxlength="40" autocomplete="name">
+     </div>
+     <div class="field-row">
+      <div class="field">
+       <label for="student-class">班別</label>
+       <input id="student-class" name="studentClass"
+        placeholder="例如 1A" required maxlength="12" autocapitalize="characters">
+      </div>
+      <div class="field">
+       <label for="student-number">班號</label>
+       <input id="student-number" name="studentNumber"
+        placeholder="例如 05" required maxlength="8" inputmode="numeric">
+      </div>
+     </div>
+     <p id="form-error" class="error" role="alert" hidden></p>
+     <button class="btn full" type="submit">
+      開始挑戰 <span aria-hidden="true">↗</span>
+     </button>
+     <p class="privacy">資料只供本次遊戲及證書顯示，不會上傳或儲存。</p>
+    </form>
+
+    <details class="rules" open>
+     <summary>玩法與評分</summary>
+     <ul>
+      <li>拖動卡片左側把手，或按 ▲／▼ 調整順序。</li>
+      <li>開始挑戰即計時，直至八步全部正確。</li>
+      <li>每次提交有錯扣 5 分，最低 0 分；可無限重試。</li>
+      <li>90–100 分：卓越；75–85 分：良好；60–70 分：達標；0–55 分：完成挑戰。</li>
+      <li>時間只作記錄，安全與準確更重要。</li>
+     </ul>
+    </details>
+   </div>
+  </section>
+
+  <!-- 排序遊戲 -->
+  <section id="game-screen" hidden aria-labelledby="game-title">
+   <div class="game-heading">
+    <div>
+     <div class="eyebrow micro" style="margin-bottom:9px">02 / SEQUENCE CHALLENGE</div>
+     <h2 id="game-title" tabindex="-1">排好順序，開始觀察。</h2>
+     <p class="identity" id="student-display"></p>
+    </div>
+    <button class="restart-link" id="leave-game" type="button">重新填寫資料</button>
+   </div>
+
+   <div class="game-layout">
+    <aside class="telemetry panel" aria-label="挑戰狀態">
+     <div class="meter-title">本次實驗 / SESSION</div>
+     <div class="metric">
+      <span>完成用時 · 秒</span>
+      <strong id="timer">0.0</strong>
+     </div>
+     <div class="metric">
+      <span>目前分數</span>
+      <strong id="score">100</strong>
+     </div>
+     <div class="metric">
+      <span>錯誤提交次數</span>
+      <strong id="attempts">0</strong>
+     </div>
+     <svg class="mini-scope" aria-hidden="true"><use href="#microscope"/></svg>
+     <div class="safety">
+      <strong>安全觀察小提醒</strong>
+      玻片與物鏡不可接觸。靠近時從側面觀察；高倍觀察只用細調節器。
+      實物操作須依老師指示及儀器型號進行。
+     </div>
+    </aside>
+
+    <div class="sort-area">
+     <div class="sort-help">
+      <span>由上至下排列八個操作步驟</span>
+      <span class="micro">DRAG TO REORDER</span>
+     </div>
+     <div id="feedback" class="feedback" role="alert" tabindex="-1"></div>
+     <ol id="step-list" class="step-list" aria-label="待排序的顯微鏡操作步驟"></ol>
+     <div id="move-status" class="move-live" role="status" aria-live="polite"></div>
+     <div class="submit-bar">
+      <button class="btn" id="submit-answer" type="button">
+       提交答案 <span aria-hidden="true">→</span>
+      </button>
+      <span class="submit-note">確認八步順序<br>每次錯誤扣 5 分</span>
+     </div>
+    </div>
+   </div>
+  </section>
+
+  <!-- 成績及證書 -->
+  <section id="result-screen" hidden aria-labelledby="result-title" class="certificate-wrap">
+   <div class="success-heading">
+    <div class="eyebrow micro">03 / CHALLENGE COMPLETE</div>
+    <h2 id="result-title" tabindex="-1">觀察之旅，由你開始。</h2>
+    <p class="muted" style="margin-top:8px">八個步驟全部正確，已完成本次挑戰。</p>
+   </div>
+
+   <article class="certificate" aria-label="電子榮譽證書">
+    <div class="cert-kicker">MICRO LAB · CERTIFICATE OF COMPLETION</div>
+    <h2>顯微鏡操作榮譽證書</h2>
+    <p class="cert-sub">光學顯微鏡操作順序挑戰</p>
+    <p class="cert-name" id="cert-name"></p>
+    <p class="cert-identity" id="cert-identity"></p>
+    <p class="cert-text">
+     已正確完成八項顯微鏡操作步驟排序，<br>
+     展現對觀察流程及安全操作次序的理解。<br>
+     謹以此證，記錄本次學習成果。
+    </p>
+
+    <div class="cert-stats">
+     <div>
+      <strong id="cert-score"></strong>
+      <span>最終得分 / 100</span>
+     </div>
+     <div>
+      <strong id="cert-time"></strong>
+      <span>完成用時 / 秒</span>
+     </div>
+     <div>
+      <strong id="cert-rating"></strong>
+      <span>挑戰評級</span>
+     </div>
+    </div>
+
+    <div class="cert-bottom">
+     <div>
+      完成日期<br>
+      <strong id="cert-date"></strong><br>
+      <span id="cert-attempts"></span>
+     </div>
+     <div class="seal" aria-label="八步挑戰完成">
+      <b>8 / 8</b><span>COMPLETED</span>
+     </div>
+     <div style="text-align:right">
+      微觀實驗室<br>MICRO LAB<br>學習紀錄 · 非實作資格認證
+     </div>
+    </div>
+   </article>
+
+   <div class="cert-actions">
+    <button class="btn" id="print-certificate" type="button">列印 / 存為 PDF</button>
+    <button class="btn secondary" id="retry-game" type="button">重新挑戰</button>
+   </div>
+   <p class="print-help">
+    在列印視窗選擇「另存為 PDF」；手機可使用系統提供的列印或分享功能。
+   </p>
+   <details class="review">
+    <summary>查看正確操作流程</summary>
+    <ol id="review-list"></ol>
+   </details>
+  </section>
+ </main>
+
+ <footer class="foot">
+  <span>觀察，從每個正確步驟開始。</span>
+  <span class="micro">MICRO LAB / BIOLOGY × TECHNOLOGY</span>
+ </footer>
+</div>
+
+<script>
+'use strict';
+
+// 題目與標準次序依工作紙；卡片不顯示答案編號。
+const STEPS = [
+ {
+  title:'取鏡安放',
+  description:'右手握臂、左手托座，將顯微鏡平穩置於桌面偏左處。'
+ },
+ {
+  title:'對光調亮',
+  description:'轉至低倍物鏡並調整光源，使視野呈現明亮的白色光圈。'
+ },
+ {
+  title:'固定玻片',
+  description:'將標本放上載物台夾緊，並將觀察目標正對通光孔中心。'
+ },
+ {
+  title:'側視靠近',
+  description:'從側面注視，轉動粗調節器使載物台升至最高（玻片貼近物鏡）。'
+ },
+ {
+  title:'遠離尋像',
+  description:'看著目鏡並轉動粗調節器使載物台逐漸下降（遠離物鏡）尋找物像，再轉細調節器調至清晰。'
+ },
+ {
+  title:'目標居中',
+  description:'移動玻片，將欲放大觀察的部位移至視野正中央。'
+ },
+ {
+  title:'高倍微調',
+  description:'轉至高倍物鏡並加大光圈，僅使用細調節器微調至清晰。'
+ },
+ {
+  title:'復原歸位',
+  description:'取下玻片，將物鏡轉至兩側八字形，載物台降至最低後收納。'
+ }
+];
+
+const $ = id => document.getElementById(id);
+
+const state = {
+ screen:'login',
+ student:null,
+ order:[],
+ mistakes:0,
+ startedAt:0,
+ elapsedMs:0,
+ timerId:null,
+ drag:null
+};
+
+// Fisher–Yates 隨機排序。
+function shuffledSteps(random = Math.random) {
+ const order = STEPS.map((_,i)=>i);
+
+ for(let i=order.length-1;i>0;i--){
+  const j=Math.floor(random()*(i+1));
+  [order[i],order[j]]=[order[j],order[i]];
+ }
+
+ // 避免隨機剛好全對，確保每次開始都需要排序。
+ if(order.every((id,i)=>id===i)){
+  [order[0],order[1]]=[order[1],order[0]];
+ }
+
+ return order;
+}
+
+function incorrectCount(order){
+ return order.reduce((count,id,i)=>count+(id!==i?1:0),0);
+}
+
+function scoreFor(mistakes){
+ return Math.max(0,100-5*mistakes);
+}
+
+function ratingFor(score){
+ return score>=90?'卓越':
+        score>=75?'良好':
+        score>=60?'達標':'完成挑戰';
+}
+
+function seconds(ms){
+ return (ms/1000).toFixed(1);
+}
+
+function readStudent(){
+ return {
+  name:$('student-name').value.trim(),
+  className:$('student-class').value.trim().toUpperCase(),
+  number:$('student-number').value.trim()
+ };
+}
+
+function showScreen(screen){
+ state.screen=screen;
+
+ ['login','game','result'].forEach(name=>{
+  $(name+'-screen').hidden=name!==screen;
+ });
+
+ window.scrollTo({top:0,behavior:'instant'});
+}
+
+// 計時使用真實時間差，避免回呼延遲造成累計誤差。
+function updateClock(){
+ if(state.screen==='game'){
+  $('timer').textContent=seconds(performance.now()-state.startedAt);
+ }
+}
+
+function stopClock(){
+ clearInterval(state.timerId);
+ state.timerId=null;
+}
+
+function startChallenge(student){
+ cancelDrag();
+ stopClock();
+
+ state.student=student;
+ state.order=shuffledSteps();
+ state.mistakes=0;
+ state.elapsedMs=0;
+
+ $('score').textContent='100';
+ $('attempts').textContent='0';
+ $('timer').textContent='0.0';
+ $('feedback').textContent='';
+ $('move-status').textContent='';
+
+ $('student-display').textContent=
+  student.className+' 班 · '+student.number+' 號 · '+student.name;
+
+ $('submit-answer').disabled=false;
+ document.querySelector('.review').open=false;
+
+ showScreen('game');
+ renderSteps();
+
+ state.startedAt=performance.now();
+ state.timerId=setInterval(updateClock,100);
+ $('game-title').focus();
+}
+
+// 使用 DOM 節點及 textContent，讓學生資料只作文字顯示。
+function renderSteps(focusId=null,direction='up'){
+ $('step-list').replaceChildren();
+
+ state.order.forEach((id,index)=>{
+  const step=STEPS[id];
+  const li=document.createElement('li');
+  li.className='step';
+  li.dataset.id=id;
+
+  const handleBox=document.createElement('div');
+  const position=document.createElement('div');
+  position.className='position';
+  position.textContent=String(index+1).padStart(2,'0');
+
+  const grip=document.createElement('button');
+  grip.type='button';
+  grip.className='grip';
+  grip.dataset.action='drag';
+  grip.textContent='⠿';
+  grip.setAttribute(
+   'aria-label',
+   '拖動「'+step.title+'」，亦可用方向鍵上下移動'
+  );
+  grip.title='拖曳或用鍵盤 ↑ ↓ 移動';
+  handleBox.append(position,grip);
+
+  const content=document.createElement('div');
+  const title=document.createElement('div');
+  const desc=document.createElement('p');
+
+  title.className='step-title';
+  title.textContent=step.title;
+  desc.className='step-desc';
+  desc.textContent=step.description;
+  content.append(title,desc);
+
+  const arrows=document.createElement('div');
+  arrows.className='arrows';
+
+  ['up','down'].forEach((action,i)=>{
+   const button=document.createElement('button');
+   button.type='button';
+   button.className='arrow';
+   button.dataset.action=action;
+   button.textContent=i===0?'▲':'▼';
+   button.disabled=i===0?index===0:index===STEPS.length-1;
+   button.setAttribute(
+    'aria-label',
+    (i===0?'上移':'下移')+'「'+step.title+'」'
+   );
+   arrows.append(button);
+  });
+
+  li.append(handleBox,content,arrows);
+  $('step-list').append(li);
+ });
+
+ if(focusId!==null){
+  const li=$('step-list').querySelector('[data-id="'+focusId+'"]');
+  let target=li.querySelector('[data-action="'+direction+'"]');
+
+  if(target.disabled){
+   target=li.querySelector('.grip');
+  }
+
+  target.focus({preventScroll:true});
+ }
+}
+
+function moveStep(id,to,focusAction='drag'){
+ if(state.screen!=='game') return;
+
+ const from=state.order.indexOf(id);
+
+ if(from<0||to<0||to>=STEPS.length||from===to) return;
+
+ state.order.splice(from,1);
+ state.order.splice(to,0,id);
+ renderSteps(id,focusAction);
+
+ $('move-status').textContent=
+  '已將「'+STEPS[id].title+'」移至第 '+(to+1)+' 位。';
+
+ $('feedback').textContent='';
+}
+
+function submitAnswer(){
+ if(state.screen!=='game'||state.drag) return;
+
+ const wrong=incorrectCount(state.order);
+
+ if(wrong){
+  state.mistakes++;
+
+  $('score').textContent=scoreFor(state.mistakes);
+  $('attempts').textContent=state.mistakes;
+  $('feedback').textContent=
+   '有 '+wrong+' 個步驟位置不正確。本次扣 5 分，目前 '+
+   scoreFor(state.mistakes)+' 分；調整後可以再次提交。';
+
+  $('feedback').focus();
+  return;
+ }
+
+ // 只有八步全對才停止計時及發出證書。
+ state.elapsedMs=performance.now()-state.startedAt;
+ stopClock();
+ $('submit-answer').disabled=true;
+
+ const score=scoreFor(state.mistakes);
+ const student=state.student;
+ const now=new Date();
+
+ $('cert-name').textContent=student.name;
+ $('cert-identity').textContent=
+  student.className+' 班 · '+student.number+' 號';
+
+ $('cert-score').textContent=score;
+ $('cert-time').textContent=seconds(state.elapsedMs);
+ $('cert-rating').textContent=ratingFor(score);
+
+ $('cert-date').textContent=
+  now.getFullYear()+' 年 '+
+  (now.getMonth()+1)+' 月 '+
+  now.getDate()+' 日';
+
+ $('cert-attempts').textContent='錯誤提交：'+state.mistakes+' 次';
+
+ showScreen('result');
+ $('result-title').focus();
+}
+
+// Pointer Events 支援滑鼠、觸控及觸控筆。
+function cancelDrag(){
+ if(!state.drag) return;
+
+ cancelAnimationFrame(state.drag.frame);
+ state.drag=null;
+
+ document.querySelectorAll('.dragging,.over').forEach(el=>{
+  el.classList.remove('dragging','over');
+ });
+}
+
+function updateDragTarget(){
+ const drag=state.drag;
+ if(!drag) return;
+
+ document.querySelectorAll('.over').forEach(el=>{
+  el.classList.remove('over');
+ });
+
+ const target=document.elementFromPoint(drag.x,drag.y)?.closest('.step');
+
+ if(target){
+  drag.to=state.order.indexOf(Number(target.dataset.id));
+  target.classList.add('over');
+ }
+}
+
+// 拖到畫面邊緣時自動捲動。
+function dragScroll(){
+ const drag=state.drag;
+ if(!drag) return;
+
+ const delta=
+  drag.y<90?-9:
+  drag.y>window.innerHeight-100?9:0;
+
+ if(delta){
+  window.scrollBy(0,delta);
+  updateDragTarget();
+ }
+
+ drag.frame=requestAnimationFrame(dragScroll);
+}
+
+$('step-list').addEventListener('pointerdown',event=>{
+ const handle=event.target.closest('.grip');
+
+ if(
+  !handle||
+  state.screen!=='game'||
+  event.button!==0||
+  state.drag
+ ) return;
+
+ const card=handle.closest('.step');
+ const id=Number(card.dataset.id);
+
+ event.preventDefault();
+ handle.setPointerCapture(event.pointerId);
+
+ state.drag={
+  id,
+  to:state.order.indexOf(id),
+  pointerId:event.pointerId,
+  x:event.clientX,
+  y:event.clientY,
+  frame:0
+ };
+
+ card.classList.add('dragging');
+ state.drag.frame=requestAnimationFrame(dragScroll);
+});
+
+$('step-list').addEventListener('pointermove',event=>{
+ if(!state.drag||event.pointerId!==state.drag.pointerId) return;
+
+ state.drag.x=event.clientX;
+ state.drag.y=event.clientY;
+ updateDragTarget();
+});
+
+$('step-list').addEventListener('pointerup',event=>{
+ if(!state.drag||event.pointerId!==state.drag.pointerId) return;
+
+ const {id,to}=state.drag;
+ cancelDrag();
+ moveStep(id,to);
+});
+
+$('step-list').addEventListener('pointercancel',cancelDrag);
+$('step-list').addEventListener('lostpointercapture',cancelDrag);
+
+// 上下按鈕操作。
+$('step-list').addEventListener('click',event=>{
+ const button=event.target.closest('.arrow');
+ if(!button||button.disabled) return;
+
+ const id=Number(button.closest('.step').dataset.id);
+ const action=button.dataset.action;
+
+ moveStep(
+  id,
+  state.order.indexOf(id)+(action==='up'?-1:1),
+  action
+ );
+});
+
+// 鍵盤操作：把手取得焦點後可用方向鍵。
+$('step-list').addEventListener('keydown',event=>{
+ if(
+  !event.target.matches('.grip')||
+  !['ArrowUp','ArrowDown'].includes(event.key)
+ ) return;
+
+ event.preventDefault();
+
+ const id=Number(event.target.closest('.step').dataset.id);
+
+ moveStep(
+  id,
+  state.order.indexOf(id)+(event.key==='ArrowUp'?-1:1)
+ );
+});
+
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden){
+  cancelDrag();
+ }else{
+  updateClock();
+ }
+});
+
+window.addEventListener('blur',cancelDrag);
+
+// 學生資料驗證。
+$('student-form').addEventListener('submit',event=>{
+ event.preventDefault();
+
+ const student=readStudent();
+ const missing=[
+  ['name','student-name','姓名'],
+  ['className','student-class','班別'],
+  ['number','student-number','班號']
+ ].find(([key])=>!student[key]);
+
+ if(missing){
+  $('form-error').hidden=false;
+  $('form-error').textContent='請填寫'+missing[2]+'，不可留空。';
+  $(missing[1]).focus();
+  return;
+ }
+
+ $('form-error').hidden=true;
+ startChallenge(student);
+});
+
+$('submit-answer').addEventListener('click',submitAnswer);
+
+$('leave-game').addEventListener('click',()=>{
+ if(!window.confirm('返回資料頁會清除本次分數與時間，是否繼續？')){
+  return;
+ }
+
+ cancelDrag();
+ stopClock();
+ showScreen('login');
+ $('student-name').focus();
+});
+
+$('retry-game').addEventListener('click',()=>{
+ startChallenge(state.student);
+});
+
+$('print-certificate').addEventListener('click',()=>{
+ window.print();
+});
+
+// 完成後的正確流程回顧。
+STEPS.forEach(step=>{
+ const li=document.createElement('li');
+ const strong=document.createElement('strong');
+
+ strong.textContent=step.title+'：';
+ li.append(strong,document.createTextNode(step.description));
+ $('review-list').append(li);
+});
+
+$('startup-notice').hidden=true;
+</script>
+</body>
+</html>

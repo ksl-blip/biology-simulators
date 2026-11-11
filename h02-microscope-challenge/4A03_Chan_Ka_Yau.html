@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顯微鏡操作順序挑戰</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Microsoft JhengHei", sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #e8f4fc;
+            color: #222;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px #00000022;
+        }
+        h1,h2 {
+            text-align: center;
+            color:#1a5276;
+        }
+        .login-form{
+            max-width:420px;
+            margin:40px auto;
+        }
+        .form-item{
+            margin:16px 0;
+        }
+        label{
+            display:block;
+            margin-bottom:6px;
+            font-weight:bold;
+        }
+        input{
+            width:100%;
+            padding:11px;
+            border:1px solid #94b8d4;
+            border-radius:8px;
+            font-size:16px;
+        }
+        button{
+            padding:12px 22px;
+            border:none;
+            border-radius:8px;
+            background-color:#2980b9;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            margin:4px;
+        }
+        button:hover{
+            background-color:#1f618d;
+        }
+        .btn-group{
+            text-align:center;
+            margin-top:24px;
+        }
+        .game-header{
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:space-between;
+            align-items:center;
+            background:#d6eaf8;
+            padding:14px;
+            border-radius:10px;
+            margin-bottom:20px;
+        }
+        .timer-box{
+            font-size:20px;
+            font-weight:bold;
+            color:#c0392b;
+        }
+        .card-item{
+            background:#ffffff;
+            border:2px solid #85c1e9;
+            border-radius:10px;
+            padding:14px;
+            margin:10px 0;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            cursor:move;
+        }
+        .card-item:active{
+            background:#ebf5fb;
+        }
+        .card-text{
+            flex:1;
+            padding-right:10px;
+        }
+        .move-btn button{
+            padding:6px 10px;
+            font-size:14px;
+        }
+        .certificate-wrap{
+            border:6px double #2980b9;
+            padding:40px 25px;
+            border-radius:16px;
+            background:#fff;
+            text-align:center;
+            position:relative;
+        }
+        .cert-stamp{
+            position:absolute;
+            right:30px;
+            top:40px;
+            width:100px;
+            height:100px;
+            border:4px solid #c0392b;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#c0392b;
+            font-weight:bold;
+            transform:rotate(12deg);
+        }
+        .hide{
+            display:none !important;
+        }
+        .msg{
+            text-align:center;
+            font-size:17px;
+            margin:14px 0;
+            font-weight:bold;
+        }
+        @media print{
+            body{background:white;}
+            .container{box-shadow:none;}
+            .no-print{display:none;}
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 登入畫面 -->
+    <div id="loginScreen">
+        <h1>🔬顯微鏡操作順序挑戰</h1>
+        <div class="login-form">
+            <div class="form-item">
+                <label>姓名</label>
+                <input type="text" id="inpName" placeholder="請輸入姓名">
+            </div>
+            <div class="form-item">
+                <label>班別 (例:1A)</label>
+                <input type="text" id="inpClass" placeholder="例如 1A">
+            </div>
+            <div class="form-item">
+                <label>班號 (例:05)</label>
+                <input type="text" id="inpNo" placeholder="例如 05">
+            </div>
+            <div class="btn-group">
+                <button id="btnStart">開始挑戰</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遊戲畫面 -->
+    <div id="gameScreen" class="hide">
+        <h2>🔬排序挑戰：顯微鏡操作步驟</h2>
+        <div class="game-header">
+            <div>
+                <div>姓名：<span id="showName"></span></div>
+                <div>班別：<span id="showClass"></span> 班號：<span id="showNo"></span></div>
+            </div>
+            <div class="timer-box">計時：<span id="timerText">0</span> 秒</div>
+        </div>
+        <div class="msg" id="messageBox"></div>
+        <div id="cardList"></div>
+        <div class="btn-group">
+            <button id="btnSubmit">提交答案</button>
+        </div>
+    </div>
+
+    <!-- 證書畫面 -->
+    <div id="certScreen" class="hide">
+        <div class="certificate-wrap">
+            <div class="cert-stamp">合格<br>證明</div>
+            <h1>顯微鏡操作挑戰證書</h1>
+            <p>茲證明</p>
+            <h2 id="certName"></h2>
+            <p>班別：<span id="certClass"></span>　班號：<span id="certNo"></span></p>
+            <p>完成挑戰用時：<span id="certTime"></span> 秒</p>
+            <p>最終得分：<span id="certScore"></span> 分</p>
+            <p>評級：<span id="certRank"></span></p>
+            <p>完成日期：<span id="certDate"></span></p>
+        </div>
+        <div class="btn-group no-print">
+            <button id="btnPrint">列印 / 另存PDF</button>
+            <button id="btnRestart">重新挑戰</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// 正確順序，完全按照作業給定8個步驟
+const correctSteps = [
+    "取鏡安放：右手握臂、左手托座，將顯微鏡平穩置於桌面偏左處。",
+    "對光調亮：轉至低倍物鏡並調整光源，使視野呈現明亮的白色光圈。",
+    "固定玻片：將標本放上載物台夾緊，並將觀察目標正對通光孔中心。",
+    "側視靠近：從側面注視，轉動粗調節器使載物台升至最高（玻片貼近物鏡）。",
+    "遠離尋像：看著目鏡並轉動粗調節器使載物台逐漸下降（遠離物鏡）尋找物像，再轉細調節器調至清晰。",
+    "目標居中：移動玻片，將欲放大觀察的部位移至視野正中央。",
+    "高倍微調：轉至高倍物鏡並加大光圈，僅使用細調節器微調至清晰。",
+    "復原歸位：取下玻片，將物鏡轉至兩側八字形，載物台降至最低後收納。"
+];
+
+// 全域變數
+let student = {};
+let gameCards = [];
+let timer = null;
+let timeSecond = 0;
+let score = 100;
+
+// DOM元素
+const loginScreen = document.getElementById('loginScreen');
+const gameScreen = document.getElementById('gameScreen');
+const certScreen = document.getElementById('certScreen');
+const inpName = document.getElementById('inpName');
+const inpClass = document.getElementById('inpClass');
+const inpNo = document.getElementById('inpNo');
+const btnStart = document.getElementById('btnStart');
+const cardList = document.getElementById('cardList');
+const timerText = document.getElementById('timerText');
+const messageBox = document.getElementById('messageBox');
+const btnSubmit = document.getElementById('btnSubmit');
+const btnPrint = document.getElementById('btnPrint');
+const btnRestart = document.getElementById('btnRestart');
+
+// 打亂陣列
+function shuffleArray(arr){
+    let temp = [...arr];
+    for(let i = temp.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [temp[i],temp[j]] = [temp[j],temp[i]];
+    }
+    return temp;
+}
+
+// 開始計時
+function startTimer(){
+    timeSecond = 0;
+    clearInterval(timer);
+    timer = setInterval(()=>{
+        timeSecond++;
+        timerText.innerText = timeSecond.toString();
+    },1000);
+}
+
+//停止計時
+function stopTimer(){
+    clearInterval(timer);
+}
+
+// 渲染卡片，支援上下按鈕 + drag拖曳
+function renderCards(){
+    cardList.innerHTML = "";
+    gameCards.forEach((text,idx)=>{
+        const div = document.createElement('div');
+        div.className = "card-item";
+        div.draggable = true;
+        div.dataset.index = idx;
+        div.innerHTML = `
+            <div class="card-text">${text}</div>
+            <div class="move-btn">
+                <button data-op="up" data-idx="${idx}">▲</button>
+                <button data-op="down" data-idx="${idx}">▼</button>
+            </div>
+        `;
+        // 按鈕上下移動
+        div.querySelectorAll('.move-btn button').forEach(btn=>{
+            btn.onclick = (e)=>{
+                const op = e.target.dataset.op;
+                const i = Number(e.target.dataset.idx);
+                if(op==='up' && i>0){
+                    [gameCards[i],gameCards[i-1]] = [gameCards[i-1],gameCards[i]];
+                    renderCards();
+                }
+                if(op==='down' && i < gameCards.length-1){
+                    [gameCards[i],gameCards[i+1]] = [gameCards[i+1],gameCards[i]];
+                    renderCards();
+                }
+            }
+        })
+        //拖曳事件
+        div.ondragstart = (ev)=>{
+            ev.dataTransfer.setData("fromIdx",idx.toString());
+        }
+        div.ondragover = e=>e.preventDefault();
+        div.ondrop = (ev)=>{
+            ev.preventDefault();
+            const from = Number(ev.dataTransfer.getData("fromIdx"));
+            const to = Number(div.dataset.index);
+            [gameCards[from],gameCards[to]] = [gameCards[to],gameCards[from]];
+            renderCards();
+        }
+        cardList.appendChild(div);
+    })
+}
+
+// 登入按鈕
+btnStart.onclick = ()=>{
+    const name = inpName.value.trim();
+    const cls = inpClass.value.trim();
+    const no = inpNo.value.trim();
+    if(!name || !cls || !no){
+        alert("姓名、班別、班號不可空白！");
+        return;
+    }
+    student = {name,cls,no};
+    document.getElementById('showName').innerText = name;
+    document.getElementById('showClass').innerText = cls;
+    document.getElementById('showNo').innerText = no;
+
+    gameCards = shuffleArray(correctSteps);
+    loginScreen.classList.add("hide");
+    gameScreen.classList.remove("hide");
+    renderCards();
+    startTimer();
+    messageBox.innerText = "";
+    score = 100;
+}
+
+//提交答案
+btnSubmit.onclick = ()=>{
+    let wrongCount = 0;
+    for(let i=0;i<correctSteps.length;i++){
+        if(gameCards[i] !== correctSteps[i]) wrongCount++;
+    }
+    if(wrongCount === 0){
+        stopTimer();
+        showCertificate();
+        return;
+    }
+    score = Math.max(0, score -5);
+    messageBox.innerText = `有 ${wrongCount} 個步驟位置不正確！本次扣5分，目前分數：${score}，請調整後重新提交`;
+}
+
+//顯示證書
+function showCertificate(){
+    gameScreen.classList.add("hide");
+    certScreen.classList.remove("hide");
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2,'0')}-${today.getDate().toString().padStart(2,'0')}`;
+    let rankText;
+    if(score>=90) rankText = "A+ 顯微鏡大師";
+    else if(score>=75) rankText = "良好";
+    else rankText = "達標";
+
+    document.getElementById('certName').innerText = student.name;
+    document.getElementById('certClass').innerText = student.cls;
+    document.getElementById('certNo').innerText = student.no;
+    document.getElementById('certTime').innerText = timeSecond;
+    document.getElementById('certScore').innerText = score;
+    document.getElementById('certRank').innerText = rankText;
+    document.getElementById('certDate').innerText = dateStr;
+}
+
+btnPrint.onclick = ()=>{
+    window.print();
+}
+
+btnRestart.onclick = ()=>{
+    certScreen.classList.add("hide");
+    loginScreen.classList.remove("hide");
+    inpName.value = "";
+    inpClass.value = "";
+    inpNo.value = "";
+    stopTimer();
+}
+</script>
+</body>
+</html>
