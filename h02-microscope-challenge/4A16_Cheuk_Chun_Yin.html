@@ -261,6 +261,42 @@
       font-size: 1.1rem;
     }
 
+    .student-identity {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 50;
+      margin: 0;
+      padding: 10px 16px;
+      max-width: calc(100vw - 32px);
+      box-sizing: border-box;
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid rgba(17, 24, 39, 0.16);
+      border-radius: 14px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+      font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", "Noto Sans CJK TC", "WenQuanYi Micro Hei", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.4;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: text;
+    }
+
+    body:not(:has(#login-screen.active)) .student-identity {
+      display: none;
+    }
+
+    @media (max-width: 480px), (max-height: 640px) {
+      .student-identity {
+        right: 10px;
+        bottom: 10px;
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+    }
+
     @media print {
       body * {
         visibility: hidden;
@@ -278,6 +314,7 @@
   </style>
 </head>
 <body>
+  <p class="student-identity">卓晉賢 (Cheuk Chun Yin)4A16</p>
 
   <div class="container">
     <!-- 模組一：學生登入 -->
