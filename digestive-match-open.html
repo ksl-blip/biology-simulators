@@ -1,0 +1,2977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Digestive System Matching Game (Open)</title>
+<style>
+:root {
+  --paper: #f3eee4; --ink: #2b241c; --muted: #5a493c;
+  --green: #1f6b3a; --green-d: #174e2b; --card: #fffaf3; --line: #e0d2c0;
+  --ok: #157a3a; --ok-bg: #e8f5e9; --ok-bd: #81c784;
+  --bad: #b42318; --stage-blue: #8eb6e4;
+  --dock: #fffdf8; --focus: #1f6b3a;
+  --shadow: 0 4px 14px rgba(60, 40, 20, .12);
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; max-width: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 100%;
+  overflow-x: hidden;
+  font-family: "PingFang HK", "Noto Sans CJK HK", "Noto Sans TC", "Noto Sans CJK TC",
+    "Microsoft JhengHei", "Heiti TC", "Segoe UI", sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 56px; }
+.topbar { display: flex; flex-wrap: wrap; align-items: flex-start; }
+.topbar > * { margin: 0 16px 10px 0; }
+.topbar .titles { flex: 1; min-width: 220px; }
+h1 { font-size: 22px; font-size: clamp(22px, 3.2vw, 28px); line-height: 1.3; margin: 0 0 6px; }
+h2 { font-size: 18px; margin: 0 0 10px; }
+h3 { font-size: 15px; margin: 0 0 8px; }
+p { margin: 6px 0; }
+.kicker { letter-spacing: .08em; color: var(--muted); margin: 0 0 4px; font-size: 13px; font-weight: 700; }
+.banner {
+  background: #fff6e4; border: 1px solid #e4c98a; border-radius: 14px;
+  padding: 10px 14px; margin: 10px 0 14px; font-size: 14px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 14px 16px; margin: 12px 0;
+}
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; }
+.controls > * { margin: 0 10px 10px 0; }
+button.act, button.ghost, button.lang-btn {
+  font-family: inherit; font-size: 15px; font-weight: 700;
+  border-radius: 999px; padding: 10px 16px; cursor: pointer;
+  min-height: 44px; min-width: 44px;
+}
+button.act { background: var(--green); color: #fff; border: 0; }
+button.ghost {
+  background: transparent; color: var(--green-d);
+  border: 1px solid var(--green);
+}
+button.lang-btn {
+  background: #1f6b3a; color: #fff; border: 0;
+  letter-spacing: .04em; flex-shrink: 0; font-weight: 800; padding: 10px 18px;
+}
+button.act:hover, button.lang-btn:hover { background: var(--green-d); }
+button:disabled { opacity: .42; cursor: not-allowed; }
+button:focus-visible, .chip:focus-visible, .tag-dock:focus-visible,
+.fn-slot:focus-visible, .org:focus-visible {
+  outline: 3px solid var(--focus); outline-offset: 2px;
+}
+.stages { display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 8px; gap: 8px; margin: 12px 0 0; }
+.stage-pill {
+  background: #efe4d2; border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 8px; font-size: 13px; text-align: center; cursor: pointer;
+  font-family: inherit; color: var(--ink); line-height: 1.35; min-height: 44px;
+  font-weight: 600;
+}
+.stage-pill .num { display: block; font-weight: 800; font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+.stage-pill.is-active { background: #e8f5e9; border-color: var(--green); color: var(--green-d); font-weight: 700; }
+.stage-pill.is-active .num { color: var(--green); }
+.stage-pill.is-done { background: #f1f8e9; border-color: #a5d6a7; }
+.stage-pill:disabled { opacity: .45; cursor: not-allowed; }
+.score-badge {
+  margin-left: auto; background: #fff; border: 1px solid var(--line);
+  border-radius: 999px; padding: 6px 14px; font-weight: 800; font-size: 15px;
+  min-height: 44px; display: inline-flex; align-items: center;
+}
+.score-badge > * + * { margin-left: 6px; }
+.score-badge .n { color: var(--green-d); font-size: 18px; }
+.board {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 14px;
+  gap: 14px;
+  align-items: start;
+}
+.board.has-panel { grid-template-columns: 1fr minmax(260px, 340px); }
+.diagram-stage {
+  position: relative;
+  background: #8eb6e4;
+  border: 1px solid #7aa3d0;
+  border-radius: 16px;
+  overflow: visible;
+  padding: 6px;
+  box-shadow: var(--shadow);
+}
+.diagram-stage svg {
+  width: 100%; height: auto; display: block;
+  max-height: 78vh;
+  max-height: min(78vh, 820px);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.org { cursor: pointer; outline: none; }
+/* iOS 12 / old Safari: do not use SVG filters. fill=url(#gradient) plus
+   filter=url(#...) can fail to paint the organ at all. Stroke cues only. */
+.org.is-over path.glow-target[fill^="url"],
+.org.is-await path.glow-target[fill^="url"] {
+  stroke: #c9a227;
+  stroke-width: 4.2;
+}
+.org.is-over path.glow-target[fill="none"],
+.org.is-await path.glow-target[fill="none"] {
+  stroke: #c9a227;
+}
+.org.is-correct path.glow-target[fill^="url"] {
+  stroke: #1f6b3a;
+  stroke-width: 3.6;
+}
+.org.is-correct path.glow-target[fill="none"] {
+  stroke: #3d8a4a;
+}
+.tag-layer { position: absolute; inset: 6px; pointer-events: none; }
+.tag-dock {
+  position: absolute;
+  pointer-events: auto;
+  min-width: 108px; max-width: 148px; min-height: 44px;
+  background: var(--dock);
+  border: 2px dashed #b89f86;
+  border-radius: 12px;
+  padding: 5px 6px;
+  display: flex; align-items: center; justify-content: center;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 8px rgba(40, 30, 20, .12);
+  z-index: 3;
+}
+.tag-dock.is-over, .fn-slot.is-over {
+  border-style: solid; border-color: var(--green);
+  background: #f0fdf4;
+  box-shadow: 0 0 0 3px rgba(31,107,58,.25);
+}
+.tag-dock.is-correct, .fn-slot.is-correct {
+  border-style: solid; border-color: var(--ok);
+  background: var(--ok-bg);
+}
+.tag-dock.is-await, .fn-slot.is-await { border-color: #c9a227; border-style: solid; }
+.tag-dock .ph, .fn-slot .ph {
+  font-size: 11px; color: var(--muted); font-weight: 700;
+  letter-spacing: .02em; text-align: center; pointer-events: none;
+}
+.tray-wrap { margin-top: 4px; }
+.tray {
+  display: flex; flex-wrap: wrap;
+  min-height: 58px;
+  background: var(--card);
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  padding: 12px;
+  align-items: stretch;
+}
+.tray > * { margin: 0 10px 10px 0; }
+.tray.is-over { border-color: var(--green); background: #f5faf5; }
+.chip {
+  background: #fff;
+  border: 1.5px solid #c9b49a;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 1px 3px rgba(40,30,20,.1);
+  min-height: 44px;
+  max-width: 280px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.3;
+  position: relative;
+}
+.chip.fn { max-width: 320px; font-weight: 650; font-size: 13.5px; }
+.chip:active, .chip.dragging { cursor: grabbing; }
+.chip.is-selected {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(31,107,58,.28);
+  background: #f0fdf4;
+}
+.chip.dragging {
+  z-index: 10000;
+  box-shadow: 0 10px 24px rgba(40,30,20,.28);
+  opacity: .95;
+  pointer-events: none;
+}
+.chip.is-locked {
+  cursor: default;
+  background: var(--ok-bg);
+  border-color: var(--ok);
+  box-shadow: none;
+  padding-left: 28px;
+}
+.chip.is-locked::before {
+  content: "✓";
+  position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+  color: var(--ok); font-weight: 900;
+}
+.chip.bounce { animation: bounceOut .45s ease; }
+@keyframes bounceOut {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(-8px, -4px) rotate(-3deg); }
+  50% { transform: translate(8px, -2px) rotate(3deg); }
+  100% { transform: translate(0,0); }
+}
+.card-ph { visibility: hidden; pointer-events: none; }
+.feedback {
+  min-height: 1.6em;
+  margin: 10px 0 0;
+  font-size: 14px;
+  font-weight: 650;
+}
+.feedback.ok { color: var(--ok); }
+.feedback.bad { color: var(--bad); }
+.feedback.info { color: var(--muted); }
+.li-note {
+  margin: 10px 0 0;
+  background: #fff8e1;
+  border: 1px solid #e4c98a;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+}
+.li-note strong { color: var(--green-d); }
+.func-panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: none;
+  overflow: visible;
+}
+.func-panel > * + * { margin-top: 6px; }
+.fn-dock {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 6px 8px;
+}
+.fn-dock-name {
+  font-size: 13px; font-weight: 800; margin: 0 0 6px;
+  display: flex; align-items: center;
+}
+.fn-dock-name > * + * { margin-left: 8px; }
+.fn-swatch {
+  width: 12px; height: 12px; border-radius: 3px;
+  border: 1px solid rgba(0,0,0,.25); flex-shrink: 0;
+}
+.fn-slot {
+  min-height: 48px;
+  border: 2px dashed #d4c2ac;
+  border-radius: 10px;
+  padding: 4px;
+  display: flex; align-items: center; justify-content: center;
+}
+.fn-slot .chip { width: 100%; max-width: none; }
+.fn-extra { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+.recap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 10px;
+  gap: 10px;
+  margin: 12px 0;
+}
+.recap-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  border-left: 6px solid #999;
+}
+.recap-card h3 { margin: 0 0 4px; font-size: 16px; }
+.recap-card .fn { font-size: 14px; }
+.recap-card .note { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+.celebrate {
+  background: #e8f5e9; border: 1px solid #81c784; border-radius: 14px;
+  padding: 12px 16px; margin: 0 0 12px; font-size: 15px;
+}
+footer {
+  margin-top: 18px; color: var(--muted); font-size: 13px;
+  border-top: 1px solid var(--line); padding-top: 12px;
+}
+footer a { color: var(--green-d); }
+.hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); border: 0;
+}
+#playArea.hidden, #recapArea.hidden { display: none !important; }
+
+@media (max-width: 900px) {
+  .board.has-panel { grid-template-columns: 1fr; }
+  .func-panel { max-height: none; }
+  .diagram-stage svg { max-height: none; }
+  .tag-dock { min-width: 90px; max-width: 118px; font-size: 12px; padding: 4px 5px; }
+  .stages { grid-template-columns: 1fr; }
+  .score-badge { margin-left: 0; }
+}
+@media (max-width: 480px) {
+  .wrap { padding: 14px 10px 40px; }
+  h1 { font-size: 22px; }
+  .chip { font-size: 13px; }
+  .chip.fn { font-size: 12.5px; max-width: 100%; }
+  .tray { padding: 10px; }
+  .tray > * { margin: 0 8px 8px 0; }
+}
+
+.tag-dock.is-filled .ph { display: none !important; }
+
+@media (max-width: 700px) {
+  .diagram-stage { padding: 10px 6px; }
+  .tag-dock {
+    min-width: 40px;
+    max-width: 40px;
+    min-height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    background: #fffdf8;
+    border: 2.5px dashed #6d4c37;
+    box-shadow: 0 1px 6px rgba(40,30,20,.18);
+  }
+  .tag-dock .ph { display: none; }
+  .tag-dock.is-filled,
+  .tag-dock.is-correct {
+    min-width: 86px;
+    max-width: 112px;
+    min-height: 40px;
+    padding: 3px 5px;
+    border-radius: 11px;
+  }
+  .tag-dock.is-filled .chip,
+  .tag-dock.is-correct .chip {
+    font-size: 11.5px;
+    padding: 4px 7px 4px 20px;
+    min-height: 34px;
+    box-shadow: none;
+    width: 100%;
+  }
+  /* In stage 2 the named function panel is the dock list; keep the diagram unobstructed. */
+  .board.has-panel .tag-layer { display: none; }
+  .board.has-panel #leaders { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip.bounce { animation: none; }
+  .chip, .tag-dock, .fn-slot { transition: none; }
+}
+
+/* ===== Login, student bar, mobile badges, sticky tray ===== */
+#startScreen, #gameApp { max-width: 100%; }
+#startScreen.hidden, #gameApp.hidden { display: none !important; }
+.login-wrap { max-width: 480px; margin: 0 auto; padding: 24px 16px 48px; }
+.login-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 18px; padding: 20px 18px 22px; box-shadow: var(--shadow);
+}
+.login-lead { color: var(--muted); margin: 8px 0 18px; font-size: 15px; }
+.login-card label, .field {
+  display: block; font-weight: 700; font-size: 15px; margin: 0 0 14px;
+}
+.login-card input[type="text"],
+.login-card select {
+  display: block; width: 100%; min-height: 48px; margin-top: 6px;
+  padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 12px;
+  background: #fff; font-family: inherit; font-size: 16px; color: var(--ink);
+  -webkit-appearance: none; appearance: none;
+}
+.login-card select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%235a493c' d='M1 1l5 5 5-5'/></svg>");
+  background-repeat: no-repeat; background-position: right 14px center;
+  padding-right: 36px;
+}
+.login-start {
+  width: 100%; min-height: 52px; font-size: 18px; margin-top: 6px;
+}
+.start-name-field { display: block; font-weight: 700; font-size: 15px; margin: 4px 0 6px; }
+.start-name-hint { font-size: 13.5px; color: var(--muted); margin: 0 0 10px; line-height: 1.45; }
+#startNameErr { margin: 0 0 10px; min-height: 1.3em; }
+#btnStart.is-disabled { opacity: .42; cursor: not-allowed; }
+.login-err { color: var(--bad); font-weight: 650; min-height: 1.4em; margin: 8px 0 0; }
+.teacher-link { text-align: center; margin: 22px 0 0; font-size: 13px; }
+.teacher-link a { color: var(--muted); text-decoration: none; }
+.teacher-link a:hover { color: var(--green-d); text-decoration: underline; }
+
+.student-bar {
+  display: flex; flex-wrap: wrap; align-items: center;
+  margin: 6px 0 0;
+}
+.student-bar > * { margin: 0 8px 8px 0; }
+.student-chip {
+  background: #e8f5e9; border: 1px solid #81c784; color: var(--green-d);
+  border-radius: 999px; padding: 6px 14px; font-weight: 800;
+  min-height: 40px; display: inline-flex; align-items: center;
+  font-size: 14px;
+}
+#btnLogout { min-height: 40px; font-size: 13px; padding: 6px 12px; }
+.save-status { font-size: 12px; color: var(--muted); min-height: 1em; margin: 4px 0 0; }
+.save-status.err { color: var(--bad); }
+
+.badge-layer {
+  position: absolute; inset: 0; pointer-events: none;
+  display: none;
+}
+.org-badge {
+  /* 44px invisible hit target; visible mark is only the 12px .badge-dot */
+  position: absolute;
+  pointer-events: auto;
+  width: 44px; height: 44px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 6;
+  cursor: pointer;
+  padding: 0;
+}
+.org-badge .badge-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--swatch, #6d4c37);
+  pointer-events: none;
+  box-shadow: 0 0 0 1.5px #fff, 0 1px 2px rgba(40,30,20,.45);
+  flex: 0 0 auto;
+}
+.org-badge[data-drop-org="pancreas"] {
+  border: 0; background: transparent; box-shadow: none;
+}
+.org-badge[data-drop-org="oesophagus"] .badge-dot { background: #b88960; box-shadow: 0 0 0 1.5px #4e342e, 0 1px 2px rgba(40,30,20,.45); }
+.org-badge[data-drop-org="stomach"] .badge-dot { background: #d08a62; box-shadow: 0 0 0 1.5px #4e342e, 0 1px 2px rgba(40,30,20,.45); }
+.org-badge[data-drop-org="si"] .badge-dot { background: #d08a68; box-shadow: 0 0 0 1.5px #4e342e, 0 1px 2px rgba(40,30,20,.45); }
+.org-badge[data-drop-org="li"] .badge-dot { background: #c8b089; box-shadow: 0 0 0 1.5px #4e342e, 0 1px 2px rgba(40,30,20,.45); }
+.org-badge[data-drop-org="pancreas"] .badge-dot {
+  width: 12px; height: 12px;
+  background: #e0c040;
+  box-shadow: 0 0 0 1.5px #5a3e10, 0 1px 2px rgba(40,30,20,.45);
+}
+.org-badge[data-drop-org="bileduct"] {
+  border: 0; background: transparent; box-shadow: none; border-radius: 50%;
+}
+.org-badge[data-drop-org="bileduct"] .badge-dot {
+  width: 11px; height: 11px;
+  border-radius: 2px;
+  background: #1f8a2e;
+  box-shadow: 0 0 0 1.5px #fff, 0 1px 2px rgba(40,30,20,.45);
+}
+.org-badge.is-filled, .org-badge.is-correct {
+  width: auto; height: auto;
+  min-width: 0; min-height: 0;
+  max-width: 92px;
+  border-radius: 9px;
+  padding: 1px 3px;
+  background: rgba(255,255,255,.94);
+  border: 1.5px solid var(--swatch, #6d4c37);
+  box-shadow: 0 1px 4px rgba(40,30,20,.2);
+  z-index: 4;
+}
+.org-badge.is-correct { background: var(--ok-bg); border-color: var(--ok); }
+.org-badge.is-filled .badge-dot, .org-badge.is-correct .badge-dot,
+.org-badge.is-filled .ph, .org-badge.is-correct .ph { display: none; }
+.org-badge.is-over { z-index: 7; background: transparent; border: 0; box-shadow: none; }
+.org-badge.is-over .badge-dot {
+  box-shadow: 0 0 0 3px rgba(31,107,58,.55), 0 0 0 1.5px #fff, 0 1px 2px rgba(40,30,20,.45);
+}
+.org-badge.is-await { z-index: 7; background: transparent; border: 0; box-shadow: none; }
+.org-badge.is-await .badge-dot {
+  box-shadow: 0 0 0 3px rgba(201,162,39,.75), 0 0 0 1.5px #fff, 0 1px 2px rgba(40,30,20,.45);
+}
+.org-badge.is-filled.is-over, .org-badge.is-correct.is-over,
+.org-badge.is-filled.is-await, .org-badge.is-correct.is-await {
+  box-shadow: 0 0 0 3px rgba(31,107,58,.35), 0 1px 4px rgba(40,30,20,.2);
+}
+.org-badge .chip {
+  font-size: 11px; padding: 2px 5px 2px 13px; min-height: 24px;
+  max-width: 86px; box-shadow: none; border-width: 0; background: transparent;
+  white-space: normal; line-height: 1.15;
+}
+
+html.is-dragging, html.is-dragging body {
+  overflow: hidden !important;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+@media (max-width: 800px) {
+  #controlsCard {
+    position: sticky; top: 0; z-index: 28;
+    background: var(--card);
+    box-shadow: 0 4px 12px rgba(40,30,20,.08);
+  }
+  .org-badge.has-fn::after {
+    content: '✓';
+    position: absolute; right: 0; top: 0;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--ok); color: #fff;
+    font-size: 9px; font-weight: 800; line-height: 14px; text-align: center;
+    box-shadow: 0 0 0 1px #fff, 0 1px 2px rgba(0,0,0,.2);
+  }
+  .badge-layer { display: block; }
+  .tag-layer, #leaders { display: none !important; }
+  .diagram-stage {
+    overflow: hidden;
+    padding: 4px;
+  }
+  .diagram-stage svg { max-height: none; width: 100%; }
+  .board.has-panel { grid-template-columns: 1fr; }
+  .func-panel { max-height: none; padding: 8px; }
+  .fn-dock { padding: 6px 8px; }
+  .fn-slot { min-height: 48px; }
+  .kicker { display: none; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .banner { font-size: 13.5px; padding: 8px 12px; margin: 8px 0 10px; }
+  .card { padding: 10px 12px; margin: 8px 0; }
+  .controls > * { margin: 0 6px 6px 0; }
+  button.act, button.ghost { padding: 8px 12px; font-size: 14px; }
+  .score-badge { margin-left: 0; padding: 6px 10px; }
+  .stages {
+    display: flex;
+    grid-template-columns: none;
+    grid-gap: 0;
+    gap: 0;
+    margin-top: 8px;
+  }
+  .stages > * + * { margin-left: 6px; }
+  .stage-pill { flex: 1; font-size: 12px; padding: 8px 4px; min-height: 44px; }
+  .stage-pill .num { display: inline; margin-right: 2px; }
+  .tray-wrap {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    background: var(--paper);
+    margin: 0;
+    padding: 6px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -6px 18px rgba(40,30,20,.14);
+  }
+  .tray-wrap h3 { margin: 0 0 4px; font-size: 12px; }
+  .tray { max-height: none; overflow-y: visible; padding: 6px; }
+  .tray > * { margin: 0 5px 5px 0; }
+  .tray .chip { min-height: 40px; font-size: 13px; padding: 6px 9px 6px 18px; }
+  .tray-wrap .feedback { margin: 0 0 4px; font-size: 13px; padding: 6px 8px; }
+  .tray-wrap .feedback:empty { display: none; }
+  .tray-wrap.is-fn { padding-top: 4px; }
+  .tray-wrap.is-fn .tray {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: none;
+    padding: 6px 4px 8px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .tray-wrap.is-fn .tray > * { margin: 0 8px 0 0; }
+  .tray-wrap.is-fn .chip.fn {
+    flex: 0 0 auto;
+    max-width: 250px;
+    min-width: 140px;
+    min-height: 44px;
+    font-size: 13px;
+    padding: 8px 12px;
+    white-space: normal;
+    scroll-snap-align: start;
+  }
+  #gameApp.wrap { padding: 10px 10px calc(168px + env(safe-area-inset-bottom, 0px)); }
+  #gameApp.wrap.has-fn-tray { padding-bottom: calc(128px + env(safe-area-inset-bottom, 0px)); }
+  #gameApp.is-recap { padding-bottom: 20px; }
+  #gameApp.is-recap #controlsCard,
+  #gameApp.is-recap #instruct { display: none; }
+  .student-bar { margin-top: 2px; flex-wrap: nowrap; }
+  .student-bar > * { margin: 0 6px 0 0; }
+  .student-chip {
+    font-size: 13px; padding: 6px 10px; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; max-width: 60%;
+  }
+  #btnLogout { font-size: 12px; padding: 6px 10px; white-space: nowrap; flex-shrink: 0; min-height: 40px; }
+  .diagram-stage {
+    display: flex; justify-content: center; align-items: flex-start;
+  }
+  .diagram-stage svg {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100vh - 23.5rem);
+    max-height: calc(100dvh - 23.5rem);
+  }
+  #startScreen .kicker { display: block; font-size: 11px; margin-bottom: 6px; }
+  .banner { margin: 6px 0 8px; }
+}
+
+@media (max-width: 900px) {
+  .stages { display: flex; grid-template-columns: none; grid-gap: 0; gap: 0; }
+  .stages > * + * { margin-left: 6px; }
+  .stage-pill { flex: 1; }
+}
+
+
+/* ===== Open version: start, results, certificate, print ===== */
+#gameApp.is-recap #controlsCard,
+#gameApp.is-recap #instruct { display: none !important; }
+
+#startScreen.hidden, #gameApp.hidden { display: none !important; }
+.start-points {
+  margin: 0 0 18px; padding: 0 0 0 1.2em;
+  color: var(--muted); font-size: 15px; line-height: 1.55;
+}
+.start-points li { margin: 0 0 8px; }
+.start-points strong { color: var(--green-d); }
+
+.results-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 16px 16px 14px; margin: 0 0 16px;
+  box-shadow: var(--shadow);
+}
+.results-card h2 { margin: 0 0 12px; font-size: 22px; }
+.result-scores {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 8px; gap: 8px;
+}
+.rstat {
+  background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 8px; text-align: center;
+}
+.rstat .rlab { display: block; font-size: 12px; font-weight: 700; color: var(--muted); }
+.rstat .rn { display: block; font-size: 26px; font-weight: 800; margin-top: 2px; color: var(--ink); }
+.rstat.total { background: var(--ok-bg); border-color: #81c784; }
+.rstat.total .rn { color: var(--ok); }
+.rstat.is-low { background: #fbf4ee; }
+.results-card .muted { margin: 12px 0 0; }
+
+.missed-box {
+  background: #fffaf3; border: 1px solid var(--line);
+  border-radius: 14px; padding: 12px 16px; margin: 0 0 16px;
+}
+.missed-box h3 { margin: 0 0 8px; font-size: 16px; }
+.missed-box ul { margin: 0; padding: 0 0 0 1.15em; }
+.missed-box li { margin: 0 0 6px; font-size: 15px; }
+.missed-box .miss-kind {
+  display: inline-block; font-size: 11px; font-weight: 800;
+  letter-spacing: .04em; text-transform: uppercase;
+  background: #efe4d2; color: var(--muted);
+  border-radius: 999px; padding: 1px 8px; margin-right: 6px;
+}
+
+.perfect-box {
+  background: var(--ok-bg); border: 1px solid #81c784;
+  border-radius: 14px; padding: 14px 16px; margin: 0 0 18px;
+}
+.perfect-box p { margin: 0 0 10px; font-weight: 650; color: var(--green-d); }
+.cert-name-field { display: block; font-weight: 700; font-size: 15px; }
+.cert-name-field input {
+  display: block; width: 100%; max-width: 420px; min-height: 48px;
+  margin-top: 6px; padding: 10px 12px;
+  border: 1.5px solid var(--line); border-radius: 12px;
+  background: #fff; font-family: inherit; font-size: 16px; color: var(--ink);
+}
+
+#certificateWrap { margin: 0 0 24px; }
+.again-row {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 28px;
+}
+.again-row .act {
+  min-height: 48px;
+  min-width: 220px;
+  font-size: 16px;
+  padding: 12px 28px;
+}
+
+#certificate {
+  --cert-green: #1f6b3a;
+  --cert-ink: #2b241c;
+  background: #f7f1e6;
+  color: var(--cert-ink);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 8px 28px rgba(40,30,20,.16);
+}
+.cert-inner {
+  border: 2.5px solid var(--cert-green);
+  outline: 1px solid var(--cert-green);
+  outline-offset: 5px;
+  padding: 28px 22px 22px;
+  text-align: center;
+  position: relative;
+  background:
+    linear-gradient(#f7f1e6, #f7f1e6) padding-box;
+  min-height: 520px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.cert-inner::before, .cert-inner::after {
+  content: '';
+  position: absolute; width: 22px; height: 22px;
+  border-color: var(--cert-green); border-style: solid;
+}
+.cert-inner::before { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
+.cert-inner::after { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+.cert-school-zh {
+  margin: 6px 0 0; font-size: 22px; font-weight: 800; letter-spacing: .12em;
+  color: var(--cert-green);
+}
+.cert-school-en {
+  margin: 2px 0 0; font-size: 13px; font-weight: 650; letter-spacing: .06em;
+  color: #5a493c; text-transform: uppercase;
+}
+.cert-rule {
+  width: 48%; height: 1px; background: var(--cert-green);
+  margin: 14px auto 16px; opacity: .55;
+}
+.cert-word {
+  margin: 0; font-size: 22px; font-size: clamp(22px, 5vw, 30px); font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--cert-ink);
+}
+.cert-word-sub {
+  margin: 4px 0 16px; font-size: 18px; font-weight: 700;
+  letter-spacing: .4em; color: var(--cert-green);
+}
+.cert-this { margin: 0 0 8px; font-size: 15px; color: #5a493c; }
+.cert-person {
+  margin: 4px 0 14px; min-height: 1.4em; min-width: 55%;
+  padding: 4px 18px 6px;
+  font-size: 22px; font-size: clamp(22px, 6vw, 34px); font-weight: 800;
+  letter-spacing: .06em; color: var(--cert-ink);
+  border-bottom: 1.5px solid var(--cert-green);
+}
+.cert-person.is-empty { color: #b5a898; font-weight: 650; border-bottom-style: dashed; }
+.cert-body {
+  margin: 8px 0 6px; font-size: 15.5px; line-height: 1.55;
+  max-width: 28em; color: var(--cert-ink);
+}
+.cert-score {
+  margin: 8px 0 6px; font-size: 36px; font-weight: 800;
+  color: var(--cert-green); letter-spacing: .08em;
+}
+.cert-congrats {
+  margin: 4px 0 16px; font-size: 14.5px; font-style: italic;
+  color: #5a493c; max-width: 28em; line-height: 1.5;
+}
+.cert-date { margin: 8px 0 18px; font-size: 14px; font-weight: 650; color: #5a493c; }
+.cert-foot { margin-top: auto; padding-top: 8px; }
+.cert-sign {
+  display: inline-block; border-top: 1px solid #c4b5a3;
+  padding: 6px 18px 0; font-size: 13px; font-weight: 700; color: var(--cert-green);
+}
+.cert-actions {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  margin: 10px -4px 2px;
+}
+.cert-actions > * { margin: 4px; }
+.cert-actions button { min-height: 44px; min-width: 140px; }
+.ios-save { text-align: center; margin: 12px 0; }
+.ios-save img {
+  max-width: 100%; height: auto; border: 1px solid var(--line);
+  border-radius: 8px; box-shadow: var(--shadow);
+}
+
+@media (max-width: 800px) {
+  .result-scores { grid-template-columns: 1fr; }
+  .rstat .rn { font-size: 28px; }
+  .cert-inner { padding: 22px 14px 18px; min-height: 0; }
+  .cert-school-zh { font-size: 18px; letter-spacing: .08em; }
+  .cert-person { font-size: 24px; }
+  .cert-score { font-size: 30px; }
+}
+
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  html, body {
+    background: #fff !important;
+    color: #2b241c;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .no-print, #startScreen, #playArea, #controlsCard, #gameApp > .topbar,
+  #gameApp > .banner, #footer, .tray-wrap, #instruct, .stages,
+  #recapTitle, #recapLead, #recapGrid, #scoreSummary, #missedBox, #perfectBox,
+  .celebrate, .cert-actions, #certHint, #iosSaveBox, #btnAgain {
+    display: none !important;
+  }
+  #gameApp, #gameApp.is-recap, #recapArea, #certificateWrap, #certificate, .cert-inner {
+    display: block !important;
+    visibility: visible !important;
+  }
+  #gameApp { padding: 0 !important; margin: 0 !important; max-width: none; box-shadow: none; }
+  #recapArea { padding: 0; }
+  #certificateWrap { margin: 0; }
+  #certificate {
+    box-shadow: none; max-width: none; padding: 6px;
+    background: #f7f1e6;
+  }
+  .cert-inner {
+    min-height: 240mm;
+    padding: 18mm 16mm 14mm;
+    outline-offset: 4mm;
+  }
+}
+
+</style>
+</head>
+<body>
+<div id="startScreen" class="login-wrap no-print">
+  <div class="topbar">
+    <div class="titles">
+      <p class="kicker" id="startKicker">Biology · Human physiology / Digestion · Fukien Secondary School (Siu Sai Wan) · Mr Kwong</p>
+      <h1 id="startTitle">Digestive System Matching Game</h1>
+    </div>
+    <button type="button" class="lang-btn" id="btnLangStart" aria-label="Switch to Traditional Chinese">中文</button>
+  </div>
+  <div class="login-card" id="startCard">
+    <p class="login-lead" id="startLead">Label eight organs, then match each function. Your first answer for each item is the one that counts.</p>
+    <ul class="start-points" id="startPoints"></ul>
+    <label class="start-name-field" for="startName">
+      <span id="labStartName">Name</span>
+      <input type="text" id="startName" maxlength="40" autocomplete="name" enterkeyhint="done" required>
+    </label>
+    <p class="muted start-name-hint" id="startNameHint">Enter your name so it can appear on a certificate if you score full marks.</p>
+    <p class="login-err" id="startNameErr" role="alert"></p>
+    <button type="button" class="act login-start is-disabled" id="btnStart" aria-disabled="true">Start</button>
+  </div>
+  <footer id="startFooter"></footer>
+</div>
+
+<div class="wrap hidden" id="gameApp">
+  <div class="topbar">
+    <div class="titles">
+      <p class="kicker" id="kicker">Biology · Human physiology / Digestion · Fukien Secondary School (Siu Sai Wan) · Mr Kwong</p>
+      <h1 id="title">Digestive System Matching Game</h1>
+    </div>
+    <button type="button" class="lang-btn" id="btnLang" aria-label="Switch to Traditional Chinese">中文</button>
+  </div>
+  <div class="banner" id="instruct"></div>
+
+  <div class="card" id="controlsCard">
+    <div class="controls">
+      <button type="button" class="act" id="btnCheck">Check</button>
+      <button type="button" class="ghost" id="btnReset">Reset</button>
+      <button type="button" class="act" id="btnNext" disabled>Next</button>
+      <div class="score-badge" id="scoreBadge" aria-live="polite">
+        <span id="scoreLabel">First try</span>
+        <span class="n" id="scoreNum">0</span> / 8
+      </div>
+    </div>
+    <div class="stages" role="tablist" aria-label="Stages" id="stagePills">
+      <button type="button" class="stage-pill is-active" data-go="1" id="pill1" role="tab" aria-selected="true">
+        <span class="num">1</span><span id="pill1t">Label the diagram</span>
+      </button>
+      <button type="button" class="stage-pill" data-go="2" id="pill2" role="tab" aria-selected="false">
+        <span class="num">2</span><span id="pill2t">Match functions</span>
+      </button>
+      <button type="button" class="stage-pill" data-go="3" id="pill3" role="tab" aria-selected="false" disabled>
+        <span class="num">3</span><span id="pill3t">Results</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="playArea">
+    <div class="board" id="board">
+      <div class="diagram-stage" id="diagramStage">
+        <!--SVG-->
+        <svg id="anatomy" viewBox="0 0 720 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="svgTitle svgDesc">
+          <title id="svgTitle">Human digestive system, anterior view</title>
+          <desc id="svgDesc">Original schematic of eight digestive organs in anterior view: oesophagus, liver, gall bladder, bile duct, stomach, pancreas, small intestine and large intestine.</desc>
+          <defs>
+            <linearGradient id="gLiver" x1="0.15" y1="0" x2="0.9" y2="1">
+              <stop offset="0%" stop-color="#9a3a32"/>
+              <stop offset="45%" stop-color="#7a201c"/>
+              <stop offset="100%" stop-color="#4a1010"/>
+            </linearGradient>
+            <radialGradient id="gLiverHi" cx="0.58" cy="0.32" r="0.45">
+              <stop offset="0%" stop-color="#c47068" stop-opacity=".55"/>
+              <stop offset="100%" stop-color="#7a201c" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="gStomach" x1="0.25" y1="0" x2="0.85" y2="1">
+              <stop offset="0%" stop-color="#f8dcc8"/>
+              <stop offset="55%" stop-color="#ecc0a4"/>
+              <stop offset="100%" stop-color="#d9a888"/>
+            </linearGradient>
+            <radialGradient id="gStomachHi" cx="0.62" cy="0.28" r="0.5">
+              <stop offset="0%" stop-color="#fff6ee" stop-opacity=".7"/>
+              <stop offset="100%" stop-color="#ecc0a4" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="gPanc" x1="0" y1="0" x2="1" y2="0.6">
+              <stop offset="0%" stop-color="#edd56a"/>
+              <stop offset="50%" stop-color="#e0c040"/>
+              <stop offset="100%" stop-color="#c9a227"/>
+            </linearGradient>
+            <linearGradient id="gSI" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f0c4ac"/>
+              <stop offset="100%" stop-color="#e0a888"/>
+            </linearGradient>
+            <linearGradient id="gLI" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f3ead8"/>
+              <stop offset="100%" stop-color="#e0d3bb"/>
+            </linearGradient>
+            <linearGradient id="gGB" x1="0.3" y1="0" x2="0.8" y2="1">
+              <stop offset="0%" stop-color="#5dce5a"/>
+              <stop offset="100%" stop-color="#2d8a32"/>
+            </linearGradient>
+            <linearGradient id="gOes" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#d4b098"/>
+              <stop offset="40%" stop-color="#edceb8"/>
+              <stop offset="100%" stop-color="#d0aa92"/>
+            </linearGradient>
+          </defs>
+
+          <!-- ===== Large intestine (frame, at the back) ===== -->
+          <g id="org-li" class="org" data-org="li" tabindex="-1">
+            <title>Large intestine</title>
+            <rect class="glow-target" x="200" y="430" width="28" height="0" fill="none"/>
+            <!-- wide invisible hit follows the tube via thick transparent stroke -->
+            <path id="li-hit" fill="none" stroke="transparent" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"
+              d="M 268.0 735.0 C 263.5 736.5 244.9 746.5 238.0 745.0 C 231.1 743.5 221.7 731.0 222.0 725.0 C 222.3 719.0 240.0 711.0 240.0 705.0 C 240.0 699.0 220.5 691.0 222.0 685.0 C 223.5 679.0 250.3 671.0 250.0 665.0 C 249.7 659.0 220.0 651.0 220.0 645.0 C 220.0 639.0 249.7 631.0 250.0 625.0 C 250.3 619.0 222.0 611.0 222.0 605.0 C 222.0 599.0 249.7 591.0 250.0 585.0 C 250.3 579.0 223.7 571.0 224.0 565.0 C 224.3 559.0 251.7 551.0 252.0 545.0 C 252.3 539.0 226.0 531.0 226.0 525.0 C 226.0 519.0 251.4 510.6 252.0 505.0 C 252.6 499.4 230.3 492.9 230.0 488.0 C 229.7 483.1 248.8 477.4 250.0 472.0 C 251.2 466.6 236.5 457.1 238.0 452.0 C 239.5 446.9 252.2 439.5 260.0 438.0 C 267.8 436.5 281.0 439.9 290.0 442.0 C 299.0 444.1 311.0 449.0 320.0 452.0 C 329.0 455.0 341.8 462.6 350.0 462.0 C 358.2 461.4 366.8 448.3 375.0 448.0 C 383.2 447.7 396.0 460.0 405.0 460.0 C 414.0 460.0 426.0 448.3 435.0 448.0 C 444.0 447.7 456.0 458.6 465.0 458.0 C 474.0 457.4 486.4 445.2 495.0 444.0 C 503.6 442.8 514.0 450.3 522.0 450.0 C 530.0 449.7 541.1 441.2 548.0 442.0 C 554.9 442.8 564.4 449.6 568.0 455.0 C 571.6 460.4 574.7 471.2 572.0 478.0 C 569.3 484.8 549.4 493.7 550.0 500.0 C 550.6 506.3 576.3 514.0 576.0 520.0 C 575.7 526.0 548.0 534.0 548.0 540.0 C 548.0 546.0 576.0 554.0 576.0 560.0 C 576.0 566.0 548.0 574.0 548.0 580.0 C 548.0 586.0 575.7 594.0 576.0 600.0 C 576.3 606.0 550.3 614.0 550.0 620.0 C 549.7 626.0 574.0 634.0 574.0 640.0 C 574.0 646.0 550.3 654.0 550.0 660.0 C 549.7 666.0 572.3 674.3 572.0 680.0 C 571.7 685.7 550.5 692.0 548.0 698.0 C 545.5 704.0 557.7 713.4 555.0 720.0 C 552.3 726.6 539.8 736.3 530.0 742.0 C 520.2 747.7 502.0 755.3 490.0 758.0 C 478.0 760.7 460.8 762.0 450.0 760.0 C 439.2 758.0 424.8 750.7 418.0 745.0 C 411.2 739.3 408.0 722.0 405.0 722.0 C 402.0 722.0 399.9 736.3 398.0 745.0 C 396.1 753.7 392.3 768.8 392.0 780.0 C 391.7 791.2 395.1 807.7 396.0 820.0 C 396.9 832.3 397.7 855.7 398.0 862.0"/>
+            <path class="glow-target" id="li-outer" fill="none" stroke="#e5d6bd" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"
+              d="M 268.0 735.0 C 263.5 736.5 244.9 746.5 238.0 745.0 C 231.1 743.5 221.7 731.0 222.0 725.0 C 222.3 719.0 240.0 711.0 240.0 705.0 C 240.0 699.0 220.5 691.0 222.0 685.0 C 223.5 679.0 250.3 671.0 250.0 665.0 C 249.7 659.0 220.0 651.0 220.0 645.0 C 220.0 639.0 249.7 631.0 250.0 625.0 C 250.3 619.0 222.0 611.0 222.0 605.0 C 222.0 599.0 249.7 591.0 250.0 585.0 C 250.3 579.0 223.7 571.0 224.0 565.0 C 224.3 559.0 251.7 551.0 252.0 545.0 C 252.3 539.0 226.0 531.0 226.0 525.0 C 226.0 519.0 251.4 510.6 252.0 505.0 C 252.6 499.4 230.3 492.9 230.0 488.0 C 229.7 483.1 248.8 477.4 250.0 472.0 C 251.2 466.6 236.5 457.1 238.0 452.0 C 239.5 446.9 252.2 439.5 260.0 438.0 C 267.8 436.5 281.0 439.9 290.0 442.0 C 299.0 444.1 311.0 449.0 320.0 452.0 C 329.0 455.0 341.8 462.6 350.0 462.0 C 358.2 461.4 366.8 448.3 375.0 448.0 C 383.2 447.7 396.0 460.0 405.0 460.0 C 414.0 460.0 426.0 448.3 435.0 448.0 C 444.0 447.7 456.0 458.6 465.0 458.0 C 474.0 457.4 486.4 445.2 495.0 444.0 C 503.6 442.8 514.0 450.3 522.0 450.0 C 530.0 449.7 541.1 441.2 548.0 442.0 C 554.9 442.8 564.4 449.6 568.0 455.0 C 571.6 460.4 574.7 471.2 572.0 478.0 C 569.3 484.8 549.4 493.7 550.0 500.0 C 550.6 506.3 576.3 514.0 576.0 520.0 C 575.7 526.0 548.0 534.0 548.0 540.0 C 548.0 546.0 576.0 554.0 576.0 560.0 C 576.0 566.0 548.0 574.0 548.0 580.0 C 548.0 586.0 575.7 594.0 576.0 600.0 C 576.3 606.0 550.3 614.0 550.0 620.0 C 549.7 626.0 574.0 634.0 574.0 640.0 C 574.0 646.0 550.3 654.0 550.0 660.0 C 549.7 666.0 572.3 674.3 572.0 680.0 C 571.7 685.7 550.5 692.0 548.0 698.0 C 545.5 704.0 557.7 713.4 555.0 720.0 C 552.3 726.6 539.8 736.3 530.0 742.0 C 520.2 747.7 502.0 755.3 490.0 758.0 C 478.0 760.7 460.8 762.0 450.0 760.0 C 439.2 758.0 424.8 750.7 418.0 745.0 C 411.2 739.3 408.0 722.0 405.0 722.0 C 402.0 722.0 399.9 736.3 398.0 745.0 C 396.1 753.7 392.3 768.8 392.0 780.0 C 391.7 791.2 395.1 807.7 396.0 820.0 C 396.9 832.3 397.7 855.7 398.0 862.0"/>
+            <path id="li-inner" fill="none" stroke="#f6f0e4" stroke-width="23" stroke-linecap="round" stroke-linejoin="round"
+              d="M 268.0 735.0 C 263.5 736.5 244.9 746.5 238.0 745.0 C 231.1 743.5 221.7 731.0 222.0 725.0 C 222.3 719.0 240.0 711.0 240.0 705.0 C 240.0 699.0 220.5 691.0 222.0 685.0 C 223.5 679.0 250.3 671.0 250.0 665.0 C 249.7 659.0 220.0 651.0 220.0 645.0 C 220.0 639.0 249.7 631.0 250.0 625.0 C 250.3 619.0 222.0 611.0 222.0 605.0 C 222.0 599.0 249.7 591.0 250.0 585.0 C 250.3 579.0 223.7 571.0 224.0 565.0 C 224.3 559.0 251.7 551.0 252.0 545.0 C 252.3 539.0 226.0 531.0 226.0 525.0 C 226.0 519.0 251.4 510.6 252.0 505.0 C 252.6 499.4 230.3 492.9 230.0 488.0 C 229.7 483.1 248.8 477.4 250.0 472.0 C 251.2 466.6 236.5 457.1 238.0 452.0 C 239.5 446.9 252.2 439.5 260.0 438.0 C 267.8 436.5 281.0 439.9 290.0 442.0 C 299.0 444.1 311.0 449.0 320.0 452.0 C 329.0 455.0 341.8 462.6 350.0 462.0 C 358.2 461.4 366.8 448.3 375.0 448.0 C 383.2 447.7 396.0 460.0 405.0 460.0 C 414.0 460.0 426.0 448.3 435.0 448.0 C 444.0 447.7 456.0 458.6 465.0 458.0 C 474.0 457.4 486.4 445.2 495.0 444.0 C 503.6 442.8 514.0 450.3 522.0 450.0 C 530.0 449.7 541.1 441.2 548.0 442.0 C 554.9 442.8 564.4 449.6 568.0 455.0 C 571.6 460.4 574.7 471.2 572.0 478.0 C 569.3 484.8 549.4 493.7 550.0 500.0 C 550.6 506.3 576.3 514.0 576.0 520.0 C 575.7 526.0 548.0 534.0 548.0 540.0 C 548.0 546.0 576.0 554.0 576.0 560.0 C 576.0 566.0 548.0 574.0 548.0 580.0 C 548.0 586.0 575.7 594.0 576.0 600.0 C 576.3 606.0 550.3 614.0 550.0 620.0 C 549.7 626.0 574.0 634.0 574.0 640.0 C 574.0 646.0 550.3 654.0 550.0 660.0 C 549.7 666.0 572.3 674.3 572.0 680.0 C 571.7 685.7 550.5 692.0 548.0 698.0 C 545.5 704.0 557.7 713.4 555.0 720.0 C 552.3 726.6 539.8 736.3 530.0 742.0 C 520.2 747.7 502.0 755.3 490.0 758.0 C 478.0 760.7 460.8 762.0 450.0 760.0 C 439.2 758.0 424.8 750.7 418.0 745.0 C 411.2 739.3 408.0 722.0 405.0 722.0 C 402.0 722.0 399.9 736.3 398.0 745.0 C 396.1 753.7 392.3 768.8 392.0 780.0 C 391.7 791.2 395.1 807.7 396.0 820.0 C 396.9 832.3 397.7 855.7 398.0 862.0"/>
+            <!-- appendix (part of large intestine) -->
+            <path fill="none" stroke="#e5d6bd" stroke-width="11" stroke-linecap="round"
+              d="M 232.0 738.0 C 229.0 740.3 219.0 745.8 214.0 752.0 C 209.0 758.2 203.3 768.3 202.0 775.0 C 200.7 781.7 202.7 788.8 206.0 792.0 C 209.3 795.2 218.3 796.3 222.0 794.0 C 225.7 791.7 228.3 783.7 228.0 778.0 C 227.7 772.3 221.3 763.0 220.0 760.0"/>
+            <path fill="none" stroke="#f6f0e4" stroke-width="5.5" stroke-linecap="round"
+              d="M 232.0 738.0 C 229.0 740.3 219.0 745.8 214.0 752.0 C 209.0 758.2 203.3 768.3 202.0 775.0 C 200.7 781.7 202.7 788.8 206.0 792.0 C 209.3 795.2 218.3 796.3 222.0 794.0 C 225.7 791.7 228.3 783.7 228.0 778.0 C 227.7 772.3 221.3 763.0 220.0 760.0"/>
+          </g>
+
+          <!-- ===== Small intestine (coils inside the frame + duodenal C) ===== -->
+          <g id="org-si" class="org" data-org="si" tabindex="-1">
+            <title>Small intestine</title>
+            <!-- generous inner hit area, inset from LI frame so LI keeps its tube -->
+            <ellipse cx="400" cy="620" rx="118" ry="108" fill="transparent"/>
+            <!-- duodenal C-loop around the pancreas head (above the transverse colon) -->
+            <path fill="none" stroke="transparent" stroke-width="36" stroke-linecap="round"
+              d="M 440 368 C 400 370 365 390 355 420 C 348 446 375 462 412 458 C 444 454 462 432 458 418"/>
+            <path class="glow-target" fill="none" stroke="#e8b094" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"
+              d="M 440 368 C 400 370 365 390 355 420 C 348 446 375 462 412 458 C 444 454 462 432 458 418"/>
+            <path fill="none" stroke="#f6cbb6" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"
+              d="M 440 368 C 400 370 365 390 355 420 C 348 446 375 462 412 458 C 444 454 462 432 458 418"/>
+            <!-- packed coils -->
+            <g>
+              <path fill="none" stroke="#e8b094" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"
+                d="M 470.0 495.0 C 468.2 507.3 454.9 513.2 445.0 515.0 C 435.1 516.8 412.0 507.3 400.0 508.0 C 388.0 508.7 367.8 513.3 360.0 520.0 C 352.2 526.7 341.5 547.2 345.0 555.0 C 348.5 562.8 373.0 574.3 385.0 575.0 C 397.0 575.7 417.2 560.0 430.0 560.0 C 442.8 560.0 467.2 567.2 475.0 575.0 C 482.8 582.8 489.2 605.8 485.0 615.0 C 480.8 624.2 457.8 638.6 445.0 640.0 C 432.2 641.4 408.5 624.3 395.0 625.0 C 381.5 625.7 357.1 636.5 350.0 645.0 C 342.9 653.5 338.6 676.5 345.0 685.0 C 351.4 693.5 380.8 704.3 395.0 705.0 C 409.2 705.7 433.0 688.6 445.0 690.0 C 457.0 691.4 480.0 707.9 480.0 715.0 C 480.0 722.1 457.8 737.2 445.0 740.0 C 432.2 742.8 404.2 737.8 390.0 735.0 C 375.8 732.2 356.3 720.0 345.0 720.0 C 333.7 720.0 317.8 733.9 310.0 735.0 C 302.2 736.1 292.8 729.0 290.0 728.0"/>
+              <path fill="none" stroke="#f4c8b2" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"
+                d="M 470.0 495.0 C 468.2 507.3 454.9 513.2 445.0 515.0 C 435.1 516.8 412.0 507.3 400.0 508.0 C 388.0 508.7 367.8 513.3 360.0 520.0 C 352.2 526.7 341.5 547.2 345.0 555.0 C 348.5 562.8 373.0 574.3 385.0 575.0 C 397.0 575.7 417.2 560.0 430.0 560.0 C 442.8 560.0 467.2 567.2 475.0 575.0 C 482.8 582.8 489.2 605.8 485.0 615.0 C 480.8 624.2 457.8 638.6 445.0 640.0 C 432.2 641.4 408.5 624.3 395.0 625.0 C 381.5 625.7 357.1 636.5 350.0 645.0 C 342.9 653.5 338.6 676.5 345.0 685.0 C 351.4 693.5 380.8 704.3 395.0 705.0 C 409.2 705.7 433.0 688.6 445.0 690.0 C 457.0 691.4 480.0 707.9 480.0 715.0 C 480.0 722.1 457.8 737.2 445.0 740.0 C 432.2 742.8 404.2 737.8 390.0 735.0 C 375.8 732.2 356.3 720.0 345.0 720.0 C 333.7 720.0 317.8 733.9 310.0 735.0 C 302.2 736.1 292.8 729.0 290.0 728.0"/>
+              <!-- extra packed loops -->
+              <path fill="none" stroke="#e8b094" stroke-width="24" stroke-linecap="round" d="M 310.0 540.0 C 318.3 534.2 336.7 524.2 350.0 525.0 C 363.3 525.8 386.7 535.8 390.0 545.0 C 393.3 554.2 380.8 573.3 370.0 580.0 C 359.2 586.7 336.7 588.3 325.0 585.0 C 313.3 581.7 302.5 567.5 300.0 560.0 C 297.5 552.5 301.7 545.8 310.0 540.0 Z"/>
+              <path fill="none" stroke="#f4c8b2" stroke-width="12" stroke-linecap="round" d="M 310.0 540.0 C 318.3 534.2 336.7 524.2 350.0 525.0 C 363.3 525.8 386.7 535.8 390.0 545.0 C 393.3 554.2 380.8 573.3 370.0 580.0 C 359.2 586.7 336.7 588.3 325.0 585.0 C 313.3 581.7 302.5 567.5 300.0 560.0 C 297.5 552.5 301.7 545.8 310.0 540.0 Z"/>
+              <path fill="none" stroke="#e0a888" stroke-width="24" stroke-linecap="round" d="M 420.0 530.0 C 429.2 524.2 451.7 517.5 465.0 520.0 C 478.3 522.5 496.7 535.0 500.0 545.0 C 503.3 555.0 495.0 573.3 485.0 580.0 C 475.0 586.7 452.5 589.2 440.0 585.0 C 427.5 580.8 413.3 564.2 410.0 555.0 C 406.7 545.8 410.8 535.8 420.0 530.0 Z"/>
+              <path fill="none" stroke="#f4c8b2" stroke-width="12" stroke-linecap="round" d="M 420.0 530.0 C 429.2 524.2 451.7 517.5 465.0 520.0 C 478.3 522.5 496.7 535.0 500.0 545.0 C 503.3 555.0 495.0 573.3 485.0 580.0 C 475.0 586.7 452.5 589.2 440.0 585.0 C 427.5 580.8 413.3 564.2 410.0 555.0 C 406.7 545.8 410.8 535.8 420.0 530.0 Z"/>
+              <path fill="none" stroke="#e8b094" stroke-width="24" stroke-linecap="round" d="M 330.0 610.0 C 340.0 603.3 360.8 593.3 375.0 595.0 C 389.2 596.7 411.7 610.0 415.0 620.0 C 418.3 630.0 406.7 648.3 395.0 655.0 C 383.3 661.7 358.3 663.3 345.0 660.0 C 331.7 656.7 317.5 643.3 315.0 635.0 C 312.5 626.7 320.0 616.7 330.0 610.0 Z"/>
+              <path fill="none" stroke="#f4c8b2" stroke-width="12" stroke-linecap="round" d="M 330.0 610.0 C 340.0 603.3 360.8 593.3 375.0 595.0 C 389.2 596.7 411.7 610.0 415.0 620.0 C 418.3 630.0 406.7 648.3 395.0 655.0 C 383.3 661.7 358.3 663.3 345.0 660.0 C 331.7 656.7 317.5 643.3 315.0 635.0 C 312.5 626.7 320.0 616.7 330.0 610.0 Z"/>
+              <path fill="none" stroke="#e0a888" stroke-width="24" stroke-linecap="round" d="M 430.0 630.0 C 440.0 623.3 461.7 612.5 475.0 615.0 C 488.3 617.5 507.5 634.2 510.0 645.0 C 512.5 655.8 501.7 673.3 490.0 680.0 C 478.3 686.7 452.5 689.2 440.0 685.0 C 427.5 680.8 416.7 664.2 415.0 655.0 C 413.3 645.8 420.0 636.7 430.0 630.0 Z"/>
+              <path fill="none" stroke="#f4c8b2" stroke-width="12" stroke-linecap="round" d="M 430.0 630.0 C 440.0 623.3 461.7 612.5 475.0 615.0 C 488.3 617.5 507.5 634.2 510.0 645.0 C 512.5 655.8 501.7 673.3 490.0 680.0 C 478.3 686.7 452.5 689.2 440.0 685.0 C 427.5 680.8 416.7 664.2 415.0 655.0 C 413.3 645.8 420.0 636.7 430.0 630.0 Z"/>
+              <path fill="none" stroke="#e8b094" stroke-width="24" stroke-linecap="round" d="M 360.0 680.0 C 370.8 673.3 395.0 663.3 410.0 665.0 C 425.0 666.7 447.5 680.0 450.0 690.0 C 452.5 700.0 437.5 718.7 425.0 725.0 C 412.5 731.3 388.3 731.3 375.0 728.0 C 361.7 724.7 347.5 713.0 345.0 705.0 C 342.5 697.0 349.2 686.7 360.0 680.0 Z"/>
+              <path fill="none" stroke="#f4c8b2" stroke-width="12" stroke-linecap="round" d="M 360.0 680.0 C 370.8 673.3 395.0 663.3 410.0 665.0 C 425.0 666.7 447.5 680.0 450.0 690.0 C 452.5 700.0 437.5 718.7 425.0 725.0 C 412.5 731.3 388.3 731.3 375.0 728.0 C 361.7 724.7 347.5 713.0 345.0 705.0 C 342.5 697.0 349.2 686.7 360.0 680.0 Z"/>
+              <path fill="none" stroke="#e0a888" stroke-width="22" stroke-linecap="round" d="M 380.0 560.0 C 390.0 555.0 411.7 542.5 425.0 545.0 C 438.3 547.5 458.3 565.0 460.0 575.0 C 461.7 585.0 447.5 600.8 435.0 605.0 C 422.5 609.2 396.7 605.0 385.0 600.0 C 373.3 595.0 365.8 581.7 365.0 575.0 C 364.2 568.3 370.0 565.0 380.0 560.0 Z"/>
+              <path fill="none" stroke="#f4c8b2" stroke-width="11" stroke-linecap="round" d="M 380.0 560.0 C 390.0 555.0 411.7 542.5 425.0 545.0 C 438.3 547.5 458.3 565.0 460.0 575.0 C 461.7 585.0 447.5 600.8 435.0 605.0 C 422.5 609.2 396.7 605.0 385.0 600.0 C 373.3 595.0 365.8 581.7 365.0 575.0 C 364.2 568.3 370.0 565.0 380.0 560.0 Z"/>
+            </g>
+          </g>
+
+          <!-- ===== Oesophagus (painted early so liver/stomach can overlap the lower end) ===== -->
+          <g id="org-oesophagus" class="org" data-org="oesophagus" tabindex="-1">
+            <title>Oesophagus</title>
+            <path class="glow-target" fill="url(#gOes)" stroke="#c9a894" stroke-width="2.2"
+              d="M 374 16
+                 C 374 10 406 10 406 16
+                 L 406 226
+                 C 406 236 398 242 390 242
+                 C 382 242 374 236 374 226
+                 Z"/>
+            <!-- highlight -->
+            <path fill="#f8e6d8" opacity=".45"
+              d="M 382 22 L 390 22 L 390 220 L 382 220 Z"/>
+            <!-- wider hit -->
+            <!-- hit only the visible upper tube, above the liver -->
+            <rect x="362" y="12" width="56" height="118" fill="transparent"/>
+          </g>
+
+          <!-- ===== Pancreas (clear, below stomach, crossing midline) ===== -->
+          <g id="org-pancreas" class="org" data-org="pancreas" tabindex="-1">
+            <title>Pancreas</title>
+            <!-- inflated hit -->
+            <ellipse cx="490" cy="400" rx="108" ry="28" fill="transparent"/>
+            <path class="glow-target" fill="url(#gPanc)" stroke="#a88612" stroke-width="2.6"
+              d="M 352 372
+                 C 336 378 328 398 346 414
+                 C 362 428 390 430 418 422
+                 C 452 412 492 400 530 388
+                 C 558 378 588 364 598 354
+                 C 608 346 604 332 588 334
+                 C 560 338 528 354 496 366
+                 C 464 378 430 390 402 394
+                 C 380 398 364 396 354 386
+                 C 348 380 350 372 352 372
+                 Z"/>
+            <!-- lobule grooves so the gland is unmistakable -->
+            <g fill="none" stroke="#a88612" stroke-width="1.3" opacity=".45" stroke-linecap="round">
+              <path d="M 378 384 C 382 398 380 410 376 416"/>
+              <path d="M 408 388 C 412 400 410 414 406 420"/>
+              <path d="M 444 380 C 448 392 446 406 440 414"/>
+              <path d="M 484 372 C 488 384 486 396 480 404"/>
+              <path d="M 528 362 C 532 374 530 384 524 392"/>
+              <path d="M 566 350 C 570 360 568 368 562 374"/>
+            </g>
+            <!-- highlight -->
+            <path fill="#f8e8a0" opacity=".35"
+              d="M 400 382 C 440 372 510 356 575 344 C 560 348 500 368 440 382 C 420 388 408 388 400 382 Z"/>
+          </g>
+
+          <!-- ===== Stomach ===== -->
+          <g id="org-stomach" class="org" data-org="stomach" tabindex="-1">
+            <title>Stomach</title>
+            <path class="glow-target" id="stomachShape" fill="url(#gStomach)" stroke="#c48a64" stroke-width="2.3"
+              d="M 414 226
+                 C 424 172 488 148 534 170
+                 C 580 192 590 252 558 306
+                 C 532 350 478 370 436 356
+                 C 408 346 400 320 416 298
+                 C 436 272 456 252 458 234
+                 C 460 220 438 218 414 226
+                 Z"/>
+            <path fill="url(#gStomachHi)"
+              d="M 414 226
+                 C 424 172 488 148 534 170
+                 C 580 192 590 252 558 306
+                 C 532 350 478 370 436 356
+                 C 408 346 400 320 416 298
+                 C 436 272 456 252 458 234
+                 C 460 220 438 218 414 226
+                 Z"/>
+          </g>
+
+          <!-- ===== Liver ===== -->
+          <g id="org-liver" class="org" data-org="liver" tabindex="-1">
+            <title>Liver</title>
+            <path class="glow-target" id="liverShape" fill="url(#gLiver)" stroke="#4a1010" stroke-width="2.2"
+              d="M 432 126
+                 C 400 90 325 86 258 118
+                 C 198 148 186 212 210 270
+                 C 230 318 292 344 350 328
+                 C 396 314 428 276 450 230
+                 C 470 188 468 152 450 136
+                 C 442 128 440 126 432 126
+                 Z"/>
+            <path fill="url(#gLiverHi)"
+              d="M 432 126
+                 C 400 90 325 86 258 118
+                 C 198 148 186 212 210 270
+                 C 230 318 292 344 350 328
+                 C 396 314 428 276 450 230
+                 C 470 188 468 152 450 136
+                 C 442 128 440 126 432 126
+                 Z"/>
+            <!-- specular highlight, original (not a copied texture) -->
+            <ellipse cx="386" cy="168" rx="40" ry="24" fill="#f0c4bc" opacity=".28" transform="rotate(-22 386 168)"/>
+          </g>
+
+          <!-- ===== Gall bladder ===== -->
+          <g id="org-gallbladder" class="org" data-org="gallbladder" tabindex="-1">
+            <title>Gall bladder</title>
+            <ellipse cx="348" cy="330" rx="28" ry="42" fill="transparent"/>
+            <path class="glow-target" fill="url(#gGB)" stroke="#1f6b28" stroke-width="2"
+              d="M 348 286
+                 C 370 286 384 308 380 334
+                 C 376 362 358 386 344 388
+                 C 328 390 316 366 322 340
+                 C 328 314 336 286 348 286
+                 Z"/>
+            <ellipse cx="356" cy="312" rx="9" ry="13" fill="#b6f0a8" opacity=".4"/>
+          </g>
+
+          <!-- ===== Bile duct (on top, very clear) ===== -->
+          <g id="org-bileduct" class="org" data-org="bileduct" tabindex="-1">
+            <title>Bile duct</title>
+            <!-- wide hit -->
+            <path fill="none" stroke="transparent" stroke-width="28" stroke-linecap="round"
+              d="M 364 318 C 382 330 404 352 422 380 C 430 394 438 408 448 414"/>
+            <path class="glow-target" fill="none" stroke="#1f8a2e" stroke-width="10" stroke-linecap="round"
+              d="M 364 318 C 382 330 404 352 422 380 C 430 394 438 408 448 414"/>
+            <path fill="none" stroke="#5dce5a" stroke-width="5.5" stroke-linecap="round"
+              d="M 364 318 C 382 330 404 352 422 380 C 430 394 438 408 448 414"/>
+            <circle cx="448" cy="414" r="6" fill="#2d8a32" stroke="#1f6b28" stroke-width="1"/>
+          </g>
+
+          <!-- ===== Leader lines (drawn last, no pointer events) ===== -->
+          <g id="leaders" pointer-events="none" fill="none" stroke="#4e342e" stroke-width="1.6" stroke-linecap="round" opacity=".85">
+            <!-- oesophagus → right -->
+            <path d="M 408 90 L 560 70"/>
+            <circle cx="408" cy="90" r="3.4" fill="#4e342e" stroke="#fffaf3" stroke-width="1.2"/>
+            <!-- stomach → right -->
+            <path d="M 568 240 L 600 230"/>
+            <circle cx="568" cy="240" r="3.4" fill="#4e342e" stroke="#fffaf3" stroke-width="1.2"/>
+            <!-- pancreas → right (gold, thicker, must be obvious) -->
+            <path d="M 598 356 L 620 385" stroke="#a88612" stroke-width="2.6"/>
+            <circle cx="598" cy="356" r="4.2" fill="#c9a227" stroke="#fffaf3" stroke-width="1.3"/>
+            <!-- SI → right -->
+            <path d="M 515 620 L 600 600"/>
+            <circle cx="515" cy="620" r="3.4" fill="#4e342e" stroke="#fffaf3" stroke-width="1.2"/>
+            <!-- liver → left -->
+            <path d="M 210 200 L 130 175"/>
+            <circle cx="210" cy="200" r="3.4" fill="#4e342e" stroke="#fffaf3" stroke-width="1.2"/>
+            <!-- GB → left -->
+            <path d="M 318 340 L 140 300"/>
+            <circle cx="318" cy="340" r="3.4" fill="#2d8a32" stroke="#fffaf3" stroke-width="1.2"/>
+            <!-- bile duct → left (green, thicker) -->
+            <path d="M 400 360 L 150 410" stroke="#1f8a2e" stroke-width="2.6"/>
+            <circle cx="400" cy="360" r="4.2" fill="#2d8a32" stroke="#fffaf3" stroke-width="1.3"/>
+            <!-- LI → left -->
+            <path d="M 220 600 L 140 610"/>
+            <circle cx="220" cy="600" r="3.4" fill="#4e342e" stroke="#fffaf3" stroke-width="1.2"/>
+          </g>
+        </svg>
+        <div class="tag-layer" id="tagLayer"></div>
+        <div class="badge-layer" id="badgeLayer"></div>
+      </div>
+      <aside class="func-panel hidden" id="funcPanel" aria-label="Function docks"></aside>
+    </div>
+
+    <div class="tray-wrap" id="trayWrap">
+      <div class="feedback info" id="feedback" role="status" aria-live="polite"></div>
+      <h3 id="trayTitle">Organ names</h3>
+      <div class="tray" id="tray" role="list"></div>
+    </div>
+    <div class="li-note hidden" id="liNote"></div>
+  </div>
+
+  <div id="recapArea" class="hidden">
+    <div class="celebrate" id="recapCelebrate"></div>
+
+    <section class="results-card" id="scoreSummary" aria-label="Scores">
+      <h2 id="resultsTitle">Your results</h2>
+      <div class="result-scores">
+        <div class="rstat">
+          <span class="rlab" id="labRS1">Stage 1 · Labels</span>
+          <span class="rn"><span id="rS1">0</span>/8</span>
+        </div>
+        <div class="rstat">
+          <span class="rlab" id="labRS2">Stage 2 · Functions</span>
+          <span class="rn"><span id="rS2">0</span>/8</span>
+        </div>
+        <div class="rstat total">
+          <span class="rlab" id="labRTot">Total</span>
+          <span class="rn"><span id="rTot">0</span>/16</span>
+        </div>
+      </div>
+      <p class="muted" id="resultsNote"></p>
+    </section>
+
+    <div id="missedBox" class="missed-box hidden">
+      <h3 id="missedTitle">First-try misses</h3>
+      <ul id="missedList"></ul>
+    </div>
+
+    <div id="perfectBox" class="perfect-box hidden">
+      <p id="perfectLead">Perfect 16/16 — you have earned a certificate. Enter your name to personalise it.</p>
+      <label class="cert-name-field" for="certName">
+        <span id="labCertName">Name</span>
+        <input type="text" id="certName" maxlength="40" autocomplete="name" enterkeyhint="done">
+      </label>
+      <p class="login-err" id="certNameErr" role="alert"></p>
+    </div>
+
+    <div id="certificateWrap" class="hidden">
+      <div id="certificate" aria-label="Certificate">
+        <div class="cert-inner">
+          <p class="cert-school-zh" id="certSchoolZh">福建中學（小西灣）</p>
+          <p class="cert-school-en" id="certSchoolEn">Fukien Secondary School (Siu Sai Wan)</p>
+          <div class="cert-rule"></div>
+          <h2 class="cert-word" id="certWord">Certificate of Achievement</h2>
+          <p class="cert-word-sub" id="certWordSub">獎狀</p>
+          <p class="cert-this" id="certThis">This is to certify that</p>
+          <p class="cert-person" id="certPerson"> </p>
+          <p class="cert-body" id="certBody"></p>
+          <p class="cert-score" id="certScore">16 / 16</p>
+          <p class="cert-congrats" id="certCongrats"></p>
+          <p class="cert-date" id="certDate"></p>
+          <div class="cert-foot">
+            <span class="cert-sign" id="certSign">Biology Department · 生物科</span>
+          </div>
+        </div>
+      </div>
+      <div class="cert-actions no-print">
+        <button type="button" class="act" id="btnPrint">Print</button>
+        <button type="button" class="ghost" id="btnDownload">Download PNG</button>
+      </div>
+      <p class="muted no-print" id="certHint"></p>
+      <div id="iosSaveBox" class="ios-save hidden no-print">
+        <p id="iosSaveLead"></p>
+        <img id="iosSaveImg" alt="Certificate">
+      </div>
+    </div>
+
+    <div class="again-row no-print">
+      <button type="button" class="act" id="btnAgain">Try again</button>
+    </div>
+
+    <h2 id="recapTitle">All 8 organs at a glance</h2>
+    <p class="muted" id="recapLead"></p>
+    <div class="recap-grid" id="recapGrid"></div>
+  </div>
+
+  <footer id="footer"></footer>
+</div>
+<script>
+(function () {
+  'use strict';
+
+  var LANG_KEY = 'gi-match-open-lang';
+  var ARISTO_URL = 'https://www.aristo.com.hk/science/3Dmodel/model_11.html?lang=en';
+
+  var ORGANS = [
+    { id: 'oesophagus', zh: '食道', en: 'Oesophagus',
+      fnZh: '把食物輸送到胃', fnEn: 'Transfers food to the stomach',
+      dockX: 640, dockY: 70, side: 'right',
+      badgeX: 390, badgeY: 72,
+      swatch: '#d4b098' },
+    { id: 'stomach', zh: '胃', en: 'Stomach',
+      fnZh: '攪動食物並與胃液混合', fnEn: 'Churns food and mixes it with gastric juice',
+      dockX: 648, dockY: 230, side: 'right',
+      badgeX: 535, badgeY: 248,
+      swatch: '#ecc0a4' },
+    { id: 'liver', zh: '肝臟', en: 'Liver',
+      fnZh: '分泌膽汁', fnEn: 'Secretes bile',
+      dockX: 80, dockY: 175, side: 'left',
+      badgeX: 292, badgeY: 188,
+      swatch: '#7a201c' },
+    { id: 'gallbladder', zh: '膽囊', en: 'Gall bladder',
+      fnZh: '暫時儲存肝臟分泌的膽汁', fnEn: 'Temporarily stores bile secreted by the liver',
+      dockX: 80, dockY: 300, side: 'left',
+      badgeX: 328, badgeY: 338,
+      swatch: '#2d8a32' },
+    { id: 'bileduct', zh: '膽管', en: 'Bile duct',
+      fnZh: '把膽汁從膽囊輸送到小腸', fnEn: 'Transports bile from the gall bladder to the small intestine',
+      dockX: 80, dockY: 410, side: 'left',
+      badgeX: 435, badgeY: 392,
+      swatch: '#1f8a2e' },
+    { id: 'pancreas', zh: '胰臟', en: 'Pancreas',
+      fnZh: '分泌胰液', fnEn: 'Secretes pancreatic juice',
+      dockX: 648, dockY: 385, side: 'right',
+      badgeX: 538, badgeY: 408,
+      swatch: '#e0c040' },
+    { id: 'si', zh: '小腸', en: 'Small intestine',
+      fnZh: '吸收已消化的食物分子', fnEn: 'Absorbs digested food molecules',
+      dockX: 648, dockY: 600, side: 'right',
+      badgeX: 400, badgeY: 590,
+      swatch: '#e8b094' },
+    { id: 'li', zh: '大腸', en: 'Large intestine',
+      fnZh: '吸收水分', fnEn: 'Absorbs water',
+      noteZh: '分為盲腸、闌尾、結腸和直腸；結腸吸收少量水分和礦物質',
+      noteEn: 'Comprises the caecum, appendix, colon and rectum; the colon absorbs some water and minerals.',
+      dockX: 80, dockY: 610, side: 'left',
+      badgeX: 218, badgeY: 575,
+      swatch: '#e5d6bd' }
+  ];
+
+  var ORDER = ['oesophagus','stomach','liver','gallbladder','bileduct','pancreas','si','li'];
+
+  var I18N = {
+    en: {
+      title: 'Digestive System Matching Game',
+      kicker: 'Biology · Human physiology / Digestion · Fukien Secondary School (Siu Sai Wan) · Mr Kwong',
+      instruct1: 'Drag each organ name onto the matching part of the diagram. You can also tap a name, then tap the organ. Press <strong>Check</strong> when you are ready.',
+      instruct2: 'Now match each function to the correct organ. Drag a function card onto the organ or onto its named slot.',
+      instruct3: 'You have finished both stages. Here is your first-try score.',
+      tray1: 'Organ names',
+      tray2: 'Functions',
+      check: 'Check',
+      reset: 'Reset',
+      next: 'Next',
+      playAgain: 'Try again',
+      score: 'First try',
+      langBtn: '中文',
+      langAria: 'Switch to Traditional Chinese',
+      pill1: 'Label the diagram',
+      pill2: 'Match functions',
+      pill3: 'Results',
+      placeAll: 'Place the cards first, then press Check.',
+      allCorrect1: 'Excellent! All 8 labels are correct on the first try. Continue to the function challenge.',
+      allCorrect1Partial: 'All 8 labels are now in the right place. Your first-try score for this stage is {n}/8. Continue to the function challenge.',
+      allCorrect2: 'Excellent! All 8 functions are correct on the first try. Continue to see your results.',
+      allCorrect2Partial: 'All 8 functions are now in the right place. Your first-try score for this stage is {n}/8. Continue to see your results.',
+      someCorrect: '{n} of 8 in the right place this time. Incorrect cards have returned to the tray. First-try mistakes will not earn a mark.',
+      noneCorrect: 'Not quite — those cards have returned to the tray. First-try mistakes will not earn a mark.',
+      selected: 'Selected. Now tap the matching organ or its drop slot.',
+      dropName: 'Drop name',
+      dropFn: 'Drop function',
+      recapTitle: 'All 8 organs at a glance',
+      recapLead: 'Review each organ and its function. Use the language button to switch between English and Chinese.',
+      recapCelebrate: 'You finished both stages. Outstanding persistence!',
+      liLearn: 'A little more about the large intestine:',
+      footer: 'The organ list and arrangement follow the Aristo Educational Press 3D model “Human digestive system” (<a href="'+ARISTO_URL+'" target="_blank" rel="noopener noreferrer">reference</a>), used here as a teaching acknowledgement. This activity is an original diagram and game; it does not copy or redistribute the Aristo 3D files.',
+      svgTitle: 'Human digestive system, anterior view',
+      btnStart: 'Start',
+      startLead: 'Label eight organs, then match each function. Your first answer for each item is the one that counts.',
+      startPoints: '<li>Stage 1: name the eight organs on the diagram.</li><li>Stage 2: match a short function to each organ.</li><li>A perfect first-try score of <strong>16/16</strong> earns a printable certificate.</li><li>You may correct mistakes to finish and review, but later corrections do not raise a first-try mark.</li>',
+      resultsTitle: 'Your results',
+      labRS1: 'Stage 1 · Labels',
+      labRS2: 'Stage 2 · Functions',
+      labRTot: 'Total',
+      resultsPerfect: 'Full marks on the first try — congratulations!',
+      resultsPartial: 'A certificate is awarded only for a first-try score of 16/16. Review what was missed, then try again.',
+      missedTitle: 'First-try misses',
+      missedNone: 'No first-try misses.',
+      missedLabel: 'Label',
+      missedFn: 'Function',
+      perfectLead: 'Perfect 16/16 — you have earned a certificate. Enter your name to personalise it.',
+      labCertName: 'Name',
+      labStartName: 'Name',
+      startNameHint: 'Enter your name so it can appear on a certificate if you score full marks.',
+      startNameNeed: 'Please enter your name to start.',
+      certNameNeed: 'Please enter your name to print or download the certificate.',
+      certWord: 'Certificate of Achievement',
+      certWordSub: '獎狀',
+      certThis: 'This is to certify that',
+      certBody: 'has achieved a perfect first-try score in the Digestive System Matching Game.',
+      certCongrats: 'Outstanding accuracy and careful observation of the human digestive system.',
+      certPrint: 'Print',
+      certDownload: 'Download PNG',
+      certHint: 'Print a paper copy, or download a PNG image to keep.',
+      iosSaveLead: 'Long-press the image and choose “Save to Photos” (or Share).',
+      celebratePerfect: 'Perfect first-try score — 16 out of 16!',
+      celebratePartial: 'You completed both stages. Here is your first-try score.',
+      instruct1m: 'Tap a name, then tap the organ (or drag it). Press <strong>Check</strong> when you are ready.',
+      instruct2m: 'Tap a function, then tap the organ, or drag it onto the organ or a slot below. Press <strong>Check</strong> when you are ready.'
+    },
+    zh: {
+      title: '消化系統配對遊戲',
+      kicker: '生物 · 人體生理／消化 · 福建中學（小西灣）· 鄺老師',
+      instruct1: '把每個器官名稱拖到圖中對應的位置。也可以先點選名稱，再點選器官。準備好後按<strong>檢查答案</strong>。',
+      instruct2: '現在把每項功能配對到正確的器官。把功能卡拖到器官上，或拖到它的名稱格。',
+      instruct3: '你已完成兩個關卡。以下是你的首次作答分數。',
+      tray1: '器官名稱',
+      tray2: '功能',
+      check: '檢查答案',
+      reset: '重設',
+      next: '下一關',
+      playAgain: '再試一次',
+      score: '首次成績',
+      langBtn: 'English',
+      langAria: 'Switch to English',
+      pill1: '標示圖中器官',
+      pill2: '配對功能',
+      pill3: '成績',
+      placeAll: '請先放好卡片，再按檢查答案。',
+      allCorrect1: '很好！8 個標籤均在首次作答時正確。繼續進行功能配對。',
+      allCorrect1Partial: '8 個標籤現已全部放對。本關首次作答分數為 {n}/8。繼續進行功能配對。',
+      allCorrect2: '很好！8 項功能均在首次作答時正確。繼續查看成績。',
+      allCorrect2Partial: '8 項功能現已全部放對。本關首次作答分數為 {n}/8。繼續查看成績。',
+      someCorrect: '今次 8 題中放對 {n} 題。不正確的卡片已返回托盤。首次作答錯誤不會得分。',
+      noneCorrect: '還未正確——那些卡片已返回托盤。首次作答錯誤不會得分。',
+      selected: '已選取。請點選對應的器官或放置格。',
+      dropName: '放上名稱',
+      dropFn: '放上功能',
+      recapTitle: '八個器官一覽',
+      recapLead: '重溫每個器官及其功能。可按語言按鈕在中英文之間切換。',
+      recapCelebrate: '你已完成圖上標籤及全部功能配對，表現出色！',
+      liLearn: '關於大腸的補充：',
+      footer: '器官名單與排列依循亞理圖書 3D 模型「人體消化系統」（<a href="'+ARISTO_URL+'" target="_blank" rel="noopener noreferrer">參考</a>），於此作教學致謝。本活動為原創示意圖及遊戲，並無複製或轉發亞理的 3D 檔案。',
+      svgTitle: '人體消化系統（前面觀）',
+      btnStart: '開始',
+      startLead: '先為八個器官加上名稱，再配對每項功能。每題以你的第一次作答計分。',
+      startPoints: '<li>第 1 關：在圖上標示八個器官的名稱。</li><li>第 2 關：把簡短功能配對到各器官。</li><li>首次作答取得滿分 <strong>16/16</strong>，即可獲發可列印的證書。</li><li>你仍可改正錯誤以完成遊戲並重溫內容，但稍後的更正不會提高該題的首次分數。</li>',
+      resultsTitle: '你的成績',
+      labRS1: '第 1 關 · 標籤',
+      labRS2: '第 2 關 · 功能',
+      labRTot: '總分',
+      resultsPerfect: '首次作答全對——恭喜你！',
+      resultsPartial: '證書只頒予首次作答滿分 16/16 的同學。請查看未得分的項目，再試一次。',
+      missedTitle: '首次作答未得分的項目',
+      missedNone: '沒有首次作答錯誤。',
+      missedLabel: '標籤',
+      missedFn: '功能',
+      perfectLead: '滿分 16/16——你已獲得證書。請輸入姓名，印在證書上。',
+      labCertName: '姓名',
+      labStartName: '姓名',
+      startNameHint: '請先輸入姓名，以便在滿分時印在證書上。',
+      startNameNeed: '請先輸入姓名，才可開始。',
+      certNameNeed: '請先輸入姓名，才可列印或下載證書。',
+      certWord: '獎狀',
+      certWordSub: 'Certificate of Achievement',
+      certThis: '茲證明',
+      certBody: '於「消化系統配對遊戲」中首次作答取得滿分。',
+      certCongrats: '觀察細緻，配對準確，表現出色。',
+      certPrint: '列印',
+      certDownload: '下載 PNG',
+      certHint: '可列印紙本，或下載 PNG 圖片保存。',
+      iosSaveLead: '請長按圖片，然後選擇「儲存圖片」（或分享）。',
+      celebratePerfect: '首次作答全對——16 分滿分！',
+      celebratePartial: '你已完成兩個關卡。以下是你的首次作答分數。',
+      instruct1m: '先點選名稱，再點選器官。也可以把名稱拖到器官上。準備好後按<strong>檢查答案</strong>。',
+      instruct2m: '先點選功能，再點選器官；或把功能卡拖到器官上，或拖到下方的名稱格。準備好後按<strong>檢查答案</strong>。'
+    }
+  };
+
+  function $(id) { return document.getElementById(id); }
+
+  var CERT_NAME_KEY = 'gi-match-open-cert-name';
+  var first1 = {};
+  var first2 = {};
+
+  function isNarrow() {
+    return window.matchMedia('(max-width: 800px)').matches;
+  }
+
+  function showStart() {
+    $('startScreen').classList.remove('hidden');
+    $('gameApp').classList.add('hidden');
+  }
+  function showGame() {
+    $('startScreen').classList.add('hidden');
+    $('gameApp').classList.remove('hidden');
+    requestAnimationFrame(function () { layoutAll(); });
+  }
+
+  function firstMap() { return stage === 2 ? first2 : first1; }
+  function firstScore(fm) {
+    var n = 0;
+    for (var i = 0; i < ORDER.length; i++) if (fm[ORDER[i]] === 'correct') n++;
+    return n;
+  }
+  function firstScore1() { return firstScore(first1); }
+  function firstScore2() { return firstScore(first2); }
+  function isPerfect() { return firstScore1() === 8 && firstScore2() === 8; }
+
+  function applyStartLang() {
+    if ($('startTitle')) $('startTitle').textContent = t('title');
+    if ($('startKicker')) $('startKicker').textContent = t('kicker');
+    if ($('startLead')) $('startLead').textContent = t('startLead');
+    if ($('startPoints')) $('startPoints').innerHTML = t('startPoints');
+    if ($('btnStart')) $('btnStart').textContent = t('btnStart');
+    if ($('labStartName')) $('labStartName').textContent = t('labStartName');
+    if ($('startNameHint')) $('startNameHint').textContent = t('startNameHint');
+    if ($('startNameErr') && $('startNameErr').textContent) {
+      $('startNameErr').textContent = t('startNameNeed');
+    }
+    if ($('startName')) $('startName').setAttribute('placeholder', t('labStartName'));
+    if ($('startFooter')) $('startFooter').innerHTML = t('footer');
+    var bl = $('btnLangStart');
+    if (bl) {
+      bl.textContent = t('langBtn');
+      bl.setAttribute('aria-label', t('langAria'));
+    }
+  }
+
+  function certDateStr() {
+    try {
+      return new Intl.DateTimeFormat(lang === 'zh' ? 'zh-Hant-HK' : 'en-GB', {
+        timeZone: 'Asia/Hong_Kong',
+        year: 'numeric', month: 'long', day: 'numeric'
+      }).format(new Date());
+    } catch (e) {
+      var d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+  }
+  function certNameValue() {
+    var el = $('certName');
+    return el ? String(el.value || '').trim() : '';
+  }
+  function startNameValue() {
+    var el = $('startName');
+    return el ? String(el.value || '').trim() : '';
+  }
+  function playerName() {
+    return startNameValue() || certNameValue();
+  }
+  function persistName(n) {
+    try { sessionStorage.setItem(CERT_NAME_KEY, n); } catch (e) {}
+  }
+  function applyNameToCertificate(n) {
+    if ($('certName') && n != null) $('certName').value = n;
+    updateCertPerson();
+  }
+  function updateStartReady() {
+    var ok = !!startNameValue();
+    var btn = $('btnStart');
+    if (btn) {
+      btn.classList.toggle('is-disabled', !ok);
+      btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+    }
+    if (ok && $('startNameErr')) $('startNameErr').textContent = '';
+  }
+  function syncNameFromStart() {
+    var n = startNameValue();
+    persistName(n);
+    applyNameToCertificate(n);
+    updateStartReady();
+  }
+  function tryStart() {
+    if (!startNameValue()) {
+      if ($('startNameErr')) $('startNameErr').textContent = t('startNameNeed');
+      if ($('startName')) {
+        $('startName').focus();
+        try { $('startName').scrollIntoView({ block: 'center' }); } catch (e) {}
+      }
+      return false;
+    }
+    if ($('startNameErr')) $('startNameErr').textContent = '';
+    syncNameFromStart();
+    showGame();
+    requestAnimationFrame(function () {
+      layoutAll();
+      setTimeout(layoutAll, 80);
+      setTimeout(layoutAll, 300);
+    });
+    return true;
+  }
+  function applyCertificateLang() {
+    if ($('resultsTitle')) $('resultsTitle').textContent = t('resultsTitle');
+    if ($('labRS1')) $('labRS1').textContent = t('labRS1');
+    if ($('labRS2')) $('labRS2').textContent = t('labRS2');
+    if ($('labRTot')) $('labRTot').textContent = t('labRTot');
+    if ($('missedTitle')) $('missedTitle').textContent = t('missedTitle');
+    if ($('perfectLead')) $('perfectLead').textContent = t('perfectLead');
+    if ($('labCertName')) $('labCertName').textContent = t('labCertName');
+    if ($('btnPrint')) $('btnPrint').textContent = t('certPrint');
+    if ($('btnDownload')) $('btnDownload').textContent = t('certDownload');
+    if ($('certHint')) $('certHint').textContent = t('certHint');
+    if ($('iosSaveLead')) $('iosSaveLead').textContent = t('iosSaveLead');
+    if ($('certWord')) $('certWord').textContent = t('certWord');
+    if ($('certWordSub')) $('certWordSub').textContent = t('certWordSub');
+    if ($('certThis')) $('certThis').textContent = t('certThis');
+    if ($('certBody')) $('certBody').textContent = t('certBody');
+    if ($('certCongrats')) $('certCongrats').textContent = t('certCongrats');
+    if ($('certScore')) $('certScore').textContent = '16 / 16';
+    if ($('certDate')) $('certDate').textContent = certDateStr();
+    if ($('certSchoolZh')) $('certSchoolZh').textContent = '福建中學（小西灣）';
+    if ($('certSchoolEn')) $('certSchoolEn').textContent = 'Fukien Secondary School (Siu Sai Wan)';
+    updateCertPerson();
+  }
+  function updateCertPerson() {
+    var el = $('certPerson');
+    if (!el) return;
+    var n = certNameValue();
+    if (n) {
+      el.textContent = n;
+      el.classList.remove('is-empty');
+    } else {
+      el.textContent = lang === 'zh' ? '（姓名）' : '(Name)';
+      el.classList.add('is-empty');
+    }
+  }
+
+  function layoutAll() {
+    placeTagDocks();
+    placeBadges();
+    relocateNameChips();
+  }
+
+
+  function loadLang() {
+    try {
+      var v = localStorage.getItem(LANG_KEY);
+      if (v === 'zh' || v === 'en') return v;
+    } catch (e) {}
+    return 'en';
+  }
+  function saveLang(v) {
+    try { localStorage.setItem(LANG_KEY, v); } catch (e) {}
+  }
+
+  var lang = loadLang();
+  var stage = 1; // 1 labels, 2 functions, 3 recap
+  var nameAt = {};      // organId -> card element is in that dock
+  var fnAt = {};
+  var nameLocked = {};
+  var fnLocked = {};
+  var namesRevealed = false; // teacher jump to stage 2
+  var selected = null; // { kind, id, el }
+  var stage1Done = false;
+  var stage2Done = false;
+  var showLiNote = false;
+
+  var drag = {
+    active: false, moved: false, card: null, kind: null, id: null,
+    pointerId: null, offsetX: 0, offsetY: 0, startX: 0, startY: 0,
+    fromOrg: null, ph: null
+  };
+
+  function t(key, vars) {
+    var s = (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
+    if (vars && vars.n != null) s = s.replace('{n}', vars.n);
+    return s;
+  }
+  function organName(o) { return lang === 'zh' ? o.zh : o.en; }
+  function organFn(o) { return lang === 'zh' ? o.fnZh : o.fnEn; }
+  function organById(id) {
+    for (var i = 0; i < ORGANS.length; i++) if (ORGANS[i].id === id) return ORGANS[i];
+    return null;
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function applyLang() {
+    document.documentElement.lang = lang === 'zh' ? 'zh-Hant' : 'en';
+    document.title = I18N[lang].title;
+    $('title').textContent = t('title');
+    $('kicker').textContent = t('kicker');
+    $('btnLang').textContent = t('langBtn');
+    $('btnLang').setAttribute('aria-label', t('langAria'));
+    $('btnCheck').textContent = t('check');
+    $('btnReset').textContent = t('reset');
+    $('btnNext').textContent = t('next');
+    $('btnAgain').textContent = t('playAgain');
+    $('scoreLabel').textContent = t('score');
+    $('pill1t').textContent = t('pill1');
+    $('pill2t').textContent = t('pill2');
+    $('pill3t').textContent = t('pill3');
+    $('recapTitle').textContent = t('recapTitle');
+    $('recapLead').textContent = t('recapLead');
+    $('recapCelebrate').textContent = t('recapCelebrate');
+    $('footer').innerHTML = t('footer');
+    var st = document.getElementById('svgTitle');
+    if (st) st.textContent = t('svgTitle');
+    updateInstruct();
+    // Update chip texts in place
+    var chips = document.querySelectorAll('.chip');
+    for (var i = 0; i < chips.length; i++) {
+      var c = chips[i];
+      var o = organById(c.getAttribute('data-org'));
+      if (!o) continue;
+      if (c.getAttribute('data-kind') === 'fn') c.textContent = organFn(o);
+      else c.textContent = organName(o);
+    }
+    // placeholders
+    var phs = document.querySelectorAll('.ph');
+    for (var p = 0; p < phs.length; p++) {
+      var kind = phs[p].getAttribute('data-ph');
+      phs[p].textContent = kind === 'fn' ? t('dropFn') : t('dropName');
+    }
+    // function panel names
+    var nms = document.querySelectorAll('.fn-dock-name .nm');
+    for (var n = 0; n < nms.length; n++) {
+      var oo = organById(nms[n].getAttribute('data-org'));
+      if (oo) nms[n].textContent = organName(oo);
+    }
+    updateLiNote();
+    applyStartLang();
+    applyCertificateLang();
+    if (stage === 3) renderResults();
+  }
+
+  function updateInstruct() {
+    var el = $('instruct');
+    if (stage === 1) el.innerHTML = isNarrow() ? t('instruct1m') : t('instruct1');
+    else if (stage === 2) el.innerHTML = isNarrow() ? t('instruct2m') : t('instruct2');
+    else el.innerHTML = t('instruct3');
+    $('trayTitle').textContent = stage === 2 ? t('tray2') : t('tray1');
+  }
+
+  function updateLiNote() {
+    var box = $('liNote');
+    if (showLiNote && stage === 2) {
+      var o = organById('li');
+      box.classList.remove('hidden');
+      box.innerHTML = '<strong>' + t('liLearn') + '</strong> ' + (lang === 'zh' ? o.noteZh : o.noteEn);
+    } else {
+      box.classList.add('hidden');
+      box.innerHTML = '';
+    }
+  }
+
+  function currentMap() { return stage === 2 ? fnAt : nameAt; }
+  function currentLocked() { return stage === 2 ? fnLocked : nameLocked; }
+  function currentKind() { return stage === 2 ? 'fn' : 'name'; }
+
+  function scoreOf() {
+    var locked = currentLocked();
+    var n = 0;
+    for (var i = 0; i < ORDER.length; i++) if (locked[ORDER[i]]) n++;
+    return n;
+  }
+
+  function updateScore() {
+    var fs = firstScore(firstMap());
+    $('scoreNum').textContent = String(fs);
+    var all = scoreOf() === 8;
+    if (stage === 1) {
+      $('btnNext').disabled = !all;
+      if (all) stage1Done = true;
+    } else if (stage === 2) {
+      $('btnNext').disabled = !all;
+      if (all) {
+        stage2Done = true;
+        $('pill3').disabled = false;
+      }
+    } else {
+      $('btnNext').disabled = true;
+    }
+    $('pill1').classList.toggle('is-done', stage1Done);
+    $('pill2').classList.toggle('is-done', stage2Done);
+  }
+
+  function setFeedback(msg, cls) {
+    var el = $('feedback');
+    el.className = 'feedback ' + (cls || 'info');
+    el.innerHTML = msg || '';
+  }
+
+  /* ---------- docks / tags ---------- */
+  function svgToStage(x, y) {
+    var svg = $('anatomy');
+    var stageEl = $('diagramStage');
+    var pt = svg.createSVGPoint();
+    pt.x = x; pt.y = y;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return { x: 0, y: 0 };
+    var p = pt.matrixTransform(ctm);
+    var r = stageEl.getBoundingClientRect();
+    return { x: p.x - r.left, y: p.y - r.top };
+  }
+
+  function placeTagDocks() {
+    var layer = $('tagLayer');
+    var docks = layer.querySelectorAll('.tag-dock');
+    for (var i = 0; i < docks.length; i++) {
+      var d = docks[i];
+      var o = organById(d.getAttribute('data-drop-org'));
+      if (!o) continue;
+      var p = svgToStage(o.dockX, o.dockY);
+      d.style.left = p.x + 'px';
+      d.style.top = p.y + 'px';
+    }
+  }
+
+  function buildTagDocks() {
+    var layer = $('tagLayer');
+    layer.innerHTML = '';
+    for (var i = 0; i < ORGANS.length; i++) {
+      var o = ORGANS[i];
+      var d = document.createElement('div');
+      d.className = 'tag-dock';
+      d.setAttribute('data-drop-org', o.id);
+      d.setAttribute('data-slot', 'name');
+      d.setAttribute('tabindex', '-1');
+      d.setAttribute('role', 'button');
+      d.setAttribute('aria-label', organName(o) + ' — ' + t('dropName'));
+      var ph = document.createElement('span');
+      ph.className = 'ph';
+      ph.setAttribute('data-ph', 'name');
+      ph.textContent = t('dropName');
+      d.appendChild(ph);
+      d.addEventListener('click', onDockActivate);
+      d.addEventListener('keydown', onDockKey);
+      layer.appendChild(d);
+    }
+    placeTagDocks();
+  }
+
+  function buildBadges() {
+    var layer = $('badgeLayer');
+    if (!layer) return;
+    layer.innerHTML = '';
+    for (var i = 0; i < ORGANS.length; i++) {
+      var o = ORGANS[i];
+      var d = document.createElement('div');
+      d.className = 'org-badge';
+      d.setAttribute('data-drop-org', o.id);
+      d.setAttribute('data-slot', 'name');
+      d.setAttribute('tabindex', '-1');
+      d.setAttribute('role', 'button');
+      d.setAttribute('aria-label', organName(o));
+      d.style.setProperty('--swatch', o.swatch);
+      var dot = document.createElement('span');
+      dot.className = 'badge-dot';
+      d.appendChild(dot);
+      d.addEventListener('click', onDockActivate);
+      d.addEventListener('keydown', onDockKey);
+      layer.appendChild(d);
+    }
+    placeBadges();
+  }
+
+  function placeBadges() {
+    var layer = $('badgeLayer');
+    if (!layer) return;
+    var badges = layer.querySelectorAll('.org-badge');
+    for (var i = 0; i < badges.length; i++) {
+      var d = badges[i];
+      var o = organById(d.getAttribute('data-drop-org'));
+      if (!o) continue;
+      var p = svgToStage(o.badgeX, o.badgeY);
+      d.style.left = p.x + 'px';
+      d.style.top = p.y + 'px';
+    }
+  }
+
+  function nameDockFor(org) {
+    if (isNarrow()) return document.querySelector('.org-badge[data-drop-org="' + org + '"]');
+    return document.querySelector('.tag-dock[data-drop-org="' + org + '"]');
+  }
+
+  function relocateNameChips() {
+    for (var i = 0; i < ORDER.length; i++) {
+      var org = ORDER[i];
+      var dest = nameDockFor(org);
+      var sources = document.querySelectorAll('.tag-dock[data-drop-org="' + org + '"], .org-badge[data-drop-org="' + org + '"]');
+      var chip = null;
+      for (var s = 0; s < sources.length; s++) {
+        var c = sources[s].querySelector('.chip');
+        if (c) { chip = c; break; }
+      }
+      if (chip && dest && chip.parentNode !== dest) dest.appendChild(chip);
+      refreshDockPlaceholder(org, 'name');
+    }
+  }
+
+  function buildFuncPanel() {
+    var panel = $('funcPanel');
+    panel.innerHTML = '';
+    for (var i = 0; i < ORDER.length; i++) {
+      var o = organById(ORDER[i]);
+      var dock = document.createElement('div');
+      dock.className = 'fn-dock';
+      var name = document.createElement('div');
+      name.className = 'fn-dock-name';
+      var sw = document.createElement('span');
+      sw.className = 'fn-swatch';
+      sw.style.background = o.swatch;
+      var nm = document.createElement('span');
+      nm.className = 'nm';
+      nm.setAttribute('data-org', o.id);
+      nm.textContent = organName(o);
+      name.appendChild(sw);
+      name.appendChild(nm);
+      var slot = document.createElement('div');
+      slot.className = 'fn-slot';
+      slot.setAttribute('data-drop-org', o.id);
+      slot.setAttribute('data-slot', 'fn');
+      slot.setAttribute('tabindex', '-1');
+      slot.setAttribute('role', 'button');
+      slot.setAttribute('aria-label', organName(o) + ' — ' + t('dropFn'));
+      var ph = document.createElement('span');
+      ph.className = 'ph';
+      ph.setAttribute('data-ph', 'fn');
+      ph.textContent = t('dropFn');
+      slot.appendChild(ph);
+      slot.addEventListener('click', onDockActivate);
+      slot.addEventListener('keydown', onDockKey);
+      dock.appendChild(name);
+      dock.appendChild(slot);
+      if (o.id === 'li') {
+        var extra = document.createElement('div');
+        extra.className = 'fn-extra hidden';
+        extra.id = 'liFnExtra';
+        dock.appendChild(extra);
+      }
+      panel.appendChild(dock);
+    }
+  }
+
+  function onDockKey(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onDockActivate(e);
+    }
+  }
+  function onDockActivate(e) {
+    var dock = e.currentTarget;
+    var org = dock.getAttribute('data-drop-org');
+    if (!org) return;
+    if (selected) {
+      placeCard(selected.el, org);
+      clearSelect();
+    }
+  }
+
+  /* ---------- cards ---------- */
+  function makeCard(o, kind) {
+    var c = document.createElement('button');
+    c.type = 'button';
+    c.className = 'chip' + (kind === 'fn' ? ' fn' : '');
+    c.setAttribute('data-org', o.id);
+    c.setAttribute('data-kind', kind);
+    c.setAttribute('role', 'listitem');
+    c.textContent = kind === 'fn' ? organFn(o) : organName(o);
+    c.addEventListener('pointerdown', onPointerDown);
+    c.addEventListener('click', onCardClick);
+    c.addEventListener('keydown', onCardKey);
+    return c;
+  }
+
+  function onCardKey(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleSelect(e.currentTarget);
+    } else if (e.key === 'Escape') {
+      clearSelect();
+    }
+  }
+
+  function onCardClick(e) {
+    e.stopPropagation();
+    if (drag.moved) {
+      e.preventDefault();
+      return;
+    }
+    var card = e.currentTarget;
+    // Stage 2: tapping a (locked) name on a badge/dock places the selected function
+    if (selected && selected.kind === 'fn' && stage === 2 && card.getAttribute('data-kind') === 'name') {
+      var host = card.closest('[data-drop-org]');
+      if (host) {
+        placeCard(selected.el, host.getAttribute('data-drop-org'));
+        clearSelect();
+      }
+      return;
+    }
+  }
+
+  function isLockedCard(card) {
+    var kind = card.getAttribute('data-kind');
+    var id = card.getAttribute('data-org');
+    return kind === 'fn' ? !!fnLocked[id] : !!nameLocked[id];
+  }
+
+  function fillTray(kind) {
+    var tray = $('tray');
+    tray.innerHTML = '';
+    var ids = shuffle(ORDER);
+    for (var i = 0; i < ids.length; i++) {
+      // skip already locked / placed
+      var placed = kind === 'fn' ? fnAt[ids[i]] : null;
+      // For a fresh fill we only skip if this organ already has a LOCKED card
+      // (placed-but-unchecked cards were bounced or not yet made)
+      if (kind === 'fn' && fnLocked[ids[i]]) continue;
+      if (kind === 'name' && nameLocked[ids[i]]) continue;
+      tray.appendChild(makeCard(organById(ids[i]), kind));
+    }
+  }
+
+  /* ---------- select (click-click / keyboard) ---------- */
+  function clearSelect() {
+    selected = null;
+    var all = document.querySelectorAll('.chip.is-selected');
+    for (var i = 0; i < all.length; i++) all[i].classList.remove('is-selected');
+    setAwait(false);
+  }
+
+  function toggleSelect(card) {
+    if (isLockedCard(card)) return;
+    if (selected && selected.el === card) {
+      clearSelect();
+      return;
+    }
+    clearSelect();
+    selected = { el: card, kind: card.getAttribute('data-kind'), id: card.getAttribute('data-org') };
+    card.classList.add('is-selected');
+    setAwait(true);
+    setFeedback(t('selected'), 'info');
+    // make docks and organs keyboard-focusable
+    setZoneTab(0);
+  }
+
+  function setZoneTab(n) {
+    var zones = document.querySelectorAll('.tag-dock, .fn-slot, .org, .org-badge');
+    for (var i = 0; i < zones.length; i++) {
+      if (n === 0 && selected) zones[i].setAttribute('tabindex', '0');
+      else zones[i].setAttribute('tabindex', '-1');
+    }
+  }
+
+  function setAwait(on) {
+    var orgs = document.querySelectorAll('.org');
+    for (var i = 0; i < orgs.length; i++) orgs[i].classList.toggle('is-await', on);
+    var docks = document.querySelectorAll(stage === 2 ? '.fn-slot' : '.tag-dock, .org-badge');
+    for (var j = 0; j < docks.length; j++) {
+      var org = docks[j].getAttribute('data-drop-org');
+      var locked = currentLocked()[org];
+      docks[j].classList.toggle('is-await', on && !locked);
+    }
+    var badges = document.querySelectorAll('.org-badge');
+    for (var b = 0; b < badges.length; b++) {
+      var borg = badges[b].getAttribute('data-drop-org');
+      badges[b].classList.toggle('is-await', on && !currentLocked()[borg]);
+    }
+  }
+
+  /* ---------- drag ---------- */
+  function onPointerDown(e) {
+    if (e.button != null && e.button !== 0) return;
+    var card = e.currentTarget;
+    if (isLockedCard(card)) return;
+    // don't preventDefault yet so a simple click still works; we'll capture
+    drag.active = true;
+    drag.moved = false;
+    drag.card = card;
+    drag.kind = card.getAttribute('data-kind');
+    drag.id = card.getAttribute('data-org');
+    drag.pointerId = e.pointerId;
+    drag.startX = e.clientX;
+    drag.startY = e.clientY;
+    var r = card.getBoundingClientRect();
+    drag.offsetX = e.clientX - r.left;
+    drag.offsetY = e.clientY - r.top;
+    var parent = card.closest('[data-drop-org]');
+    drag.fromOrg = parent ? parent.getAttribute('data-drop-org') : null;
+    try { card.setPointerCapture(e.pointerId); } catch (err) {}
+    document.addEventListener('pointermove', onPointerMove, true);
+    document.addEventListener('pointerup', onPointerUp, true);
+    document.addEventListener('pointercancel', onPointerUp, true);
+  }
+
+  function beginDragVisual(card, e) {
+    var r = card.getBoundingClientRect();
+    var ph = document.createElement('div');
+    ph.className = 'card-ph';
+    ph.style.width = r.width + 'px';
+    ph.style.height = r.height + 'px';
+    ph.style.margin = '0';
+    ph.style.flex = '0 0 auto';
+    card.parentNode.insertBefore(ph, card);
+    drag.ph = ph;
+    // Keep the node in-place (moving it would drop pointer capture).
+    card.classList.add('dragging');
+    card.style.position = 'fixed';
+    card.style.left = r.left + 'px';
+    card.style.top = r.top + 'px';
+    card.style.width = r.width + 'px';
+    card.style.margin = '0';
+    card.style.zIndex = '10000';
+    if (drag.fromOrg) {
+      var map = drag.kind === 'fn' ? fnAt : nameAt;
+      if (map[drag.fromOrg] === drag.id) delete map[drag.fromOrg];
+      refreshDockPlaceholder(drag.fromOrg, drag.kind);
+    }
+  }
+
+  function moveCard(card, e) {
+    var x = e.clientX - drag.offsetX;
+    var y = e.clientY - drag.offsetY;
+    if (e.pointerType === 'touch') {
+      // lift slightly above the finger
+      y = e.clientY - card.getBoundingClientRect().height - 10;
+      // after first move, height is known from style
+      y = e.clientY - (parseFloat(card.style.width) ? card.offsetHeight : 44) - 10;
+    }
+    card.style.left = x + 'px';
+    card.style.top = y + 'px';
+  }
+
+  function onPointerMove(e) {
+    if (!drag.active || e.pointerId !== drag.pointerId) return;
+    var dx = e.clientX - drag.startX, dy = e.clientY - drag.startY;
+    if (!drag.moved && (dx * dx + dy * dy) < 49) return;
+    if (!drag.moved) {
+      drag.moved = true;
+      document.documentElement.classList.add('is-dragging');
+      document.body.classList.add('is-dragging');
+      if (e.cancelable) e.preventDefault();
+      beginDragVisual(drag.card, e);
+      clearSelect();
+    }
+    if (e.cancelable) e.preventDefault();
+    moveCard(drag.card, e);
+    highlightAt(e.clientX, e.clientY);
+  }
+
+  function onPointerUp(e) {
+    if (!drag.active || e.pointerId !== drag.pointerId) return;
+    var card = drag.card;
+    try { card.releasePointerCapture(e.pointerId); } catch (err) {}
+    document.removeEventListener('pointermove', onPointerMove, true);
+    document.removeEventListener('pointerup', onPointerUp, true);
+    document.removeEventListener('pointercancel', onPointerUp, true);
+    document.documentElement.classList.remove('is-dragging');
+    document.body.classList.remove('is-dragging');
+
+    if (!drag.moved) {
+      // treat as click-to-select
+      var was = drag;
+      drag = { active: false, moved: false, card: null, kind: null, id: null, pointerId: null, offsetX: 0, offsetY: 0, startX: 0, startY: 0, fromOrg: null, ph: null };
+      toggleSelect(card);
+      return;
+    }
+
+    var org = organFromPoint(e.clientX, e.clientY);
+    var overTray = isOverTray(e.clientX, e.clientY);
+    endDragVisual(card);
+    clearHighlights();
+
+    if (org && !currentLocked()[org] && ((stage === 2 && drag.kind === 'fn') || (stage === 1 && drag.kind === 'name'))) {
+      placeCard(card, org);
+    } else if (overTray) {
+      returnToTray(card, false);
+    } else if (drag.fromOrg && !currentLocked()[drag.fromOrg]) {
+      // snap back to the dock it came from
+      placeCard(card, drag.fromOrg);
+    } else {
+      returnToTray(card, false);
+    }
+
+    if (drag.ph && drag.ph.parentNode) drag.ph.parentNode.removeChild(drag.ph);
+    drag = { active: false, moved: false, card: null, kind: null, id: null, pointerId: null, offsetX: 0, offsetY: 0, startX: 0, startY: 0, fromOrg: null, ph: null };
+  }
+
+  function endDragVisual(card) {
+    card.classList.remove('dragging');
+    card.style.position = '';
+    card.style.left = '';
+    card.style.top = '';
+    card.style.width = '';
+    card.style.margin = '';
+    card.style.zIndex = '';
+    card.style.pointerEvents = '';
+    if (drag.ph && drag.ph.parentNode) {
+      drag.ph.parentNode.removeChild(drag.ph);
+      drag.ph = null;
+    }
+  }
+
+  function organFromPoint(x, y) {
+    var els = document.elementsFromPoint(x, y);
+    var i, el, d, g;
+    if (stage === 2) {
+      for (i = 0; i < els.length; i++) {
+        el = els[i];
+        if (!el || !el.closest) continue;
+        d = el.closest('.fn-slot');
+        if (d) return d.getAttribute('data-drop-org');
+      }
+    }
+    for (i = 0; i < els.length; i++) {
+      el = els[i];
+      if (!el || !el.closest) continue;
+      d = el.closest('.org-badge, .tag-dock');
+      if (d) return d.getAttribute('data-drop-org');
+      g = el.closest('.org');
+      if (g) return g.getAttribute('data-org');
+    }
+    return null;
+  }
+
+  function isOverTray(x, y) {
+    var r = $('tray').getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  }
+
+  function highlightAt(x, y) {
+    clearHighlights();
+    var org = organFromPoint(x, y);
+    if (!org || currentLocked()[org]) {
+      if (isOverTray(x, y)) $('tray').classList.add('is-over');
+      return;
+    }
+    var g = document.querySelector('.org[data-org="' + org + '"]');
+    if (g) g.classList.add('is-over');
+    if (stage === 2) {
+      var fs = document.querySelector('.fn-slot[data-drop-org="' + org + '"]');
+      if (fs) fs.classList.add('is-over');
+    } else {
+      var td = document.querySelector('.tag-dock[data-drop-org="' + org + '"]');
+      if (td) td.classList.add('is-over');
+    }
+    var b = document.querySelector('.org-badge[data-drop-org="' + org + '"]');
+    if (b) b.classList.add('is-over');
+  }
+  function clearHighlights() {
+    var hs = document.querySelectorAll('.is-over');
+    for (var i = 0; i < hs.length; i++) hs[i].classList.remove('is-over');
+  }
+
+  function dockFor(org, kind) {
+    if (kind === 'fn') return document.querySelector('.fn-slot[data-drop-org="' + org + '"]');
+    return nameDockFor(org);
+  }
+
+  function syncDockVisual(dock, org, kind) {
+    if (!dock) return;
+    var map = kind === 'fn' ? fnAt : nameAt;
+    var locked = kind === 'fn' ? fnLocked : nameLocked;
+    var ph = dock.querySelector('.ph');
+    var hasChip = !!dock.querySelector('.chip') || !!map[org];
+    if (hasChip) {
+      if (ph) ph.classList.add('hidden');
+    } else if (ph) {
+      ph.classList.remove('hidden');
+    }
+    dock.classList.toggle('is-correct', !!locked[org]);
+    dock.classList.toggle('is-filled', !!map[org] || !!dock.querySelector('.chip'));
+    if (kind === 'fn') {
+      var badge = document.querySelector('.org-badge[data-drop-org="' + org + '"]');
+      if (badge) badge.classList.toggle('has-fn', !!fnAt[org] || !!fnLocked[org]);
+    }
+  }
+
+  function refreshDockPlaceholder(org, kind) {
+    if (kind === 'fn') {
+      syncDockVisual(dockFor(org, 'fn'), org, 'fn');
+      return;
+    }
+    syncDockVisual(document.querySelector('.tag-dock[data-drop-org="' + org + '"]'), org, 'name');
+    syncDockVisual(document.querySelector('.org-badge[data-drop-org="' + org + '"]'), org, 'name');
+  }
+
+  function displaceIfOccupied(org, kind, incoming) {
+    var map = kind === 'fn' ? fnAt : nameAt;
+    var existingId = map[org];
+    if (!existingId || existingId === incoming.getAttribute('data-org')) return;
+    var locked = kind === 'fn' ? fnLocked : nameLocked;
+    if (locked[org]) return true; // cannot displace
+    var existing = document.querySelector('.chip[data-kind="' + kind + '"][data-org="' + existingId + '"]');
+    if (existing) {
+      delete map[org];
+      returnToTray(existing, false);
+    }
+    return false;
+  }
+
+  function placeCard(card, org) {
+    var kind = card.getAttribute('data-kind');
+    if ((kind === 'fn' && stage !== 2) || (kind === 'name' && stage === 2 && false)) {
+      // name cards shouldn't be moved in stage 2 (they're locked or revealed)
+    }
+    if (kind === 'name' && nameLocked[org] && card.getAttribute('data-org') !== org) return;
+    if (kind === 'fn' && fnLocked[org] && card.getAttribute('data-org') !== org) return;
+    if (kind === 'name' && isLockedCard(card) && nameAt[org] !== card.getAttribute('data-org')) return;
+
+    var blocked = displaceIfOccupied(org, kind, card);
+    if (blocked) {
+      returnToTray(card, false);
+      return;
+    }
+
+    // If this card was in another dock, clear that
+    var map = kind === 'fn' ? fnAt : nameAt;
+    for (var k in map) {
+      if (map.hasOwnProperty(k) && map[k] === card.getAttribute('data-org') && k !== org) {
+        delete map[k];
+        refreshDockPlaceholder(k, kind);
+      }
+    }
+
+    var dock = dockFor(org, kind);
+    if (!dock) {
+      returnToTray(card, false);
+      return;
+    }
+    var ph = dock.querySelector('.ph');
+    if (ph) ph.classList.add('hidden');
+    dock.appendChild(card);
+    map[org] = card.getAttribute('data-org');
+    refreshDockPlaceholder(org, kind);
+    setFeedback('', 'info');
+  }
+
+  function returnToTray(card, animate) {
+    var kind = card.getAttribute('data-kind');
+    var id = card.getAttribute('data-org');
+    var map = kind === 'fn' ? fnAt : nameAt;
+    for (var k in map) {
+      if (map.hasOwnProperty(k) && map[k] === id) {
+        delete map[k];
+        refreshDockPlaceholder(k, kind);
+      }
+    }
+    card.classList.remove('is-locked', 'is-selected', 'dragging');
+    if (animate) {
+      card.classList.add('bounce');
+      setTimeout(function () { card.classList.remove('bounce'); }, 450);
+    }
+    $('tray').appendChild(card);
+  }
+
+  function flyToTray(card) {
+    var r1 = card.getBoundingClientRect();
+    returnToTray(card, false);
+    var r2 = card.getBoundingClientRect();
+    var dx = r1.left - r2.left, dy = r1.top - r2.top;
+    card.style.transition = 'none';
+    card.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+    card.classList.add('bounce');
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        card.style.transition = 'transform .4s ease';
+        card.style.transform = 'translate(0,0)';
+      });
+    });
+    setTimeout(function () {
+      card.style.transition = '';
+      card.style.transform = '';
+      card.classList.remove('bounce');
+    }, 450);
+  }
+
+  /* ---------- check / reset / stages ---------- */
+  function checkAnswers() {
+    var kind = currentKind();
+    var map = currentMap();
+    var locked = currentLocked();
+    var placed = 0;
+    for (var i = 0; i < ORDER.length; i++) if (map[ORDER[i]]) placed++;
+    if (placed === 0) {
+      setFeedback(t('placeAll'), 'info');
+      return;
+    }
+    var correct = 0;
+    var wrong = [];
+    var fm = firstMap();
+    for (i = 0; i < ORDER.length; i++) {
+      var org = ORDER[i];
+      if (locked[org]) { correct++; continue; }
+      if (map[org] && map[org] === org) {
+        if (fm[org] == null) fm[org] = 'correct';
+        locked[org] = true;
+        correct++;
+        var card = document.querySelector('.chip[data-kind="' + kind + '"][data-org="' + org + '"]');
+        if (card) card.classList.add('is-locked');
+        var dock = dockFor(org, kind);
+        if (dock) dock.classList.add('is-correct');
+        var g = document.querySelector('.org[data-org="' + org + '"]');
+        if (g) g.classList.add('is-correct');
+        if (kind === 'fn' && org === 'li') {
+          showLiNote = true;
+          updateLiNote();
+          var extra = $('liFnExtra');
+          if (extra) {
+            var o = organById('li');
+            extra.classList.remove('hidden');
+            extra.textContent = (lang === 'zh' ? o.noteZh : o.noteEn);
+          }
+        }
+      } else if (map[org]) {
+        if (fm[org] == null) fm[org] = 'wrong';
+        var wcard = document.querySelector('.chip[data-kind="' + kind + '"][data-org="' + map[org] + '"]');
+        if (wcard) wrong.push(wcard);
+      }
+    }
+    for (i = 0; i < wrong.length; i++) flyToTray(wrong[i]);
+    updateScore();
+    var fs = firstScore(fm);
+    if (correct === 8) {
+      var perfectThis = fs === 8;
+      var msg = stage === 1
+        ? (perfectThis ? t('allCorrect1') : t('allCorrect1Partial', { n: fs }))
+        : (perfectThis ? t('allCorrect2') : t('allCorrect2Partial', { n: fs }));
+      setFeedback(msg, perfectThis ? 'ok' : 'info');
+      $('btnNext').disabled = false;
+      $('btnNext').focus();
+    } else if (correct === 0) {
+      setFeedback(t('noneCorrect'), 'bad');
+    } else {
+      setFeedback(t('someCorrect', { n: correct }), 'info');
+    }
+  }
+
+  function resetStage() {
+    clearSelect();
+    clearHighlights();
+    setFeedback('', 'info');
+    var kind = currentKind();
+    if (kind === 'name') {
+      nameAt = {};
+      nameLocked = {};
+      namesRevealed = false;
+      stage1Done = false;
+      var orgs = document.querySelectorAll('.org');
+      for (var i = 0; i < orgs.length; i++) orgs[i].classList.remove('is-correct');
+      var docks = document.querySelectorAll('.tag-dock, .org-badge');
+      for (var j = 0; j < docks.length; j++) {
+        docks[j].classList.remove('is-correct', 'is-filled', 'has-fn');
+        var chips = docks[j].querySelectorAll('.chip');
+        for (var c = 0; c < chips.length; c++) chips[c].parentNode.removeChild(chips[c]);
+        refreshDockPlaceholder(docks[j].getAttribute('data-drop-org'), 'name');
+      }
+      fillTray('name');
+    } else {
+      fnAt = {};
+      fnLocked = {};
+      stage2Done = false;
+      showLiNote = false;
+      updateLiNote();
+      var extra = $('liFnExtra');
+      if (extra) { extra.classList.add('hidden'); extra.textContent = ''; }
+      var fd = document.querySelectorAll('.fn-slot');
+      for (var f = 0; f < fd.length; f++) {
+        fd[f].classList.remove('is-correct');
+        var fchips = fd[f].querySelectorAll('.chip');
+        for (var fc = 0; fc < fchips.length; fc++) fchips[fc].parentNode.removeChild(fchips[fc]);
+        refreshDockPlaceholder(fd[f].getAttribute('data-drop-org'), 'fn');
+      }
+      // organs keep name-correct glow from stage 1 if any; clear fn-only? keep is-correct if name locked
+      fillTray('fn');
+    }
+    $('btnNext').disabled = true;
+    updateScore();
+  }
+
+  function revealNamesForStage2() {
+    // Ensure every tag-dock shows the organ name (locked if already correct, else revealed)
+    for (var i = 0; i < ORDER.length; i++) {
+      var org = ORDER[i];
+      var dock = dockFor(org, 'name');
+      if (!dock) continue;
+      var existing = dock.querySelector('.chip');
+      if (!existing) {
+        var card = makeCard(organById(org), 'name');
+        var ph = dock.querySelector('.ph');
+        if (ph) ph.classList.add('hidden');
+        dock.appendChild(card);
+        nameAt[org] = org;
+      }
+      var chip = dock.querySelector('.chip');
+      chip.classList.add('is-locked');
+      nameLocked[org] = true;
+      dock.classList.add('is-correct');
+      dock.classList.add('is-filled');
+      var g = document.querySelector('.org[data-org="' + org + '"]');
+      if (g) g.classList.add('is-correct');
+    }
+    namesRevealed = true;
+  }
+
+  function goStage(n, opts) {
+    opts = opts || {};
+    clearSelect();
+    clearHighlights();
+    if (n === 3 && !stage2Done && !opts.teacher) return;
+    stage = n;
+
+    $('pill1').classList.toggle('is-active', n === 1);
+    $('pill2').classList.toggle('is-active', n === 2);
+    $('pill3').classList.toggle('is-active', n === 3);
+    $('pill1').setAttribute('aria-selected', n === 1 ? 'true' : 'false');
+    $('pill2').setAttribute('aria-selected', n === 2 ? 'true' : 'false');
+    $('pill3').setAttribute('aria-selected', n === 3 ? 'true' : 'false');
+
+    if (n === 3) {
+      $('gameApp').classList.add('is-recap');
+      $('playArea').classList.add('hidden');
+      $('recapArea').classList.remove('hidden');
+      $('btnCheck').disabled = true;
+      $('btnReset').disabled = true;
+      $('btnNext').disabled = true;
+      $('pill3').disabled = false;
+      renderResults();
+      updateInstruct();
+      return;
+    }
+
+    $('gameApp').classList.remove('is-recap');
+    $('playArea').classList.remove('hidden');
+    $('recapArea').classList.add('hidden');
+    $('btnCheck').disabled = false;
+    $('btnReset').disabled = false;
+
+    if (n === 1) {
+      if ($('trayWrap')) $('trayWrap').classList.remove('is-fn');
+      $('gameApp').classList.remove('has-fn-tray');
+      $('board').classList.remove('has-panel');
+      $('funcPanel').classList.add('hidden');
+      $('tray').parentNode.classList.remove('hidden');
+      $('trayTitle').classList.remove('hidden');
+      $('tray').classList.remove('hidden');
+      // If coming back, keep name state
+      if (!Object.keys(nameAt).length && !Object.keys(nameLocked).length) {
+        fillTray('name');
+      } else {
+        // rebuild tray with remaining unlocked cards
+        var tray = $('tray');
+        var have = {};
+        var chips = document.querySelectorAll('.chip[data-kind="name"]');
+        // chips already in docks or tray — just show tray leftover
+        // If tray empty and some unlocked not placed, refill missing
+        var missing = [];
+        for (var i = 0; i < ORDER.length; i++) {
+          if (!nameLocked[ORDER[i]] && !nameAt[ORDER[i]]) {
+            if (!document.querySelector('.chip[data-kind="name"][data-org="' + ORDER[i] + '"]')) missing.push(ORDER[i]);
+          }
+        }
+        for (var m = 0; m < missing.length; m++) tray.appendChild(makeCard(organById(missing[m]), 'name'));
+      }
+    } else if (n === 2) {
+      if ($('trayWrap')) $('trayWrap').classList.add('is-fn');
+      $('gameApp').classList.add('has-fn-tray');
+      $('board').classList.add('has-panel');
+      $('funcPanel').classList.remove('hidden');
+      if (!stage1Done) revealNamesForStage2();
+      else revealNamesForStage2(); // names stay visible either way
+      // Move leftover name cards out of tray (shouldn't be there if complete)
+      var leftover = $('tray').querySelectorAll('.chip[data-kind="name"]');
+      for (var L = 0; L < leftover.length; L++) leftover[L].parentNode.removeChild(leftover[L]);
+      if (!Object.keys(fnAt).length && !Object.keys(fnLocked).length) {
+        fillTray('fn');
+      } else {
+        var missingF = [];
+        for (var k = 0; k < ORDER.length; k++) {
+          if (!fnLocked[ORDER[k]] && !fnAt[ORDER[k]]) {
+            if (!document.querySelector('.chip[data-kind="fn"][data-org="' + ORDER[k] + '"]')) missingF.push(ORDER[k]);
+          }
+        }
+        for (var q = 0; q < missingF.length; q++) $('tray').appendChild(makeCard(organById(missingF[q]), 'fn'));
+      }
+    }
+    updateInstruct();
+    updateScore();
+    updateLiNote();
+    setFeedback('', 'info');
+    requestAnimationFrame(function () {
+      layoutAll();
+    });
+  }
+
+  function renderRecap() {
+    var grid = $('recapGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    for (var i = 0; i < ORDER.length; i++) {
+      var o = organById(ORDER[i]);
+      var card = document.createElement('div');
+      card.className = 'recap-card';
+      card.style.borderLeftColor = o.swatch;
+      var h = document.createElement('h3');
+      h.textContent = organName(o);
+      var fn = document.createElement('div');
+      fn.className = 'fn';
+      fn.textContent = organFn(o);
+      card.appendChild(h);
+      card.appendChild(fn);
+      if (o.id === 'li') {
+        var note = document.createElement('div');
+        note.className = 'note';
+        note.textContent = lang === 'zh' ? o.noteZh : o.noteEn;
+        card.appendChild(note);
+      }
+      grid.appendChild(card);
+    }
+    $('recapTitle').textContent = t('recapTitle');
+    $('recapLead').textContent = t('recapLead');
+  }
+
+  function renderResults() {
+    var s1 = firstScore1(), s2 = firstScore2(), tot = s1 + s2;
+    if ($('rS1')) $('rS1').textContent = String(s1);
+    if ($('rS2')) $('rS2').textContent = String(s2);
+    if ($('rTot')) $('rTot').textContent = String(tot);
+    var totEl = document.querySelector('.rstat.total');
+    if (totEl) totEl.classList.toggle('is-low', tot < 16);
+    var perfect = tot === 16 && s1 === 8 && s2 === 8;
+    // Require every item to have been first-try correct (not merely a 16 from a bug)
+    if (!perfect) {
+      for (var p = 0; p < ORDER.length; p++) {
+        if (first1[ORDER[p]] !== 'correct' || first2[ORDER[p]] !== 'correct') {
+          perfect = false;
+          break;
+        }
+      }
+    } else {
+      for (var q = 0; q < ORDER.length; q++) {
+        if (first1[ORDER[q]] !== 'correct' || first2[ORDER[q]] !== 'correct') perfect = false;
+      }
+    }
+
+    if ($('recapCelebrate')) {
+      $('recapCelebrate').textContent = perfect ? t('celebratePerfect') : t('celebratePartial');
+      $('recapCelebrate').style.display = '';
+    }
+    if ($('resultsNote')) $('resultsNote').textContent = perfect ? t('resultsPerfect') : t('resultsPartial');
+
+    var missed = $('missedBox');
+    var list = $('missedList');
+    var perfectBox = $('perfectBox');
+    var certWrap = $('certificateWrap');
+    if (list) {
+      list.innerHTML = '';
+      function addMiss(kindKey, o, isFn) {
+        var li = document.createElement('li');
+        var kind = document.createElement('span');
+        kind.className = 'miss-kind';
+        kind.textContent = t(kindKey);
+        li.appendChild(kind);
+        li.appendChild(document.createTextNode(
+          ' ' + (isFn ? (organName(o) + ' — ' + organFn(o)) : organName(o))
+        ));
+        list.appendChild(li);
+      }
+      var any = false;
+      for (var i = 0; i < ORDER.length; i++) {
+        var id = ORDER[i];
+        var o = organById(id);
+        if (first1[id] === 'wrong') { addMiss('missedLabel', o, false); any = true; }
+      }
+      for (var j = 0; j < ORDER.length; j++) {
+        var id2 = ORDER[j];
+        var o2 = organById(id2);
+        if (first2[id2] === 'wrong') { addMiss('missedFn', o2, true); any = true; }
+      }
+      if (missed) missed.classList.toggle('hidden', !any || perfect);
+    }
+    if (perfectBox) perfectBox.classList.toggle('hidden', !perfect);
+    if (certWrap) certWrap.classList.toggle('hidden', !perfect);
+    applyCertificateLang();
+    renderRecap();
+  }
+
+  function requireCertName() {
+    var n = certNameValue();
+    var err = $('certNameErr');
+    if (!n) {
+      if (err) err.textContent = t('certNameNeed');
+      try { $('certName').focus(); } catch (e) {}
+      return false;
+    }
+    if (err) err.textContent = '';
+    return true;
+  }
+
+  function printCertificate() {
+    if (!isPerfect()) return;
+    if (!requireCertName()) return;
+    updateCertPerson();
+    $('certificateWrap').classList.remove('hidden');
+    window.print();
+  }
+
+  function isIOSLike() {
+    var ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+
+  function drawCertificateCanvas() {
+    var outW = 900, outH = 1270;
+    var W = 1400, H = 1980;
+    var c = document.createElement('canvas');
+    c.width = outW; c.height = outH;
+    var ctx = c.getContext('2d');
+    ctx.scale(outW / W, outH / H);
+    var paper = '#f7f1e6', green = '#1f6b3a', ink = '#2b241c', muted = '#5a493c';
+    var font = '"PingFang HK", "Noto Sans CJK HK", "Noto Sans TC", "Noto Sans CJK TC", "Microsoft JhengHei", "Heiti TC", "Songti TC", serif';
+    ctx.fillStyle = paper;
+    ctx.fillRect(0, 0, W, H);
+    function frame(x, y, w, h, lw) {
+      ctx.strokeStyle = green;
+      ctx.lineWidth = lw;
+      ctx.strokeRect(x, y, w, h);
+    }
+    frame(56, 56, W - 112, H - 112, 8);
+    frame(80, 80, W - 160, H - 160, 3);
+    // corner ticks
+    ctx.lineWidth = 5;
+    function corner(x, y, dx, dy) {
+      ctx.beginPath();
+      ctx.moveTo(x + dx, y);
+      ctx.lineTo(x, y);
+      ctx.lineTo(x, y + dy);
+      ctx.stroke();
+    }
+    corner(110, 110, 40, 40);
+    corner(W - 110, 110, -40, 40);
+    corner(110, H - 110, 40, -40);
+    corner(W - 110, H - 110, -40, -40);
+
+    function text(str, y, size, weight, color, tracking) {
+      ctx.fillStyle = color || ink;
+      ctx.font = (weight || '700') + ' ' + size + 'px ' + font;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(str, W / 2, y);
+    }
+    var name = certNameValue();
+    text('福建中學（小西灣）', 260, 64, '800', green);
+    text('Fukien Secondary School (Siu Sai Wan)', 340, 32, '650', muted);
+    ctx.strokeStyle = green;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(W * 0.3, 400);
+    ctx.lineTo(W * 0.7, 400);
+    ctx.stroke();
+    text(t('certWord'), 500, 58, '800', ink);
+    text(t('certWordSub'), 575, 36, '700', green);
+    text(t('certThis'), 680, 32, '500', muted);
+    // name underline
+    ctx.strokeStyle = green;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(W * 0.22, 830);
+    ctx.lineTo(W * 0.78, 830);
+    ctx.stroke();
+    text(name || (lang === 'zh' ? '（姓名）' : '(Name)'), 790, 72, '800', name ? ink : '#b5a898');
+    // body — wrap
+    function wrapText(str, y, size, color, maxW, lineH) {
+      ctx.fillStyle = color;
+      ctx.font = '650 ' + size + 'px ' + font;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      var words = str.split(lang === 'zh' ? '' : ' ');
+      var lines = [], cur = '';
+      for (var i = 0; i < words.length; i++) {
+        var piece = lang === 'zh' ? cur + words[i] : (cur ? cur + ' ' + words[i] : words[i]);
+        if (ctx.measureText(piece).width > maxW && cur) {
+          lines.push(cur);
+          cur = words[i];
+        } else cur = piece;
+      }
+      if (cur) lines.push(cur);
+      for (var k = 0; k < lines.length; k++) ctx.fillText(lines[k], W / 2, y + k * lineH);
+      return y + lines.length * lineH;
+    }
+    var yb = wrapText(t('certBody'), 900, 32, ink, W * 0.68, 48);
+    text('16 / 16', yb + 80, 86, '800', green);
+    wrapText(t('certCongrats'), yb + 180, 28, muted, W * 0.66, 42);
+    text(certDateStr(), yb + 340, 30, '650', muted);
+    ctx.strokeStyle = '#c4b5a3';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(W * 0.35, H - 280);
+    ctx.lineTo(W * 0.65, H - 280);
+    ctx.stroke();
+    text('Biology Department · 生物科', H - 240, 28, '700', green);
+    return c;
+  }
+
+  function downloadCertificate() {
+    if (!isPerfect()) return;
+    if (!requireCertName()) return;
+    updateCertPerson();
+    var canvas = drawCertificateCanvas();
+    var filename = lang === 'zh' ? '消化系統配對遊戲-證書.png' : 'digestive-matching-certificate.png';
+    function showIos(url) {
+      var box = $('iosSaveBox');
+      var img = $('iosSaveImg');
+      if (img) img.src = url;
+      if (box) box.classList.remove('hidden');
+      if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    function applyCertUrl(url) {
+      triggerDl(url, filename);
+      if (isIOSLike()) showIos(url);
+    }
+    function useDataUrl() {
+      applyCertUrl(canvas.toDataURL('image/png'));
+    }
+    var startedToBlob = false;
+    if (typeof canvas.toBlob === 'function') {
+      try {
+        canvas.toBlob(function (blob) {
+          if (!blob) {
+            useDataUrl();
+            return;
+          }
+          // iOS preview must use a data URI; blob URLs often fail on old iOS Safari
+          if (isIOSLike()) {
+            useDataUrl();
+            return;
+          }
+          var url = URL.createObjectURL(blob);
+          triggerDl(url, filename);
+        }, 'image/png');
+        startedToBlob = true;
+      } catch (e) {
+        startedToBlob = false;
+      }
+    }
+    if (!startedToBlob) useDataUrl();
+  }
+  function triggerDl(url, filename) {
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function playAgain() {
+    nameAt = {}; fnAt = {};
+    nameLocked = {}; fnLocked = {};
+    first1 = {}; first2 = {};
+    namesRevealed = false;
+    stage1Done = false;
+    stage2Done = false;
+    showLiNote = false;
+    clearSelect();
+    var orgs = document.querySelectorAll('.org');
+    for (var i = 0; i < orgs.length; i++) orgs[i].classList.remove('is-correct');
+    var docks = document.querySelectorAll('.tag-dock, .fn-slot, .org-badge');
+    for (var j = 0; j < docks.length; j++) {
+      docks[j].classList.remove('is-correct', 'is-filled', 'has-fn');
+      var chips = docks[j].querySelectorAll('.chip');
+      for (var c = 0; c < chips.length; c++) chips[c].parentNode.removeChild(chips[c]);
+    }
+    $('pill3').disabled = true;
+    if ($('missedBox')) $('missedBox').classList.add('hidden');
+    if ($('perfectBox')) $('perfectBox').classList.add('hidden');
+    if ($('certificateWrap')) $('certificateWrap').classList.add('hidden');
+    if ($('iosSaveBox')) $('iosSaveBox').classList.add('hidden');
+    if ($('certNameErr')) $('certNameErr').textContent = '';
+    buildTagDocks();
+    buildBadges();
+    buildFuncPanel();
+    goStage(1);
+    fillTray('name');
+    updateScore();
+    setFeedback('', 'info');
+    updateLiNote();
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- organ click (for selected card) ---------- */
+  function onOrganClick(e) {
+    var g = e.currentTarget;
+    var org = g.getAttribute('data-org');
+    if (!org) return;
+    if (selected) {
+      placeCard(selected.el, org);
+      clearSelect();
+    }
+  }
+  function onOrganKey(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onOrganClick(e);
+    }
+  }
+
+  /* ---------- init ---------- */
+  function init() {
+    buildTagDocks();
+    buildBadges();
+    buildFuncPanel();
+
+    var orgs = document.querySelectorAll('.org');
+    for (var i = 0; i < orgs.length; i++) {
+      orgs[i].addEventListener('click', onOrganClick);
+      orgs[i].addEventListener('keydown', onOrganKey);
+    }
+
+    function toggleLang() {
+      lang = lang === 'en' ? 'zh' : 'en';
+      saveLang(lang);
+      applyLang();
+    }
+    $('btnLang').addEventListener('click', toggleLang);
+    $('btnLangStart').addEventListener('click', toggleLang);
+    $('btnCheck').addEventListener('click', checkAnswers);
+    $('btnReset').addEventListener('click', resetStage);
+    $('btnNext').addEventListener('click', function () {
+      if (stage === 1 && scoreOf() === 8) goStage(2);
+      else if (stage === 2 && scoreOf() === 8) goStage(3);
+    });
+    $('btnAgain').addEventListener('click', playAgain);
+    $('pill1').addEventListener('click', function () { goStage(1); });
+    $('pill2').addEventListener('click', function () { goStage(2, { teacher: true }); });
+    $('pill3').addEventListener('click', function () {
+      if (stage2Done) goStage(3);
+    });
+    $('btnStart').addEventListener('click', function () { tryStart(); });
+    if ($('startName')) {
+      try {
+        var savedStart = sessionStorage.getItem(CERT_NAME_KEY);
+        if (savedStart) $('startName').value = savedStart;
+      } catch (e) {}
+      $('startName').addEventListener('input', function () {
+        syncNameFromStart();
+      });
+      $('startName').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          tryStart();
+        }
+      });
+      updateStartReady();
+    }
+    if ($('btnPrint')) $('btnPrint').addEventListener('click', printCertificate);
+    if ($('btnDownload')) $('btnDownload').addEventListener('click', downloadCertificate);
+    if ($('certName')) {
+      try {
+        var saved = sessionStorage.getItem(CERT_NAME_KEY);
+        if (saved) $('certName').value = saved;
+      } catch (e) {}
+      $('certName').addEventListener('input', function () {
+        try { sessionStorage.setItem(CERT_NAME_KEY, $('certName').value); } catch (e) {}
+        if ($('certNameErr')) $('certNameErr').textContent = '';
+        updateCertPerson();
+      });
+      updateCertPerson();
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') clearSelect();
+    });
+    document.addEventListener('touchmove', function (e) {
+      if (drag.active && drag.moved && e.cancelable) e.preventDefault();
+    }, { passive: false });
+
+    window.addEventListener('resize', function () {
+      layoutAll();
+      updateInstruct();
+    });
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(function () { layoutAll(); });
+      ro.observe($('diagramStage'));
+      ro.observe($('anatomy'));
+    }
+
+    applyLang();
+
+    var params = new URLSearchParams(location.search);
+    var want = params.get('stage');
+    var skipStart = params.get('preview') === '1' || params.get('teacher') === '1';
+    fillTray('name');
+    if (want === '2') {
+      goStage(2, { teacher: true });
+    } else if (want === '3' || want === 'recap' || want === 'results') {
+      stage2Done = true;
+      if (params.get('perfect') === '1') {
+        for (var k = 0; k < ORDER.length; k++) {
+          first1[ORDER[k]] = 'correct';
+          first2[ORDER[k]] = 'correct';
+        }
+      } else if (params.get('score')) {
+        // e.g. score=6,8 for QA of a non-perfect result
+        var parts = String(params.get('score')).split(',');
+        var a = Math.max(0, Math.min(8, parseInt(parts[0], 10) || 0));
+        var b = Math.max(0, Math.min(8, parseInt(parts[1], 10) || 0));
+        for (var u = 0; u < ORDER.length; u++) {
+          first1[ORDER[u]] = u < a ? 'correct' : 'wrong';
+          first2[ORDER[u]] = u < b ? 'correct' : 'wrong';
+        }
+      }
+      goStage(3, { teacher: true });
+    } else {
+      goStage(1);
+    }
+
+    if (skipStart || want) {
+      showGame();
+    } else {
+      showStart();
+    }
+
+    requestAnimationFrame(function () {
+      layoutAll();
+      requestAnimationFrame(layoutAll);
+    });
+    setTimeout(layoutAll, 120);
+    setTimeout(layoutAll, 400);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>
