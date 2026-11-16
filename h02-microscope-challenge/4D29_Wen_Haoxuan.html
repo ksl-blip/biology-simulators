@@ -172,10 +172,23 @@ input:focus{border-color:var(--blue)}
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+.student-identity{position:fixed;right:16px;bottom:16px;z-index:50;margin:0;padding:10px 16px;max-width:calc(100vw - 32px);box-sizing:border-box;background:#fff;color:#111827;border:1px solid rgba(17,24,39,.16);border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.28);font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC","Noto Sans CJK TC","WenQuanYi Micro Hei",sans-serif;font-size:15px;font-weight:700;line-height:1.4;white-space:nowrap;pointer-events:none}
+body:has(#login-screen[hidden]) .student-identity{display:none}
+body:has(#login-screen:not([hidden])) .shell{height:calc(100vh - 84px);height:calc(100dvh - 84px);overflow:auto}
+@media(max-width:760px){
+ body:has(#login-screen:not([hidden])) .shell{height:calc(100vh - 78px);height:calc(100dvh - 78px)}
+ body:has(#login-screen:not([hidden])) .topbar{padding-top:10px;padding-bottom:10px}
+ body:has(#login-screen:not([hidden])) .intro{padding-top:10px;padding-bottom:4px;gap:12px}
+ body:has(#login-screen:not([hidden])) .lead{margin:8px 0}
+ body:has(#login-screen:not([hidden])) .hero-visual{height:96px}
+ body:has(#login-screen:not([hidden])) .instrument{width:118px;height:100px}
+ body:has(#login-screen:not([hidden])) .hero-meta{padding-top:12px}
+}
+@media(max-width:480px),(max-height:640px){.student-identity{right:10px;bottom:10px;padding:8px 12px;font-size:13px}}
 @page{size:A4 portrait;margin:18mm}
 @media print{
  body{background:#fff;color:#173541;print-color-adjust:exact;-webkit-print-color-adjust:exact}
- body:before,.topbar,.foot,#login-screen,#game-screen,.success-heading,.cert-actions,.print-help,.review,.js-notice{display:none!important}
+ body:before,.topbar,.foot,#login-screen,#game-screen,.success-heading,.cert-actions,.print-help,.review,.js-notice,.student-identity{display:none!important}
  .shell{padding:0;max-width:none}
  #result-screen{display:block!important}
  .certificate-wrap{margin:15mm 0 0;max-width:none}
@@ -191,6 +204,7 @@ input:focus{border-color:var(--blue)}
 </style>
 </head>
 <body>
+<p class="student-identity">温皓軒 (Wen Haoxuan)4D29</p>
 
 <!-- 所有圖像、樣式與程式均在此檔案內，毋須載入外部資源。 -->
 <svg width="0" height="0" aria-hidden="true" style="position:absolute">
