@@ -2,6 +2,13 @@
   "version": 1,
   "tracks": [
     {
+      "id": "pe04-mwin64m6",
+      "title": "PE04 酶和新陳代謝",
+      "file": "media/pe04-mwin64m6.mp3",
+      "bytes": 3365568,
+      "duration": 560.928
+    },
+    {
       "id": "sa05-mwa45ca0",
       "title": "SA05 辨析與概念邊界_種子訓練方法",
       "file": "media/sa05-mwa45ca0.mp3",
