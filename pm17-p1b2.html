@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="description" content="校本 PM17 卷一乙部補救模擬：2019 DSE 生物第 6–10 題得分最低的六個評分點。馬鈴薯曲線平移、營養繁殖、木質導管適應、福壽螺攝食、蒸騰拉力與莖直徑、山泥傾瀉後植物組合。福建中學（小西灣）課堂用原創教學模擬。">
+<title>PM17 卷一乙部補救 · 2019 DSE 第 6–10 題最低分六個評分點</title>
+<style>
+:root {
+  --paper: #eef3f7;
+  --ink: #152033;
+  --muted: #4a5a70;
+  --teal: #0b6e7a;
+  --teal-d: #08545d;
+  --teal-l: #e6f4f5;
+  --card: #ffffff;
+  --line: #cfd8e3;
+  --ok: #145a32;
+  --ok-bg: #e8f6ed;
+  --bad: #9b1c1c;
+  --bad-bg: #fdecea;
+  --warn: #9a4a00;
+  --warn-bg: #fff6e8;
+  --gold: #b8860b;
+  --violet: #5b3d8f;
+  --focus: #0b6e7a;
+  --low: #b71c1c;
+  --low-bg: #fff5f5;
+  --orange: #c05621;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 400px at 10% -10%, #d7eef0 0%, transparent 50%),
+    radial-gradient(800px 300px at 100% 0%, #e4eaf6 0%, transparent 46%),
+    var(--paper);
+  color: var(--ink);
+  font-family: "PingFang HK", "Microsoft JhengHei", "Noto Sans TC",
+    "Noto Sans CJK HK", "Heiti TC", "Segoe UI", sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+  min-height: 100vh;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 16px 16px 80px; }
+.topbar { display: block; }
+.kicker {
+  letter-spacing: 0.05em; color: var(--muted); margin: 0 0 4px;
+  font-size: 13px; font-weight: 700;
+}
+h1 {
+  font-size: 24px;
+  font-size: clamp(22px, 3.2vw, 30px);
+  line-height: 1.3; margin: 4px 0 8px; color: var(--teal-d);
+}
+h2 { font-size: 1.15rem; margin: 0 0 10px; color: var(--teal-d); }
+h3 { font-size: 1rem; margin: 0 0 8px; }
+p { margin: 6px 0; }
+.banner {
+  background: #fff8e8; border: 1px solid #e6cf8e; border-radius: 14px;
+  padding: 10px 14px; margin: 10px 0 14px; font-size: 14px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 14px 16px; margin: 12px 0;
+  box-shadow: 0 1px 0 rgba(21,32,51,0.03);
+}
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.lead { font-size: 16px; }
+
+button.act, button.ghost, button.chip, button.step-pill, button.pick, button.mini, a.act {
+  font-family: inherit; font-weight: 700; font-size: 15px;
+  min-height: 44px; border-radius: 999px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+button.act, a.act {
+  background: var(--teal); color: #fff; border: 0; padding: 10px 18px;
+  text-decoration: none; display: inline-block; line-height: 1.3;
+  text-align: center;
+}
+button.ghost {
+  background: transparent; color: var(--teal-d);
+  border: 1.5px solid var(--teal); padding: 10px 16px;
+}
+button.act:hover, a.act:hover { background: var(--teal-d); }
+button.ghost:hover { background: var(--teal-l); }
+button:disabled { opacity: 0.42; cursor: not-allowed; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--focus); outline-offset: 2px;
+}
+button.mini { min-height: 36px; padding: 6px 12px; font-size: 13px; }
+
+.mod-nav-wrap {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(238,243,247,0.96);
+  padding: 8px 0 6px;
+  margin: 0 -16px;
+  padding-left: 16px; padding-right: 16px;
+}
+.mod-nav { display: flex; flex-wrap: wrap; }
+.mod-nav a {
+  display: inline-block;
+  background: #e7eef4; border: 1px solid var(--line); border-radius: 12px;
+  padding: 8px 11px; font-size: 13px; font-weight: 800; color: var(--ink);
+  text-decoration: none; min-height: 40px; line-height: 1.3;
+  margin-right: 6px; margin-bottom: 6px;
+}
+.mod-nav a.is-active { background: var(--teal-l); border-color: var(--teal); color: var(--teal-d); }
+.mod-nav a.low { border-color: #f3b4b4; }
+.mod-nav a.mid { border-color: #efd2a8; }
+
+.hub { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 12px 0 6px; }
+@media (min-width: 640px) {
+  .hub { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 960px) {
+  .hub { grid-template-columns: 1fr 1fr 1fr; }
+}
+.hub a {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 14px; min-height: 100%;
+}
+.hub a:hover { border-color: var(--teal); box-shadow: 0 6px 18px rgba(21,32,51,0.08); }
+.hub a.lowest {
+  border: 2px solid var(--low);
+  background: linear-gradient(180deg, #fff6f6 0%, #fff 42%);
+}
+.hub .tag-q { font-size: 12px; font-weight: 800; color: var(--muted); }
+.hub h3 { font-size: 16px; margin: 6px 0 8px; line-height: 1.4; color: var(--ink); }
+.hub .rates { display: flex; flex-wrap: wrap; }
+.hub .rates span { margin-right: 6px; margin-bottom: 6px; }
+.hub .rate {
+  background: #f2f5f8; border-radius: 999px; padding: 3px 8px;
+  font-size: 12px; font-weight: 700; color: var(--muted);
+}
+.hub .rate.score { background: var(--teal-l); color: var(--teal-d); font-size: 14px; }
+.hub .rate.bad { background: var(--low-bg); color: var(--low); font-size: 14px; }
+.hub .rate.prio-now { background: var(--low-bg); color: var(--low); }
+.hub .rate.prio-next { background: var(--warn-bg); color: var(--warn); }
+.hub .rate.prio-soon { background: var(--teal-l); color: var(--teal-d); }
+.hub .go { display: inline-block; margin-top: 8px; font-size: 13px; font-weight: 800; color: var(--teal-d); }
+
+.view.hidden, .hidden { display: none !important; }
+.mod { padding-top: 4px; }
+.mod-kicker { font-size: 13px; font-weight: 800; color: var(--muted); margin: 0 0 4px; }
+.mod-foot {
+  display: flex; flex-wrap: wrap; justify-content: space-between;
+  margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line);
+}
+.mod-foot a, .mod-foot .sp { margin-right: 8px; margin-bottom: 8px; }
+
+.row { display: flex; flex-wrap: wrap; align-items: center; }
+.row > * { margin-right: 8px; margin-bottom: 8px; }
+.picks { display: flex; flex-wrap: wrap; margin: 8px 0; }
+.pick, button.chip {
+  background: #fff; border: 1.5px solid var(--line); color: var(--ink);
+  border-radius: 12px; padding: 10px 12px; font-weight: 700; font-size: 14px;
+  text-align: left; min-height: 44px; font-family: inherit; cursor: pointer;
+  flex: 1 1 160px; margin-right: 8px; margin-bottom: 8px;
+}
+.pick.is-on, button.chip.is-on { border-color: var(--teal); background: var(--teal-l); color: var(--teal-d); }
+.pick.is-ok, button.chip.is-ok { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+.pick.is-bad, button.chip.is-bad { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+
+.col-ok, .col-bad, .col-note, .col-warn {
+  border-radius: 14px; padding: 12px 14px; margin: 8px 0;
+}
+.col-ok { background: var(--ok-bg); border: 1px solid #bde0c7; }
+.col-bad { background: var(--bad-bg); border: 1px solid #f5c2c2; }
+.col-note { background: var(--teal-l); border: 1px solid #b4d9de; }
+.col-warn { background: var(--warn-bg); border: 1px solid #efd2a8; }
+.col-ok h3 { color: var(--ok); }
+.col-bad h3 { color: var(--bad); }
+.col-ok ul, .col-bad ul, .col-note ul, .col-warn ul, .teach ul { margin: 6px 0 0; padding-left: 1.15em; }
+.col-ok li, .col-bad li, .col-note li, .col-warn li, .teach li { margin: 4px 0; }
+
+.caption {
+  background: #f6f9fb; border-left: 4px solid var(--teal); border-radius: 0 10px 10px 0;
+  padding: 8px 12px; margin: 8px 0; font-size: 14px; min-height: 3.2em;
+}
+.scene-wrap {
+  width: 100%; background: #f7fbfc; border: 1px solid var(--line); border-radius: 14px;
+  overflow: hidden; margin: 6px 0;
+}
+.scene-wrap svg, .chart-wrap svg { display: block; width: 100%; height: auto; }
+.chart-wrap {
+  width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 14px;
+  overflow: hidden; margin: 6px 0;
+}
+
+.two { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 860px) {
+  .two { grid-template-columns: 1.05fr 0.95fr; }
+}
+.two.eq { grid-template-columns: 1fr; }
+@media (min-width: 860px) {
+  .two.eq { grid-template-columns: 1fr 1fr; }
+}
+
+.slider-wrap { margin: 8px 0 4px; }
+.slider-wrap label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.slider-wrap .val { color: var(--teal-d); }
+input[type=range] {
+  width: 100%; height: 32px; margin: 0;
+  -webkit-appearance: none; appearance: none;
+  background: transparent;
+}
+input[type=range]:focus { outline: none; }
+input[type=range]::-webkit-slider-runnable-track {
+  height: 6px; background: #cfe0e4; border-radius: 99px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--teal); border: 0;
+  margin-top: -11px;
+}
+input[type=range]::-moz-range-track {
+  height: 6px; background: #cfe0e4; border-radius: 99px; border: 0;
+}
+input[type=range]::-moz-range-thumb {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--teal); border: 0;
+}
+
+.badge {
+  display: inline-block; border-radius: 999px; padding: 3px 8px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.04em; color: #fff;
+  background: var(--low);
+}
+.badge.mid { background: #c05621; }
+.badge.ok { background: var(--teal); }
+.ref-tag {
+  display: inline-block; background: #eef2f6; color: var(--muted);
+  border-radius: 8px; padding: 2px 8px; font-size: 12px; font-weight: 700;
+}
+
+.fb { display: none; border-radius: 12px; padding: 10px 12px; margin: 8px 0; font-size: 14px; }
+.fb.show { display: block; }
+.fb.ok { background: var(--ok-bg); border: 1px solid #bde0c7; color: var(--ok); }
+.fb.bad { background: var(--bad-bg); border: 1px solid #f5c2c2; color: var(--bad); }
+.fb.info { background: var(--teal-l); border: 1px solid #b4d9de; color: var(--teal-d); }
+
+.reveal-body { display: none; margin-top: 8px; }
+.reveal-body.open { display: block; }
+
+.stat-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.stat-table th, .stat-table td {
+  border: 1px solid var(--line); padding: 6px 8px; text-align: center;
+}
+.stat-table th { background: #f4f7fa; font-weight: 800; }
+.stat-table td.hi { background: var(--ok-bg); font-weight: 800; color: var(--ok); }
+.stat-table td.lo { background: var(--low-bg); font-weight: 800; color: var(--bad); }
+.stat-table td.left { text-align: left; }
+
+.legend { display: flex; flex-wrap: wrap; font-size: 13px; font-weight: 700; color: var(--muted); }
+.legend span { margin-right: 12px; margin-bottom: 4px; }
+.legend i {
+  display: inline-block; width: 12px; height: 12px; border-radius: 3px;
+  margin-right: 4px; vertical-align: -1px;
+}
+.legend i.line {
+  height: 3px; width: 18px; border-radius: 0; vertical-align: 3px;
+}
+.legend i.dash {
+  height: 0; width: 18px; border-radius: 0; border-top: 3px dashed var(--teal);
+  background: transparent; vertical-align: 3px;
+}
+
+.foot-note { color: var(--muted); font-size: 13px; margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+.mc-opt {
+  display: block; width: 100%; text-align: left; border-radius: 12px !important;
+  margin-bottom: 8px; margin-right: 0; flex: 1 1 100%;
+}
+
+.tag-ans { font-weight: 800; color: var(--ok); }
+.steps {
+  margin: 8px 0; padding: 0; list-style: none;
+}
+.steps li {
+  border: 1px solid var(--line); background: #fff; border-radius: 10px;
+  padding: 8px 10px; margin: 0 0 6px; font-size: 14px;
+}
+.steps li em { font-style: normal; font-weight: 800; color: var(--teal-d); margin-right: 6px; }
+.steps li.hot {
+  border-color: #e3b4b4; background: #fff5f5;
+}
+.steps li.hot em { color: var(--bad); }
+.steps li.cool {
+  border-color: #c9b8e4; background: #f6f1fb;
+}
+.steps li.cool em { color: var(--violet); }
+
+.flow {
+  margin: 8px 0;
+}
+.flow .fstep {
+  background: #fff; border: 1.5px solid var(--line); border-radius: 12px;
+  padding: 10px 12px; margin: 0 0 6px; font-weight: 700; font-size: 15px;
+  position: relative;
+}
+.flow .fstep .n {
+  display: inline-block; width: 24px; height: 24px; line-height: 24px;
+  text-align: center; border-radius: 50%; background: var(--teal); color: #fff;
+  font-size: 13px; margin-right: 8px;
+}
+.flow .farrow {
+  text-align: center; color: var(--teal-d); font-weight: 800; margin: 0 0 6px; font-size: 18px;
+}
+.flow.long .fstep { border-color: #b4d9de; background: #f3fbfb; }
+.flow.short .fstep { border-color: #efd2a8; background: #fffaf0; }
+
+.path-warn {
+  background: #fff5f5; border: 2px solid #e3b4b4; border-radius: 14px;
+  padding: 10px 14px; margin: 10px 0; font-weight: 700; color: var(--bad);
+}
+
+.check-list { margin: 8px 0; padding: 0; list-style: none; }
+.check-list li {
+  border: 1.5px solid var(--line); background: #fff; border-radius: 12px;
+  padding: 8px 10px; margin: 0 0 6px;
+}
+.check-list label { display: block; font-weight: 700; cursor: pointer; min-height: 32px; }
+.check-list input { margin-right: 8px; width: 18px; height: 18px; vertical-align: -3px; }
+
+@media (max-width: 639px) {
+  body { font-size: 16px; }
+  .wrap { padding: 12px 12px 72px; }
+  .mod-nav-wrap { margin-left: -12px; margin-right: -12px; padding-left: 12px; padding-right: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<span id="hub" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<header class="topbar">
+  <p class="kicker">HKDSE 生物 · 校本 PM17 卷一乙部 · 福建中學（小西灣）· 鄺劭良老師課堂講解</p>
+  <h1>2019 DSE 卷一乙部第 6–10 題：得分最低的六個評分點</h1>
+  <p class="muted small">取材自 2019 年文憑試生物卷一乙部第 6 至 10 題。本頁為課堂講解用的原創互動模擬，題幹已改寫，圖表與裝置全部重繪，並非重刊考評局試卷或評卷參考。</p>
+</header>
+
+<div class="mod-nav-wrap">
+  <nav class="mod-nav" aria-label="模組導覽">
+    <a href="#hub" data-mod="hub">總覽</a>
+    <a href="#q6b" data-mod="q6b" class="low">6(b) · 4%</a>
+    <a href="#q6e" data-mod="q6e" class="low">6(e) · 30%</a>
+    <a href="#q10c" data-mod="q10c" class="mid">10(c) · 43%</a>
+    <a href="#q9b" data-mod="q9b" class="mid">9(b) · 52%</a>
+    <a href="#q10b" data-mod="q10b">10(b) · 54%</a>
+    <a href="#q7bii" data-mod="q7bii">7(b)(ii) · 55%</a>
+  </nav>
+</div>
+
+<!-- ========== HUB ========== -->
+<div id="view-hub" class="view">
+  <div class="banner">
+    本模擬器按<strong>校本 PM17 卷一乙部</strong>（2026/2027 中六，23 人應考，取材 2019 DSE 第 6–10 題）得分率由低至高排列六個評分點。請先預測，再動手操作模擬，最後才展開「正確道理與常見錯誤」。題幹已改寫，曲線、附表與裝置均為原創重繪。
+  </div>
+  <p class="lead muted">課堂建議：投影總覽後，按優次處理——今週先做 6(b)、6(e)；下週做 10(c)、9(b)；兩週內完成 10(b)、7(b)(ii)。各模組網址可單獨分享給學生自學。</p>
+  <div class="hub">
+    <a href="#q6b" class="lowest">
+      <div class="tag-q">第 6(b) 題 · 1 分 · 馬鈴薯水勢實驗</div>
+      <h3>忘記浸前抹乾，曲線會怎樣移？等滲濃度又會怎樣變？</h3>
+      <div class="rates">
+        <span class="rate bad">校本 4%（1/23）</span>
+        <span class="rate prio-now">優先：今週</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q6e">
+      <div class="tag-q">第 6(e) 題 · 2 分 · 營養繁殖與饑荒</div>
+      <h3>為什麼用塊莖繁殖，會令馬鈴薯作物更容易受病原體攻擊？</h3>
+      <div class="rates">
+        <span class="rate bad">校本 30%（14/46）</span>
+        <span class="rate prio-now">優先：今週</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q10c">
+      <div class="tag-q">第 10(c) 題 · 4 分 · 木質導管適應</div>
+      <h3>木質導管轉運水分的兩項特徵，須同時說出構造與作用。</h3>
+      <div class="rates">
+        <span class="rate bad">校本 43%（40/92）</span>
+        <span class="rate prio-next">優先：下週</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q9b">
+      <div class="tag-q">第 9(b) 題 · 3 分 · 福壽螺攝食</div>
+      <h3>專吃幼芽嫩葉，怎樣損害濕地群落？兩組答案不可混搭。</h3>
+      <div class="rates">
+        <span class="rate bad">校本 52%（36/69）</span>
+        <span class="rate prio-next">優先：下週</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q10b">
+      <div class="tag-q">第 10(b) 題 · 2 分 · 蒸騰與莖直徑</div>
+      <h3>蒸騰愈快，莖為何愈細？用蒸騰拉力解釋雙軸圖的相反關係。</h3>
+      <div class="rates">
+        <span class="rate bad">校本 54%（25/46）</span>
+        <span class="rate prio-soon">優先：兩週內</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q7bii">
+      <div class="tag-q">第 7(b)(ii) 題 · 3 分 · 演替與土壤氮</div>
+      <h3>山泥傾瀉後，低氮時為何草本佔優？氮回升後木本又怎樣變？</h3>
+      <div class="rates">
+        <span class="rate bad">校本 55%（38/69）</span>
+        <span class="rate prio-soon">優先：兩週內</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+  </div>
+  <p class="small muted">得分率來自校本 23 人的評卷統計（部分小題以總得分點計算，例如 2 分題以 46 為分母）。本模擬用以講解概念與答題結構，數值已經簡化，只顯示方向與邏輯。</p>
+</div>
+
+<!-- ========== Q6(b) ========== -->
+<div id="view-q6b" class="view hidden mod">
+  <span id="q6b" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge">今週</span>　<span class="ref-tag">對應 2019 DSE 生物卷一乙部 第 6 題</span>　校本 4%（1/23）· 1 分</p>
+  <h2>6(b)　忘記浸前抹乾，曲線會怎樣改變？</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>用新鮮馬鈴薯柱體，浸在 0、0.2、0.4、0.6、0.8、1.0 M 蔗糖溶液中兩小時，比較浸前與浸後質量，畫出「質量平均變化百分率對蔗糖濃度」的曲線。原曲線大約在 <strong>0.3 M</strong> 穿過 0%：這個濃度沒有淨質量變化，表示浸泡液的水勢與細胞水勢相同（此即 6(a) 的推斷）。</p>
+    <p>主要步驟如下。本題問的是：<strong>若忘記對所有樣本做步驟 2</strong>，曲線會怎樣變，以及在 (a) 推斷出來的蔗糖濃度會受什麼影響？評卷要求<strong>在線圖上另畫一條曲線</strong>來表示該效應。</p>
+    <ol class="steps">
+      <li><em>步驟 1</em>把馬鈴薯塊莖切成柱體</li>
+      <li class="hot"><em>步驟 2</em>將柱體<strong>表面抹乾</strong>（這是浸前、秤初始質量之前的步驟）</li>
+      <li><em>步驟 3</em>秤量初始質量</li>
+      <li><em>步驟 4</em>在各濃度溶液中各放三條柱體，靜置兩小時</li>
+      <li class="cool"><em>步驟 5</em>取出柱體，<strong>再抹乾表面</strong>，然後秤最終質量</li>
+      <li><em>步驟 6–7</em>計算各溶液中質量平均變化百分率，並繪圖</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>忘記的是<strong>步驟 2（浸前抹乾）</strong>，不是步驟 5。你覺得新曲線會怎樣移？推斷的等滲濃度會高於還是低於 0.3 M？</p>
+    <div class="picks" id="q6bpred">
+      <button type="button" class="pick" data-choice="down">曲線下移／左移，等滲濃度低於 0.3 M</button>
+      <button type="button" class="pick" data-choice="up">曲線上移／右移，等滲濃度高於 0.3 M</button>
+      <button type="button" class="pick" data-choice="same">曲線形狀不變，仍在 0.3 M 過零</button>
+    </div>
+    <div class="fb" id="q6bpredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：對比步驟 2 與步驟 5</h3>
+    <p>先看正確做法下的原曲線，再分別開啟「忘記步驟 2」（本題）和「忘記步驟 5」（常見陷阱）。觀察柱體表面的水如何改變秤得的質量，以及圖上<strong>必須另畫</strong>的新曲線。</p>
+    <div class="row">
+      <button type="button" class="chip is-on" id="q6bmodeOk" data-mode="ok">正確做法</button>
+      <button type="button" class="chip" id="q6bmodeS2" data-mode="s2">忘記步驟 2（本題）</button>
+      <button type="button" class="chip" id="q6bmodeS5" data-mode="s5">對照：忘記步驟 5</button>
+    </div>
+    <div class="two">
+      <div>
+        <div class="scene-wrap" id="q6bscene"></div>
+        <p class="caption" id="q6bscenecap">正確做法：浸前已抹乾，初始質量不含表面水；取出後也抹乾，最終質量可靠。</p>
+      </div>
+      <div>
+        <div class="legend">
+          <span><i class="line" style="background:#0b6e7a;"></i>原曲線（正確步驟）</span>
+          <span><i class="line" style="background:#9b1c1c;"></i>忘記步驟 2</span>
+          <span><i class="line" style="background:#5b3d8f;"></i>忘記步驟 5</span>
+        </div>
+        <div class="chart-wrap" id="q6bchart"></div>
+        <p class="small muted" id="q6bchartnote">原曲線在約 0.3 M 穿過 0%。點選上方按鈕，圖上會另畫新曲線。</p>
+      </div>
+    </div>
+    <div id="q6bnums"></div>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q6brevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q6breveal">
+      <div class="col-ok">
+        <h3>正確道理（1 分）</h3>
+        <ul>
+          <li>忘記步驟 2 後，初始質量含有表面水而被<strong>高估</strong>；最終質量仍有抹乾，所以質量變化百分率整條偏小（較不那麼正，或更負）。</li>
+          <li>曲線因此<strong>向下調、往左移</strong>。與橫軸的交點移到 0.3 M 左側，推斷出來的等滲濃度會<strong>低於 0.3 M</strong>。</li>
+          <li>答題時必須<strong>在原圖上另畫一條下移／左移的曲線</strong>，不能只寫文字。</li>
+        </ul>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>把「忘記抹乾」想成取出後仍帶水，於是把曲線<strong>往上畫</strong>——那是忘記<strong>步驟 5</strong>才會發生的效應，方向剛好相反。</li>
+          <li>只寫「結果不準確」或「濃度改變」，卻沒有在圖上畫出新曲線。</li>
+          <li>以為只影響 0 M 那一點，其餘不變。其實所有樣本都忘記步驟 2，整條曲線都要平移。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>課堂記得</h3>
+        <p>百分率變化＝（最終質量 − 初始質量）÷ 初始質量 × 100%。初始質量被抬高，分子變小、分母變大，百分率一定偏小，曲線只會下移。下移之後，過零點自然左移。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固</h3>
+    <p>若實驗者只忘記步驟 5（取出後沒抹乾），下列哪一項正確？</p>
+    <div class="picks" id="q6bmc">
+      <button type="button" class="pick mc-opt" data-ok="0">曲線下移、左移，推斷的等滲濃度低於 0.3 M</button>
+      <button type="button" class="pick mc-opt" data-ok="1">曲線上移、右移，推斷的等滲濃度高於 0.3 M</button>
+      <button type="button" class="pick mc-opt" data-ok="0">只有高濃度那幾點會下移</button>
+      <button type="button" class="pick mc-opt" data-ok="0">曲線不變，因為蔗糖濃度沒有改</button>
+    </div>
+    <div class="fb" id="q6bmcfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#hub" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 總覽</a>
+    <a class="act" href="#q6e">下一題 6(e) →</a>
+  </div>
+</div>
+
+<!-- ========== Q6(e) ========== -->
+<div id="view-q6e" class="view hidden mod">
+  <span id="q6e" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge">今週</span>　<span class="ref-tag">對應 2019 DSE 生物卷一乙部 第 6 題</span>　校本 30%（14/46）· 2 分</p>
+  <h2>6(e)　營養繁殖為何令作物更容易受感染？</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>十九世紀中期，愛爾蘭的馬鈴薯農作物被某種植物病原體嚴重感染。當時馬鈴薯是主要糧食，很多人因而饑荒而死。有評論認為：<strong>馬鈴薯以營養繁殖（塊莖）來栽種</strong>，是作物容易受感染的原因。請解釋這項論據。</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>營養繁殖的關鍵弱點是什麼？</p>
+    <div class="picks" id="q6epred">
+      <button type="button" class="pick" data-choice="clone">後代與親代基因相同，種群缺乏可被選擇的抗病變異</button>
+      <button type="button" class="pick" data-choice="yield">塊莖產量較高，病原體更喜歡攻擊高產作物</button>
+      <button type="button" class="pick" data-choice="soil">塊莖埋在土壤裏，較易接觸土壤中的所有微生物</button>
+    </div>
+    <div class="fb" id="q6epredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：克隆田與有性田</h3>
+    <p>左邊是以塊莖進行營養繁殖的田（所有植株都是同一親代的克隆）；右邊是以種子進行有性生殖的田（後代基因有變異）。先觀察植株是否相同，再引入病原體，看兩種種群的下場。</p>
+    <div class="row">
+      <button type="button" class="act" id="q6einfect">引入病原體</button>
+      <button type="button" class="ghost" id="q6ereset">重置田地</button>
+    </div>
+    <div class="scene-wrap" id="q6escene"></div>
+    <p class="caption" id="q6ecap">尚未引入病原體。比較兩塊田：左邊植株外形一致，右邊已有差異。</p>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q6erevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q6ereveal">
+      <div class="col-ok">
+        <h3>正確道理（2 分，兩點各 1 分）</h3>
+        <ul>
+          <li>以塊莖做營養繁殖時，後代的<strong>遺傳組成與親代相同</strong>，屬於克隆。</li>
+          <li>種群因此幾乎沒有遺傳變異，可供選出抗病品系的原料十分有限；一旦親代的基因型容易受該病原體攻擊，<strong>整片作物都同樣易感</strong>，感染可以迅速蔓延。</li>
+        </ul>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>只寫「營養繁殖很快」或「種得密」，沒有提到<strong>基因相同／缺乏變異</strong>。</li>
+          <li>把問題歸因於「馬鈴薯是糧食」或「愛爾蘭氣候潮濕」，沒有回答「為何營養繁殖會令作物易受感染」。</li>
+          <li>只得一點：寫了克隆，卻沒有連到「無法選出抗性品系／整個種群都一樣易感」。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>課堂記得</h3>
+        <p>有性生殖會產生遺傳變異，病原體來襲時，少數具抗性的個體仍可能存活並繁殖。營養繁殖把同一基因型大量複製，等於把整片田的命運綁在同一個弱點上。本題要解釋的是這項論據，不是要你評論饑荒的全部歷史原因。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固</h3>
+    <p>下列哪一句最能補足第 2 分（在「後代基因與親代相同」之後）？</p>
+    <div class="picks" id="q6emc">
+      <button type="button" class="pick mc-opt" data-ok="0">營養繁殖較節省能量，所以植株較弱，容易生病</button>
+      <button type="button" class="pick mc-opt" data-ok="1">缺乏可被選擇的抗病變異；若親代易感，整個種群都同樣易感</button>
+      <button type="button" class="pick mc-opt" data-ok="0">塊莖含大量澱粉，為病原體提供更多養分</button>
+      <button type="button" class="pick mc-opt" data-ok="0">營養繁殖一定在土壤中進行，病原體只活在土壤裏</button>
+    </div>
+    <div class="fb" id="q6emcfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q6b" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 6(b)</a>
+    <a class="act" href="#q10c">下一題 10(c) →</a>
+  </div>
+</div>
+
+<!-- ========== Q10(c) ========== -->
+<div id="view-q10c" class="view hidden mod">
+  <span id="q10c" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge mid">下週</span>　<span class="ref-tag">對應 2019 DSE 生物卷一乙部 第 10 題</span>　校本 43%（40/92）· 4 分</p>
+  <h2>10(c)　木質導管轉運水分的兩項適應特徵</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>描述並解釋木質導管作為<strong>轉運水分構造</strong>的<strong>兩項</strong>適應特徵。本題 4 分：兩項特徵各 1 分，一項解釋各 1 分。只寫出構造名稱而沒有說明作用，最多得一半分數。</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>你會先寫哪兩項？每項都要想好「特徵＋解釋」。</p>
+    <div class="picks" id="q10cpred">
+      <button type="button" class="pick" data-choice="ok">中空管腔（阻力低）＋木質化厚壁（抗負壓、防塌陷）</button>
+      <button type="button" class="pick" data-choice="pits">有紋孔以便橫向運輸，以及成熟時沒有細胞核</button>
+      <button type="button" class="pick" data-choice="feature">只要寫出「中空」和「木質化」兩個詞就有 4 分</button>
+    </div>
+    <div class="fb" id="q10cpredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：管腔與管壁</h3>
+    <p>切換縱切／橫切，再分別改變管腔內容和管壁厚度，並拉動「蒸騰拉力（負壓）」滑桿。留意：水流是否暢順，管壁會否向內塌陷。</p>
+    <div class="row">
+      <button type="button" class="chip is-on" id="q10cviewLong">縱切觀</button>
+      <button type="button" class="chip" id="q10cviewCross">橫切觀</button>
+    </div>
+    <div class="row">
+      <button type="button" class="chip is-on" id="q10clumenHollow" data-lumen="hollow">管腔：中空</button>
+      <button type="button" class="chip" id="q10clumenFull" data-lumen="full">管腔：充滿細胞質</button>
+    </div>
+    <div class="row">
+      <button type="button" class="chip is-on" id="q10cwallThick" data-wall="thick">管壁：增厚／木質化</button>
+      <button type="button" class="chip" id="q10cwallThin" data-wall="thin">管壁：薄、未木質化</button>
+    </div>
+    <div class="slider-wrap">
+      <label for="q10cpull">蒸騰拉力／負壓：<span class="val" id="q10cpullval">中等</span></label>
+      <input type="range" id="q10cpull" min="0" max="100" value="40" step="1">
+    </div>
+    <div class="scene-wrap" id="q10cscene"></div>
+    <p class="caption" id="q10ccap">中空管腔讓水分以較低阻力向上流動；木質化厚壁在負壓下仍能維持管道形狀。</p>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q10crevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q10creveal">
+      <div class="col-ok">
+        <h3>正確道理（4 分）</h3>
+        <ul>
+          <li><strong>特徵：</strong>木質導管是中空的管道／具有空的管腔。<strong>解釋：</strong>水分流通時阻力低。</li>
+          <li><strong>特徵：</strong>管壁增厚，並且木質化。<strong>解釋：</strong>使導管能抵禦蒸騰拉力造成的負壓，避免管道塌陷。</li>
+        </ul>
+        <p>滿分的寫法是「兩項特徵＋兩項解釋」。少寫解釋就少分。</p>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>只列特徵（「中空、木質化」）而不寫作用，4 分題只得 2 分。</li>
+          <li>把紋孔、沒有細胞質／細胞核、或端壁消失寫成唯一答案。這些在課堂上常教，但本評卷給分點是上面兩項；可作補充，不要取代那兩項。</li>
+          <li>把「支持植物體」當成轉運水分的解釋。支持是木質部的另一功能，本題問的是作為<strong>轉運水分構造</strong>的適應。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>補充（非本評卷必寫）</h3>
+        <p>成熟木質導管沒有細胞質和細胞核、相鄰細胞間有紋孔，也有助連續水柱運送。答題時仍應先寫「中空管腔＋木質化厚壁」並附解釋，較有把握拿到這 4 分。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固：勾選能得分的配對</h3>
+    <p>下列哪些是「特徵＋解釋」的完整配對？可多選，然後檢查。</p>
+    <ul class="check-list" id="q10ccheck">
+      <li><label><input type="checkbox" data-ok="1"> 中空管腔——水分流動時阻力低</label></li>
+      <li><label><input type="checkbox" data-ok="1"> 增厚／木質化的壁——抵禦負壓，避免導管塌陷</label></li>
+      <li><label><input type="checkbox" data-ok="0"> 有紋孔——這是本評卷兩個給分點之一</label></li>
+      <li><label><input type="checkbox" data-ok="0"> 管壁木質化——主要為了儲藏澱粉</label></li>
+    </ul>
+    <button type="button" class="act" id="q10ccheckBtn">檢查勾選</button>
+    <div class="fb" id="q10ccheckfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q6e" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 6(e)</a>
+    <a class="act" href="#q9b">下一題 9(b) →</a>
+  </div>
+</div>
+
+<!-- ========== Q9(b) ========== -->
+<div id="view-q9b" class="view hidden mod">
+  <span id="q9b" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge mid">下週</span>　<span class="ref-tag">對應 2019 DSE 生物卷一乙部 第 9 題</span>　校本 52%（36/69）· 3 分</p>
+  <h2>9(b)　福壽螺專吃幼芽嫩葉，怎樣損害濕地群落？</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>福壽螺源自南非，被帶到亞洲供人食用後逃入當地濕地。牠們會迅速吃掉濕地植物，尤其是<strong>幼芽和嫩葉</strong>。為甚麼這種攝食習慣可能對當地濕地生境的<strong>群落</strong>產生不良效應？</p>
+    <p class="small muted">以下生長曲線只作情境引入（對應 9(a)，不是本模組評分點）：一起飼養時，福壽螺與本地螺 K 的生長都比分開飼養時慢；螺 K 在一起飼養時幾乎沒有增長，顯示福壽螺較具競爭力。</p>
+    <div class="two eq">
+      <div>
+        <p class="small" style="text-align:center;font-weight:800;margin-bottom:0;">分開飼養</p>
+        <div class="chart-wrap" id="q9bchartSep"></div>
+      </div>
+      <div>
+        <p class="small" style="text-align:center;font-weight:800;margin-bottom:0;">一起飼養</p>
+        <div class="chart-wrap" id="q9bchartTog"></div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="line" style="background:#c05621;"></i>福壽螺</span>
+      <span><i class="line" style="background:#0b6e7a;"></i>本地螺 K</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>本題評卷有<strong>兩組可互代的完整理路</strong>（長遠／短期），選一組寫完整即可。最需要避免的是什麼？</p>
+    <div class="picks" id="q9bpred">
+      <button type="button" class="pick" data-choice="mix">把長遠組的句子和短期組的句子拼在一起</button>
+      <button type="button" class="pick" data-choice="ok">選定一組，由「對植物的影響」寫到「對群落中其他生物的影響」</button>
+      <button type="button" class="pick" data-choice="comp">只寫福壽螺與螺 K 競爭，不必談植物</button>
+    </div>
+    <div class="fb" id="q9bpredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：兩條不可混搭的路徑</h3>
+    <p>先看福壽螺啃食幼芽嫩葉的情景，再分別開啟「長遠路徑」與「短期路徑」。兩組都是官方可接受的完整答案，但<strong>不可跨組拼湊</strong>。</p>
+    <div class="row">
+      <button type="button" class="chip is-on" id="q9bpathNone" data-path="none">只看攝食情景</button>
+      <button type="button" class="chip" id="q9bpathLong" data-path="long">長遠路徑</button>
+      <button type="button" class="chip" id="q9bpathShort" data-path="short">短期路徑</button>
+    </div>
+    <div class="scene-wrap" id="q9bscene"></div>
+    <p class="caption" id="q9bcap">福壽螺正在啃食幼芽和嫩葉。請選擇一條路徑，逐步看出對群落的影響。</p>
+    <div id="q9bflow"></div>
+    <div class="path-warn">答題警告：長遠組與短期組是「或」的關係，須整組對應。不要寫成「植物未能繁殖，因此生產者生物量下降」這類跨組混搭。</div>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q9brevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q9breveal">
+      <div class="col-ok">
+        <h3>正確道理（3 分，兩組選一）</h3>
+        <div class="two eq">
+          <div>
+            <h3>長遠組</h3>
+            <ol>
+              <li>植物未能生長至可以繁殖的階段。</li>
+              <li>生境中的植物群落會減少。</li>
+              <li>供應給其他動物的食糧減少，或可供其他動物棲息的地方減少。</li>
+            </ol>
+          </div>
+          <div>
+            <h3>短期組</h3>
+            <ol>
+              <li>植物生長變得緩慢。</li>
+              <li>生產者的生物量有所下降。</li>
+              <li>供應給其他草食動物／動物的食糧減少。</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>跨組混搭，例如用「未能繁殖」去接「生產者生物量下降」，或用「生長緩慢」去接「植物群落減少」。這樣可能無法按任一完整組給滿 3 分。</li>
+          <li>只寫「植物被吃光」，沒有推到群落層次（其他動物的食糧或棲息地）。</li>
+          <li>整題只談與螺 K 的競爭，沒有回應「攝食幼芽嫩葉」這個題目重點。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固：哪一組是不合法的混搭？</h3>
+    <div class="picks" id="q9bmc">
+      <button type="button" class="pick mc-opt" data-ok="0">植物未能長到可繁殖階段 → 植物群落減少 → 其他動物食糧或棲息地減少</button>
+      <button type="button" class="pick mc-opt" data-ok="0">植物生長緩慢 → 生產者生物量下降 → 其他草食動物食糧減少</button>
+      <button type="button" class="pick mc-opt" data-ok="1">植物未能長到可繁殖階段 → 生產者生物量下降 → 其他動物食糧減少</button>
+    </div>
+    <div class="fb" id="q9bmcfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q10c" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 10(c)</a>
+    <a class="act" href="#q10b">下一題 10(b) →</a>
+  </div>
+</div>
+
+<!-- ========== Q10(b) ========== -->
+<div id="view-q10b" class="view hidden mod">
+  <span id="q10b" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge ok">兩週內</span>　<span class="ref-tag">對應 2019 DSE 生物卷一乙部 第 10 題</span>　校本 54%（25/46）· 2 分</p>
+  <h2>10(b)　蒸騰愈快，莖為何愈細？</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>下圖重繪某植株在 24 小時內蒸騰速率與莖部直徑的變化。已知莖部直徑的變化與木質導管的直徑有關。請先從圖看出兩者的關係（10(a) 鋪墊：莖直徑隨蒸騰上升而減少，隨蒸騰下降而增加），再根據水分沿莖部向上轉運的方法，解釋這個關係。</p>
+    <div class="legend">
+      <span><i class="line" style="background:#c05621;"></i>蒸騰速率（實線，左軸）</span>
+      <span><i class="dash"></i>莖部直徑（虛線，右軸）</span>
+    </div>
+    <div class="slider-wrap">
+      <label for="q10btime">一日的時間：<span class="val" id="q10btimeval">00:00</span></label>
+      <input type="range" id="q10btime" min="0" max="24" value="0" step="0.5">
+    </div>
+    <div class="row">
+      <button type="button" class="ghost" id="q10bplay">播放 24 小時</button>
+      <button type="button" class="ghost" id="q10bstop">暫停</button>
+    </div>
+    <div class="chart-wrap" id="q10bchart"></div>
+    <p class="caption" id="q10bchartcap">拖動時間，觀察兩條曲線大致相反：午後蒸騰最高時，莖直徑最低；夜間蒸騰低，莖直徑較大。</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>當蒸騰速率上升時，莖部直徑會怎樣？主要機制是什麼？</p>
+    <div class="picks" id="q10bpred">
+      <button type="button" class="pick" data-choice="ok">直徑下降：蒸騰拉力／負壓把木質導管壁向內拉</button>
+      <button type="button" class="pick" data-choice="water">直徑下降：因為水分蒸發後莖內儲水量減少，與拉力無關</button>
+      <button type="button" class="pick" data-choice="up">直徑上升：蒸騰把更多水抽進莖部，莖變脹</button>
+    </div>
+    <div class="fb" id="q10bpredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：蒸騰拉力把管壁向內拉</h3>
+    <p>拉動蒸騰強度，觀察水柱向上的拉力（負壓）如何把木質導管壁向內拉，使木質部直徑——因而莖部直徑——變小。</p>
+    <div class="slider-wrap">
+      <label for="q10bpull">蒸騰強度：<span class="val" id="q10bpullval">低（夜間）</span></label>
+      <input type="range" id="q10bpull" min="0" max="100" value="15" step="1">
+    </div>
+    <div class="scene-wrap" id="q10bscene"></div>
+    <p class="caption" id="q10bcap">夜間蒸騰低，拉力小，管壁較圓、莖較粗。把滑桿向右拉，模擬白天高蒸騰。</p>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q10brevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q10breveal">
+      <div class="col-ok">
+        <h3>正確道理（2 分）</h3>
+        <ul>
+          <li>水分是藉著<strong>蒸騰拉力</strong>（也可寫拉力、吸力或負壓）沿著莖部往上轉運。</li>
+          <li>這股力度隨蒸騰上升而增加，把木質導管的壁<strong>往內拉扯</strong>，木質部直徑減少，因此莖部直徑也減少。</li>
+        </ul>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>只描述圖中「蒸騰高則直徑小」，沒有用轉運機制解釋，10(a) 的觀察不能代替 10(b) 的解釋。</li>
+          <li>寫成「水分減少所以莖變細」，卻沒有提到蒸騰拉力／負壓把<strong>管壁向內拉</strong>。</li>
+          <li>方向寫反：以為蒸騰把水抽進莖部，莖會變粗。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>因果鏈（可用來組織答案）</h3>
+        <p>蒸騰上升 → 蒸騰拉力／負壓增加 → 木質導管壁被向內拉 → 木質部直徑減少 → 莖部直徑減少。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固：把因果鏈排好</h3>
+    <p>按發生次序點選（先發生的先按）。按錯可重置。</p>
+    <div class="row">
+      <button type="button" class="ghost" id="q10borderReset">重置排序</button>
+    </div>
+    <div class="picks" id="q10border">
+      <button type="button" class="pick" data-ord="3">木質導管壁被向內拉，木質部直徑減少</button>
+      <button type="button" class="pick" data-ord="1">蒸騰速率上升</button>
+      <button type="button" class="pick" data-ord="4">莖部直徑因而減少</button>
+      <button type="button" class="pick" data-ord="2">蒸騰拉力／負壓增加</button>
+    </div>
+    <p class="small" id="q10borderout">已選次序：尚未開始</p>
+    <div class="fb" id="q10borderfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q9b" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 9(b)</a>
+    <a class="act" href="#q7bii">下一題 7(b)(ii) →</a>
+  </div>
+</div>
+
+<!-- ========== Q7(b)(ii) ========== -->
+<div id="view-q7bii" class="view hidden mod">
+  <span id="q7bii" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge ok">兩週內</span>　<span class="ref-tag">對應 2019 DSE 生物卷一乙部 第 7 題</span>　校本 55%（38/69）· 3 分</p>
+  <h2>7(b)(ii)　山泥傾瀉後，草本與木本怎樣隨土壤氮而改變？</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>下表重繪某山坡在山泥傾瀉前後，土壤含氮量與草本、木本植物物種數目的變化。請參考土壤中氮含量的變化，就草本及木本植物的物種數目，解釋山泥傾瀉後植物組合的變化。</p>
+    <table class="stat-table" id="q7btable">
+      <thead>
+        <tr>
+          <th>時期</th>
+          <th>土壤氮（mg g⁻¹）</th>
+          <th>草本物種數</th>
+          <th>木本物種數</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="q7brow0"><td>山泥傾瀉前</td><td>6</td><td>10</td><td>15</td></tr>
+        <tr id="q7brow1"><td>山泥傾瀉後 2 年</td><td>1</td><td>17</td><td>2</td></tr>
+        <tr id="q7brow2"><td>山泥傾瀉後 20 年</td><td>3</td><td>14</td><td>9</td></tr>
+      </tbody>
+    </table>
+    <p class="small muted">短鋪墊：傾瀉後仍有土壤殘留，屬於次生演替（7(a)）。表中氮先急降後回升（7(b)(i) 可解釋為表土流失、其後固氮與分解使氮回升）。本題主任務是用氮的變化解釋物種組合。</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>傾瀉後首 2 年，草本物種遠多於木本，主要原因是什麼？</p>
+    <div class="picks" id="q7bpred">
+      <button type="button" class="pick" data-choice="ok">土壤氮很低，草本營養需求較低，因而較佔優</button>
+      <button type="button" class="pick" data-choice="fast">草本一定長得比較快，與土壤氮無關</button>
+      <button type="button" class="pick" data-choice="seed">木本的種子全被山泥沖走，之後再也不會回來</button>
+    </div>
+    <div class="fb" id="q7bpredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：山坡時間軸</h3>
+    <p>切換三個時期，觀察土壤氮柱、草本與木本植株數目如何一起改變。重點：<strong>低氮時草本因需求較低而佔優；氮回升後木本物種數增加</strong>。</p>
+    <div class="row">
+      <button type="button" class="chip is-on" id="q7bstage0" data-stage="0">傾瀉前</button>
+      <button type="button" class="chip" id="q7bstage1" data-stage="1">後 2 年</button>
+      <button type="button" class="chip" id="q7bstage2" data-stage="2">後 20 年</button>
+    </div>
+    <div class="slider-wrap">
+      <label for="q7btime">時間軸：<span class="val" id="q7btimeval">山泥傾瀉前</span></label>
+      <input type="range" id="q7btime" min="0" max="2" value="0" step="1">
+    </div>
+    <div class="scene-wrap" id="q7bscene"></div>
+    <p class="caption" id="q7bcap">傾瀉前土壤氮較高，木本物種多於草本，山坡有較多灌木和樹木。</p>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q7brevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q7breveal">
+      <div class="col-ok">
+        <h3>正確道理（3 分）</h3>
+        <ul>
+          <li>山泥傾瀉後的初期／首 2 年，草本植物的物種數目較木本植物<strong>多出很多</strong>（表中 17 對 2）。</li>
+          <li>因為草本植物的<strong>營養需求較木本植物低</strong>，所以在土壤含氮量低的情況下，草本的生長較佔優（或不利於木本生長）。</li>
+          <li>其後，木本植物的物種數量隨着土壤含氮量上升而<strong>有所增加</strong>（由 2 增至 9）。</li>
+        </ul>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>只說「這是次生演替」或「草本先出現」，沒有用表中的<strong>土壤氮</strong>來解釋。</li>
+          <li>寫草本佔優，卻漏了「營養需求較低」這個關鍵比較。</li>
+          <li>只談首 2 年，忘記寫其後木本物種數隨氮回升而增加，少了第 3 分。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>讀表提示</h3>
+        <p>氮：6 → 1 → 3（先急降，再部分回升）。草本：10 → 17 → 14（低氮時最多）。木本：15 → 2 → 9（低氮時大減，氮回升後回升）。答案要把這三組數字的方向連起來。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固</h3>
+    <p>「其後木本物種數目增加」必須同時提到哪一項，才扣緊本題？</p>
+    <div class="picks" id="q7bmc">
+      <button type="button" class="pick mc-opt" data-ok="0">因為草本植物開始死亡，空出陽光</button>
+      <button type="button" class="pick mc-opt" data-ok="1">因為土壤含氮量上升</button>
+      <button type="button" class="pick mc-opt" data-ok="0">因為山泥傾瀉已經過了很久，與氮無關</button>
+      <button type="button" class="pick mc-opt" data-ok="0">因為木本一定會取代草本，這是初生演替的定律</button>
+    </div>
+    <div class="fb" id="q7bmcfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q10b" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 10(b)</a>
+    <a class="act" href="#hub">返回總覽</a>
+  </div>
+</div>
+
+<footer class="foot-note">
+  福建中學（小西灣）· 鄺劭良老師課堂用。本頁為原創教學模擬、重繪圖表與改寫題幹，用以講解 <strong>2019 DSE 生物卷一乙部第 6 至 10 題</strong>相關概念，並非重刊香港考試及評核局試卷、評卷或原圖。校本得分率按 PM17（2026/2027 中六，23 人）評卷統計標示。模擬數值經簡化，用以顯示方向與邏輯，不是真實實驗讀數。
+</footer>
+</div><!-- .wrap -->
+<script>
+(function () {
+  "use strict";
+
+  function qs(id) { return document.getElementById(id); }
+  function on(el, ev, fn) {
+    if (!el) return;
+    el.addEventListener(ev, fn);
+  }
+  function svgEl(name, attrs, text) {
+    var e = document.createElementNS("http://www.w3.org/2000/svg", name);
+    attrs = attrs || {};
+    var keys = Object.keys(attrs);
+    for (var i = 0; i < keys.length; i++) e.setAttribute(keys[i], attrs[keys[i]]);
+    if (text != null && text !== "") e.textContent = text;
+    return e;
+  }
+  function clearEl(el) {
+    if (!el) return;
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+  function setHtml(el, html) {
+    if (el) el.innerHTML = html;
+  }
+  function reduceMotion() {
+    try {
+      return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch (err) { return false; }
+  }
+  function showFb(id, kind, msg) {
+    var el = qs(id);
+    if (!el) return;
+    el.className = "fb show " + kind;
+    el.innerHTML = msg;
+  }
+  function wireMc(groupId, fbId, okMsg, badMsg) {
+    var box = qs(groupId);
+    if (!box) return;
+    var buttons = box.querySelectorAll("button");
+    for (var i = 0; i < buttons.length; i++) {
+      (function (btn) {
+        on(btn, "click", function () {
+          if (box.getAttribute("data-locked") === "1") return;
+          box.setAttribute("data-locked", "1");
+          var ok = btn.getAttribute("data-ok") === "1";
+          for (var j = 0; j < buttons.length; j++) {
+            var b = buttons[j];
+            if (b.getAttribute("data-ok") === "1") b.classList.add("is-ok");
+            else if (b === btn) b.classList.add("is-bad");
+          }
+          showFb(fbId, ok ? "ok" : "bad", ok ? okMsg : badMsg);
+        });
+      })(buttons[i]);
+    }
+  }
+  function toggleReveal(btnId, bodyId) {
+    var btn = qs(btnId), body = qs(bodyId);
+    on(btn, "click", function () {
+      var open = body.classList.contains("open");
+      if (open) {
+        body.classList.remove("open");
+        btn.textContent = "顯示正確道理與常見錯誤";
+      } else {
+        body.classList.add("open");
+        btn.textContent = "隱藏解釋";
+      }
+    });
+  }
+  function setActive(buttons, activeEl) {
+    for (var i = 0; i < buttons.length; i++) {
+      if (buttons[i] === activeEl) buttons[i].classList.add("is-on");
+      else buttons[i].classList.remove("is-on");
+    }
+  }
+  function fmt1(n) {
+    var s = (Math.round(n * 10) / 10).toFixed(1);
+    return s;
+  }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function clampNum(n, lo, hi) {
+    if (n < lo) return lo;
+    if (n > hi) return hi;
+    return n;
+  }
+  function interpXY(pts, x) {
+    if (!pts || !pts.length) return 0;
+    if (x <= pts[0][0]) return pts[0][1];
+    if (x >= pts[pts.length - 1][0]) return pts[pts.length - 1][1];
+    for (var i = 0; i < pts.length - 1; i++) {
+      if (x >= pts[i][0] && x <= pts[i + 1][0]) {
+        var span = pts[i + 1][0] - pts[i][0];
+        var t = span === 0 ? 0 : (x - pts[i][0]) / span;
+        return lerp(pts[i][1], pts[i + 1][1], t);
+      }
+    }
+    return pts[pts.length - 1][1];
+  }
+  function smoothPath(pts) {
+    if (!pts.length) return "";
+    if (pts.length === 1) return "M" + pts[0].x + "," + pts[0].y;
+    var d = "M" + pts[0].x + "," + pts[0].y;
+    for (var i = 0; i < pts.length - 1; i++) {
+      var p0 = pts[Math.max(0, i - 1)];
+      var p1 = pts[i];
+      var p2 = pts[i + 1];
+      var p3 = pts[Math.min(pts.length - 1, i + 2)];
+      var c1x = p1.x + (p2.x - p0.x) / 6;
+      var c1y = p1.y + (p2.y - p0.y) / 6;
+      var c2x = p2.x - (p3.x - p1.x) / 6;
+      var c2y = p2.y - (p3.y - p1.y) / 6;
+      d += " C" + c1x + "," + c1y + " " + c2x + "," + c2y + " " + p2.x + "," + p2.y;
+    }
+    return d;
+  }
+  function animateDraw(path) {
+    if (!path) return;
+    path.style.strokeDasharray = "";
+    path.style.strokeDashoffset = "";
+    path.style.transition = "";
+    if (reduceMotion()) return;
+    var len = 0;
+    try { len = path.getTotalLength(); } catch (err) { return; }
+    if (!len) return;
+    path.style.strokeDasharray = String(len);
+    path.style.strokeDashoffset = String(len);
+    path.getBoundingClientRect();
+    path.style.transition = "stroke-dashoffset 0.85s ease";
+    path.style.strokeDashoffset = "0";
+  }
+  function layoutOf(opt) {
+    var L = {
+      w0: opt.w || 640,
+      h0: opt.h || 360,
+      l: opt.l == null ? 58 : opt.l,
+      r: opt.r == null ? 24 : opt.r,
+      t: opt.t == null ? 22 : opt.t,
+      b: opt.b == null ? 48 : opt.b,
+      xmin: opt.xmin, xmax: opt.xmax, ymin: opt.ymin, ymax: opt.ymax
+    };
+    L.pw = L.w0 - L.l - L.r;
+    L.ph = L.h0 - L.t - L.b;
+    L.xTo = function (x) { return L.l + (x - L.xmin) / (L.xmax - L.xmin) * L.pw; };
+    L.yTo = function (y) { return L.t + (L.ymax - y) / (L.ymax - L.ymin) * L.ph; };
+    return L;
+  }
+  function emptySvg(w, h, viewW, viewH) {
+    return svgEl("svg", {
+      viewBox: "0 0 " + viewW + " " + viewH,
+      width: "100%",
+      role: "img"
+    });
+  }
+  function axisText(x, y, label, anchor, size, fill, weight) {
+    return svgEl("text", {
+      x: String(x), y: String(y),
+      "text-anchor": anchor || "middle",
+      "font-size": String(size || 12),
+      fill: fill || "#4a5a70",
+      "font-weight": weight || "700",
+      "font-family": "PingFang HK, Microsoft JhengHei, Noto Sans TC, sans-serif"
+    }, label);
+  }
+  function drawAxes(svg, L, opt) {
+    opt = opt || {};
+    svg.appendChild(svgEl("rect", {
+      x: String(L.l), y: String(L.t), width: String(L.pw), height: String(L.ph),
+      fill: "#fbfdfe", stroke: "#cfd8e3"
+    }));
+    var gx, gy, x, y, v;
+    var xStep = opt.xStep || 0.2;
+    var yStep = opt.yStep || 5;
+    for (x = L.xmin; x <= L.xmax + 1e-9; x = Math.round((x + xStep) * 1000) / 1000) {
+      gx = L.xTo(x);
+      svg.appendChild(svgEl("line", {
+        x1: String(gx), x2: String(gx), y1: String(L.t), y2: String(L.t + L.ph),
+        stroke: x === 0 || (opt.xZero && Math.abs(x - opt.xZero) < 1e-9) ? "#c5d0da" : "#e8eef3",
+        "stroke-width": "1"
+      }));
+      svg.appendChild(axisText(gx, L.t + L.ph + 18, String(x), "middle", 11));
+    }
+    for (v = L.ymin; v <= L.ymax + 1e-9; v = Math.round((v + yStep) * 1000) / 1000) {
+      gy = L.yTo(v);
+      svg.appendChild(svgEl("line", {
+        x1: String(L.l), x2: String(L.l + L.pw), y1: String(gy), y2: String(gy),
+        stroke: Math.abs(v) < 1e-9 ? "#9aa8b5" : "#e8eef3",
+        "stroke-width": Math.abs(v) < 1e-9 ? "1.4" : "1"
+      }));
+      svg.appendChild(axisText(L.l - 8, gy + 4, String(v), "end", 11));
+    }
+    if (opt.xLabel) {
+      svg.appendChild(axisText(L.l + L.pw / 2, L.h0 - 8, opt.xLabel, "middle", 12, "#152033"));
+    }
+    if (opt.yLabel) {
+      var yt = axisText(16, L.t + L.ph / 2, opt.yLabel, "middle", 12, "#152033");
+      yt.setAttribute("transform", "rotate(-90 16 " + (L.t + L.ph / 2) + ")");
+      svg.appendChild(yt);
+    }
+  }
+  function ptsFrom(L, data, xKey, yKey) {
+    var out = [];
+    for (var i = 0; i < data.length; i++) {
+      out.push({ x: L.xTo(data[i][xKey]), y: L.yTo(data[i][yKey]) });
+    }
+    return out;
+  }
+
+  var MODS = ["hub", "q6b", "q6e", "q10c", "q9b", "q10b", "q7bii"];
+  var timers = { q10b: null, q10c: null, q6e: null };
+
+  function currentMod() {
+    var h = (location.hash || "#hub").replace(/^#/, "");
+    if (!h) h = "hub";
+    if (MODS.indexOf(h) === -1) h = "hub";
+    return h;
+  }
+  function show(mod) {
+    if (MODS.indexOf(mod) === -1) mod = "hub";
+    for (var i = 0; i < MODS.length; i++) {
+      var el = qs("view-" + MODS[i]);
+      if (!el) continue;
+      if (MODS[i] === mod) el.classList.remove("hidden");
+      else el.classList.add("hidden");
+    }
+    var links = document.querySelectorAll(".mod-nav a");
+    for (var j = 0; j < links.length; j++) {
+      var m = links[j].getAttribute("data-mod");
+      if (m === mod) links[j].classList.add("is-active");
+      else links[j].classList.remove("is-active");
+    }
+    try { window.scrollTo(0, 0); } catch (err) {}
+    stopAnims();
+    if (mod === "q6b") drawQ6b();
+    if (mod === "q6e") drawQ6e();
+    if (mod === "q10c") { drawQ10c(); startQ10cAnim(); }
+    if (mod === "q9b") drawQ9b();
+    if (mod === "q10b") { drawQ10bChart(); drawQ10bScene(); }
+    if (mod === "q7bii") drawQ7b();
+  }
+  function stopAnims() {
+    if (timers.q10b) { clearInterval(timers.q10b); timers.q10b = null; }
+    if (timers.q10c) { cancelAnimationFrame(timers.q10c); timers.q10c = null; }
+    if (timers.q6e) { cancelAnimationFrame(timers.q6e); timers.q6e = null; }
+  }
+  window.addEventListener("hashchange", function () { show(currentMod()); });
+
+  /* ===================== Q6(b) ===================== */
+  var q6b = { mode: "ok" };
+  var Q6B_ORIG = [
+    { c: 0, p: 22 }, { c: 0.2, p: 5 }, { c: 0.3, p: 0 },
+    { c: 0.4, p: -7 }, { c: 0.6, p: -13 }, { c: 0.8, p: -21 }, { c: 1.0, p: -24 }
+  ];
+  function shiftCurve(src, dlt) {
+    var out = [];
+    for (var i = 0; i < src.length; i++) out.push({ c: src[i].c, p: src[i].p + dlt });
+    return out;
+  }
+  var Q6B_S2 = shiftCurve(Q6B_ORIG, -7);
+  var Q6B_S5 = shiftCurve(Q6B_ORIG, 7);
+
+  function zeroCross(data) {
+    for (var i = 0; i < data.length - 1; i++) {
+      var a = data[i], b = data[i + 1];
+      if (a.p === 0) return a.c;
+      if ((a.p > 0 && b.p <= 0) || (a.p < 0 && b.p >= 0)) {
+        var t = a.p / (a.p - b.p);
+        return a.c + (b.c - a.c) * t;
+      }
+    }
+    return null;
+  }
+
+  function drawQ6b() {
+    drawQ6bScene();
+    drawQ6bChart();
+    drawQ6bNums();
+  }
+
+  function potatoCyl(x, y, wet) {
+    var g = svgEl("g");
+    g.appendChild(svgEl("rect", {
+      x: String(x), y: String(y), width: "22", height: "54", rx: "8",
+      fill: "#d7b07a", stroke: "#8a5a2a", "stroke-width": "1.4"
+    }));
+    g.appendChild(svgEl("ellipse", {
+      cx: String(x + 11), cy: String(y + 4), rx: "11", ry: "5",
+      fill: "#e6c596", stroke: "#8a5a2a", "stroke-width": "1.2"
+    }));
+    if (wet) {
+      g.appendChild(svgEl("circle", { cx: String(x + 6), cy: String(y + 16), r: "3.2", fill: "#4aa3d8" }));
+      g.appendChild(svgEl("circle", { cx: String(x + 16), cy: String(y + 28), r: "2.6", fill: "#4aa3d8" }));
+      g.appendChild(svgEl("circle", { cx: String(x + 8), cy: String(y + 42), r: "2.8", fill: "#4aa3d8" }));
+    }
+    return g;
+  }
+  function balance(x, y, reading, tone) {
+    var g = svgEl("g");
+    g.appendChild(svgEl("rect", {
+      x: String(x), y: String(y + 70), width: "150", height: "14", rx: "3",
+      fill: "#6b7787"
+    }));
+    g.appendChild(svgEl("rect", {
+      x: String(x + 20), y: String(y + 18), width: "110", height: "54", rx: "6",
+      fill: "#2a3340", stroke: "#152033", "stroke-width": "1"
+    }));
+    g.appendChild(svgEl("rect", {
+      x: String(x + 28), y: String(y + 26), width: "94", height: "24", rx: "3",
+      fill: "#0d1a16"
+    }));
+    var col = tone === "bad" ? "#ffb4b4" : (tone === "cool" ? "#d6c7f0" : "#b8f0c8");
+    g.appendChild(axisText(x + 75, y + 44, reading, "middle", 12, col, "800"));
+    g.appendChild(svgEl("rect", {
+      x: String(x + 30), y: String(y + 8), width: "90", height: "8", rx: "2",
+      fill: "#cfd8e3", stroke: "#8a98a8"
+    }));
+    return g;
+  }
+
+  function drawQ6bScene() {
+    var host = qs("q6bscene");
+    if (!host) return;
+    clearEl(host);
+    var svg = emptySvg(0, 0, 640, 250);
+    svg.setAttribute("aria-label", "馬鈴薯柱體在天平上秤重的示意圖");
+    svg.appendChild(svgEl("rect", { x: "0", y: "0", width: "640", height: "250", fill: "#f4fafb" }));
+    svg.appendChild(svgEl("rect", { x: "0", y: "210", width: "640", height: "40", fill: "#e4ece8" }));
+    svg.appendChild(axisText(160, 24, "浸前：秤初始質量", "middle", 14, "#08545d", "800"));
+    svg.appendChild(axisText(480, 24, "浸後：秤最終質量", "middle", 14, "#08545d", "800"));
+    svg.appendChild(svgEl("line", { x1: "320", y1: "36", x2: "320", y2: "230", stroke: "#cfd8e3", "stroke-width": "1.5" }));
+
+    var mode = q6b.mode;
+    var wetInit = mode === "s2";
+    var wetFinal = mode === "s5";
+    var initRead = mode === "s2" ? "10.4 g 偏高" : "10.0 g";
+    var finalRead = mode === "s5" ? "12.6 g 偏高" : (mode === "s2" ? "12.2 g 已抹乾" : "12.2 g");
+    var initTone = mode === "s2" ? "bad" : "ok";
+    var finalTone = mode === "s5" ? "cool" : "ok";
+
+    svg.appendChild(balance(85, 96, initRead, initTone));
+    svg.appendChild(balance(405, 96, finalRead, finalTone));
+    var xs1 = [118, 148, 178];
+    var xs2 = [438, 468, 498];
+    var i;
+    for (i = 0; i < 3; i++) svg.appendChild(potatoCyl(xs1[i], 52, wetInit));
+    for (i = 0; i < 3; i++) svg.appendChild(potatoCyl(xs2[i], 52, wetFinal));
+
+    // towel
+    if (mode === "ok") {
+      svg.appendChild(svgEl("rect", {
+        x: "250", y: "58", width: "46", height: "30", rx: "3",
+        fill: "#fff", stroke: "#8a98a8", "stroke-dasharray": "3 2"
+      }));
+      svg.appendChild(axisText(273, 77, "抹乾", "middle", 11, "#0b6e7a", "800"));
+    } else if (mode === "s2") {
+      svg.appendChild(svgEl("rect", {
+        x: "16", y: "58", width: "46", height: "30", rx: "3",
+        fill: "#f0f0f0", stroke: "#b0b8c0", "stroke-dasharray": "3 2"
+      }));
+      svg.appendChild(axisText(160, 236, "步驟 2 被跳過：表面水被算進初始質量", "middle", 12, "#9b1c1c", "800"));
+    } else {
+      svg.appendChild(axisText(480, 236, "步驟 5 被跳過：表面溶液被算進最終質量", "middle", 12, "#5b3d8f", "800"));
+    }
+
+    if (mode === "s2") {
+      svg.appendChild(svgEl("path", {
+        d: "M160 48 L160 36", stroke: "#9b1c1c", "stroke-width": "1.5"
+      }));
+      svg.appendChild(axisText(160, 33, "表面水抬高初始質量", "middle", 12, "#9b1c1c", "800"));
+    }
+    if (mode === "s5") {
+      svg.appendChild(axisText(480, 33, "表面溶液抬高最終質量", "middle", 12, "#5b3d8f", "800"));
+    }
+    host.appendChild(svg);
+
+    var cap = qs("q6bscenecap");
+    if (cap) {
+      if (mode === "ok") cap.textContent = "正確做法：浸前已抹乾，初始質量不含表面水；取出後也抹乾，最終質量可靠。圖中以 0 M 為例：10.0 g → 12.2 g，變化 +22%。";
+      else if (mode === "s2") cap.textContent = "忘記步驟 2：初始質量被表面水抬高（10.4 g），最終質量仍有抹乾（12.2 g），百分率由 +22% 降到約 +17%。整條曲線向下、向左移。";
+      else cap.textContent = "忘記步驟 5（對照）：最終質量被表面溶液抬高，百分率偏大，曲線向上、向右移。這與本題（忘記步驟 2）方向相反。";
+    }
+  }
+
+  function drawQ6bChart() {
+    var host = qs("q6bchart");
+    if (!host) return;
+    clearEl(host);
+    var L = layoutOf({ w: 640, h: 400, l: 62, r: 18, t: 28, b: 50, xmin: 0, xmax: 1.0, ymin: -35, ymax: 35 });
+    var svg = emptySvg(0, 0, L.w0, L.h0);
+    svg.setAttribute("aria-label", "質量平均變化百分率對蔗糖濃度的曲線");
+    drawAxes(svg, L, {
+      xStep: 0.2, yStep: 5,
+      xLabel: "蔗糖溶液濃度（M）",
+      yLabel: "質量平均變化百分率（%）"
+    });
+
+    function addCurve(data, color, width, dashed, withDots, tag) {
+      var pts = ptsFrom(L, data, "c", "p");
+      var path = svgEl("path", {
+        d: smoothPath(pts),
+        fill: "none",
+        stroke: color,
+        "stroke-width": String(width),
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round"
+      });
+      if (dashed) path.setAttribute("stroke-dasharray", "7 5");
+      path.setAttribute("data-tag", tag || "");
+      svg.appendChild(path);
+      if (withDots) {
+        for (var i = 0; i < data.length; i++) {
+          svg.appendChild(svgEl("circle", {
+            cx: String(L.xTo(data[i].c)),
+            cy: String(L.yTo(data[i].p)),
+            r: "4",
+            fill: "#fff",
+            stroke: color,
+            "stroke-width": "2"
+          }));
+        }
+      }
+      return path;
+    }
+
+    addCurve(Q6B_ORIG, "#0b6e7a", 2.6, false, true, "orig");
+    // original intercept marker
+    var z0 = 0.3;
+    svg.appendChild(svgEl("circle", {
+      cx: String(L.xTo(z0)), cy: String(L.yTo(0)), r: "5.5",
+      fill: "#0b6e7a"
+    }));
+    svg.appendChild(axisText(L.xTo(z0), L.yTo(0) - 12, "0.3 M", "middle", 12, "#08545d", "800"));
+
+    var newPath = null;
+    var z = null;
+    if (q6b.mode === "s2") {
+      newPath = addCurve(Q6B_S2, "#9b1c1c", 2.8, false, true, "s2");
+      z = zeroCross(Q6B_S2);
+      svg.appendChild(svgEl("circle", {
+        cx: String(L.xTo(z)), cy: String(L.yTo(0)), r: "5.5", fill: "#9b1c1c"
+      }));
+      svg.appendChild(axisText(L.xTo(z), L.yTo(8), "新過零點 ≈ " + z.toFixed(2) + " M", "middle", 12, "#9b1c1c", "800"));
+      svg.appendChild(axisText(L.xTo(0.72), L.yTo(-30), "須另畫新曲線：下移、左移", "middle", 13, "#9b1c1c", "800"));
+    } else if (q6b.mode === "s5") {
+      newPath = addCurve(Q6B_S5, "#5b3d8f", 2.8, false, true, "s5");
+      z = zeroCross(Q6B_S5);
+      svg.appendChild(svgEl("circle", {
+        cx: String(L.xTo(z)), cy: String(L.yTo(0)), r: "5.5", fill: "#5b3d8f"
+      }));
+      svg.appendChild(axisText(L.xTo(z) + 36, L.yTo(10), "新過零點 ≈ " + z.toFixed(2) + " M", "start", 12, "#5b3d8f", "800"));
+      svg.appendChild(axisText(L.xTo(0.72), L.yTo(28), "對照：上移、右移（不是本題）", "middle", 13, "#5b3d8f", "800"));
+    }
+    host.appendChild(svg);
+    if (newPath) animateDraw(newPath);
+
+    var note = qs("q6bchartnote");
+    if (note) {
+      if (q6b.mode === "ok") note.textContent = "原曲線在約 0.3 M 穿過 0%。請改選「忘記步驟 2」，圖上會另畫一條下移／左移的新曲線。";
+      else if (q6b.mode === "s2") note.textContent = "新曲線整條下移，與橫軸交點左移到約 " + (z ? z.toFixed(2) : "0.18") + " M，推斷的等滲濃度低於 0.3 M。答題時必須在圖上畫出這條新曲線。";
+      else note.textContent = "若忘記的是步驟 5，曲線會上移、交點右移到約 " + (z ? z.toFixed(2) : "0.40") + " M。這是常見陷阱，方向與本題相反。";
+    }
+  }
+
+  function drawQ6bNums() {
+    var host = qs("q6bnums");
+    if (!host) return;
+    var html = '<table class="stat-table"><thead><tr>' +
+      "<th>情況（簡化例子）</th><th>0 M 初始→最終</th><th>0 M 百分率</th><th>0.6 M 百分率</th><th>過零點</th></tr></thead><tbody>";
+    function row(sel, name, a, p0, p6, z) {
+      html += "<tr" + (sel ? ' style="background:#fff8e8;"' : "") + "><td class='left'>" + name +
+        "</td><td>" + a + "</td><td>" + p0 + "</td><td>" + p6 + "</td><td>" + z + "</td></tr>";
+    }
+    row(q6b.mode === "ok", "正確步驟", "10.0 → 12.2 g", "+22%", "−13%", "0.3 M");
+    row(q6b.mode === "s2", "忘記步驟 2（本題）", "10.4 → 12.2 g", "+17%", "−16%", "低於 0.3 M");
+    row(q6b.mode === "s5", "忘記步驟 5（對照）", "10.0 → 12.6 g", "+26%", "−9%", "高於 0.3 M");
+    html += "</tbody></table><p class='small muted'>例子假設表面附著約 0.4 g 水或溶液；0.6 M 的真實最終質量為 8.7 g。數值經簡化，只為說明方向。</p>";
+    setHtml(host, html);
+  }
+
+  function wireQ6b() {
+    var ids = ["q6bmodeOk", "q6bmodeS2", "q6bmodeS5"];
+    var btns = [];
+    for (var i = 0; i < ids.length; i++) btns.push(qs(ids[i]));
+    for (i = 0; i < btns.length; i++) {
+      (function (btn) {
+        on(btn, "click", function () {
+          q6b.mode = btn.getAttribute("data-mode");
+          setActive(btns, btn);
+          drawQ6b();
+        });
+      })(btns[i]);
+    }
+    var pred = qs("q6bpred");
+    if (pred) {
+      var pbtns = pred.querySelectorAll("button");
+      for (i = 0; i < pbtns.length; i++) {
+        (function (btn) {
+          on(btn, "click", function () {
+            if (pred.getAttribute("data-locked") === "1") return;
+            pred.setAttribute("data-locked", "1");
+            var c = btn.getAttribute("data-choice");
+            var ok = c === "down";
+            for (var j = 0; j < pbtns.length; j++) {
+              if (pbtns[j].getAttribute("data-choice") === "down") pbtns[j].classList.add("is-ok");
+              else if (pbtns[j] === btn) pbtns[j].classList.add("is-bad");
+            }
+            if (ok) showFb("q6bpredfb", "ok", "正確。忘記步驟 2 會令初始質量偏高，百分率偏小，曲線下移、左移，等滲濃度低於 0.3 M。現在用模擬核對，並看看「忘記步驟 5」為何方向相反。");
+            else if (c === "up") showFb("q6bpredfb", "bad", "這是忘記步驟 5（取出後不抹乾）才會出現的效應。本題忘記的是步驟 2，方向剛好相反。請開啟兩個模式比較。");
+            else showFb("q6bpredfb", "bad", "所有樣本都忘記步驟 2，整條曲線都會平移，過零點也會跟着移動。請用模擬看看新曲線。");
+          });
+        })(pbtns[i]);
+      }
+    }
+    toggleReveal("q6brevealBtn", "q6breveal");
+    wireMc("q6bmc", "q6bmcfb",
+      "正確。忘記步驟 5 會抬高最終質量，百分率偏大，曲線上移、右移，推斷的等滲濃度高於 0.3 M。這與本題（忘記步驟 2）相反。",
+      "再想一想：取出後不抹乾，最終質量偏高，百分率應偏大，曲線應上移而不是下移。");
+  }
+
+  /* ===================== Q6(e) ===================== */
+  var q6e = { infected: false };
+
+  function plantShape(x, y, color, wilt, variant) {
+    var g = svgEl("g");
+    var stemY = wilt ? y + 18 : y;
+    var lean = wilt ? (variant % 2 === 0 ? -10 : 10) : 0;
+    var topX = x + lean;
+    var topY = stemY - (wilt ? 18 : 28);
+    g.appendChild(svgEl("line", {
+      x1: String(x), y1: String(y + 22), x2: String(topX), y2: String(topY),
+      stroke: wilt ? "#6a4030" : "#2f6b32", "stroke-width": "2.4", "stroke-linecap": "round"
+    }));
+    var leafFill = wilt ? "#7a5a38" : color;
+    function leaf(lx, ly, rot) {
+      var p = svgEl("ellipse", {
+        cx: String(lx), cy: String(ly), rx: "8", ry: "4.2",
+        fill: leafFill, stroke: wilt ? "#5a3a22" : "#245628", "stroke-width": "0.8"
+      });
+      p.setAttribute("transform", "rotate(" + rot + " " + lx + " " + ly + ")");
+      g.appendChild(p);
+    }
+    leaf(topX - 8, topY + 6, wilt ? -40 : -32);
+    leaf(topX + 8, topY + 8, wilt ? 40 : 28);
+    if (!wilt) leaf(topX, topY - 2, -8);
+    return g;
+  }
+
+  function drawQ6e() {
+    var host = qs("q6escene");
+    if (!host) return;
+    clearEl(host);
+    var svg = emptySvg(0, 0, 800, 360);
+    svg.setAttribute("aria-label", "營養繁殖田與有性生殖田對照");
+    svg.appendChild(svgEl("rect", { x: "0", y: "0", width: "800", height: "360", fill: "#eef6ea" }));
+    svg.appendChild(svgEl("rect", { x: "20", y: "48", width: "360", height: "280", rx: "12", fill: "#c9e3a8", stroke: "#7aa05a" }));
+    svg.appendChild(svgEl("rect", { x: "420", y: "48", width: "360", height: "280", rx: "12", fill: "#c9e3a8", stroke: "#7aa05a" }));
+    svg.appendChild(axisText(200, 32, "營養繁殖（塊莖克隆）", "middle", 15, "#08545d", "800"));
+    svg.appendChild(axisText(600, 32, "有性生殖（種子，有變異）", "middle", 15, "#08545d", "800"));
+
+    var cloneColor = "#3a8f4a";
+    var sexual = ["#2e7d32", "#5b9a3a", "#8fbf4a", "#3d6b2a", "#6a9e4a", "#c4b44a", "#4e8c3a", "#97b85a",
+                  "#2f6b32", "#b7c85a", "#3a8f4a", "#6d9a2e", "#81b04a", "#4a7a30", "#d0c25a", "#2a6a28"];
+    // which sexual plants are resistant: yellowish / gold-green ones roughly indices 5, 9, 14, 2, 10, 7
+    var resistant = { 2: 1, 5: 1, 7: 1, 9: 1, 10: 1, 14: 1 };
+    var i, c, r, x, y, wilt, col;
+    for (i = 0; i < 16; i++) {
+      c = i % 4; r = Math.floor(i / 4);
+      x = 70 + c * 80; y = 110 + r * 52;
+      wilt = q6e.infected;
+      svg.appendChild(plantShape(x, y, cloneColor, wilt, i));
+    }
+    var survived = 0, died = 0;
+    for (i = 0; i < 16; i++) {
+      c = i % 4; r = Math.floor(i / 4);
+      x = 470 + c * 80; y = 110 + r * 52;
+      wilt = q6e.infected && !resistant[i];
+      col = sexual[i];
+      svg.appendChild(plantShape(x, y, col, wilt, i));
+      if (q6e.infected) {
+        if (resistant[i]) survived += 1;
+        else died += 1;
+      }
+    }
+
+    // tiny tuber icon under left label
+    svg.appendChild(svgEl("ellipse", { cx: "54", cy: "70", rx: "12", ry: "7", fill: "#d7b07a", stroke: "#8a5a2a" }));
+    // seed/flower under right
+    svg.appendChild(svgEl("circle", { cx: "454", cy: "70", r: "6", fill: "#f0d35a", stroke: "#a88410" }));
+
+    if (q6e.infected) {
+      svg.appendChild(axisText(200, 348, "幾乎全部感染：基因都一樣", "middle", 13, "#9b1c1c", "800"));
+      svg.appendChild(axisText(600, 348, "部分抗性個體存活（約 " + survived + " 株）", "middle", 13, "#145a32", "800"));
+      // spore dots
+      for (i = 0; i < 14; i++) {
+        svg.appendChild(svgEl("circle", {
+          cx: String(40 + (i * 53) % 720),
+          cy: String(60 + (i * 37) % 250),
+          r: "3", fill: "#6b3a2a", opacity: "0.55"
+        }));
+      }
+    } else {
+      svg.appendChild(axisText(200, 348, "16 株外形、基因型都相同", "middle", 13, "#4a5a70", "700"));
+      svg.appendChild(axisText(600, 348, "16 株已有顏色與高度差異", "middle", 13, "#4a5a70", "700"));
+    }
+    host.appendChild(svg);
+
+    var cap = qs("q6ecap");
+    if (cap) {
+      if (!q6e.infected) cap.textContent = "尚未引入病原體。左邊全部植株來自同一親代塊莖，基因相同；右邊由種子長成，已有可見差異。請按「引入病原體」。";
+      else cap.textContent = "病原體來襲後，克隆田幾乎全部萎凋——親代若易感，整個種群都一樣。有性田中，具抗性基因型的個體可以存活，成為天擇的原料。";
+    }
+  }
+
+  function wireQ6e() {
+    on(qs("q6einfect"), "click", function () {
+      q6e.infected = true;
+      drawQ6e();
+    });
+    on(qs("q6ereset"), "click", function () {
+      q6e.infected = false;
+      drawQ6e();
+    });
+    var pred = qs("q6epred");
+    if (pred) {
+      var pbtns = pred.querySelectorAll("button");
+      for (var i = 0; i < pbtns.length; i++) {
+        (function (btn) {
+          on(btn, "click", function () {
+            if (pred.getAttribute("data-locked") === "1") return;
+            pred.setAttribute("data-locked", "1");
+            var c = btn.getAttribute("data-choice");
+            for (var j = 0; j < pbtns.length; j++) {
+              if (pbtns[j].getAttribute("data-choice") === "clone") pbtns[j].classList.add("is-ok");
+              else if (pbtns[j] === btn) pbtns[j].classList.add("is-bad");
+            }
+            if (c === "clone") showFb("q6epredfb", "ok", "正確。關鍵是後代與親代基因相同，種群缺乏可被選擇的抗病變異。按「引入病原體」看兩塊田的對比。");
+            else if (c === "yield") showFb("q6epredfb", "bad", "高產本身不是這項論據的核心。要用「基因相同／缺乏變異」來解釋為何整片作物容易一起倒下。");
+            else showFb("q6epredfb", "bad", "土壤接觸不是這項論據的重點。營養繁殖的關鍵是產生克隆，使整個種群基因型一樣。");
+          });
+        })(pbtns[i]);
+      }
+    }
+    toggleReveal("q6erevealBtn", "q6ereveal");
+    wireMc("q6emc", "q6emcfb",
+      "正確。第 2 分要連到「缺乏可被選擇的抗病變異／若親代易感則整個種群都一樣」。",
+      "還沒扣緊遺傳變異。能量、澱粉或土壤都不是這項論據的給分點。");
+  }
+
+  /* ===================== Q10(c) ===================== */
+  var q10c = { view: "long", lumen: "hollow", wall: "thick", pull: 40, dots: [] };
+
+  function pullLabel(v) {
+    if (v < 25) return "低";
+    if (v < 55) return "中等";
+    if (v < 80) return "高";
+    return "很高";
+  }
+  function collapseAmt() {
+    // 0–1 how much thin wall caves in; thick wall only slight
+    var p = q10c.pull / 100;
+    if (q10c.wall === "thin") return p * 0.72;
+    return p * 0.12;
+  }
+
+  function drawQ10c() {
+    var host = qs("q10cscene");
+    if (!host) return;
+    clearEl(host);
+    var svg = emptySvg(0, 0, 720, 340);
+    svg.setAttribute("aria-label", "木質導管縱切或橫切示意圖");
+    svg.appendChild(svgEl("rect", { x: "0", y: "0", width: "720", height: "340", fill: "#f4fafb" }));
+
+    var hollow = q10c.lumen === "hollow";
+    var thick = q10c.wall === "thick";
+    var cav = collapseAmt();
+    var lignin = "#8b5a2b";
+    var wallCol = thick ? "#8b5a2b" : "#d9c4a0";
+    var lumenCol = hollow ? "#d9eef7" : "#e7c6c0";
+
+    if (q10c.view === "long") {
+      // vertical vessel in the center, walls left/right
+      var mid = 360;
+      var half = 70 - cav * 48;
+      var wallW = thick ? 28 : 10;
+      var leftInner = mid - half;
+      var rightInner = mid + half;
+      var leftOuter = leftInner - wallW;
+      var rightOuter = rightInner + wallW;
+      // walls as trapezoids that pinch at mid-height when collapsing
+      var pinch = cav * 36;
+      var lTop = leftInner, rTop = rightInner;
+      var lMid = leftInner + pinch, rMid = rightInner - pinch;
+      var lBot = leftInner, rBot = rightInner;
+      // outer follows
+      function wallPath(innerOff, outerOff) {
+        // not used
+      }
+      // left wall
+      svg.appendChild(svgEl("path", {
+        d: "M" + (lTop - wallW) + ",36 L" + lTop + ",36 L" + lMid + ",170 L" + lBot + ",304 L" + (lBot - wallW) + ",304 L" + (lMid - wallW) + ",170 Z",
+        fill: wallCol, stroke: "#5a3a18", "stroke-width": "1.2"
+      }));
+      svg.appendChild(svgEl("path", {
+        d: "M" + rTop + ",36 L" + (rTop + wallW) + ",36 L" + (rMid + wallW) + ",170 L" + (rBot + wallW) + ",304 L" + rBot + ",304 L" + rMid + ",170 Z",
+        fill: wallCol, stroke: "#5a3a18", "stroke-width": "1.2"
+      }));
+      // lumen
+      svg.appendChild(svgEl("path", {
+        d: "M" + lTop + ",36 L" + rTop + ",36 L" + rMid + ",170 L" + rBot + ",304 L" + lBot + ",304 L" + lMid + ",170 Z",
+        fill: lumenCol, stroke: "#9aa8b5", "stroke-width": "1"
+      }));
+      if (!hollow) {
+        // cytoplasm stipple
+        var i, sx, sy;
+        for (i = 0; i < 40; i++) {
+          sx = mid - 20 + (i * 37) % 40;
+          sy = 50 + (i * 29) % 240;
+          svg.appendChild(svgEl("circle", { cx: String(sx), cy: String(sy), r: "4.5", fill: "#d9928a", opacity: "0.7" }));
+        }
+        svg.appendChild(axisText(mid, 80, "細胞質", "middle", 13, "#7a3028", "800"));
+      }
+      if (thick) {
+        // lignin rings / thickenings along walls
+        var yy;
+        for (yy = 50; yy <= 290; yy += 28) {
+          svg.appendChild(svgEl("rect", {
+            x: String(lMid - wallW + 4), y: String(yy), width: String(wallW - 4), height: "7", rx: "2",
+            fill: "#6b4018"
+          }));
+          svg.appendChild(svgEl("rect", {
+            x: String(rMid), y: String(yy), width: String(wallW - 4), height: "7", rx: "2",
+            fill: "#6b4018"
+          }));
+        }
+        svg.appendChild(axisText(leftOuter - 8, 28, "木質化厚壁", "end", 13, "#5a3a18", "800"));
+      } else {
+        svg.appendChild(axisText(leftOuter - 8, 28, "薄壁、未木質化", "end", 13, "#8a5a2a", "800"));
+      }
+      svg.appendChild(axisText(mid, 28, hollow ? "中空管腔" : "管腔充滿細胞質", "middle", 14, "#08545d", "800"));
+
+      // collapse / hold label
+      if (q10c.pull >= 70 && q10c.wall === "thin") {
+        svg.appendChild(axisText(560, 170, "管壁向內塌陷", "middle", 15, "#9b1c1c", "800"));
+      } else if (q10c.pull >= 70 && q10c.wall === "thick") {
+        svg.appendChild(axisText(560, 170, "厚壁抵禦負壓，維持管道", "middle", 14, "#145a32", "800"));
+      }
+
+      // water arrows / dots stored for animation
+      q10c.dots = [];
+      var flowOk = hollow && !(q10c.wall === "thin" && q10c.pull >= 85);
+      var gDots = svgEl("g", { id: "q10cdots" });
+      svg.appendChild(gDots);
+      if (hollow) {
+        for (i = 0; i < 8; i++) {
+          var dy = 50 + i * 32;
+          var c = svgEl("circle", {
+            cx: String(mid), cy: String(dy), r: "5",
+            fill: flowOk ? "#2a7ca8" : "#8aa0b0"
+          });
+          gDots.appendChild(c);
+          q10c.dots.push({ el: c, y: dy, speed: flowOk ? (1.2 + q10c.pull / 80) : 0.15 });
+        }
+        svg.appendChild(axisText(520, 60, flowOk ? "水流阻力低" : "流動受阻", "middle", 14, flowOk ? "#145a32" : "#9b1c1c", "800"));
+        // upward arrows
+        if (flowOk) {
+          svg.appendChild(svgEl("path", {
+            d: "M520 250 L520 110 L508 126 M520 110 L532 126",
+            fill: "none", stroke: "#2a7ca8", "stroke-width": "3", "stroke-linecap": "round", "stroke-linejoin": "round"
+          }));
+          svg.appendChild(axisText(560, 190, "水分向上", "middle", 13, "#2a7ca8", "800"));
+        }
+      } else {
+        svg.appendChild(axisText(520, 90, "細胞質阻擋，阻力高", "middle", 14, "#9b1c1c", "800"));
+      }
+
+      // inward pull arrows when pull is high
+      if (q10c.pull > 45) {
+        svg.appendChild(svgEl("path", {
+          d: "M" + (lMid - wallW - 40) + " 170 L" + (lMid - wallW - 8) + " 170",
+          stroke: "#9b1c1c", "stroke-width": "2.5", "stroke-linecap": "round"
+        }));
+        svg.appendChild(svgEl("path", {
+          d: "M" + (rMid + wallW + 40) + " 170 L" + (rMid + wallW + 8) + " 170",
+          stroke: "#9b1c1c", "stroke-width": "2.5", "stroke-linecap": "round"
+        }));
+        svg.appendChild(axisText(mid, 328, "負壓把管壁向內拉  ·  蒸騰拉力：" + pullLabel(q10c.pull), "middle", 13, "#9b1c1c", "800"));
+      }
+    } else {
+      // cross section
+      var cx = 300, cy = 170;
+      var rOuter = thick ? 110 : 96;
+      var rInner = thick ? 72 : 84;
+      rInner = rInner - cav * 38;
+      var ryInner = rInner * (1 - cav * 0.55);
+      var rxInner = rInner * (1 + cav * 0.15);
+      var ryOuter = rOuter * (1 - cav * 0.35);
+      var rxOuter = rOuter * (1 + cav * 0.08);
+      svg.appendChild(svgEl("ellipse", {
+        cx: String(cx), cy: String(cy), rx: String(rxOuter), ry: String(ryOuter),
+        fill: wallCol, stroke: "#5a3a18", "stroke-width": "1.6"
+      }));
+      svg.appendChild(svgEl("ellipse", {
+        cx: String(cx), cy: String(cy), rx: String(rxInner), ry: String(ryInner),
+        fill: lumenCol, stroke: "#5a3a18", "stroke-width": "1.2"
+      }));
+      if (thick) {
+        // ring marks
+        svg.appendChild(axisText(cx, 28, "橫切：木質化厚壁＋中空管腔", "middle", 14, "#08545d", "800"));
+      } else {
+        svg.appendChild(axisText(cx, 28, "橫切：薄壁" + (q10c.pull >= 70 ? "，負壓下塌陷" : ""), "middle", 14, "#08545d", "800"));
+      }
+      if (!hollow) {
+        svg.appendChild(svgEl("ellipse", {
+          cx: String(cx), cy: String(cy), rx: String(rxInner * 0.86), ry: String(ryInner * 0.86),
+          fill: "#d9928a", opacity: "0.85"
+        }));
+        svg.appendChild(axisText(cx, cy + 5, "細胞質", "middle", 14, "#7a3028", "800"));
+      } else {
+        svg.appendChild(axisText(cx, cy + 5, "管腔", "middle", 14, "#2a7ca8", "800"));
+      }
+      // side captions
+      var msgs = [];
+      msgs.push(hollow ? "中空管腔：阻力低" : "充滿細胞質：阻力高");
+      if (thick) msgs.push("增厚／木質化：可抗負壓");
+      else if (q10c.pull >= 70) msgs.push("薄壁被負壓向內拉，管道塌陷");
+      else msgs.push("薄壁難以抵禦高負壓");
+      svg.appendChild(axisText(540, 150, msgs[0], "middle", 14, hollow ? "#145a32" : "#9b1c1c", "800"));
+      svg.appendChild(axisText(540, 178, msgs[1], "middle", 14, (thick || q10c.pull < 70) ? "#145a32" : "#9b1c1c", "800"));
+      svg.appendChild(axisText(cx, 328, "蒸騰拉力／負壓：" + pullLabel(q10c.pull), "middle", 13, "#4a5a70", "800"));
+    }
+    host.appendChild(svg);
+    updateQ10cCap();
+  }
+
+  function updateQ10cCap() {
+    var cap = qs("q10ccap");
+    if (!cap) return;
+    var bits = [];
+    if (q10c.lumen === "hollow") bits.push("中空管腔讓水分以較低阻力向上流動");
+    else bits.push("管腔若充滿細胞質，水流會被阻擋，阻力變高");
+    if (q10c.wall === "thick") bits.push("木質化厚壁能抵禦蒸騰拉力造成的負壓，避免管道塌陷");
+    else if (q10c.pull >= 70) bits.push("薄壁在高負壓下會向內塌陷，水分轉運中斷");
+    else bits.push("把蒸騰拉力滑桿拉高，觀察薄壁如何被向內拉");
+    cap.textContent = bits.join("。") + "。滿分須同時寫出兩項特徵及其解釋。";
+  }
+
+  function startQ10cAnim() {
+    if (timers.q10c) { cancelAnimationFrame(timers.q10c); timers.q10c = null; }
+    if (reduceMotion()) return;
+    function tick() {
+      if (currentMod() !== "q10c") return;
+      var i, d, y;
+      for (i = 0; i < q10c.dots.length; i++) {
+        d = q10c.dots[i];
+        if (!d.el) continue;
+        d.y -= d.speed;
+        if (d.y < 46) d.y = 300;
+        d.el.setAttribute("cy", String(d.y));
+      }
+      timers.q10c = requestAnimationFrame(tick);
+    }
+    timers.q10c = requestAnimationFrame(tick);
+  }
+
+  function wireQ10c() {
+    on(qs("q10cviewLong"), "click", function () {
+      q10c.view = "long";
+      qs("q10cviewLong").classList.add("is-on");
+      qs("q10cviewCross").classList.remove("is-on");
+      drawQ10c(); startQ10cAnim();
+    });
+    on(qs("q10cviewCross"), "click", function () {
+      q10c.view = "cross";
+      qs("q10cviewCross").classList.add("is-on");
+      qs("q10cviewLong").classList.remove("is-on");
+      drawQ10c();
+    });
+    function lumenBtns() { return [qs("q10clumenHollow"), qs("q10clumenFull")]; }
+    function wallBtns() { return [qs("q10cwallThick"), qs("q10cwallThin")]; }
+    var i, lbs = lumenBtns(), wbs = wallBtns();
+    for (i = 0; i < lbs.length; i++) {
+      (function (btn) {
+        on(btn, "click", function () {
+          q10c.lumen = btn.getAttribute("data-lumen");
+          setActive(lumenBtns(), btn);
+          drawQ10c(); startQ10cAnim();
+        });
+      })(lbs[i]);
+    }
+    for (i = 0; i < wbs.length; i++) {
+      (function (btn) {
+        on(btn, "click", function () {
+          q10c.wall = btn.getAttribute("data-wall");
+          setActive(wallBtns(), btn);
+          drawQ10c(); startQ10cAnim();
+        });
+      })(wbs[i]);
+    }
+    on(qs("q10cpull"), "input", function () {
+      q10c.pull = parseFloat(qs("q10cpull").value);
+      setHtml(qs("q10cpullval"), pullLabel(q10c.pull));
+      drawQ10c(); startQ10cAnim();
+    });
+    on(qs("q10cpull"), "change", function () {
+      q10c.pull = parseFloat(qs("q10cpull").value);
+      setHtml(qs("q10cpullval"), pullLabel(q10c.pull));
+      drawQ10c(); startQ10cAnim();
+    });
+
+    var pred = qs("q10cpred");
+    if (pred) {
+      var pbtns = pred.querySelectorAll("button");
+      for (i = 0; i < pbtns.length; i++) {
+        (function (btn) {
+          on(btn, "click", function () {
+            if (pred.getAttribute("data-locked") === "1") return;
+            pred.setAttribute("data-locked", "1");
+            var c = btn.getAttribute("data-choice");
+            for (var j = 0; j < pbtns.length; j++) {
+              if (pbtns[j].getAttribute("data-choice") === "ok") pbtns[j].classList.add("is-ok");
+              else if (pbtns[j] === btn) pbtns[j].classList.add("is-bad");
+            }
+            if (c === "ok") showFb("q10cpredfb", "ok", "正確。本評卷的兩個給分點就是這兩項，而且每項都要有解釋。請用模擬分別關掉「中空」和「厚壁」，看效應。");
+            else if (c === "pits") showFb("q10cpredfb", "bad", "紋孔和無細胞核在課堂常教，但本評卷給分點是「中空管腔（阻力低）」和「木質化厚壁（抗負壓、防塌陷）」。先寫這兩項較穩妥。");
+            else showFb("q10cpredfb", "bad", "只寫特徵沒有解釋，4 分題最多得 2 分。每項都要說出作用。");
+          });
+        })(pbtns[i]);
+      }
+    }
+    toggleReveal("q10crevealBtn", "q10creveal");
+    on(qs("q10ccheckBtn"), "click", function () {
+      var box = qs("q10ccheck");
+      var inputs = box.querySelectorAll("input[type=checkbox]");
+      var good = true, i2, inp, want, got;
+      for (i2 = 0; i2 < inputs.length; i2++) {
+        inp = inputs[i2];
+        want = inp.getAttribute("data-ok") === "1";
+        got = inp.checked;
+        if (want !== got) good = false;
+        inp.parentNode.parentNode.style.background = (want === got) ? "#e8f6ed" : "#fdecea";
+      }
+      if (good) showFb("q10ccheckfb", "ok", "全部正確。滿分＝兩項特徵＋兩項解釋。紋孔不是本評卷的兩個給分點；木質化也不是為了儲藏澱粉。");
+      else showFb("q10ccheckfb", "bad", "請再核對：應勾選首兩項完整配對，不要把紋孔當成官方兩個給分點，也不要把木質化說成儲藏澱粉。");
+    });
+  }
+
+  /* ===================== Q9(b) ===================== */
+  var q9b = { path: "none" };
+  var Q9_SEP_A = [[0, 0.8], [1, 1.5], [2, 2.6], [3, 4.0], [4, 5.5], [5, 6.5]];
+  var Q9_SEP_K = [[0, 0.5], [1, 0.8], [2, 1.2], [3, 1.6], [4, 1.9], [5, 2.2]];
+  var Q9_TOG_A = [[0, 0.8], [1, 1.3], [2, 2.0], [3, 2.8], [4, 3.6], [5, 4.2]];
+  var Q9_TOG_K = [[0, 0.5], [1, 0.6], [2, 0.65], [3, 0.7], [4, 0.75], [5, 0.8]];
+
+  function drawSnailChart(host, aData, kData, label) {
+    if (!host) return;
+    clearEl(host);
+    var L = layoutOf({ w: 420, h: 260, l: 44, r: 16, t: 16, b: 40, xmin: 0, xmax: 5, ymin: 0, ymax: 8 });
+    var svg = emptySvg(0, 0, L.w0, L.h0);
+    svg.setAttribute("aria-label", label);
+    drawAxes(svg, L, { xStep: 1, yStep: 2, xLabel: "時間（月）", yLabel: "平均質量（g）" });
+    function lineOf(data, color) {
+      var pts = [];
+      for (var i = 0; i < data.length; i++) pts.push({ x: L.xTo(data[i][0]), y: L.yTo(data[i][1]) });
+      svg.appendChild(svgEl("path", {
+        d: smoothPath(pts), fill: "none", stroke: color, "stroke-width": "2.6",
+        "stroke-linecap": "round", "stroke-linejoin": "round"
+      }));
+      for (i = 0; i < data.length; i++) {
+        svg.appendChild(svgEl("circle", {
+          cx: String(pts[i].x), cy: String(pts[i].y), r: "3.2",
+          fill: "#fff", stroke: color, "stroke-width": "1.8"
+        }));
+      }
+    }
+    lineOf(aData, "#c05621");
+    lineOf(kData, "#0b6e7a");
+    // labels near end
+    svg.appendChild(axisText(L.xTo(3.3), L.yTo(aData[4][1]) - 8, "福壽螺", "start", 12, "#c05621", "800"));
+    svg.appendChild(axisText(L.xTo(3.3), L.yTo(kData[4][1]) - 8, "螺 K", "start", 12, "#0b6e7a", "800"));
+    host.appendChild(svg);
+  }
+
+  function snailIcon(x, y, scale, eating) {
+    var g = svgEl("g");
+    g.setAttribute("transform", "translate(" + x + " " + y + ") scale(" + (scale || 1) + ")");
+    g.appendChild(svgEl("ellipse", { cx: "18", cy: "28", rx: "16", ry: "8", fill: "#6b4a2a", stroke: "#3a2410" }));
+    g.appendChild(svgEl("circle", { cx: "8", cy: "16", r: "14", fill: "#e2b36a", stroke: "#8a5a2a", "stroke-width": "1.4" }));
+    g.appendChild(svgEl("path", {
+      d: "M8 16 c0-6 5-9 9-9 c-2 4 0 7-3 8 c4 0 7 3 7 7 c-6 0-9-2-13-6",
+      fill: "none", stroke: "#8a5a2a", "stroke-width": "1.4"
+    }));
+    g.appendChild(svgEl("line", { x1: "30", y1: "26", x2: "38", y2: "18", stroke: "#3a2410", "stroke-width": "1.6" }));
+    g.appendChild(svgEl("line", { x1: "30", y1: "28", x2: "38", y2: "24", stroke: "#3a2410", "stroke-width": "1.6" }));
+    g.appendChild(svgEl("circle", { cx: "38", cy: "18", r: "1.6", fill: "#3a2410" }));
+    g.appendChild(svgEl("circle", { cx: "38", cy: "24", r: "1.6", fill: "#3a2410" }));
+    if (eating) {
+      g.appendChild(svgEl("text", {
+        x: "44", y: "16", "font-size": "12", fill: "#145a32", "font-weight": "800",
+        "font-family": "PingFang HK, Microsoft JhengHei, Noto Sans TC, sans-serif"
+      }, "啃食"));
+    }
+    return g;
+  }
+  function shoot(x, y, chewed, flowered) {
+    var g = svgEl("g");
+    g.appendChild(svgEl("line", {
+      x1: String(x), y1: String(y + 36), x2: String(x), y2: String(y),
+      stroke: chewed ? "#8a6a38" : "#2f6b32", "stroke-width": "3", "stroke-linecap": "round"
+    }));
+    var leafFill = chewed ? "#b8a060" : "#5da24a";
+    g.appendChild(svgEl("ellipse", { cx: String(x - 10), cy: String(y + 12), rx: "10", ry: "5", fill: leafFill, stroke: "#2f6b32" }));
+    if (!chewed) {
+      g.appendChild(svgEl("ellipse", { cx: String(x + 10), cy: String(y + 8), rx: "10", ry: "5", fill: leafFill, stroke: "#2f6b32" }));
+      g.appendChild(svgEl("ellipse", { cx: String(x + 2), cy: String(y - 2), rx: "6", ry: "4", fill: "#7fc45e", stroke: "#2f6b32" }));
+    } else {
+      g.appendChild(svgEl("path", {
+        d: "M" + (x + 4) + " " + (y + 8) + " l8-3 l-3 6 z",
+        fill: "#c05621"
+      }));
+    }
+    if (flowered) {
+      g.appendChild(svgEl("circle", { cx: String(x), cy: String(y - 8), r: "5", fill: "#f0d35a", stroke: "#a88410" }));
+    }
+    return g;
+  }
+  function bird(x, y, faded) {
+    var g = svgEl("g");
+    var op = faded ? "0.25" : "1";
+    g.setAttribute("opacity", op);
+    g.appendChild(svgEl("ellipse", { cx: String(x), cy: String(y), rx: "10", ry: "6", fill: "#4a6fa0", stroke: "#2a4468" }));
+    g.appendChild(svgEl("circle", { cx: String(x + 9), cy: String(y - 3), r: "4", fill: "#4a6fa0", stroke: "#2a4468" }));
+    g.appendChild(svgEl("path", { d: "M" + (x + 13) + " " + (y - 3) + " l6 2 l-6 1 z", fill: "#e8a020" }));
+    return g;
+  }
+
+  function drawQ9bScene() {
+    var host = qs("q9bscene");
+    if (!host) return;
+    clearEl(host);
+    var svg = emptySvg(0, 0, 720, 280);
+    svg.setAttribute("aria-label", "福壽螺在濕地啃食幼芽嫩葉");
+    svg.appendChild(svgEl("rect", { x: "0", y: "0", width: "720", height: "280", fill: "#e8f3ea" }));
+    svg.appendChild(svgEl("rect", { x: "0", y: "190", width: "720", height: "90", fill: "#8ec4d4" }));
+    svg.appendChild(svgEl("path", {
+      d: "M0 200 C80 180 140 210 220 190 C300 170 360 210 460 188 C560 168 640 200 720 186 L720 280 L0 280 Z",
+      fill: "#6fb07a"
+    }));
+    var path = q9b.path;
+    var chewed = path !== "none";
+    var i, xs = [80, 150, 230, 310, 400, 480];
+    for (i = 0; i < xs.length; i++) {
+      var ch = chewed && i !== 5;
+      var fl = path === "none" && i === 1;
+      // long path: no flowers, many chewed, later missing plants (skip some)
+      if (path === "long" && (i === 2 || i === 4)) continue;
+      var yy = path === "short" ? 168 : 148;
+      if (path === "long") yy = 168;
+      svg.appendChild(shoot(xs[i], yy, ch, path === "none" && i === 5));
+    }
+    svg.appendChild(snailIcon(120, 200, 1.15, true));
+    svg.appendChild(snailIcon(280, 210, 1, true));
+    svg.appendChild(snailIcon(430, 198, 1.1, true));
+    // other animals
+    svg.appendChild(bird(600, 50, path === "long"));
+    svg.appendChild(bird(650, 78, path === "long"));
+    // biomass bar for short path
+    if (path === "short") {
+      svg.appendChild(axisText(620, 40, "生產者生物量", "middle", 12, "#08545d", "800"));
+      svg.appendChild(svgEl("rect", { x: "590", y: "50", width: "60", height: "110", rx: "4", fill: "#fff", stroke: "#cfd8e3" }));
+      svg.appendChild(svgEl("rect", { x: "596", y: "110", width: "48", height: "44", rx: "3", fill: "#c05621" }));
+      svg.appendChild(axisText(620, 176, "下降", "middle", 12, "#9b1c1c", "800"));
+    }
+    if (path === "long") {
+      svg.appendChild(axisText(620, 44, "可繁殖植株減少", "middle", 12, "#9b1c1c", "800"));
+      svg.appendChild(axisText(620, 110, "棲息地／食糧減少", "middle", 12, "#9b1c1c", "800"));
+    }
+    if (path === "none") {
+      svg.appendChild(axisText(360, 28, "福壽螺迅速吃掉幼芽和嫩葉", "middle", 15, "#08545d", "800"));
+    }
+    host.appendChild(svg);
+  }
+
+  function drawQ9bFlow() {
+    var host = qs("q9bflow");
+    var cap = qs("q9bcap");
+    if (!host) return;
+    if (q9b.path === "none") {
+      setHtml(host, "");
+      if (cap) cap.textContent = "福壽螺正在啃食幼芽和嫩葉。請選擇一條路徑，逐步看出對群落的影響。";
+      return;
+    }
+    var steps, klass, title;
+    if (q9b.path === "long") {
+      title = "長遠路徑（完整一組，3 分）";
+      klass = "flow long";
+      steps = [
+        "植物未能生長至可以繁殖的階段",
+        "生境中的植物群落會減少",
+        "供應給其他動物的食糧減少，或可供其他動物棲息的地方減少"
+      ];
+      if (cap) cap.textContent = "長遠來看：幼芽嫩葉被吃掉後，植物往往不能長到繁殖階段，植物群落縮小，其他動物的食糧或棲息地跟着減少。";
+    } else {
+      title = "短期路徑（完整一組，3 分）";
+      klass = "flow short";
+      steps = [
+        "植物生長變得緩慢",
+        "生產者的生物量有所下降",
+        "供應給其他草食動物／動物的食糧減少"
+      ];
+      if (cap) cap.textContent = "短期來看：不斷被啃食令植物生長緩慢，生產者生物量下降，其他草食動物可得到的食糧減少。";
+    }
+    var html = "<h3>" + title + "</h3><div class='" + klass + "'>";
+    for (var i = 0; i < steps.length; i++) {
+      if (i) html += "<div class='farrow'>↓</div>";
+      html += "<div class='fstep'><span class='n'>" + (i + 1) + "</span>" + steps[i] + "</div>";
+    }
+    html += "</div>";
+    setHtml(host, html);
+  }
+
+  function drawQ9b() {
+    drawSnailChart(qs("q9bchartSep"), Q9_SEP_A, Q9_SEP_K, "分開飼養時福壽螺與螺 K 的生長");
+    drawSnailChart(qs("q9bchartTog"), Q9_TOG_A, Q9_TOG_K, "一起飼養時福壽螺與螺 K 的生長");
+    drawQ9bScene();
+    drawQ9bFlow();
+  }
+
+  function wireQ9b() {
+    var ids = ["q9bpathNone", "q9bpathLong", "q9bpathShort"];
+    var btns = [];
+    var i;
+    for (i = 0; i < ids.length; i++) btns.push(qs(ids[i]));
+    for (i = 0; i < btns.length; i++) {
+      (function (btn) {
+        on(btn, "click", function () {
+          q9b.path = btn.getAttribute("data-path");
+          setActive(btns, btn);
+          drawQ9bScene();
+          drawQ9bFlow();
+        });
+      })(btns[i]);
+    }
+    var pred = qs("q9bpred");
+    if (pred) {
+      var pbtns = pred.querySelectorAll("button");
+      for (i = 0; i < pbtns.length; i++) {
+        (function (btn) {
+          on(btn, "click", function () {
+            if (pred.getAttribute("data-locked") === "1") return;
+            pred.setAttribute("data-locked", "1");
+            var c = btn.getAttribute("data-choice");
+            for (var j = 0; j < pbtns.length; j++) {
+              if (pbtns[j].getAttribute("data-choice") === "ok") pbtns[j].classList.add("is-ok");
+              else if (pbtns[j] === btn) pbtns[j].classList.add("is-bad");
+            }
+            if (c === "ok") showFb("q9bpredfb", "ok", "正確。選定長遠或短期其中一組，由對植物的影響寫到對群落中其他生物的影響。不要把兩組句子混在一起。");
+            else if (c === "mix") showFb("q9bpredfb", "bad", "跨組混搭正是本題最大陷阱。長遠組與短期組是「或」的替代答案，須整組對應。請分別開啟兩條路徑比較。");
+            else showFb("q9bpredfb", "bad", "與螺 K 的競爭是 9(a) 的焦點。本題要解釋的是「攝食幼芽嫩葉」對群落的不良效應。");
+          });
+        })(pbtns[i]);
+      }
+    }
+    toggleReveal("q9brevealBtn", "q9breveal");
+    wireMc("q9bmc", "q9bmcfb",
+      "正確，這是跨組混搭：前半來自長遠組（未能繁殖），中間卻接上短期組（生產者生物量）。這樣不能按任一完整組給滿 3 分。上面兩項才是合法的完整路徑。",
+      "再看清楚：合法答案必須整組來自長遠路徑，或整組來自短期路徑，不能各取一句拼接。");
+  }
+
+  /* ===================== Q10(b) ===================== */
+  var q10b = { time: 0, pull: 15, order: [] };
+  // [hour, transpiration, diameter] qualitative, inverse
+  var Q10B_TR = [[0, 28], [3, 22], [6, 18], [9, 35], [12, 70], [15, 95], [18, 40], [21, 25], [24, 28]];
+  var Q10B_DI = [[0, 72], [3, 78], [6, 85], [9, 70], [12, 48], [15, 28], [18, 62], [21, 76], [24, 72]];
+
+  function hhmm(t) {
+    var h = Math.floor(t);
+    var m = Math.round((t - h) * 60);
+    if (m === 60) { h += 1; m = 0; }
+    if (h < 10) h = "0" + h;
+    if (m < 10) m = "0" + m;
+    return h + ":" + m;
+  }
+
+  function drawQ10bChart() {
+    var host = qs("q10bchart");
+    if (!host) return;
+    clearEl(host);
+    var L = layoutOf({ w: 720, h: 360, l: 58, r: 58, t: 28, b: 50, xmin: 0, xmax: 24, ymin: 0, ymax: 110 });
+    var svg = emptySvg(0, 0, L.w0, L.h0);
+    svg.setAttribute("aria-label", "24 小時蒸騰速率與莖部直徑雙軸圖");
+    // custom axes: left transpiration, right diameter, same numeric scale 0-110 for drawing
+    svg.appendChild(svgEl("rect", {
+      x: String(L.l), y: String(L.t), width: String(L.pw), height: String(L.ph),
+      fill: "#fbfdfe", stroke: "#cfd8e3"
+    }));
+    var x, gx, hours = [0, 6, 12, 18, 24];
+    for (x = 0; x <= 24; x += 3) {
+      gx = L.xTo(x);
+      svg.appendChild(svgEl("line", {
+        x1: String(gx), x2: String(gx), y1: String(L.t), y2: String(L.t + L.ph),
+        stroke: "#e8eef3"
+      }));
+    }
+    for (x = 0; x < hours.length; x++) {
+      gx = L.xTo(hours[x]);
+      var lab = hours[x] === 0 ? "00:00" : (hours[x] === 24 ? "24:00" : (hours[x] < 10 ? "0" : "") + hours[x] + ":00");
+      if (hours[x] === 12) lab = "12:00";
+      svg.appendChild(axisText(gx, L.t + L.ph + 18, lab, "middle", 11));
+    }
+    var y;
+    for (y = 0; y <= 100; y += 25) {
+      var gy = L.yTo(y);
+      svg.appendChild(svgEl("line", {
+        x1: String(L.l), x2: String(L.l + L.pw), y1: String(gy), y2: String(gy),
+        stroke: "#e8eef3"
+      }));
+      svg.appendChild(axisText(L.l - 8, gy + 4, String(y), "end", 11, "#c05621"));
+      svg.appendChild(axisText(L.l + L.pw + 8, gy + 4, String(y), "start", 11, "#0b6e7a"));
+    }
+    svg.appendChild(axisText(L.l + L.pw / 2, L.h0 - 8, "一日的時間", "middle", 12, "#152033"));
+    var yl = axisText(16, L.t + L.ph / 2, "蒸騰速率（任意單位）", "middle", 12, "#c05621");
+    yl.setAttribute("transform", "rotate(-90 16 " + (L.t + L.ph / 2) + ")");
+    svg.appendChild(yl);
+    var yr = axisText(L.w0 - 14, L.t + L.ph / 2, "莖部直徑（任意單位）", "middle", 12, "#0b6e7a");
+    yr.setAttribute("transform", "rotate(90 " + (L.w0 - 14) + " " + (L.t + L.ph / 2) + ")");
+    svg.appendChild(yr);
+
+    function series(data, color, dashed) {
+      var pts = [];
+      for (var i = 0; i < data.length; i++) pts.push({ x: L.xTo(data[i][0]), y: L.yTo(data[i][1]) });
+      var p = svgEl("path", {
+        d: smoothPath(pts), fill: "none", stroke: color, "stroke-width": "2.8",
+        "stroke-linecap": "round", "stroke-linejoin": "round"
+      });
+      if (dashed) p.setAttribute("stroke-dasharray", "7 5");
+      svg.appendChild(p);
+    }
+    series(Q10B_TR, "#c05621", false);
+    series(Q10B_DI, "#0b6e7a", true);
+    svg.appendChild(axisText(L.xTo(15.2), L.yTo(100), "蒸騰", "start", 13, "#c05621", "800"));
+    svg.appendChild(axisText(L.xTo(5.2), L.yTo(92), "直徑", "start", 13, "#0b6e7a", "800"));
+
+    var t = q10b.time;
+    var tr = interpXY(Q10B_TR, t);
+    var di = interpXY(Q10B_DI, t);
+    var cx = L.xTo(t);
+    svg.appendChild(svgEl("line", {
+      x1: String(cx), x2: String(cx), y1: String(L.t), y2: String(L.t + L.ph),
+      stroke: "#152033", "stroke-width": "1.4", "stroke-dasharray": "3 3"
+    }));
+    svg.appendChild(svgEl("circle", { cx: String(cx), cy: String(L.yTo(tr)), r: "5.5", fill: "#c05621" }));
+    svg.appendChild(svgEl("circle", { cx: String(cx), cy: String(L.yTo(di)), r: "5.5", fill: "#fff", stroke: "#0b6e7a", "stroke-width": "2.2" }));
+    host.appendChild(svg);
+
+    setHtml(qs("q10btimeval"), hhmm(t));
+    var cap = qs("q10bchartcap");
+    if (cap) {
+      cap.textContent = hhmm(t) + "　蒸騰約 " + Math.round(tr) + "　莖直徑約 " + Math.round(di) + "。兩條曲線大致相反：午後蒸騰高峰時直徑最低，夜間則相反。";
+    }
+  }
+
+  function drawQ10bScene() {
+    var host = qs("q10bscene");
+    if (!host) return;
+    clearEl(host);
+    var svg = emptySvg(0, 0, 720, 320);
+    svg.setAttribute("aria-label", "蒸騰拉力把木質導管壁向內拉的示意圖");
+    svg.appendChild(svgEl("rect", { x: "0", y: "0", width: "720", height: "320", fill: "#f4fafb" }));
+    var p = q10b.pull / 100;
+    // stem cross section on left
+    var shrink = p * 18;
+    var cx = 170, cy = 170;
+    var rStem = 110 - shrink;
+    svg.appendChild(svgEl("circle", { cx: String(cx), cy: String(cy), r: String(rStem + 18), fill: "#cde3b8", stroke: "#5a8a40", "stroke-width": "2" }));
+    svg.appendChild(svgEl("circle", { cx: String(cx), cy: String(cy), r: String(rStem), fill: "#e8d7b0", stroke: "#8a6a38" }));
+    // ring of vessels
+    var i, ang, vx, vy, vr = 11 - p * 4;
+    for (i = 0; i < 10; i++) {
+      ang = -Math.PI / 2 + i * Math.PI * 2 / 10;
+      vx = cx + Math.cos(ang) * (rStem - 22);
+      vy = cy + Math.sin(ang) * (rStem - 22);
+      svg.appendChild(svgEl("circle", {
+        cx: String(vx), cy: String(vy), r: String(vr),
+        fill: "#d9eef7", stroke: "#8b5a2b", "stroke-width": "3"
+      }));
+    }
+    svg.appendChild(axisText(cx, 28, "莖橫切（直徑 " + (p > 0.6 ? "下降" : (p < 0.3 ? "較大" : "中等")) + "）", "middle", 14, "#08545d", "800"));
+
+    // zoomed vessel
+    var zx = 500, zy = 170;
+    var vHalf = 54 - p * 22;
+    var wallW = 18;
+    svg.appendChild(svgEl("rect", {
+      x: String(zx - vHalf - wallW), y: "50", width: String((vHalf + wallW) * 2), height: "220", rx: "18",
+      fill: "#8b5a2b", stroke: "#5a3a18"
+    }));
+    svg.appendChild(svgEl("rect", {
+      x: String(zx - vHalf), y: "62", width: String(vHalf * 2), height: "196", rx: "12",
+      fill: "#d9eef7", stroke: "#5a3a18"
+    }));
+    // water arrows up
+    var ah = 80 + p * 60;
+    svg.appendChild(svgEl("path", {
+      d: "M" + zx + " " + (230) + " L" + zx + " " + (230 - ah) + " L" + (zx - 10) + " " + (230 - ah + 16) + " M" + zx + " " + (230 - ah) + " L" + (zx + 10) + " " + (230 - ah + 16),
+      fill: "none", stroke: "#2a7ca8", "stroke-width": String(2 + p * 2.5), "stroke-linecap": "round", "stroke-linejoin": "round"
+    }));
+    if (p > 0.25) {
+      svg.appendChild(svgEl("path", {
+        d: "M" + (zx - vHalf - wallW - 36) + " 170 L" + (zx - vHalf - wallW - 4) + " 170",
+        stroke: "#9b1c1c", "stroke-width": "3", "stroke-linecap": "round"
+      }));
+      svg.appendChild(svgEl("path", {
+        d: "M" + (zx + vHalf + wallW + 36) + " 170 L" + (zx + vHalf + wallW + 4) + " 170",
+        stroke: "#9b1c1c", "stroke-width": "3", "stroke-linecap": "round"
+      }));
+      svg.appendChild(axisText(zx, 46, "負壓把管壁向內拉", "middle", 14, "#9b1c1c", "800"));
+    }
+    svg.appendChild(axisText(zx, 300, "木質導管放大", "middle", 13, "#08545d", "800"));
+    svg.appendChild(axisText(360, 310, "蒸騰拉力／負壓：" + (p < 0.3 ? "低" : (p < 0.7 ? "中等" : "高")), "middle", 13, "#4a5a70", "800"));
+    host.appendChild(svg);
+
+    var cap = qs("q10bcap");
+    var lab = qs("q10bpullval");
+    var words;
+    if (p < 0.3) words = "低（夜間）";
+    else if (p < 0.7) words = "中等";
+    else words = "高（午後）";
+    if (lab) lab.textContent = words;
+    if (cap) {
+      if (p < 0.3) cap.textContent = "蒸騰低時，拉力／負壓較小，管壁較圓，木質部與莖的直徑較大。";
+      else cap.textContent = "蒸騰上升，蒸騰拉力／負壓增加，把木質導管壁向內拉，木質部直徑減少，莖部直徑因而下降。";
+    }
+  }
+
+  function wireQ10b() {
+    function syncTime() {
+      q10b.time = parseFloat(qs("q10btime").value);
+      drawQ10bChart();
+    }
+    on(qs("q10btime"), "input", syncTime);
+    on(qs("q10btime"), "change", syncTime);
+    on(qs("q10bplay"), "click", function () {
+      if (timers.q10b) { clearInterval(timers.q10b); timers.q10b = null; }
+      if (reduceMotion()) {
+        qs("q10btime").value = "15";
+        syncTime();
+        return;
+      }
+      timers.q10b = setInterval(function () {
+        var t = parseFloat(qs("q10btime").value) + 0.5;
+        if (t > 24) t = 0;
+        qs("q10btime").value = String(t);
+        q10b.time = t;
+        drawQ10bChart();
+      }, 220);
+    });
+    on(qs("q10bstop"), "click", function () {
+      if (timers.q10b) { clearInterval(timers.q10b); timers.q10b = null; }
+    });
+    function syncPull() {
+      q10b.pull = parseFloat(qs("q10bpull").value);
+      drawQ10bScene();
+    }
+    on(qs("q10bpull"), "input", syncPull);
+    on(qs("q10bpull"), "change", syncPull);
+
+    var pred = qs("q10bpred");
+    if (pred) {
+      var pbtns = pred.querySelectorAll("button");
+      for (var i = 0; i < pbtns.length; i++) {
+        (function (btn) {
+          on(btn, "click", function () {
+            if (pred.getAttribute("data-locked") === "1") return;
+            pred.setAttribute("data-locked", "1");
+            var c = btn.getAttribute("data-choice");
+            for (var j = 0; j < pbtns.length; j++) {
+              if (pbtns[j].getAttribute("data-choice") === "ok") pbtns[j].classList.add("is-ok");
+              else if (pbtns[j] === btn) pbtns[j].classList.add("is-bad");
+            }
+            if (c === "ok") showFb("q10bpredfb", "ok", "正確。先從圖看出相反關係，再用蒸騰拉力／負壓把管壁向內拉來解釋。請拉動下方滑桿觀察。");
+            else if (c === "water") showFb("q10bpredfb", "bad", "「水少了所以變細」不夠準確。評分要求寫出蒸騰拉力／負壓，以及這股力把木質導管壁向內拉。");
+            else showFb("q10bpredfb", "bad", "方向相反。圖顯示蒸騰上升時直徑下降，不是變脹。");
+          });
+        })(pbtns[i]);
+      }
+    }
+    toggleReveal("q10brevealBtn", "q10breveal");
+
+    var box = qs("q10border");
+    function renderOrder() {
+      var out = qs("q10borderout");
+      if (!out) return;
+      if (!q10b.order.length) out.textContent = "已選次序：尚未開始";
+      else {
+        var labels = [];
+        for (var i = 0; i < q10b.order.length; i++) labels.push((i + 1) + ". " + q10b.order[i].text);
+        out.textContent = "已選次序：" + labels.join(" → ");
+      }
+    }
+    if (box) {
+      var obtns = box.querySelectorAll("button");
+      for (i = 0; i < obtns.length; i++) {
+        (function (btn) {
+          on(btn, "click", function () {
+            if (btn.classList.contains("is-on") || btn.classList.contains("is-ok") || btn.classList.contains("is-bad")) return;
+            if (q10b.order.length >= 4) return;
+            q10b.order.push({ el: btn, ord: parseInt(btn.getAttribute("data-ord"), 10), text: btn.textContent });
+            btn.classList.add("is-on");
+            btn.textContent = q10b.order.length + "　" + btn.getAttribute("data-orig") || btn.textContent;
+            renderOrder();
+            if (q10b.order.length === 4) {
+              var ok = true;
+              for (var k = 0; k < 4; k++) {
+                if (q10b.order[k].ord !== k + 1) ok = false;
+              }
+              for (k = 0; k < 4; k++) {
+                q10b.order[k].el.classList.remove("is-on");
+                if (ok) q10b.order[k].el.classList.add("is-ok");
+                else q10b.order[k].el.classList.add(q10b.order[k].ord === k + 1 ? "is-ok" : "is-bad");
+              }
+              if (ok) showFb("q10borderfb", "ok", "次序正確：蒸騰上升 → 蒸騰拉力／負壓增加 → 管壁被向內拉、木質部直徑減少 → 莖部直徑減少。");
+              else showFb("q10borderfb", "bad", "尚未完全正確。正確次序是：蒸騰上升 → 蒸騰拉力／負壓增加 → 管壁被向內拉、木質部直徑減少 → 莖部直徑減少。可按重置再試。");
+            }
+          });
+        })(obtns[i]);
+        obtns[i].setAttribute("data-orig", obtns[i].textContent);
+      }
+    }
+    on(qs("q10borderReset"), "click", function () {
+      q10b.order = [];
+      var box2 = qs("q10border");
+      var bt = box2.querySelectorAll("button");
+      for (var i2 = 0; i2 < bt.length; i2++) {
+        bt[i2].classList.remove("is-on");
+        bt[i2].classList.remove("is-ok");
+        bt[i2].classList.remove("is-bad");
+        bt[i2].textContent = bt[i2].getAttribute("data-orig");
+      }
+      var fb = qs("q10borderfb");
+      if (fb) { fb.className = "fb"; fb.innerHTML = ""; }
+      renderOrder();
+    });
+  }
+
+  /* ===================== Q7(b)(ii) ===================== */
+  var q7b = { stage: 0 };
+  var Q7_STAGES = [
+    { name: "山泥傾瀉前", n: 6, herb: 10, woody: 15, note: "傾瀉前土壤氮較高，木本物種多於草本，山坡有較多灌木和樹木。" },
+    { name: "山泥傾瀉後 2 年", n: 1, herb: 17, woody: 2, note: "首 2 年土壤氮很低。草本營養需求較低，物種數遠多於木本（17 對 2），草本較佔優。" },
+    { name: "山泥傾瀉後 20 年", n: 3, herb: 14, woody: 9, note: "其後土壤氮回升（1 → 3），木本物種數隨之而增加（2 → 9）；草本仍然存在，但已不再像第 2 年那樣獨佔優勢。" }
+  ];
+
+  function herbIcon(x, y, scale) {
+    var g = svgEl("g");
+    var s = scale || 1;
+    g.setAttribute("transform", "translate(" + x + " " + y + ") scale(" + s + ")");
+    g.appendChild(svgEl("line", { x1: "0", y1: "14", x2: "0", y2: "-2", stroke: "#2f6b32", "stroke-width": "2" }));
+    g.appendChild(svgEl("ellipse", { cx: "-7", cy: "4", rx: "7", ry: "3.2", fill: "#6fbf4a", stroke: "#2f6b32" }));
+    g.appendChild(svgEl("ellipse", { cx: "7", cy: "3", rx: "7", ry: "3.2", fill: "#5da24a", stroke: "#2f6b32" }));
+    g.appendChild(svgEl("ellipse", { cx: "0", cy: "-4", rx: "4.5", ry: "3", fill: "#7fc45e", stroke: "#2f6b32" }));
+    return g;
+  }
+  function treeIcon(x, y, scale) {
+    var g = svgEl("g");
+    var s = scale || 1;
+    g.setAttribute("transform", "translate(" + x + " " + y + ") scale(" + s + ")");
+    g.appendChild(svgEl("rect", { x: "-4", y: "4", width: "8", height: "18", fill: "#6b4a2a" }));
+    g.appendChild(svgEl("circle", { cx: "0", cy: "-6", r: "14", fill: "#2f7a3a", stroke: "#1d4d24" }));
+    g.appendChild(svgEl("circle", { cx: "-8", cy: "0", r: "9", fill: "#3a8f4a" }));
+    g.appendChild(svgEl("circle", { cx: "8", cy: "0", r: "9", fill: "#3a8f4a" }));
+    return g;
+  }
+
+  function drawQ7b() {
+    var host = qs("q7bscene");
+    if (!host) return;
+    clearEl(host);
+    var st = Q7_STAGES[q7b.stage];
+    var svg = emptySvg(0, 0, 760, 360);
+    svg.setAttribute("aria-label", st.name + "山坡植物組合示意圖");
+    // sky
+    var sky = q7b.stage === 1 ? "#dbe7ee" : "#d7eef8";
+    svg.appendChild(svgEl("rect", { x: "0", y: "0", width: "760", height: "360", fill: sky }));
+    // slope
+    var slopeCol = q7b.stage === 1 ? "#c4a07a" : "#8fbf6a";
+    svg.appendChild(svgEl("path", {
+      d: "M0 230 L0 360 L760 360 L760 120 Z",
+      fill: slopeCol, stroke: "#5a7a40", "stroke-width": "1"
+    }));
+    if (q7b.stage === 1) {
+      // landslide scar
+      svg.appendChild(svgEl("path", {
+        d: "M120 250 L260 160 L520 200 L760 120 L760 200 L500 250 L240 300 Z",
+        fill: "#a87848", stroke: "#6a4a28"
+      }));
+      svg.appendChild(axisText(400, 36, "山泥傾瀉後的初期：表土流失，土壤氮很低", "middle", 14, "#9b1c1c", "800"));
+    }
+
+    // soil N bar on the left
+    svg.appendChild(axisText(70, 36, "土壤氮", "middle", 13, "#08545d", "800"));
+    svg.appendChild(svgEl("rect", { x: "40", y: "48", width: "60", height: "150", rx: "6", fill: "#fff", stroke: "#cfd8e3" }));
+    var nH = st.n / 6 * 130;
+    var nCol = st.n <= 1.5 ? "#c05621" : (st.n < 5 ? "#d0a020" : "#2f7a3a");
+    svg.appendChild(svgEl("rect", {
+      x: "48", y: String(48 + 142 - nH), width: "44", height: String(nH), rx: "4", fill: nCol
+    }));
+    svg.appendChild(axisText(70, 216, st.n + " mg g⁻¹", "middle", 12, "#152033", "800"));
+
+    // plants on the slope
+    var herbPos = [
+      [160, 300], [200, 280], [250, 310], [300, 270], [340, 300],
+      [390, 260], [440, 290], [490, 250], [540, 280], [590, 240],
+      [180, 250], [230, 240], [280, 230], [360, 240], [420, 230],
+      [470, 220], [530, 230]
+    ];
+    var treePos = [
+      [150, 220], [210, 200], [270, 180], [330, 200], [390, 160],
+      [450, 180], [510, 150], [570, 170], [630, 140], [690, 160],
+      [180, 160], [300, 140], [360, 130], [480, 120], [600, 110]
+    ];
+    var i;
+    for (i = 0; i < st.herb && i < herbPos.length; i++) {
+      svg.appendChild(herbIcon(herbPos[i][0], herbPos[i][1], 1));
+    }
+    for (i = 0; i < st.woody && i < treePos.length; i++) {
+      svg.appendChild(treeIcon(treePos[i][0], treePos[i][1], 0.9));
+    }
+
+    // counts
+    svg.appendChild(svgEl("rect", { x: "560", y: "24", width: "184", height: "78", rx: "10", fill: "#fff", stroke: "#cfd8e3" }));
+    svg.appendChild(axisText(652, 46, st.name, "middle", 13, "#08545d", "800"));
+    svg.appendChild(axisText(652, 68, "草本物種 " + st.herb, "middle", 13, "#2f7a3a", "800"));
+    svg.appendChild(axisText(652, 90, "木本物種 " + st.woody, "middle", 13, "#6b4a2a", "800"));
+    host.appendChild(svg);
+
+    var cap = qs("q7bcap");
+    if (cap) cap.textContent = st.note;
+    var lab = qs("q7btimeval");
+    if (lab) lab.textContent = st.name;
+
+    // highlight table row
+    for (i = 0; i < 3; i++) {
+      var row = qs("q7brow" + i);
+      if (!row) continue;
+      if (i === q7b.stage) row.style.background = "#fff8e8";
+      else row.style.background = "";
+    }
+    // stage buttons
+    for (i = 0; i < 3; i++) {
+      var b = qs("q7bstage" + i);
+      if (!b) continue;
+      if (i === q7b.stage) b.classList.add("is-on");
+      else b.classList.remove("is-on");
+    }
+    var sl = qs("q7btime");
+    if (sl && String(sl.value) !== String(q7b.stage)) sl.value = String(q7b.stage);
+  }
+
+  function setQ7Stage(n) {
+    q7b.stage = n;
+    drawQ7b();
+  }
+
+  function wireQ7b() {
+    var i;
+    for (i = 0; i < 3; i++) {
+      (function (idx) {
+        on(qs("q7bstage" + idx), "click", function () { setQ7Stage(idx); });
+      })(i);
+    }
+    on(qs("q7btime"), "input", function () { setQ7Stage(parseInt(qs("q7btime").value, 10)); });
+    on(qs("q7btime"), "change", function () { setQ7Stage(parseInt(qs("q7btime").value, 10)); });
+
+    var pred = qs("q7bpred");
+    if (pred) {
+      var pbtns = pred.querySelectorAll("button");
+      for (i = 0; i < pbtns.length; i++) {
+        (function (btn) {
+          on(btn, "click", function () {
+            if (pred.getAttribute("data-locked") === "1") return;
+            pred.setAttribute("data-locked", "1");
+            var c = btn.getAttribute("data-choice");
+            for (var j = 0; j < pbtns.length; j++) {
+              if (pbtns[j].getAttribute("data-choice") === "ok") pbtns[j].classList.add("is-ok");
+              else if (pbtns[j] === btn) pbtns[j].classList.add("is-bad");
+            }
+            if (c === "ok") showFb("q7bpredfb", "ok", "正確。要用土壤氮低，加上草本營養需求較低，來解釋草本佔優。然後還要寫出：氮回升後木本物種數增加。請切換三個時期觀察。");
+            else if (c === "fast") showFb("q7bpredfb", "bad", "「草本較快」沒有用到表中的氮數據。本題要求參考土壤含氮量的變化來解釋。");
+            else showFb("q7bpredfb", "bad", "木本並沒有永遠消失：20 年後已由 2 種增至 9 種，與土壤氮回升一併發生。");
+          });
+        })(pbtns[i]);
+      }
+    }
+    toggleReveal("q7brevealBtn", "q7breveal");
+    wireMc("q7bmc", "q7bmcfb",
+      "正確。第 3 分必須把木本物種數增加，連到土壤含氮量上升。這不是初生演替，也不應完全不提氮。",
+      "再看表：木本由 2 增至 9，同一時段氮由 1 升至 3。答案要寫出這項對應，而不是只談陽光或「時間久了」。");
+  }
+
+  /* ===================== boot ===================== */
+  function boot() {
+    wireQ6b();
+    wireQ6e();
+    wireQ10c();
+    wireQ9b();
+    wireQ10b();
+    wireQ7b();
+    show(currentMod());
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+})();
+</script>
+</body>
+</html>
