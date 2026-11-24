@@ -1,0 +1,2429 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="description" content="校本 PM18 卷一乙部第一份補救模擬：2021 DSE 生物卷一乙部第 1–3 題得分最低的六個評分點。神經單向傳遞、遞質與受體、突觸、末端 X 釋出、微血管兩項特徵、膽石阻塞與脂肪消化。福建中學（小西灣）課堂用原創教學模擬。">
+<title>PM18 卷一乙部（第一份）· 校本最低得分率六個評分點講解模擬器</title>
+<style>
+:root {
+  --paper: #eef3f7;
+  --ink: #152033;
+  --muted: #4a5a70;
+  --teal: #0b6e7a;
+  --teal-d: #08545d;
+  --teal-l: #e6f4f5;
+  --card: #ffffff;
+  --line: #cfd8e3;
+  --ok: #145a32;
+  --ok-bg: #e8f6ed;
+  --bad: #9b1c1c;
+  --bad-bg: #fdecea;
+  --warn: #9a4a00;
+  --warn-bg: #fff6e8;
+  --gold: #b8860b;
+  --violet: #5b3d8f;
+  --focus: #0b6e7a;
+  --low: #b71c1c;
+  --low-bg: #fff5f5;
+  --orange: #c05621;
+  --bile: #2d6a4f;
+  --pancreas: #c08552;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 400px at 10% -10%, #d7eef0 0%, transparent 50%),
+    radial-gradient(800px 300px at 100% 0%, #e4eaf6 0%, transparent 46%),
+    var(--paper);
+  color: var(--ink);
+  font-family: "PingFang HK", "Microsoft JhengHei", "Noto Sans TC",
+    "Noto Sans CJK HK", "Heiti TC", "Segoe UI", sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+  min-height: 100vh;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 16px 16px 80px; }
+.topbar { display: block; }
+.kicker {
+  letter-spacing: 0.05em; color: var(--muted); margin: 0 0 4px;
+  font-size: 13px; font-weight: 700;
+}
+h1 {
+  font-size: 24px;
+  font-size: clamp(22px, 3.2vw, 30px);
+  line-height: 1.3; margin: 4px 0 8px; color: var(--teal-d);
+}
+h2 { font-size: 1.15rem; margin: 0 0 10px; color: var(--teal-d); }
+h3 { font-size: 1rem; margin: 0 0 8px; }
+p { margin: 6px 0; }
+.banner {
+  background: #fff8e8; border: 1px solid #e6cf8e; border-radius: 14px;
+  padding: 10px 14px; margin: 10px 0 14px; font-size: 14px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 14px 16px; margin: 12px 0;
+  box-shadow: 0 1px 0 rgba(21,32,51,0.03);
+}
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.lead { font-size: 16px; }
+
+button.act, button.ghost, button.chip, button.step-pill, button.pick, button.mini, a.act {
+  font-family: inherit; font-weight: 700; font-size: 15px;
+  min-height: 44px; border-radius: 999px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+button.act, a.act {
+  background: var(--teal); color: #fff; border: 0; padding: 10px 18px;
+  text-decoration: none; display: inline-block; line-height: 1.3;
+  text-align: center;
+}
+button.ghost {
+  background: transparent; color: var(--teal-d);
+  border: 1.5px solid var(--teal); padding: 10px 16px;
+}
+button.act:hover, a.act:hover { background: var(--teal-d); }
+button.ghost:hover { background: var(--teal-l); }
+button:disabled { opacity: 0.42; cursor: not-allowed; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid var(--focus); outline-offset: 2px;
+}
+button.mini { min-height: 36px; padding: 6px 12px; font-size: 13px; }
+
+.mod-nav-wrap {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(238,243,247,0.96);
+  padding: 8px 0 6px;
+  margin: 0 -16px;
+  padding-left: 16px; padding-right: 16px;
+}
+.mod-nav { display: flex; flex-wrap: wrap; }
+.mod-nav a {
+  display: inline-block;
+  background: #e7eef4; border: 1px solid var(--line); border-radius: 12px;
+  padding: 8px 11px; font-size: 13px; font-weight: 800; color: var(--ink);
+  text-decoration: none; min-height: 40px; line-height: 1.3;
+  margin-right: 6px; margin-bottom: 6px;
+}
+.mod-nav a.is-active { background: var(--teal-l); border-color: var(--teal); color: var(--teal-d); }
+.mod-nav a.low { border-color: #f3b4b4; }
+.mod-nav a.mid { border-color: #efd2a8; }
+
+.hub { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 12px 0 6px; }
+@media (min-width: 640px) {
+  .hub { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 960px) {
+  .hub { grid-template-columns: 1fr 1fr 1fr; }
+}
+.hub a {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 14px; min-height: 100%;
+}
+.hub a:hover { border-color: var(--teal); box-shadow: 0 6px 18px rgba(21,32,51,0.08); }
+.hub a.lowest {
+  border: 2px solid var(--low);
+  background: linear-gradient(180deg, #fff6f6 0%, #fff 42%);
+}
+.hub .tag-q { font-size: 12px; font-weight: 800; color: var(--muted); }
+.hub h3 { font-size: 16px; margin: 6px 0 8px; line-height: 1.4; color: var(--ink); }
+.hub .rates { display: flex; flex-wrap: wrap; }
+.hub .rates span { margin-right: 6px; margin-bottom: 6px; }
+.hub .rate {
+  background: #f2f5f8; border-radius: 999px; padding: 3px 8px;
+  font-size: 12px; font-weight: 700; color: var(--muted);
+}
+.hub .rate.score { background: var(--teal-l); color: var(--teal-d); font-size: 14px; }
+.hub .rate.bad { background: var(--low-bg); color: var(--low); font-size: 14px; }
+.hub .rate.prio-now { background: var(--low-bg); color: var(--low); }
+.hub .rate.prio-next { background: var(--warn-bg); color: var(--warn); }
+.hub .rate.prio-soon { background: var(--teal-l); color: var(--teal-d); }
+.hub .go { display: inline-block; margin-top: 8px; font-size: 13px; font-weight: 800; color: var(--teal-d); }
+
+.view.hidden, .hidden { display: none !important; }
+.mod { padding-top: 4px; }
+.mod-kicker { font-size: 13px; font-weight: 800; color: var(--muted); margin: 0 0 4px; }
+.mod-foot {
+  display: flex; flex-wrap: wrap; justify-content: space-between;
+  margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line);
+}
+.mod-foot a, .mod-foot .sp { margin-right: 8px; margin-bottom: 8px; }
+
+.row { display: flex; flex-wrap: wrap; align-items: center; }
+.row > * { margin-right: 8px; margin-bottom: 8px; }
+.picks { display: flex; flex-wrap: wrap; margin: 8px 0; }
+.pick, button.chip {
+  background: #fff; border: 1.5px solid var(--line); color: var(--ink);
+  border-radius: 12px; padding: 10px 12px; font-weight: 700; font-size: 14px;
+  text-align: left; min-height: 44px; font-family: inherit; cursor: pointer;
+  flex: 1 1 160px; margin-right: 8px; margin-bottom: 8px;
+}
+.pick.is-on, button.chip.is-on { border-color: var(--teal); background: var(--teal-l); color: var(--teal-d); }
+.pick.is-ok, button.chip.is-ok { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+.pick.is-bad, button.chip.is-bad { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+
+.col-ok, .col-bad, .col-note, .col-warn {
+  border-radius: 14px; padding: 12px 14px; margin: 8px 0;
+}
+.col-ok { background: var(--ok-bg); border: 1px solid #bde0c7; }
+.col-bad { background: var(--bad-bg); border: 1px solid #f5c2c2; }
+.col-note { background: var(--teal-l); border: 1px solid #b4d9de; }
+.col-warn { background: var(--warn-bg); border: 1px solid #efd2a8; }
+.col-ok h3 { color: var(--ok); }
+.col-bad h3 { color: var(--bad); }
+.col-ok ul, .col-bad ul, .col-note ul, .col-warn ul, .teach ul { margin: 6px 0 0; padding-left: 1.15em; }
+.col-ok li, .col-bad li, .col-note li, .col-warn li, .teach li { margin: 4px 0; }
+
+.caption {
+  background: #f6f9fb; border-left: 4px solid var(--teal); border-radius: 0 10px 10px 0;
+  padding: 8px 12px; margin: 8px 0; font-size: 14px; min-height: 3.2em;
+}
+.scene-wrap {
+  width: 100%; background: #f7fbfc; border: 1px solid var(--line); border-radius: 14px;
+  overflow: hidden; margin: 6px 0;
+}
+.scene-wrap svg, .chart-wrap svg { display: block; width: 100%; height: auto; }
+.chart-wrap {
+  width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 14px;
+  overflow: hidden; margin: 6px 0;
+}
+
+.two { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 860px) {
+  .two { grid-template-columns: 1.05fr 0.95fr; }
+}
+.two.eq { grid-template-columns: 1fr; }
+@media (min-width: 860px) {
+  .two.eq { grid-template-columns: 1fr 1fr; }
+}
+
+.slider-wrap { margin: 8px 0 4px; }
+.slider-wrap label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.slider-wrap .val { color: var(--teal-d); }
+input[type=range] {
+  width: 100%; height: 32px; margin: 0;
+  -webkit-appearance: none; appearance: none;
+  background: transparent;
+}
+input[type=range]:focus { outline: none; }
+input[type=range]::-webkit-slider-runnable-track {
+  height: 6px; background: #cfe0e4; border-radius: 99px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--teal); border: 0;
+  margin-top: -11px;
+}
+input[type=range]::-moz-range-track {
+  height: 6px; background: #cfe0e4; border-radius: 99px; border: 0;
+}
+input[type=range]::-moz-range-thumb {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--teal); border: 0;
+}
+
+.badge {
+  display: inline-block; border-radius: 999px; padding: 3px 8px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.04em; color: #fff;
+  background: var(--low);
+}
+.badge.mid { background: #c05621; }
+.badge.ok { background: var(--teal); }
+.ref-tag {
+  display: inline-block; background: #eef2f6; color: var(--muted);
+  border-radius: 8px; padding: 2px 8px; font-size: 12px; font-weight: 700;
+}
+
+.fb { display: none; border-radius: 12px; padding: 10px 12px; margin: 8px 0; font-size: 14px; }
+.fb.show { display: block; }
+.fb.ok { background: var(--ok-bg); border: 1px solid #bde0c7; color: var(--ok); }
+.fb.bad { background: var(--bad-bg); border: 1px solid #f5c2c2; color: var(--bad); }
+.fb.info { background: var(--teal-l); border: 1px solid #b4d9de; color: var(--teal-d); }
+
+.reveal-body { display: none; margin-top: 8px; }
+.reveal-body.open { display: block; }
+
+.stat-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.stat-table th, .stat-table td {
+  border: 1px solid var(--line); padding: 6px 8px; text-align: center;
+}
+.stat-table th { background: #f4f7fa; font-weight: 800; }
+.stat-table td.hi { background: var(--ok-bg); font-weight: 800; color: var(--ok); }
+.stat-table td.lo { background: var(--low-bg); font-weight: 800; color: var(--bad); }
+.stat-table td.left { text-align: left; }
+
+.legend { display: flex; flex-wrap: wrap; font-size: 13px; font-weight: 700; color: var(--muted); }
+.legend span { margin-right: 12px; margin-bottom: 4px; }
+.legend i {
+  display: inline-block; width: 12px; height: 12px; border-radius: 3px;
+  margin-right: 4px; vertical-align: -1px;
+}
+.legend i.line {
+  height: 3px; width: 18px; border-radius: 0; vertical-align: 3px;
+}
+.legend i.dot { border-radius: 50%; }
+.legend i.ring {
+  background: transparent; border: 2px solid #0b6e7a; border-radius: 50%;
+  width: 10px; height: 10px; vertical-align: -1px;
+}
+
+.foot-note { color: var(--muted); font-size: 13px; margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+.mc-opt {
+  display: block; width: 100%; text-align: left; border-radius: 12px !important;
+  margin-bottom: 8px; margin-right: 0; flex: 1 1 100%;
+}
+
+.tag-ans { font-weight: 800; color: var(--ok); }
+.steps {
+  margin: 8px 0; padding: 0; list-style: none;
+}
+.steps li {
+  border: 1px solid var(--line); background: #fff; border-radius: 10px;
+  padding: 8px 10px; margin: 0 0 6px; font-size: 14px;
+}
+.steps li em { font-style: normal; font-weight: 800; color: var(--teal-d); margin-right: 6px; }
+.steps li.hot {
+  border-color: #e3b4b4; background: #fff5f5;
+}
+.steps li.hot em { color: var(--bad); }
+.steps li.on {
+  border-color: var(--teal); background: var(--teal-l);
+}
+.steps li.on em { color: var(--teal-d); }
+
+.flow { margin: 8px 0; }
+.flow .fstep {
+  background: #fff; border: 1.5px solid var(--line); border-radius: 12px;
+  padding: 10px 12px; margin: 0 0 6px; font-weight: 700; font-size: 15px;
+  position: relative;
+}
+.flow .fstep .n {
+  display: inline-block; width: 24px; height: 24px; line-height: 24px;
+  text-align: center; border-radius: 50%; background: var(--teal); color: #fff;
+  font-size: 13px; margin-right: 8px;
+}
+.flow .farrow {
+  text-align: center; color: var(--teal-d); font-weight: 800; margin: 0 0 6px; font-size: 18px;
+}
+.flow .fstep.is-on { border-color: var(--teal); background: var(--teal-l); }
+.flow .fstep.is-ok { border-color: var(--ok); background: var(--ok-bg); }
+.flow .fstep.is-bad { border-color: var(--bad); background: var(--bad-bg); }
+
+.path-warn {
+  background: #fff5f5; border: 2px solid #e3b4b4; border-radius: 14px;
+  padding: 10px 14px; margin: 10px 0; font-weight: 700; color: var(--bad);
+}
+
+.check-list { margin: 8px 0; padding: 0; list-style: none; }
+.check-list li {
+  border: 1.5px solid var(--line); background: #fff; border-radius: 12px;
+  padding: 8px 10px; margin: 0 0 6px;
+}
+.check-list label { display: block; font-weight: 700; cursor: pointer; min-height: 32px; }
+.check-list input { margin-right: 8px; width: 18px; height: 18px; vertical-align: -3px; }
+
+.pair-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 8px 0; }
+@media (min-width: 720px) {
+  .pair-grid { grid-template-columns: 1fr 1fr; }
+}
+.pair-box {
+  border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 12px; background: #fff;
+}
+.pair-box h4 { margin: 0 0 8px; font-size: 14px; color: var(--teal-d); }
+.pair-row {
+  border: 1.5px solid var(--line); background: #fff; border-radius: 14px;
+  padding: 10px 12px; margin: 0 0 8px;
+}
+.pair-row.is-ok { border-color: var(--ok); background: var(--ok-bg); }
+.pair-row.is-bad { border-color: var(--bad); background: var(--bad-bg); }
+.pair-row label { display: block; font-weight: 700; font-size: 13px; margin: 0 0 4px; color: var(--muted); }
+.pair-row select {
+  width: 100%; min-height: 44px; font-family: inherit; font-size: 14px; font-weight: 700;
+  border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 10px; background: #fff; color: var(--ink);
+}
+
+.comp-row { display: flex; flex-wrap: wrap; margin: 6px 0; }
+button.comp {
+  flex: 1 1 160px;
+  background: #fff; border: 1.5px solid var(--line); color: var(--ink);
+  border-radius: 14px; padding: 10px 12px; font-weight: 700; font-size: 14px;
+  text-align: left; min-height: 52px; font-family: inherit; cursor: pointer;
+  margin-right: 8px; margin-bottom: 8px;
+}
+button.comp.is-on { border-color: var(--teal); background: var(--teal-l); color: var(--teal-d); }
+button.comp.is-ok { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+button.comp.is-bad { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+button.comp .sub { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 2px; }
+button.comp.is-on .sub, button.comp.is-ok .sub { color: inherit; }
+
+@media (max-width: 639px) {
+  body { font-size: 16px; }
+  .wrap { padding: 12px 12px 72px; }
+  .mod-nav-wrap { margin-left: -12px; margin-right: -12px; padding-left: 12px; padding-right: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<span id="hub" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<header class="topbar">
+  <p class="kicker">HKDSE 生物 · 校本 PM18 卷一乙部（第一份）· 福建中學（小西灣）· 鄺劭良老師課堂講解</p>
+  <h1>PM18 卷一乙部（第一份）· 校本最低得分率六個評分點講解模擬器</h1>
+  <p class="muted small">取材自 2021 年文憑試生物卷一乙部第 1 至 3 題。本頁為課堂講解用的原創互動模擬，題幹已改寫，圖表全部重繪，並非重刊考評局試卷或評卷參考。</p>
+</header>
+
+<div class="mod-nav-wrap">
+  <nav class="mod-nav" aria-label="模組導覽">
+    <a href="#hub" data-mod="hub">總覽</a>
+    <a href="#q2c" data-mod="q2c" class="low">2(c) · 45%</a>
+    <a href="#q2bii" data-mod="q2bii" class="low">2(b)(ii) · 52%</a>
+    <a href="#q2a" data-mod="q2a" class="mid">2(a) · 54%</a>
+    <a href="#q2bi" data-mod="q2bi" class="mid">2(b)(i) · 63%</a>
+    <a href="#q3b" data-mod="q3b">3(b) · 77%</a>
+    <a href="#q1b" data-mod="q1b">1(b) · 79%</a>
+  </nav>
+</div>
+
+<!-- ========== HUB ========== -->
+<div id="view-hub" class="view">
+  <div class="banner">
+    本模擬器按<strong>校本 PM18 卷一乙部第一份</strong>（2026/2027 中六，22 人應考，取材 2021 DSE 卷一乙部第 1–3 題）得分率由低至高排列六個評分點。請先預測，再動手操作模擬，最後才展開「正確道理與常見錯誤」。題幹已改寫，神經元、微血管網與消化管道均為原創教學示意圖。
+  </div>
+  <p class="lead muted">課堂建議：投影總覽後，按優次處理——今週先做 2(c)、2(b)(ii)；下週做 2(a)、2(b)(i)；兩週內完成 3(b)、1(b)。各模組網址可單獨分享給學生自學。</p>
+  <div class="hub">
+    <a href="#q2c" class="lowest">
+      <div class="tag-q">第 2(c) 題 · 1 分 · 神經脈衝傳遞</div>
+      <h3>遞質只由一側釋出，對傳遞有何重要性？關鍵是單向，不是更快。</h3>
+      <div class="rates">
+        <span class="rate bad">校本 45%（10/22）</span>
+        <span class="rate prio-now">優先：今週</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q2bii">
+      <div class="tag-q">第 2(b)(ii) 題 · 2 分 · 遞質如何越過交接處</div>
+      <h3>位置 1 的遞質怎樣令脈衝傳過去？擴散到 Y 的膜，再結合受體產生脈衝。</h3>
+      <div class="rates">
+        <span class="rate bad">校本 52%（23/44）</span>
+        <span class="rate prio-now">優先：今週</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q2a">
+      <div class="tag-q">第 2(a) 題 · 1 分 · 構造名稱（須正確用字）</div>
+      <h3>構造 Z 叫甚麼？它是整個交接處，不是中間那條縫。</h3>
+      <div class="rates">
+        <span class="rate bad">校本 54%（12/22）</span>
+        <span class="rate prio-next">優先：下週</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q2bi">
+      <div class="tag-q">第 2(b)(i) 題 · 1 分 · 遞質由哪一側釋出</div>
+      <h3>位置 1 的遞質從 X 還是 Y 釋出？不要按由左至右的閱讀習慣猜。</h3>
+      <div class="rates">
+        <span class="rate bad">校本 63%（14/22）</span>
+        <span class="rate prio-next">優先：下週</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q3b">
+      <div class="tag-q">第 3(b) 題 · 4 分 · 微血管網兩項特徵</div>
+      <h3>圖中看得見的兩項特徵，須分別配上對物質交換的重要性，不可搬用 3(a)。</h3>
+      <div class="rates">
+        <span class="rate score">校本 77%（68/88）</span>
+        <span class="rate prio-soon">優先：兩週內</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+    <a href="#q1b">
+      <div class="tag-q">第 1(b) 題 · 4 分 · 膽石阻塞與脂肪消化</div>
+      <h3>管 B 同時運送膽汁和胰液。任選兩種成分，寫出各如何令脂肪消化減慢。</h3>
+      <div class="rates">
+        <span class="rate score">校本 79%（70/88）</span>
+        <span class="rate prio-soon">優先：兩週內</span>
+      </div>
+      <span class="go">進入模擬 →</span>
+    </a>
+  </div>
+  <p class="small muted">得分率來自校本 22 人的評卷統計（部分小題以總得分點計算，例如 2 分題以 44 為分母、4 分題以 88 為分母）。本模擬用以講解概念與答題結構，過程已經簡化，只顯示方向與邏輯。</p>
+</div>
+
+<!-- ========== Q2(c) ========== -->
+<div id="view-q2c" class="view hidden mod">
+  <span id="q2c" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge">今週</span>　<span class="ref-tag">對應 2021 DSE 生物卷一乙部 第 2 題</span>　校本 45%（10/22）· 1 分</p>
+  <h2>2(c)　這個過程對神經脈衝傳遞有何重要性？</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>圖中有兩個相鄰的神經元。當神經脈衝到達構造 Z 時，位置 1 的神經遞質 W 數量會增加。第 (b) 題已指出：W 由其中一個末端釋出，擴散到另一末端的膜，並與受體結合，從而產生新的脈衝。</p>
+    <p>本題問：<strong>上述過程對神經脈衝的傳遞有甚麼重要性？</strong>（1 分）</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>這一分最需要寫出的意思是甚麼？</p>
+    <div class="picks" id="q2cpred">
+      <button type="button" class="pick mc-opt" data-choice="ok">確保神經脈衝只沿一個方向傳遞</button>
+      <button type="button" class="pick mc-opt" data-choice="fast">讓傳遞變得更快</button>
+      <button type="button" class="pick mc-opt" data-choice="eff">讓脈衝傳到效應器，並產生反應</button>
+      <button type="button" class="pick mc-opt" data-choice="same">讓傳遞只在同一個位置進行</button>
+    </div>
+    <div class="fb" id="q2cpredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：為何只能由 X 走向 Y</h3>
+    <p>教學示意圖在右側末端 X 畫出突觸小泡，在左側末端 Y 的膜上畫出受體。先看正確方向，再試「反向」為甚麼走不通。</p>
+    <div class="row">
+      <button type="button" class="chip is-on" id="q2cdirFwd" data-dir="fwd">正確方向：X → Y</button>
+      <button type="button" class="chip" id="q2cdirRev" data-dir="rev">反向嘗試：Y → X</button>
+    </div>
+    <div class="row">
+      <button type="button" class="ghost" id="q2cprev">上一步</button>
+      <button type="button" class="act" id="q2cnext">下一步</button>
+      <button type="button" class="ghost" id="q2cplay">自動播放</button>
+      <button type="button" class="ghost" id="q2creset">回到起點</button>
+    </div>
+    <div class="scene-wrap" id="q2cscene"></div>
+    <p class="caption" id="q2ccap">原創教學示意圖：末端 Y 在左、末端 X 在右。請按「下一步」，看 W 只能由 X 釋出並作用於 Y。</p>
+    <div class="legend">
+      <span><i class="ring"></i>突觸小泡（只在 X 內）</span>
+      <span><i class="dot" style="background:#c05621;"></i>神經遞質 W</span>
+      <span><i style="background:#5b3d8f;"></i>受體（只在 Y 的膜上）</span>
+    </div>
+    <ul class="steps" id="q2csteps"></ul>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q2crevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q2creveal">
+      <div class="col-ok">
+        <h3>正確道理（1 分）</h3>
+        <p>這個過程<strong>確保神經傳遞只沿一個方向進行</strong>（單向傳導）。</p>
+        <p>原因是：W 只由末端 X 釋出，而受體只在末端 Y 的膜上，所以脈衝只能由 X 走向 Y，不能反向。</p>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>寫「傳得更快」——本題問的不是速率。</li>
+          <li>寫「傳到效應器並產生反應」——那是整條路徑的後果，不是這個交接過程本身的重要性。</li>
+          <li>寫「在同一個位置進行」——沒有回答方向的問題。</li>
+          <li>只重述釋放、擴散、結合的機制，卻沒有點出<strong>單向</strong>這個給分重點。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>課堂記得</h3>
+        <p>機制可以幫助你解釋，但寫在答卷上，這一分要出現「只沿一個方向／單向傳導」。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固</h3>
+    <p>下列哪一句最能拿到這 1 分？</p>
+    <div class="picks" id="q2cmc">
+      <button type="button" class="pick mc-opt" data-ok="0">遞質擴散得很快，所以脈衝傳遞的速率增加。</button>
+      <button type="button" class="pick mc-opt" data-ok="1">由於遞質只由 X 釋出、受體只在 Y 上，傳遞只沿一個方向進行。</button>
+      <button type="button" class="pick mc-opt" data-ok="0">這個過程讓脈衝終於到達效應器，產生反應。</button>
+    </div>
+    <div class="fb" id="q2cmcfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#hub" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 總覽</a>
+    <a class="act" href="#q2bii">下一題 2(b)(ii) →</a>
+  </div>
+</div>
+
+<!-- ========== Q2(b)(ii) ========== -->
+<div id="view-q2bii" class="view hidden mod">
+  <span id="q2bii" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge">今週</span>　<span class="ref-tag">對應 2021 DSE 生物卷一乙部 第 2 題</span>　校本 52%（23/44）· 2 分</p>
+  <h2>2(b)(ii)　位置 1 的遞質怎樣令脈衝越過構造 Z？</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>描述位置 1 的神經遞質 W，<strong>怎樣令神經脈衝得以在構造 Z 傳遞過去</strong>。（2 分）</p>
+    <p class="small muted">本題要寫兩個步驟。只寫「由 X 釋出」是上一小題，並不能代替這 2 分。</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>要拿到 2 分，答卷上應該出現哪兩步？</p>
+    <div class="picks" id="q2biipred">
+      <button type="button" class="pick mc-opt" data-choice="ok">W 擴散至末端 Y 的膜，並刺激該膜／與受體結合，從而產生神經脈衝</button>
+      <button type="button" class="pick mc-opt" data-choice="release">只要寫 W 由末端 X 釋出到位置 1，就有 2 分</button>
+      <button type="button" class="pick mc-opt" data-choice="enter">W 直接進入 Y 的細胞質，推動細胞質產生脈衝</button>
+    </div>
+    <div class="fb" id="q2biipredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：兩步怎樣寫進答卷</h3>
+    <p>按步驟看 W 離開 X、越過間隙、碰到 Y 的膜上受體，然後 Y 產生新脈衝。左邊清單對應兩個給分點。</p>
+    <div class="row">
+      <button type="button" class="ghost" id="q2biiprev">上一步</button>
+      <button type="button" class="act" id="q2biinext">下一步</button>
+      <button type="button" class="ghost" id="q2biiplay">自動播放</button>
+      <button type="button" class="ghost" id="q2biireset">回到起點</button>
+    </div>
+    <div class="two">
+      <div>
+        <div class="scene-wrap" id="q2biiscene"></div>
+        <p class="caption" id="q2biicap">原創教學示意圖。第 0 步：W 已在位置 1 附近。按「下一步」看它如何越過構造 Z。</p>
+      </div>
+      <div>
+        <div class="flow" id="q2biiflow"></div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="ring"></i>突觸小泡（末端 X）</span>
+      <span><i class="dot" style="background:#c05621;"></i>神經遞質 W</span>
+      <span><i style="background:#5b3d8f;"></i>受體（末端 Y 的膜）</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q2biirevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q2biireveal">
+      <div class="col-ok">
+        <h3>正確道理（2 分，兩點各 1 分）</h3>
+        <ul>
+          <li><strong>第 1 分：</strong>位置 1 的神經遞質 W <strong>擴散至末端 Y 的膜</strong>。</li>
+          <li><strong>第 2 分：</strong>W <strong>刺激</strong>末端 Y 的細胞膜，或<strong>與 Y 膜上的受體結合</strong>，並<strong>產生神經脈衝</strong>。</li>
+        </ul>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>沒有寫 W 擴散到 Y 的膜。</li>
+          <li>沒有寫與受體結合／刺激 Y 的膜。</li>
+          <li>沒有寫 Y 因此產生神經脈衝。</li>
+          <li>沒有寫遞質要越過中間的間隙。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>課堂記得</h3>
+        <p>兩個給分點都要寫出來：先「擴散到 Y 的膜」，再「結合受體並產生脈衝」。漏一步就只得 1 分。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固：這份答卷得幾分？</h3>
+    <div class="picks" id="q2biimc">
+      <button type="button" class="pick mc-opt" data-ok="0">「W 由末端 X 釋出到位置 1。」——2 分</button>
+      <button type="button" class="pick mc-opt" data-ok="1">「W 擴散至末端 Y 的膜，與受體結合並產生神經脈衝。」——2 分</button>
+      <button type="button" class="pick mc-opt" data-ok="0">「W 擴散過間隙。」——已經足夠 2 分</button>
+    </div>
+    <div class="fb" id="q2biimcfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q2c" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 2(c)</a>
+    <a class="act" href="#q2a">下一題 2(a) →</a>
+  </div>
+</div>
+
+<!-- ========== Q2(a) ========== -->
+<div id="view-q2a" class="view hidden mod">
+  <span id="q2a" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge mid">下週</span>　<span class="ref-tag">對應 2021 DSE 生物卷一乙部 第 2 題</span>　校本 54%（12/22）· 1 分</p>
+  <h2>2(a)　寫出構造 Z 的名稱</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>圖中放大的方框標示為構造 Z。請寫出構造 Z 的名稱。（1 分，<strong>用字必須正確</strong>）</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>構造 Z 應該怎樣命名？</p>
+    <div class="picks" id="q2apred">
+      <button type="button" class="pick" data-choice="ok">突觸</button>
+      <button type="button" class="pick" data-choice="cleft">突觸間隙</button>
+      <button type="button" class="pick" data-choice="rev">觸突</button>
+      <button type="button" class="pick" data-choice="axon">軸突</button>
+    </div>
+    <div class="fb" id="q2apredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：整個交接處，還是中間那條縫？</h3>
+    <p>在同一幅圖上比較兩個名稱。切換高亮，看清楚 Z 包括兩個末端和中間的間隙。</p>
+    <div class="row">
+      <button type="button" class="chip is-on" id="q2ahiliteZ" data-hi="z">高亮整個構造 Z</button>
+      <button type="button" class="chip" id="q2ahiliteCleft" data-hi="cleft">只高亮中間的間隙</button>
+    </div>
+    <div class="scene-wrap" id="q2ascene"></div>
+    <p class="caption" id="q2acap">原創教學示意圖。黃色範圍是整個構造 Z：左側末端 Y、中間間隙和右側末端 X。</p>
+    <div class="two eq">
+      <div class="col-ok">
+        <h3>突觸＝整個交接處</h3>
+        <p>包括兩個神經元的末端，以及它們中間的間隙。這才是構造 Z 的名稱。</p>
+      </div>
+      <div class="col-warn">
+        <h3>突觸間隙＝只是中間的縫</h3>
+        <p>那是位置 1 所在的空隙，只是突觸的一部分，不能代替 Z 的名稱。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q2arevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q2areveal">
+      <div class="col-ok">
+        <h3>正確答案（1 分）</h3>
+        <p><strong>突觸</strong>（synapse）。用字必須正確。</p>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li><strong>突觸間隙</strong>——最常見。這個詞只指中間的空隙，不是整個構造 Z。</li>
+          <li><strong>觸突</strong>——兩個字的次序寫反了，不能給分。</li>
+          <li><strong>軸突</strong>——那是神經元的長突起，不是這個交接構造。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>課堂記得</h3>
+        <p>先在圖上看框住的範圍：兩個末端加一條縫，合起來才叫突觸。寫名稱時再檢查一次有沒有把「突」和「觸」寫反。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固</h3>
+    <p>哪一項正確描述構造 Z？</p>
+    <div class="picks" id="q2amc">
+      <button type="button" class="pick mc-opt" data-ok="0">Z 只是位置 1 的空隙，名稱是突觸間隙。</button>
+      <button type="button" class="pick mc-opt" data-ok="1">Z 是整個交接處，名稱是突觸，包括兩個末端和中間的間隙。</button>
+      <button type="button" class="pick mc-opt" data-ok="0">Z 的正確寫法是「觸突」。</button>
+    </div>
+    <div class="fb" id="q2amcfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q2bii" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 2(b)(ii)</a>
+    <a class="act" href="#q2bi">下一題 2(b)(i) →</a>
+  </div>
+</div>
+
+<!-- ========== Q2(b)(i) ========== -->
+<div id="view-q2bi" class="view hidden mod">
+  <span id="q2bi" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge mid">下週</span>　<span class="ref-tag">對應 2021 DSE 生物卷一乙部 第 2 題</span>　校本 63%（14/22）· 1 分</p>
+  <h2>2(b)(i)　位置 1 的遞質由哪一個末端釋出？</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>位置 1 的神經遞質 W，是從構造 Z 的其中一個末端釋出。這是哪一個末端，X 還是 Y？（1 分）</p>
+    <p class="small muted">圖的排列跟「由左至右傳遞」的閱讀習慣相反，先看圖再作答。</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>W 是從哪一側釋出的？</p>
+    <div class="picks" id="q2bipred">
+      <button type="button" class="pick" data-choice="ok">末端 X</button>
+      <button type="button" class="pick" data-choice="y">末端 Y</button>
+    </div>
+    <div class="fb" id="q2bipredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：小泡在哪一側？</h3>
+    <p>不要假設脈衝一定由左走向右。看上方兩個神經元：右邊神經元的軸突通向末端 X；小泡也只畫在 X 裏面。按步驟看 W 從 X 釋出，進入位置 1，再走向 Y。</p>
+    <div class="row">
+      <button type="button" class="ghost" id="q2biprev">上一步</button>
+      <button type="button" class="act" id="q2binext">下一步</button>
+      <button type="button" class="ghost" id="q2biplay">自動播放</button>
+      <button type="button" class="ghost" id="q2bireset">回到起點</button>
+    </div>
+    <div class="scene-wrap" id="q2biscene"></div>
+    <p class="caption" id="q2bicap">原創教學示意圖：末端 Y 在左、末端 X 在右。突觸小泡畫在右側末端 X 內，W 由 X 釋出後向左走向 Y。</p>
+    <div class="legend">
+      <span><i class="ring"></i>突觸小泡（只在末端 X）</span>
+      <span><i class="dot" style="background:#c05621;"></i>神經遞質 W</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q2birevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q2bireveal">
+      <div class="col-ok">
+        <h3>正確答案（1 分）</h3>
+        <p><strong>末端 X</strong>。W 由 X 釋出，再走向末端 Y。</p>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>寫<strong>末端 Y</strong>——把方向看反了。不少同學按由左至右的習慣，以為左邊先發出訊號。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>課堂記得</h3>
+        <p>先讀圖，不要預設方向。教學圖把突觸小泡畫在 X 內：位置 1 的 W 就是從這些小泡釋出來的。Y 是接收的一側。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固</h3>
+    <div class="picks" id="q2bimc">
+      <button type="button" class="pick mc-opt" data-ok="0">左邊是 Y，所以脈衝由 Y 走向 X，W 由 Y 釋出。</button>
+      <button type="button" class="pick mc-opt" data-ok="1">小泡在右側末端 X 內，W 由 X 釋出，再走向左側的 Y。</button>
+      <button type="button" class="pick mc-opt" data-ok="0">X 和 Y 都可以釋出 W，答案寫哪一個都行。</button>
+    </div>
+    <div class="fb" id="q2bimcfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q2a" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 2(a)</a>
+    <a class="act" href="#q3b">下一題 3(b) →</a>
+  </div>
+</div>
+<!-- ========== Q3(b) ========== -->
+<div id="view-q3b" class="view hidden mod">
+  <span id="q3b" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge ok">兩週內</span>　<span class="ref-tag">對應 2021 DSE 生物卷一乙部 第 3 題</span>　校本 77%（68/88）· 4 分</p>
+  <h2>3(b)　微血管網的兩項特徵，怎樣幫助物質交換？</h2>
+
+  <div class="card">
+    <h3>先分清：不要把 3(a) 的答案搬過來</h3>
+    <p>第 3(a) 題的圖表顯示：由大動脈到微血管，血管的<strong>橫切面總面積上升</strong>，<strong>血流速率下降</strong>。3(a) 的解釋是：微血管內血流很慢，因而有較充足的時間進行物質交換。</p>
+    <p class="small muted">下面兩幅是原創重繪的示意曲線，只用來提醒 3(a) 在說甚麼。本題 3(b) 問的是另一幅「微血管網」示意圖上<strong>看得見</strong>的特徵，不要把「橫切面總面積」或「血流慢、時間充足」再寫一次。</p>
+    <div class="two eq">
+      <div>
+        <p class="small" style="text-align:center;font-weight:800;margin-bottom:0;">橫切面總面積（示意）</p>
+        <div class="chart-wrap" id="q3bchartArea"></div>
+      </div>
+      <div>
+        <p class="small" style="text-align:center;font-weight:800;margin-bottom:0;">血流速率（示意）</p>
+        <div class="chart-wrap" id="q3bchartFlow"></div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="line" style="background:#0b6e7a;"></i>由大動脈、動脈、小動脈到微血管</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>下面的原創示意圖畫出一個微血管網，以及小動脈、小靜脈、淋巴管和體細胞。請指出圖中展示的<strong>兩項</strong>特徵，並解釋每一項對微血管網內物質交換的重要性。（4 分：每項特徵 1 分，對應的重要性 1 分）</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>哪一組才是「圖中看得見的特徵＋對交換的重要性」，而且兩行沒有混搭？</p>
+    <div class="picks" id="q3bpred">
+      <button type="button" class="pick mc-opt" data-choice="ok">分支密集以增加表面積；微血管到達大多數細胞以縮短擴散距離</button>
+      <button type="button" class="pick mc-opt" data-choice="thin">管壁很薄以加快擴散；血流緩慢因而有充足時間交換</button>
+      <button type="button" class="pick mc-opt" data-choice="csa">橫切面總面積很大，因而增加物質交換的速率</button>
+    </div>
+    <div class="fb" id="q3bpredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：圖中究竟高亮了甚麼？</h3>
+    <p>切換不同高亮。正確的兩項必須是示意圖上看得清楚的構造安排；「薄壁」「橫切面總面積」「血流時間」都不是本題要從這幅網圖讀出的給分點。</p>
+    <div class="row">
+      <button type="button" class="chip is-on" id="q3bhiNet" data-hi="net">特徵一：密集分支</button>
+      <button type="button" class="chip" id="q3bhiNear" data-hi="near">特徵二：靠近大多數細胞</button>
+      <button type="button" class="chip" id="q3bhiThin" data-hi="thin">對照：薄壁？</button>
+      <button type="button" class="chip" id="q3bhiFlow" data-hi="flow">對照：血流時間？</button>
+    </div>
+    <div class="scene-wrap" id="q3bscene"></div>
+    <p class="caption" id="q3bcap">原創教學示意圖。現正高亮微血管的大量分支和密集網絡——這會增加物質交換的表面積。</p>
+  </div>
+
+  <div class="card">
+    <h3>配對練習：兩行不要混搭</h3>
+    <p>為兩個給分點各選一項特徵和一項重要性。正確配對是固定的，不要把第一行的重要性接到第二行。</p>
+    <div class="pair-row" id="q3brow1">
+      <label for="q3bf1">第 1 行：特徵</label>
+      <select id="q3bf1">
+        <option value="">請選擇特徵</option>
+        <option value="net">微血管具大量分支／形成密集網絡</option>
+        <option value="near">微血管穿透組織／到達大多數體細胞</option>
+        <option value="thin">微血管管壁很薄</option>
+        <option value="csa">微血管的橫切面總面積很大</option>
+      </select>
+      <label for="q3bi1" style="margin-top:8px;">第 1 行：重要性</label>
+      <select id="q3bi1">
+        <option value="">請選擇重要性</option>
+        <option value="sa">增加物質交換的表面積</option>
+        <option value="dist">縮短擴散距離</option>
+        <option value="time">血流緩慢，有充足時間進行交換</option>
+        <option value="rate">增加物質交換的速率</option>
+      </select>
+    </div>
+    <div class="pair-row" id="q3brow2">
+      <label for="q3bf2">第 2 行：特徵</label>
+      <select id="q3bf2">
+        <option value="">請選擇特徵</option>
+        <option value="net">微血管具大量分支／形成密集網絡</option>
+        <option value="near">微血管穿透組織／到達大多數體細胞</option>
+        <option value="thin">微血管管壁很薄</option>
+        <option value="csa">微血管的橫切面總面積很大</option>
+      </select>
+      <label for="q3bi2" style="margin-top:8px;">第 2 行：重要性</label>
+      <select id="q3bi2">
+        <option value="">請選擇重要性</option>
+        <option value="sa">增加物質交換的表面積</option>
+        <option value="dist">縮短擴散距離</option>
+        <option value="time">血流緩慢，有充足時間進行交換</option>
+        <option value="rate">增加物質交換的速率</option>
+      </select>
+    </div>
+    <button type="button" class="act" id="q3bcheckBtn">檢查這兩行</button>
+    <div class="fb" id="q3bcheckfb"></div>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q3brevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q3breveal">
+      <div class="col-ok">
+        <h3>正確道理（4 分，兩行各 2 分）</h3>
+        <table class="stat-table">
+          <thead>
+            <tr><th>示意圖所展示的特徵</th><th>對物質交換的重要性</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="left">微血管具大量分支／形成密集的網絡</td>
+              <td class="left">增加物質交換的表面積</td>
+            </tr>
+            <tr>
+              <td class="left">微血管穿透到組織／到達組織中大部分的細胞</td>
+              <td class="left">縮短擴散的距離</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top:8px;">兩行要成對來寫，不要把「密集網絡」接到「縮短擴散距離」，或把「到達細胞」接到「增加表面積」。</p>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>寫「薄壁」——微血管壁的確薄，但不是這幅網圖要評的給分特徵，不能用它代替上面兩項。</li>
+          <li>寫「橫切面總面積很大」——那是 3(a) 圖表的觀察，不是 3(b) 這幅網圖的特徵。</li>
+          <li>重要性寫成「血流慢、有充足時間」——那是 3(a)(ii) 的答案，不要搬過來。</li>
+          <li>重要性只寫「增加速率」，沒有寫到表面積或擴散距離。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>課堂記得</h3>
+        <p>特徵必須是這幅微血管網示意圖上看得出來的安排。一項特徵配一項重要性，兩行不要混，也不要重用 3(a)。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q2bi" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 2(b)(i)</a>
+    <a class="act" href="#q1b">下一題 1(b) →</a>
+  </div>
+</div>
+
+<!-- ========== Q1(b) ========== -->
+<div id="view-q1b" class="view hidden mod">
+  <span id="q1b" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+  <p class="mod-kicker"><span class="badge ok">兩週內</span>　<span class="ref-tag">對應 2021 DSE 生物卷一乙部 第 1 題</span>　校本 79%（70/88）· 4 分</p>
+  <h2>1(b)　膽石堵住管 B，怎樣令脂肪消化減慢？</h2>
+
+  <div class="card">
+    <h3>題境（改寫）</h3>
+    <p>圖中顯示人類消化系統的部分構造出現膽石。膽囊內已有結石，另有一顆膽石正堵住管 B 進入十二指腸的開口。構造 A 是胰（胰臟／胰腺）。</p>
+    <p>請參考由管 B 釋出的分泌物內的<strong>兩種成分</strong>，解釋圖中情況如何令脂肪的消化速率下降。（4 分：任選兩組，每組「成分 1 分＋該成分如何影響脂肪消化 1 分」）</p>
+    <p class="small muted">管 B 是膽管與胰管匯合後進入十二指腸的共同管道，因此膽汁和胰液都會被這顆膽石擋住。</p>
+  </div>
+
+  <div class="card">
+    <h3>先預測</h3>
+    <p>怎樣才拿到這 4 分？</p>
+    <div class="picks" id="q1bpred">
+      <button type="button" class="pick mc-opt" data-choice="ok">寫出兩組「成分＋過程」，例如膽鹽與乳化、脂酶與化學消化</button>
+      <button type="button" class="pick mc-opt" data-choice="enzyme">只需寫「酶減少，消化變慢」</button>
+      <button type="button" class="pick mc-opt" data-choice="bileonly">管 B 只運送膽汁，所以只須寫膽鹽一組</button>
+    </div>
+    <div class="fb" id="q1bpredfb"></div>
+  </div>
+
+  <div class="card">
+    <h3>動手模擬：一顆石，擋住兩種汁液</h3>
+    <p>先看膽汁（綠色）和胰液（黃色）怎樣匯合到管 B，再看膽石如何把它們擋在十二指腸之外。然後選兩種成分，觀察脂肪消化少了哪一步。</p>
+    <div class="row">
+      <button type="button" class="chip" id="q1bmodeFlow" data-mode="flow">暢通時（對照）</button>
+      <button type="button" class="chip is-on" id="q1bmodeBlock" data-mode="block">膽石堵住管 B</button>
+    </div>
+    <p class="small muted">從下列三種可接受的成分中選兩種，看每種被擋住後會影響哪一個過程。乳化與化學消化不是同一回事。</p>
+    <div class="comp-row" id="q1bcomps">
+      <button type="button" class="comp" data-comp="bile">膽鹽<span class="sub">來自膽汁 · 過程：乳化脂肪</span></button>
+      <button type="button" class="comp" data-comp="lipase">脂酶<span class="sub">來自胰液 · 過程：化學消化脂肪</span></button>
+      <button type="button" class="comp" data-comp="bicarb">碳酸氫鈉<span class="sub">亦稱氫碳酸鈉 · 過程：維持適宜 pH</span></button>
+    </div>
+    <div class="scene-wrap" id="q1bscene"></div>
+    <p class="caption" id="q1bcap">原創教學示意圖。管 B 是膽汁與胰液進入十二指腸的共同開口。現正顯示暢通時兩種汁液都能進入腸腔。</p>
+    <div class="legend">
+      <span><i style="background:#2d6a4f;"></i>膽汁（含膽鹽）</span>
+      <span><i style="background:#d4a017;"></i>胰液（含脂酶、碳酸氫鈉）</span>
+      <span><i style="background:#5c4a3a;"></i>膽石</span>
+      <span><i class="dot" style="background:#f3e6b3;border:1px solid #c9a227;"></i>脂肪滴</span>
+    </div>
+    <div id="q1bpairs"></div>
+  </div>
+
+  <div class="card">
+    <h3>檢查你選的兩組</h3>
+    <p>已選的成分會顯示在下面。確認每一組都同時包含「哪一種成分到不了小腸」和「因此脂肪消化的哪一個過程減弱」。</p>
+    <button type="button" class="act" id="q1bcheckBtn">檢查兩組是否完整</button>
+    <div class="fb" id="q1bcheckfb"></div>
+  </div>
+
+  <div class="card">
+    <button type="button" class="act" id="q1brevealBtn">顯示正確道理與常見錯誤</button>
+    <div class="reveal-body" id="q1breveal">
+      <div class="col-ok">
+        <h3>正確道理（4 分，下列任何兩組）</h3>
+        <p>膽石阻塞管 B 會導致（任選兩組，每組 2 分）：</p>
+        <ul>
+          <li><strong>膽鹽</strong>減少分泌／未能到達腸道，因而減少脂肪的<strong>乳化</strong>。</li>
+          <li><strong>脂酶</strong>（胰液）減少分泌／未能到達腸道，因而減少脂肪的<strong>化學消化</strong>。</li>
+          <li><strong>碳酸氫鈉</strong>（亦稱氫碳酸鈉）減少分泌，以致腸內的 pH <strong>不是消化脂肪的最適 pH</strong>。</li>
+        </ul>
+      </div>
+      <div class="col-bad">
+        <h3>常見錯誤</h3>
+        <ul>
+          <li>只寫完整的一組，第二組空白或只重複同一意思，4 分題只得 2 分。</li>
+          <li>漏了膽鹽，或寫了膽鹽卻沒有寫「乳化」。</li>
+          <li>漏了脂酶，或寫了脂酶卻沒有寫「化學消化」。</li>
+          <li>只寫「酶減少，消化變慢」，既沒有指名是哪一種成分，也沒有寫出對應過程。</li>
+        </ul>
+      </div>
+      <div class="col-note">
+        <h3>課堂記得</h3>
+        <p>管 B 不是「只有膽汁」的管道，胰液同樣走這條共同開口，所以脂酶和碳酸氫鈉也會被擋住。乳化和化學消化是兩個不同過程，選兩組時不要只翻來覆去寫「消化變慢」。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>鞏固</h3>
+    <div class="picks" id="q1bmc">
+      <button type="button" class="pick mc-opt" data-ok="0">「酶減少，脂肪消化變慢。」這一句已足夠 4 分。</button>
+      <button type="button" class="pick mc-opt" data-ok="1">「膽鹽減少，乳化減弱；脂酶減少，化學消化減弱。」這是完整的兩組。</button>
+      <button type="button" class="pick mc-opt" data-ok="0">管 B 只運送膽汁，脂酶不會被這顆膽石影響。</button>
+    </div>
+    <div class="fb" id="q1bmcfb"></div>
+  </div>
+
+  <div class="mod-foot">
+    <a class="ghost" href="#q3b" style="display:inline-block;text-decoration:none;border-radius:999px;padding:10px 16px;border:1.5px solid var(--teal);color:var(--teal-d);font-weight:700;">← 3(b)</a>
+    <a class="act" href="#hub">返回總覽</a>
+  </div>
+</div>
+
+<footer class="foot-note">
+  福建中學（小西灣）· 鄺劭良老師課堂用。本頁為原創教學模擬、重繪圖表與改寫題幹，用以講解 <strong>2021 DSE 生物卷一乙部第 1 至 3 題</strong>相關概念，並非重刊香港考試及評核局試卷、評卷或原圖。校本得分率按 PM18 卷一乙部第一份（2026/2027 中六，22 人）評卷統計標示。模擬過程經簡化，用以顯示方向與邏輯，不是真實解剖比例。
+</footer>
+</div><!-- .wrap -->
+
+<script>
+(function () {
+  "use strict";
+
+  var FONT = "PingFang HK, Microsoft JhengHei, Noto Sans TC, sans-serif";
+  var NS = "http://www.w3.org/2000/svg";
+
+  function qs(id) { return document.getElementById(id); }
+  function on(el, ev, fn) {
+    if (!el) return;
+    el.addEventListener(ev, fn);
+  }
+  function svgEl(name, attrs, text) {
+    var e = document.createElementNS(NS, name);
+    attrs = attrs || {};
+    var keys = Object.keys(attrs);
+    var i;
+    for (i = 0; i < keys.length; i++) e.setAttribute(keys[i], attrs[keys[i]]);
+    if (text != null && text !== "") e.textContent = text;
+    return e;
+  }
+  function clearEl(el) {
+    if (!el) return;
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+  function setHtml(el, html) {
+    if (el) el.innerHTML = html;
+  }
+  function reduceMotion() {
+    try {
+      return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch (err) { return false; }
+  }
+  function showFb(id, kind, msg) {
+    var el = qs(id);
+    if (!el) return;
+    el.className = "fb show " + kind;
+    el.innerHTML = msg;
+  }
+  function wireMc(groupId, fbId, okMsg, badMsg) {
+    var box = qs(groupId);
+    if (!box) return;
+    var buttons = box.querySelectorAll("button");
+    var i;
+    for (i = 0; i < buttons.length; i++) {
+      (function (btn) {
+        on(btn, "click", function () {
+          if (box.getAttribute("data-locked") === "1") return;
+          box.setAttribute("data-locked", "1");
+          var ok = btn.getAttribute("data-ok") === "1";
+          var j, b;
+          for (j = 0; j < buttons.length; j++) {
+            b = buttons[j];
+            if (b.getAttribute("data-ok") === "1") b.classList.add("is-ok");
+            else if (b === btn) b.classList.add("is-bad");
+          }
+          showFb(fbId, ok ? "ok" : "bad", ok ? okMsg : badMsg);
+        });
+      })(buttons[i]);
+    }
+  }
+  function wirePred(groupId, fbId, okChoice, msgs) {
+    var box = qs(groupId);
+    if (!box) return;
+    var buttons = box.querySelectorAll("button");
+    var i;
+    for (i = 0; i < buttons.length; i++) {
+      (function (btn) {
+        on(btn, "click", function () {
+          if (box.getAttribute("data-locked") === "1") return;
+          box.setAttribute("data-locked", "1");
+          var c = btn.getAttribute("data-choice");
+          var j;
+          for (j = 0; j < buttons.length; j++) {
+            if (buttons[j].getAttribute("data-choice") === okChoice) buttons[j].classList.add("is-ok");
+            else if (buttons[j] === btn) buttons[j].classList.add("is-bad");
+          }
+          if (c === okChoice) showFb(fbId, "ok", msgs[c] || msgs.ok);
+          else showFb(fbId, "bad", msgs[c] || msgs.bad);
+        });
+      })(buttons[i]);
+    }
+  }
+  function toggleReveal(btnId, bodyId) {
+    var btn = qs(btnId), body = qs(bodyId);
+    on(btn, "click", function () {
+      var open = body.classList.contains("open");
+      if (open) {
+        body.classList.remove("open");
+        btn.textContent = "顯示正確道理與常見錯誤";
+      } else {
+        body.classList.add("open");
+        btn.textContent = "隱藏解釋";
+      }
+    });
+  }
+  function setActive(buttons, activeEl) {
+    var i;
+    for (i = 0; i < buttons.length; i++) {
+      if (buttons[i] === activeEl) buttons[i].classList.add("is-on");
+      else buttons[i].classList.remove("is-on");
+    }
+  }
+  function svgText(x, y, label, anchor, size, fill, weight) {
+    return svgEl("text", {
+      x: String(x), y: String(y),
+      "text-anchor": anchor || "middle",
+      "font-size": String(size || 13),
+      fill: fill || "#152033",
+      "font-weight": weight || "700",
+      "font-family": FONT
+    }, label);
+  }
+  function emptySvg(viewW, viewH, label) {
+    return svgEl("svg", {
+      viewBox: "0 0 " + viewW + " " + viewH,
+      width: "100%",
+      role: "img",
+      "aria-label": label || "教學示意圖"
+    });
+  }
+  function addGrad(svg, id, c1, c2, x2, y2) {
+    var defs = svg.querySelector("defs");
+    if (!defs) {
+      defs = svgEl("defs", {});
+      svg.appendChild(defs);
+    }
+    var g = svgEl("linearGradient", {
+      id: id, x1: "0", y1: "0", x2: x2 || "0", y2: y2 || "1"
+    });
+    g.appendChild(svgEl("stop", { offset: "0%", "stop-color": c1 }));
+    g.appendChild(svgEl("stop", { offset: "100%", "stop-color": c2 }));
+    defs.appendChild(g);
+    return id;
+  }
+
+  var MODS = ["hub", "q2c", "q2bii", "q2a", "q2bi", "q3b", "q1b"];
+  var timers = { q2c: null, q2bii: null, q2bi: null, q3b: null, q1b: null };
+
+  function clearTimer(key) {
+    if (timers[key]) {
+      clearInterval(timers[key]);
+      clearTimeout(timers[key]);
+      timers[key] = null;
+    }
+  }
+  function stopAnims() {
+    var keys = ["q2c", "q2bii", "q2bi", "q3b", "q1b"];
+    var i;
+    for (i = 0; i < keys.length; i++) clearTimer(keys[i]);
+  }
+  function currentMod() {
+    var h = (location.hash || "#hub").replace(/^#/, "");
+    if (!h) h = "hub";
+    if (MODS.indexOf(h) === -1) h = "hub";
+    return h;
+  }
+  function show(mod) {
+    if (MODS.indexOf(mod) === -1) mod = "hub";
+    var i, el;
+    for (i = 0; i < MODS.length; i++) {
+      el = qs("view-" + MODS[i]);
+      if (!el) continue;
+      if (MODS[i] === mod) el.classList.remove("hidden");
+      else el.classList.add("hidden");
+    }
+    var links = document.querySelectorAll(".mod-nav a");
+    var j, m;
+    for (j = 0; j < links.length; j++) {
+      m = links[j].getAttribute("data-mod");
+      if (m === mod) links[j].classList.add("is-active");
+      else links[j].classList.remove("is-active");
+    }
+    try { window.scrollTo(0, 0); } catch (err) {}
+    stopAnims();
+    if (mod === "q2c") drawQ2c();
+    if (mod === "q2bii") drawQ2bii();
+    if (mod === "q2a") drawQ2a();
+    if (mod === "q2bi") drawQ2bi();
+    if (mod === "q3b") { drawQ3bCharts(); drawQ3b(); }
+    if (mod === "q1b") { drawQ1b(); startQ1bAnim(); }
+  }
+  window.addEventListener("hashchange", function () { show(currentMod()); });
+
+  /* ===================== shared synapse figure ===================== */
+  var Y_EDGE = 312;
+  var X_EDGE = 408;
+  var VESICLES = [
+    [450, 280], [480, 300], [515, 270], [548, 308], [470, 338],
+    [508, 348], [548, 358], [458, 378], [492, 400], [532, 388],
+    [562, 332], [442, 318], [575, 290], [568, 400], [440, 430]
+  ];
+  var NEAR_VES = [[428, 300], [430, 338], [428, 376], [432, 414]];
+  var RECEPTORS = [276, 308, 340, 372, 404, 436];
+
+  function dendrite(svg, parts, stroke, width) {
+    var i;
+    for (i = 0; i < parts.length; i++) {
+      svg.appendChild(svgEl("path", {
+        d: parts[i], fill: "none", stroke: stroke, "stroke-width": String(width || 3),
+        "stroke-linecap": "round", "stroke-linejoin": "round"
+      }));
+    }
+  }
+
+  function drawSynapse(host, opt) {
+    if (!host) return;
+    opt = opt || {};
+    var stage = opt.stage || "rest";
+    var hi = opt.hi || "";
+    var dir = opt.dir || "fwd";
+    var labelOverview = opt.labelOverview !== false;
+    clearEl(host);
+    var svg = emptySvg(720, 560, "兩個神經元及其交接處的原創教學示意圖，左側為末端 Y，右側為末端 X");
+    addGrad(svg, "somaL", "#f4fbfd", "#b9dde2");
+    addGrad(svg, "somaR", "#fff4ea", "#f3c7a2");
+    addGrad(svg, "termY", "#f4fbfd", "#cfe8ec");
+    addGrad(svg, "termX", "#fff6ee", "#f8d5b8");
+    host.appendChild(svg);
+
+    /* ----- overview neurones ----- */
+    var leftDen = [
+      "M200,88 C160,70 130,48 108,40",
+      "M200,88 C168,100 130,96 102,86",
+      "M200,88 C176,118 150,140 128,154",
+      "M108,40 C96,34 86,38 78,32",
+      "M108,40 C100,52 92,50 84,58",
+      "M102,86 C88,80 76,88 64,82",
+      "M128,154 C118,166 108,160 98,172"
+    ];
+    dendrite(svg, leftDen, "#0b6e7a", 3);
+    /* postsynaptic dendrite going right to Y side of junction */
+    svg.appendChild(svgEl("path", {
+      d: "M218,96 C260,108 300,116 336,122",
+      fill: "none", stroke: "#0b6e7a", "stroke-width": "4.5",
+      "stroke-linecap": "round"
+    }));
+    svg.appendChild(svgEl("circle", { cx: "200", cy: "88", r: "22", fill: "url(#somaL)", stroke: "#0b6e7a", "stroke-width": "2.4" }));
+    svg.appendChild(svgEl("circle", { cx: "196", cy: "86", r: "8", fill: "#7fb4bb", stroke: "#0b6e7a", "stroke-width": "1.2" }));
+
+    var rightDen = [
+      "M530,78 C560,58 590,46 618,38",
+      "M530,78 C562,90 600,86 632,78",
+      "M530,78 C548,110 574,128 600,142",
+      "M618,38 C630,32 642,36 652,28",
+      "M632,78 C646,72 660,80 672,74",
+      "M600,142 C612,154 628,150 640,160"
+    ];
+    dendrite(svg, rightDen, "#c05621", 3);
+    /* presynaptic axon going LEFT to X side of junction */
+    var axonD = "M512,86 C470,94 420,110 372,122 C364,124 358,124 354,122";
+    svg.appendChild(svgEl("path", {
+      d: axonD, fill: "none", stroke: "#c05621", "stroke-width": "5",
+      "stroke-linecap": "round"
+    }));
+    if (stage === "arrive" || stage === "release" || stage === "impulse") {
+      svg.appendChild(svgEl("path", {
+        d: axonD, fill: "none", stroke: "#f3c14b", "stroke-width": "8",
+        "stroke-linecap": "round", opacity: "0.45"
+      }));
+    }
+    svg.appendChild(svgEl("circle", { cx: "530", cy: "78", r: "22", fill: "url(#somaR)", stroke: "#c05621", "stroke-width": "2.4" }));
+    svg.appendChild(svgEl("circle", { cx: "534", cy: "76", r: "8", fill: "#e0a075", stroke: "#c05621", "stroke-width": "1.2" }));
+    /* tiny junction in overview: Y left, X right */
+    svg.appendChild(svgEl("circle", { cx: "340", cy: "122", r: "5.5", fill: "#d7eef0", stroke: "#0b6e7a", "stroke-width": "2" }));
+    svg.appendChild(svgEl("circle", { cx: "354", cy: "122", r: "6", fill: "#fde7d4", stroke: "#c05621", "stroke-width": "2" }));
+
+    svg.appendChild(svgText(200, 128, "神經元", "middle", 12, "#08545d"));
+    svg.appendChild(svgText(560, 118, "神經元", "middle", 12, "#9a4a00"));
+    if (labelOverview) {
+      svg.appendChild(svgText(470, 108, "軸突", "middle", 11, "#c05621"));
+      svg.appendChild(svgText(270, 108, "樹突", "middle", 11, "#0b6e7a"));
+    }
+    /* zoom leader */
+    svg.appendChild(svgEl("rect", {
+      x: "326", y: "108", width: "42", height: "28", rx: "4",
+      fill: "none", stroke: "#5b3d8f", "stroke-width": "1.4", "stroke-dasharray": "3 2"
+    }));
+    svg.appendChild(svgEl("line", {
+      x1: "347", y1: "136", x2: "347", y2: "200",
+      stroke: "#5b3d8f", "stroke-width": "1.6"
+    }));
+    svg.appendChild(svgEl("polygon", { points: "347,206 342,196 352,196", fill: "#5b3d8f" }));
+    svg.appendChild(svgText(366, 176, "放大", "start", 13, "#5b3d8f"));
+
+    /* ----- zoom box ----- */
+    svg.appendChild(svgEl("rect", {
+      x: "50", y: "210", width: "620", height: "310", rx: "10",
+      fill: "#fbfdfe", stroke: "#9aa8b5", "stroke-width": "1.8"
+    }));
+
+    if (hi === "z") {
+      svg.appendChild(svgEl("rect", {
+        x: "78", y: "228", width: "564", height: "252", rx: "8",
+        fill: "#ffe9a8", stroke: "#b8860b", "stroke-width": "3", opacity: "0.55"
+      }));
+    }
+    if (hi === "cleft") {
+      svg.appendChild(svgEl("rect", {
+        x: String(Y_EDGE), y: "250", width: String(X_EDGE - Y_EDGE), height: "220",
+        fill: "#f8d48b", stroke: "#c05621", "stroke-width": "2.5", opacity: "0.7"
+      }));
+    }
+
+    /* terminal Y (left) */
+    var yPath = "M88,260 C88,228 150,224 230,228 L292,232 C308,234 312,248 312,268 L312,432 C312,452 308,466 292,468 L230,472 C150,476 88,470 88,438 Z";
+    svg.appendChild(svgEl("path", {
+      d: yPath, fill: "url(#termY)", stroke: "#0b6e7a", "stroke-width": "3"
+    }));
+    /* terminal X (right) */
+    var xPath = "M632,260 C632,228 570,224 490,228 L428,232 C412,234 408,248 408,268 L408,432 C408,452 412,466 428,468 L490,472 C570,476 632,470 632,438 Z";
+    svg.appendChild(svgEl("path", {
+      d: xPath, fill: "url(#termX)", stroke: "#c05621", "stroke-width": "3"
+    }));
+    /* nerve-fiber necks so the two sides read as terminals, not isolated boxes */
+    svg.appendChild(svgEl("path", {
+      d: "M50,338 C70,346 82,350 88,352 L88,388 C80,390 66,396 50,402 Z",
+      fill: "url(#termY)", stroke: "#0b6e7a", "stroke-width": "3"
+    }));
+    svg.appendChild(svgEl("path", {
+      d: "M670,338 C650,346 638,350 632,352 L632,388 C640,390 654,396 670,402 Z",
+      fill: "url(#termX)", stroke: "#c05621", "stroke-width": "3"
+    }));
+    if (stage === "arrive" || stage === "release") {
+      svg.appendChild(svgEl("path", {
+        d: xPath, fill: "none", stroke: "#f3c14b", "stroke-width": "6", opacity: "0.55"
+      }));
+    }
+    if (stage === "impulse" || stage === "bind") {
+      svg.appendChild(svgEl("path", {
+        d: yPath, fill: "none", stroke: "#7ed0c8", "stroke-width": "6", opacity: "0.55"
+      }));
+    }
+
+    /* receptors on Y */
+    var r, ry, bound, k;
+    bound = (stage === "bind" || stage === "impulse");
+    for (k = 0; k < RECEPTORS.length; k++) {
+      ry = RECEPTORS[k];
+      svg.appendChild(svgEl("rect", {
+        x: String(Y_EDGE - 2), y: String(ry - 7), width: "16", height: "14", rx: "3",
+        fill: bound ? "#3b0764" : "#5b3d8f", stroke: "#2e1065", "stroke-width": "1"
+      }));
+    }
+
+    /* vesicles in X: hide near-membrane ones after release */
+    var hideNear = (stage === "release" || stage === "diffuse" || stage === "bind" || stage === "impulse");
+    function ves(x, y) {
+      svg.appendChild(svgEl("circle", {
+        cx: String(x), cy: String(y), r: "9",
+        fill: "#fffdf8", stroke: "#c05621", "stroke-width": "1.7"
+      }));
+      svg.appendChild(svgEl("circle", {
+        cx: String(x - 2), cy: String(y - 1), r: "3",
+        fill: "#c05621", opacity: "0.35"
+      }));
+    }
+    for (k = 0; k < VESICLES.length; k++) ves(VESICLES[k][0], VESICLES[k][1]);
+    if (!hideNear) {
+      for (k = 0; k < NEAR_VES.length; k++) ves(NEAR_VES[k][0], NEAR_VES[k][1]);
+    } else {
+      /* fusion dimples on X membrane */
+      for (k = 0; k < NEAR_VES.length; k++) {
+        svg.appendChild(svgEl("circle", {
+          cx: String(X_EDGE + 1), cy: String(NEAR_VES[k][1]), r: "7",
+          fill: "none", stroke: "#c05621", "stroke-width": "2"
+        }));
+      }
+    }
+
+    /* W molecules by stage */
+    var wPos = [];
+    if (stage === "rest" || stage === "arrive" || stage === "reverse0") {
+      wPos = [[352, 330], [368, 370]];
+    } else if (stage === "release") {
+      wPos = [[348, 300], [366, 328], [350, 360], [370, 392], [356, 424], [338, 348]];
+    } else if (stage === "diffuse") {
+      wPos = [[328, 282], [334, 314], [326, 346], [336, 378], [328, 410], [338, 442]];
+    } else if (stage === "bind" || stage === "impulse") {
+      wPos = [[328, 276], [328, 308], [328, 340], [328, 372], [328, 404], [328, 436]];
+    } else if (stage === "reverse1" || stage === "reverse2") {
+      wPos = [[352, 330], [368, 370]];
+    }
+    for (k = 0; k < wPos.length; k++) {
+      svg.appendChild(svgEl("circle", {
+        cx: String(wPos[k][0]), cy: String(wPos[k][1]), r: "7",
+        fill: "#c05621", stroke: "#8a3414", "stroke-width": "1"
+      }));
+    }
+
+    if (stage === "impulse") {
+      svg.appendChild(svgEl("path", {
+        d: "M250,350 L210,350 L222,338 M210,350 L222,362",
+        fill: "none", stroke: "#0b6e7a", "stroke-width": "3.2", "stroke-linecap": "round", "stroke-linejoin": "round"
+      }));
+      svg.appendChild(svgText(200, 330, "新脈衝", "middle", 13, "#08545d"));
+    }
+
+    if (dir === "rev" && (stage === "reverse1" || stage === "reverse2" || stage === "reverse0")) {
+      svg.appendChild(svgEl("line", {
+        x1: "300", y1: "350", x2: "420", y2: "350",
+        stroke: "#9b1c1c", "stroke-width": "3", "stroke-dasharray": "6 4"
+      }));
+      svg.appendChild(svgEl("polygon", { points: "428,350 414,343 414,357", fill: "#9b1c1c" }));
+      svg.appendChild(svgText(360, 240, "反向走不通", "middle", 15, "#9b1c1c"));
+      if (stage !== "reverse0") {
+        svg.appendChild(svgEl("text", {
+          x: "200", y: "318", "text-anchor": "middle", "font-size": "13",
+          fill: "#9b1c1c", "font-weight": "800", "font-family": FONT
+        }, "沒有小泡"));
+        svg.appendChild(svgEl("text", {
+          x: "520", y: "248", "text-anchor": "middle", "font-size": "13",
+          fill: "#9b1c1c", "font-weight": "800", "font-family": FONT
+        }, "沒有受體"));
+      }
+    }
+
+    /* position 1 bracket */
+    svg.appendChild(svgEl("path", {
+      d: "M320,478 L320,488 L400,488 L400,478",
+      fill: "none", stroke: "#4a5a70", "stroke-width": "1.6"
+    }));
+    svg.appendChild(svgText(360, 506, "位置 1", "middle", 13, "#4a5a70"));
+    svg.appendChild(svgText(360, 544, "構造 Z", "middle", 16, "#152033", "800"));
+
+    /* side labels with leaders */
+    svg.appendChild(svgEl("line", { x1: "8", y1: "350", x2: "80", y2: "350", stroke: "#0b6e7a", "stroke-width": "1.4" }));
+    svg.appendChild(svgText(6, 346, "末端 Y", "start", 15, "#08545d", "800"));
+    svg.appendChild(svgEl("line", { x1: "640", y1: "350", x2: "712", y2: "350", stroke: "#c05621", "stroke-width": "1.4" }));
+    svg.appendChild(svgText(714, 346, "末端 X", "end", 15, "#9a4a00", "800"));
+    if (hi === "z") {
+      svg.appendChild(svgEl("rect", {
+        x: "210", y: "216", width: "300", height: "28", rx: "8",
+        fill: "#fff6d4", stroke: "#b8860b", "stroke-width": "1.4"
+      }));
+      svg.appendChild(svgText(360, 236, "整個交接處＝突觸", "middle", 15, "#7a5800", "800"));
+    } else if (hi === "cleft") {
+      svg.appendChild(svgEl("rect", {
+        x: "230", y: "216", width: "260", height: "28", rx: "8",
+        fill: "#fff1e0", stroke: "#c05621", "stroke-width": "1.4"
+      }));
+      svg.appendChild(svgText(360, 236, "只是突觸間隙", "middle", 15, "#9a4a00", "800"));
+    } else {
+      svg.appendChild(svgEl("line", { x1: "360", y1: "226", x2: "360", y2: "248", stroke: "#c05621", "stroke-width": "1.3" }));
+      svg.appendChild(svgText(360, 222, "神經遞質 W", "middle", 13, "#9a4a00", "800"));
+    }
+
+    /* original caption inside svg bottom-left is handled outside */
+  }
+
+  function stepList(host, items, active) {
+    if (!host) return;
+    var html = "", i, cls;
+    for (i = 0; i < items.length; i++) {
+      cls = i === active ? " class=\"on\"" : "";
+      html += "<li" + cls + "><em>第 " + (i + 1) + " 步</em>" + items[i] + "</li>";
+    }
+    setHtml(host, html);
+  }
+
+  /* ===================== Q2(c) ===================== */
+  var q2c = { dir: "fwd", step: 0, maxFwd: 3, maxRev: 3 };
+
+  function q2cStage() {
+    if (q2c.dir === "rev") {
+      return ["reverse0", "reverse1", "reverse2", "reverse2"][q2c.step] || "reverse0";
+    }
+    return ["rest", "arrive", "release", "impulse"][q2c.step] || "rest";
+  }
+  function q2cCaps() {
+    if (q2c.dir === "rev") {
+      return [
+        "反向嘗試：假設脈衝想由左側 Y 走向右側 X。先看看 Y 裏面有沒有可以釋出的小泡。",
+        "末端 Y 內沒有突觸小泡，不能釋出 W。同時，末端 X 的膜上也沒有受體。",
+        "沒有遞質可被 Y 放出，X 也不能被刺激，所以脈衝不能反向傳遞。",
+        "結論：這個過程確保傳遞只沿一個方向進行（X → Y），這才是本題要寫的重要性。"
+      ];
+    }
+    return [
+      "原創教學示意圖：末端 Y 在左、末端 X 在右。小泡只在 X 內，受體只在 Y 的膜上。",
+      "神經脈衝沿右側神經元的軸突到達末端 X。不要用由左至右的閱讀習慣去猜方向。",
+      "末端 X 釋出 W 到位置 1。W 只能從有小泡的這一側出去。",
+      "W 與 Y 膜上的受體結合，Y 產生新脈衝。因為受體只在 Y，傳遞只能由 X 走向 Y。"
+    ];
+  }
+  function q2cStepItems() {
+    if (q2c.dir === "rev") {
+      return [
+        "假設想由 Y 走向 X",
+        "Y 沒有小泡，X 沒有受體",
+        "反向走不通",
+        "重要性：單向傳導"
+      ];
+    }
+    return [
+      "小泡只在 X，受體只在 Y",
+      "脈衝到達末端 X",
+      "X 釋出 W 到位置 1",
+      "Y 產生新脈衝：只能 X → Y"
+    ];
+  }
+  function drawQ2c() {
+    drawSynapse(qs("q2cscene"), { stage: q2cStage(), dir: q2c.dir });
+    setHtml(qs("q2ccap"), q2cCaps()[q2c.step]);
+    stepList(qs("q2csteps"), q2cStepItems(), q2c.step);
+  }
+  function q2cMax() { return q2c.dir === "rev" ? q2c.maxRev : q2c.maxFwd; }
+  function wireQ2c() {
+    function setDir(dir, btn) {
+      q2c.dir = dir;
+      q2c.step = 0;
+      clearTimer("q2c");
+      setActive([qs("q2cdirFwd"), qs("q2cdirRev")], btn);
+      drawQ2c();
+    }
+    on(qs("q2cdirFwd"), "click", function () { setDir("fwd", qs("q2cdirFwd")); });
+    on(qs("q2cdirRev"), "click", function () { setDir("rev", qs("q2cdirRev")); });
+    on(qs("q2cprev"), "click", function () {
+      clearTimer("q2c");
+      if (q2c.step > 0) q2c.step -= 1;
+      drawQ2c();
+    });
+    on(qs("q2cnext"), "click", function () {
+      clearTimer("q2c");
+      if (q2c.step < q2cMax()) q2c.step += 1;
+      drawQ2c();
+    });
+    on(qs("q2creset"), "click", function () {
+      clearTimer("q2c");
+      q2c.step = 0;
+      drawQ2c();
+    });
+    on(qs("q2cplay"), "click", function () {
+      clearTimer("q2c");
+      q2c.step = 0;
+      drawQ2c();
+      if (reduceMotion()) {
+        q2c.step = q2cMax();
+        drawQ2c();
+        return;
+      }
+      timers.q2c = setInterval(function () {
+        if (q2c.step >= q2cMax()) {
+          clearTimer("q2c");
+          return;
+        }
+        q2c.step += 1;
+        drawQ2c();
+      }, 950);
+    });
+    wirePred("q2cpred", "q2cpredfb", "ok", {
+      ok: "正確。這一分要寫的是：確保神經傳遞只沿一個方向進行。請用模擬核對為甚麼反向走不通。",
+      fast: "「更快」不是本題的給分點。問的是這個過程的重要性，答案是單向傳導。",
+      eff: "傳到效應器、產生反應是整條路徑更後面的事，不是這個交接過程本身要寫的重要性。",
+      same: "「在同一個位置進行」沒有回答方向的問題。請看模擬：關鍵是只能由 X 走向 Y。"
+    });
+    toggleReveal("q2crevealBtn", "q2creveal");
+    wireMc("q2cmc", "q2cmcfb",
+      "正確。答卷上要出現「只沿一個方向／單向傳導」，並可用「只由 X 釋出、受體只在 Y」來解釋。",
+      "再想一次：本題不是問快慢，也不是問會否到達效應器，而是問這個過程如何限制傳遞的方向。");
+  }
+
+  /* ===================== Q2(b)(ii) ===================== */
+  var q2bii = { step: 0, max: 3 };
+  var Q2BII_STAGES = ["release", "diffuse", "bind", "impulse"];
+  var Q2BII_CAPS = [
+    "第 0 步：脈衝到達後，位置 1 的 W 已經增加。這一步屬於上一小題的釋出，還不是本題的 2 分。",
+    "第 1 分：位置 1 的神經遞質 W 擴散至末端 Y 的膜。答卷上要寫出「擴散」和「Y 的膜」。",
+    "第 2 分的前半：W 與末端 Y 膜上的受體結合，或刺激 Y 的細胞膜。",
+    "第 2 分的後半：末端 Y 因此產生神經脈衝。兩個給分點至此寫齊。"
+  ];
+  var Q2BII_FLOW = [
+    { n: "背景", t: "W 在位置 1 增加（由 X 釋出，屬 (b)(i)）", mark: "" },
+    { n: "1", t: "W 擴散至末端 Y 的膜", mark: "第 1 分" },
+    { n: "2", t: "W 與 Y 膜上的受體結合／刺激 Y 的膜", mark: "第 2 分" },
+    { n: "2", t: "末端 Y 產生神經脈衝", mark: "第 2 分" }
+  ];
+  function drawQ2biiFlow() {
+    var host = qs("q2biiflow");
+    if (!host) return;
+    var html = "", i, item, cls, tag;
+    for (i = 0; i < Q2BII_FLOW.length; i++) {
+      item = Q2BII_FLOW[i];
+      cls = i === q2bii.step ? " is-on" : (i < q2bii.step ? " is-ok" : "");
+      if (i === 0 && q2bii.step === 0) cls = " is-on";
+      tag = item.mark ? " <span class=\"ref-tag\">" + item.mark + "</span>" : "";
+      html += "<div class=\"fstep" + cls + "\"><span class=\"n\">" + item.n + "</span>" + item.t + tag + "</div>";
+      if (i < Q2BII_FLOW.length - 1) html += "<div class=\"farrow\">↓</div>";
+    }
+    setHtml(host, html);
+  }
+  function drawQ2bii() {
+    drawSynapse(qs("q2biiscene"), { stage: Q2BII_STAGES[q2bii.step], dir: "fwd" });
+    setHtml(qs("q2biicap"), Q2BII_CAPS[q2bii.step]);
+    drawQ2biiFlow();
+  }
+  function wireQ2bii() {
+    on(qs("q2biiprev"), "click", function () {
+      clearTimer("q2bii");
+      if (q2bii.step > 0) q2bii.step -= 1;
+      drawQ2bii();
+    });
+    on(qs("q2biinext"), "click", function () {
+      clearTimer("q2bii");
+      if (q2bii.step < q2bii.max) q2bii.step += 1;
+      drawQ2bii();
+    });
+    on(qs("q2biireset"), "click", function () {
+      clearTimer("q2bii");
+      q2bii.step = 0;
+      drawQ2bii();
+    });
+    on(qs("q2biiplay"), "click", function () {
+      clearTimer("q2bii");
+      q2bii.step = 0;
+      drawQ2bii();
+      if (reduceMotion()) {
+        q2bii.step = q2bii.max;
+        drawQ2bii();
+        return;
+      }
+      timers.q2bii = setInterval(function () {
+        if (q2bii.step >= q2bii.max) {
+          clearTimer("q2bii");
+          return;
+        }
+        q2bii.step += 1;
+        drawQ2bii();
+      }, 1000);
+    });
+    wirePred("q2biipred", "q2biipredfb", "ok", {
+      ok: "正確。2 分就是這兩步：擴散到 Y 的膜，以及結合受體／刺激 Y 的膜並產生脈衝。請按步驟核對。",
+      release: "「由 X 釋出」是 (b)(i) 的 1 分，不能代替本題。本題要寫擴散到 Y 的膜，再結合受體並產生脈衝。",
+      enter: "W 不會直接進入 Y 的細胞質去推動脈衝，而是與膜上的受體結合，令 Y 產生新的脈衝。"
+    });
+    toggleReveal("q2biirevealBtn", "q2biireveal");
+    wireMc("q2biimc", "q2biimcfb",
+      "正確。這一句包含兩個給分點：擴散至 Y 的膜，以及與受體結合並產生神經脈衝。",
+      "第一句只是上一小題；第三句只寫了擴散，還欠受體結合和產生脈衝。完整寫法才能拿 2 分。");
+  }
+
+  /* ===================== Q2(a) ===================== */
+  var q2a = { hi: "z" };
+  function drawQ2a() {
+    drawSynapse(qs("q2ascene"), { stage: "rest", hi: q2a.hi });
+    if (q2a.hi === "z") {
+      setHtml(qs("q2acap"), "原創教學示意圖。黃色範圍是整個構造 Z：左側末端 Y、中間間隙和右側末端 X。這個整體的名稱是「突觸」。");
+    } else {
+      setHtml(qs("q2acap"), "現在只高亮中間的空隙（位置 1）。那叫「突觸間隙」，只是突觸的一部分，不是構造 Z 的名稱。");
+    }
+  }
+  function wireQ2a() {
+    function setHi(hi, btn) {
+      q2a.hi = hi;
+      setActive([qs("q2ahiliteZ"), qs("q2ahiliteCleft")], btn);
+      drawQ2a();
+    }
+    on(qs("q2ahiliteZ"), "click", function () { setHi("z", qs("q2ahiliteZ")); });
+    on(qs("q2ahiliteCleft"), "click", function () { setHi("cleft", qs("q2ahiliteCleft")); });
+    wirePred("q2apred", "q2apredfb", "ok", {
+      ok: "正確。構造 Z 的名稱是「突觸」，指整個交接處。請用高亮比較它和「突觸間隙」的分別。",
+      cleft: "這是最常見的錯誤。「突觸間隙」只指中間那條縫（位置 1），不是整個構造 Z。",
+      rev: "「觸突」是把兩個字寫反了，不能給分。正確寫法是「突觸」。",
+      axon: "軸突是神經元的長突起。構造 Z 是兩個末端相接的地方，名稱是突觸。"
+    });
+    toggleReveal("q2arevealBtn", "q2areveal");
+    wireMc("q2amc", "q2amcfb",
+      "正確。Z 是整個交接處，名稱必須寫成「突觸」。",
+      "Z 不是只指空隙，也不是「觸突」。把高亮切到「整個構造 Z」再看一次範圍。");
+  }
+
+  /* ===================== Q2(b)(i) ===================== */
+  var q2bi = { step: 0, max: 3 };
+  var Q2BI_STAGES = ["rest", "arrive", "release", "diffuse"];
+  var Q2BI_CAPS = [
+    "原創教學示意圖：末端 Y 在左、末端 X 在右。先數小泡在哪一側——它們全部畫在右側的末端 X 內。",
+    "神經脈衝沿右側神經元的軸突（由右向左）到達末端 X，並不是由左邊先開始。",
+    "末端 X 的小泡靠近膜並釋出 W。位置 1 的 W 就是從 X 出來的。",
+    "W 出現在位置 1 後再走向左側的末端 Y。答案是末端 X，不要寫成 Y。"
+  ];
+  function drawQ2bi() {
+    drawSynapse(qs("q2biscene"), { stage: Q2BI_STAGES[q2bi.step], dir: "fwd", labelOverview: true });
+    setHtml(qs("q2bicap"), Q2BI_CAPS[q2bi.step]);
+  }
+  function wireQ2bi() {
+    on(qs("q2biprev"), "click", function () {
+      clearTimer("q2bi");
+      if (q2bi.step > 0) q2bi.step -= 1;
+      drawQ2bi();
+    });
+    on(qs("q2binext"), "click", function () {
+      clearTimer("q2bi");
+      if (q2bi.step < q2bi.max) q2bi.step += 1;
+      drawQ2bi();
+    });
+    on(qs("q2bireset"), "click", function () {
+      clearTimer("q2bi");
+      q2bi.step = 0;
+      drawQ2bi();
+    });
+    on(qs("q2biplay"), "click", function () {
+      clearTimer("q2bi");
+      q2bi.step = 0;
+      drawQ2bi();
+      if (reduceMotion()) {
+        q2bi.step = q2bi.max;
+        drawQ2bi();
+        return;
+      }
+      timers.q2bi = setInterval(function () {
+        if (q2bi.step >= q2bi.max) {
+          clearTimer("q2bi");
+          return;
+        }
+        q2bi.step += 1;
+        drawQ2bi();
+      }, 950);
+    });
+    wirePred("q2bipred", "q2bipredfb", "ok", {
+      ok: "正確。W 由末端 X 釋出。請按步驟看小泡在右側，脈衝也是沿右側軸突到來。",
+      y: "這是本校較常見的錯選。左邊是 Y，但 Y 是接收的一側。小泡在右側的 X 內，W 由 X 釋出。"
+    });
+    toggleReveal("q2birevealBtn", "q2bireveal");
+    wireMc("q2bimc", "q2bimcfb",
+      "正確。讀圖的關鍵是小泡在末端 X，所以位置 1 的 W 來自 X。",
+      "不要用由左至右的習慣去猜。X 和 Y 也不是都可以釋出。請回到模擬看小泡的位置。");
+  }
+
+  /* ===================== Q3(b) charts + bed ===================== */
+  function drawQ3bOneChart(host, kind) {
+    if (!host) return;
+    clearEl(host);
+    var w = 420, h = 220;
+    var L = { l: 52, r: 16, t: 16, b: 40, w: w, h: h };
+    L.pw = w - L.l - L.r;
+    L.ph = h - L.t - L.b;
+    var svg = emptySvg(w, h, kind === "area" ? "橫切面總面積示意曲線" : "血流速率示意曲線");
+    host.appendChild(svg);
+    svg.appendChild(svgEl("rect", {
+      x: String(L.l), y: String(L.t), width: String(L.pw), height: String(L.ph),
+      fill: "#fbfdfe", stroke: "#cfd8e3"
+    }));
+    var labels = ["大動脈", "動脈", "小動脈", "微血管"];
+    var xs = [0.08, 0.38, 0.68, 0.92];
+    var i, gx;
+    for (i = 0; i < xs.length; i++) {
+      gx = L.l + xs[i] * L.pw;
+      svg.appendChild(svgEl("line", {
+        x1: String(gx), x2: String(gx), y1: String(L.t), y2: String(L.t + L.ph),
+        stroke: "#e8eef3", "stroke-width": "1"
+      }));
+      svg.appendChild(svgText(gx, L.t + L.ph + 18, labels[i], "middle", 11, "#4a5a70"));
+    }
+    var pts, yMax, yLabel, d, t, x, y, px, py;
+    if (kind === "area") {
+      yMax = 5000;
+      yLabel = "總面積（示意）";
+      pts = [[0, 250], [0.2, 280], [0.4, 350], [0.55, 500], [0.68, 1600], [0.82, 4200], [0.92, 4700], [1, 4600]];
+    } else {
+      yMax = 50;
+      yLabel = "速率（示意）";
+      pts = [[0, 47], [0.2, 46], [0.4, 44], [0.55, 36], [0.68, 22], [0.82, 5], [0.92, 3], [1, 6]];
+    }
+    function xTo(xv) { return L.l + xv * L.pw; }
+    function yTo(yv) { return L.t + (yMax - yv) / yMax * L.ph; }
+    var ticks = kind === "area" ? [0, 2000, 4000] : [0, 25, 50];
+    for (i = 0; i < ticks.length; i++) {
+      py = yTo(ticks[i]);
+      svg.appendChild(svgEl("line", {
+        x1: String(L.l), x2: String(L.l + L.pw), y1: String(py), y2: String(py),
+        stroke: ticks[i] === 0 ? "#9aa8b5" : "#e8eef3",
+        "stroke-width": ticks[i] === 0 ? "1.4" : "1"
+      }));
+      svg.appendChild(svgText(L.l - 6, py + 4, String(ticks[i]), "end", 10, "#4a5a70"));
+    }
+    d = "";
+    for (i = 0; i < pts.length; i++) {
+      px = xTo(pts[i][0]);
+      py = yTo(pts[i][1]);
+      d += (i === 0 ? "M" : " L") + px + "," + py;
+    }
+    svg.appendChild(svgEl("path", {
+      d: d, fill: "none", stroke: "#0b6e7a", "stroke-width": "2.6",
+      "stroke-linecap": "round", "stroke-linejoin": "round"
+    }));
+    var yl = svgText(14, L.t + L.ph / 2, yLabel, "middle", 11, "#152033");
+    yl.setAttribute("transform", "rotate(-90 14 " + (L.t + L.ph / 2) + ")");
+    svg.appendChild(yl);
+  }
+  function drawQ3bCharts() {
+    drawQ3bOneChart(qs("q3bchartArea"), "area");
+    drawQ3bOneChart(qs("q3bchartFlow"), "flow");
+  }
+
+  var q3b = { hi: "net", t: 0 };
+  var CAP_PATHS = [
+    "M92,200 C140,198 170,150 220,128 C270,106 300,118 340,132 C390,148 430,110 500,118 C540,124 570,160 592,198",
+    "M92,200 C150,202 180,200 230,200 C300,200 360,200 430,200 C500,200 550,200 592,200",
+    "M92,200 C140,205 170,250 220,272 C270,294 310,270 360,255 C420,236 470,290 530,270 C560,258 578,230 592,200",
+    "M220,128 C230,160 232,180 230,200 C228,230 226,250 220,272",
+    "M340,132 C338,160 336,180 334,200 C332,230 348,248 360,255",
+    "M500,118 C496,150 490,175 430,200 C400,220 390,250 400,280",
+    "M160,200 C170,170 190,150 220,128",
+    "M160,200 C175,230 195,255 220,272",
+    "M480,200 C500,170 520,140 500,118",
+    "M480,200 C505,230 530,255 530,270",
+    "M280,200 C300,170 310,150 340,132",
+    "M280,200 C300,230 320,255 360,255",
+    "M230,200 C250,150 300,145 340,132",
+    "M334,200 C380,170 430,150 500,118"
+  ];
+  var CELLS = [
+    [190, 168, 22, 18], [265, 160, 20, 16], [345, 175, 22, 17],
+    [430, 155, 21, 17], [515, 175, 20, 16], [200, 235, 21, 17],
+    [280, 240, 22, 18], [370, 228, 20, 16], [455, 240, 22, 18],
+    [250, 300, 20, 16], [340, 305, 22, 17], [430, 300, 21, 17],
+    [150, 250, 18, 15], [530, 240, 18, 15]
+  ];
+  var NEAR_LINES = [
+    [190, 168, 190, 145],
+    [265, 160, 265, 142],
+    [345, 175, 338, 150],
+    [200, 235, 175, 220],
+    [370, 228, 350, 210],
+    [430, 300, 430, 275],
+    [250, 300, 250, 275]
+  ];
+
+  function drawQ3b() {
+    var host = qs("q3bscene");
+    if (!host) return;
+    clearEl(host);
+    var svg = emptySvg(720, 440, "微血管網原創教學示意圖，顯示小動脈、小靜脈、淋巴管、體細胞和密集的微血管分支");
+    addGrad(svg, "artG", "#f4a3a3", "#d45b5b", "1", "0");
+    addGrad(svg, "venG", "#e7a0b4", "#a14d6a", "1", "0");
+    addGrad(svg, "lymG", "#e8efc8", "#c5d48a", "0", "1");
+    addGrad(svg, "cellG", "#ffe9d6", "#f0c4a0");
+    host.appendChild(svg);
+
+    /* tissue outline */
+    svg.appendChild(svgEl("ellipse", {
+      cx: "340", cy: "210", rx: "262", ry: "158",
+      fill: "#f7efe6", stroke: "#b9a894", "stroke-width": "3"
+    }));
+
+    /* arteriole in */
+    svg.appendChild(svgEl("path", {
+      d: "M8,186 C40,186 70,190 96,196 L96,208 C70,214 40,218 8,218 Z",
+      fill: "url(#artG)", stroke: "#9b2c2c", "stroke-width": "1.6"
+    }));
+    /* venule out */
+    svg.appendChild(svgEl("path", {
+      d: "M584,190 C620,186 660,184 714,184 L714,220 C660,220 620,218 584,214 Z",
+      fill: "url(#venG)", stroke: "#7a2e46", "stroke-width": "1.6"
+    }));
+    /* lymph down */
+    svg.appendChild(svgEl("path", {
+      d: "M300,350 C310,360 312,380 300,410 C290,430 310,438 340,436 C372,434 390,422 378,398 C368,378 360,360 355,350 Z",
+      fill: "url(#lymG)", stroke: "#7a8a4a", "stroke-width": "1.8"
+    }));
+    /* faint valve suggestion */
+    svg.appendChild(svgEl("path", {
+      d: "M318,390 L340,402 L360,390", fill: "none", stroke: "#7a8a4a", "stroke-width": "1.4"
+    }));
+
+    var capColor = "#c94c4c";
+    var capWidth = 5;
+    if (q3b.hi === "net") {
+      capColor = "#9b1c1c";
+      capWidth = 7.5;
+    }
+    var i, p;
+    if (q3b.hi === "net") {
+      for (i = 0; i < CAP_PATHS.length; i++) {
+        svg.appendChild(svgEl("path", {
+          d: CAP_PATHS[i], fill: "none", stroke: "#f3b4b4", "stroke-width": "14",
+          "stroke-linecap": "round", "stroke-linejoin": "round", opacity: "0.55"
+        }));
+      }
+    }
+    for (i = 0; i < CAP_PATHS.length; i++) {
+      svg.appendChild(svgEl("path", {
+        d: CAP_PATHS[i], fill: "none", stroke: capColor, "stroke-width": String(capWidth),
+        "stroke-linecap": "round", "stroke-linejoin": "round"
+      }));
+    }
+
+    /* slow flow dots when contrasting 3(a)(ii) */
+    if (q3b.hi === "flow") {
+      var dots = [
+        [130, 200], [230, 200], [360, 200], [500, 200],
+        [200, 140], [400, 130], [240, 260], [450, 250]
+      ];
+      var shift = (q3b.t % 20) * 1.2;
+      for (i = 0; i < dots.length; i++) {
+        svg.appendChild(svgEl("circle", {
+          cx: String(dots[i][0] + (i % 2 === 0 ? shift : -shift * 0.4)),
+          cy: String(dots[i][1]), r: "4.5",
+          fill: "#7a1f1f", opacity: "0.85"
+        }));
+      }
+    }
+
+    /* body cells */
+    var c, near;
+    for (i = 0; i < CELLS.length; i++) {
+      c = CELLS[i];
+      near = q3b.hi === "near";
+      svg.appendChild(svgEl("ellipse", {
+        cx: String(c[0]), cy: String(c[1]), rx: String(c[2]), ry: String(c[3]),
+        fill: "url(#cellG)", stroke: near ? "#0b6e7a" : "#a56b45",
+        "stroke-width": near ? "2.4" : "1.5"
+      }));
+      svg.appendChild(svgEl("circle", {
+        cx: String(c[0] - 3), cy: String(c[1] - 1), r: "5",
+        fill: "#4a2c17"
+      }));
+      /* a few original stipple dots, not a copy of official density */
+      svg.appendChild(svgEl("circle", { cx: String(c[0] + 8), cy: String(c[1] + 4), r: "1.1", fill: "#c08552" }));
+      svg.appendChild(svgEl("circle", { cx: String(c[0] + 4), cy: String(c[1] - 6), r: "1.1", fill: "#c08552" }));
+    }
+
+    if (q3b.hi === "near") {
+      for (i = 0; i < NEAR_LINES.length; i++) {
+        p = NEAR_LINES[i];
+        svg.appendChild(svgEl("line", {
+          x1: String(p[0]), y1: String(p[1]), x2: String(p[2]), y2: String(p[3]),
+          stroke: "#0b6e7a", "stroke-width": "2", "stroke-dasharray": "3 2"
+        }));
+        svg.appendChild(svgEl("circle", { cx: String(p[2]), cy: String(p[3]), r: "3", fill: "#0b6e7a" }));
+      }
+      svg.appendChild(svgText(340, 64, "擴散距離短", "middle", 16, "#08545d", "800"));
+    }
+
+    if (q3b.hi === "thin") {
+      /* callout of a short vessel segment with a thin wall — teaching contrast only */
+      svg.appendChild(svgEl("rect", {
+        x: "470", y: "40", width: "230", height: "110", rx: "10",
+        fill: "#fff8e8", stroke: "#c05621", "stroke-width": "1.8"
+      }));
+      svg.appendChild(svgEl("rect", {
+        x: "500", y: "78", width: "170", height: "28", rx: "14",
+        fill: "#fdecea", stroke: "#9b1c1c", "stroke-width": "2"
+      }));
+      svg.appendChild(svgEl("rect", {
+        x: "506", y: "84", width: "158", height: "16", rx: "8",
+        fill: "#f4a3a3"
+      }));
+      svg.appendChild(svgText(585, 68, "管壁的確薄", "middle", 13, "#9a4a00", "800"));
+      svg.appendChild(svgText(585, 128, "但不是本題圖中給分特徵", "middle", 12, "#9b1c1c", "800"));
+    }
+
+    if (q3b.hi === "net") {
+      svg.appendChild(svgText(340, 36, "大量分支／密集網絡", "middle", 16, "#9b1c1c", "800"));
+    }
+
+    /* labels */
+    svg.appendChild(svgEl("line", { x1: "48", y1: "148", x2: "48", y2: "196", stroke: "#4a5a70", "stroke-width": "1.3" }));
+    svg.appendChild(svgText(48, 140, "小動脈", "middle", 14, "#152033", "800"));
+    svg.appendChild(svgEl("line", { x1: "672", y1: "148", x2: "672", y2: "196", stroke: "#4a5a70", "stroke-width": "1.3" }));
+    svg.appendChild(svgText(672, 140, "小靜脈", "middle", 14, "#152033", "800"));
+    svg.appendChild(svgEl("line", { x1: "400", y1: "400", x2: "470", y2: "400", stroke: "#4a5a70", "stroke-width": "1.2" }));
+    svg.appendChild(svgText(474, 404, "淋巴管", "start", 14, "#152033", "800"));
+    svg.appendChild(svgEl("line", { x1: "500", y1: "100", x2: "590", y2: "70", stroke: "#4a5a70", "stroke-width": "1.2" }));
+    svg.appendChild(svgText(594, 74, "微血管", "start", 14, "#152033", "800"));
+    svg.appendChild(svgEl("line", { x1: "190", y1: "186", x2: "110", y2: "90", stroke: "#4a5a70", "stroke-width": "1.2" }));
+    svg.appendChild(svgText(106, 86, "體細胞", "end", 14, "#152033", "800"));
+  }
+
+  function q3bCaption() {
+    if (q3b.hi === "net") return "原創教學示意圖。現正高亮微血管的大量分支和密集網絡——這會增加物質交換的表面積。";
+    if (q3b.hi === "near") return "微血管穿透組織，伸到大多數體細胞旁邊。虛線標出短短的擴散距離。";
+    if (q3b.hi === "thin") return "管壁薄是微血管的事實，但不是這幅網圖要評的給分特徵，不能用它取代「分支」或「靠近細胞」。";
+    return "圖中緩緩移動的血點只是提醒：血流慢、有充足時間，是 3(a)(ii) 的答案，不要搬到 3(b)。";
+  }
+  function startQ3bFlow() {
+    clearTimer("q3b");
+    if (q3b.hi !== "flow") return;
+    if (reduceMotion()) return;
+    timers.q3b = setInterval(function () {
+      q3b.t += 1;
+      drawQ3b();
+    }, 180);
+  }
+  function wireQ3b() {
+    var buttons = [qs("q3bhiNet"), qs("q3bhiNear"), qs("q3bhiThin"), qs("q3bhiFlow")];
+    var i;
+    function applyHi(hi, btn) {
+      q3b.hi = hi;
+      setActive(buttons, btn);
+      setHtml(qs("q3bcap"), q3bCaption());
+      drawQ3b();
+      startQ3bFlow();
+    }
+    on(qs("q3bhiNet"), "click", function () { applyHi("net", qs("q3bhiNet")); });
+    on(qs("q3bhiNear"), "click", function () { applyHi("near", qs("q3bhiNear")); });
+    on(qs("q3bhiThin"), "click", function () { applyHi("thin", qs("q3bhiThin")); });
+    on(qs("q3bhiFlow"), "click", function () { applyHi("flow", qs("q3bhiFlow")); });
+    on(qs("q3bcheckBtn"), "click", function () {
+      var r1 = { f: qs("q3bf1").value, i: qs("q3bi1").value };
+      var r2 = { f: qs("q3bf2").value, i: qs("q3bi2").value };
+      qs("q3brow1").className = "pair-row";
+      qs("q3brow2").className = "pair-row";
+      if (!r1.f || !r1.i || !r2.f || !r2.i) {
+        showFb("q3bcheckfb", "bad", "請先為兩行都選好特徵和重要性。");
+        return;
+      }
+      function keyOf(r) { return r.f + "+" + r.i; }
+      var okSet = { "net+sa": 1, "near+dist": 1 };
+      var a = keyOf(r1), b = keyOf(r2);
+      var nOk = (okSet[a] ? 1 : 0) + (okSet[b] ? 1 : 0);
+      if (a === "net+sa") qs("q3brow1").classList.add("is-ok");
+      else qs("q3brow1").classList.add("is-bad");
+      if (b === "near+dist") qs("q3brow2").classList.add("is-ok");
+      else qs("q3brow2").classList.add("is-bad");
+      /* order of rows may be swapped; fix classes */
+      qs("q3brow1").className = "pair-row " + (okSet[a] ? "is-ok" : "is-bad");
+      qs("q3brow2").className = "pair-row " + (okSet[b] ? "is-ok" : "is-bad");
+      if (a === b) {
+        showFb("q3bcheckfb", "bad", "兩行寫了同一組。需要兩組不同的特徵，各配上自己的重要性。");
+        return;
+      }
+      if (nOk === 2) {
+        showFb("q3bcheckfb", "ok", "正確。兩行都是成對的給分點：密集網絡配增加表面積，到達大多數細胞配縮短擴散距離。");
+        return;
+      }
+      if ((r1.f === "net" || r1.f === "near") && (r2.f === "net" || r2.f === "near") && r1.f !== r2.f) {
+        showFb("q3bcheckfb", "bad", "兩項特徵都選對了，但重要性和特徵混了行。密集網絡應對「增加表面積」，到達細胞應對「縮短擴散距離」。");
+        return;
+      }
+      if (r1.f === "thin" || r2.f === "thin") {
+        showFb("q3bcheckfb", "bad", "「薄壁」不是這幅網圖的給分特徵。即使生物學上正確，本題也不用它來取代那兩項。");
+        return;
+      }
+      if (r1.f === "csa" || r2.f === "csa" || r1.i === "time" || r2.i === "time") {
+        showFb("q3bcheckfb", "bad", "這是把 3(a) 的橫切面總面積，或 3(a)(ii) 的「血流時間」搬過來了。3(b) 要寫網圖上看見的分支和靠近細胞。");
+        return;
+      }
+      if (r1.i === "rate" || r2.i === "rate") {
+        showFb("q3bcheckfb", "bad", "重要性不要只寫「增加速率」。應寫增加表面積，或縮短擴散距離。");
+        return;
+      }
+      showFb("q3bcheckfb", "bad", "再對照模擬的兩個正確高亮，把特徵和重要性成對寫下。");
+    });
+    wirePred("q3bpred", "q3bpredfb", "ok", {
+      ok: "正確。兩行都要成對：密集分支配表面積，到達細胞配縮短擴散距離。請用高亮和下面的配對練習核對。",
+      thin: "管壁薄、血流慢都不是 3(b) 的給分寫法。後者更是 3(a)(ii) 的答案，不要搬過來。",
+      csa: "「橫切面總面積很大」來自 3(a) 的圖表，不是這幅微血管網示意圖要寫的特徵。重要性也不應只寫「增加速率」。"
+    });
+    toggleReveal("q3brevealBtn", "q3breveal");
+  }
+
+  /* ===================== Q1(b) ===================== */
+  var q1b = { mode: "block", sel: { bile: false, lipase: false, bicarb: false }, t: 0 };
+
+  function q1bSelectedList() {
+    var out = [];
+    if (q1b.sel.bile) out.push("bile");
+    if (q1b.sel.lipase) out.push("lipase");
+    if (q1b.sel.bicarb) out.push("bicarb");
+    return out;
+  }
+  function q1bCount() { return q1bSelectedList().length; }
+
+  function drawQ1bPairs() {
+    var host = qs("q1bpairs");
+    if (!host) return;
+    var map = {
+      bile: "<strong>膽鹽</strong>（膽汁）減少到達腸道 → 脂肪的<strong>乳化</strong>減弱。大脂滴難以變成小脂滴，表面積不足。",
+      lipase: "<strong>脂酶</strong>（胰液）減少到達腸道 → 脂肪的<strong>化學消化</strong>減弱。缺少把脂肪水解的酶。",
+      bicarb: "<strong>碳酸氫鈉</strong>（亦稱氫碳酸鈉）減少到達腸道 → 腸內 pH 不是消化脂肪的<strong>最適 pH</strong>，脂酶活性受影響。"
+    };
+    var list = q1bSelectedList();
+    if (!list.length) {
+      setHtml(host, "<p class=\"small muted\">尚未選成分。請選兩種，組成兩組「成分＋過程」。</p>");
+      return;
+    }
+    var html = "", i;
+    for (i = 0; i < list.length; i++) {
+      html += "<div class=\"col-note\"><h3>第 " + (i + 1) + " 組</h3><p>" + map[list[i]] + "</p></div>";
+    }
+    if (list.length === 1) {
+      html += "<p class=\"small muted\">還差一組。本題需要任何兩組，才有 4 分。</p>";
+    }
+    if (list.length === 3) {
+      html += "<p class=\"small muted\">三種都可以接受，但答卷只需寫其中兩組。可再按一次取消多餘的一項。</p>";
+    }
+    setHtml(host, html);
+  }
+
+  function drawQ1b() {
+    var host = qs("q1bscene");
+    if (!host) return;
+    clearEl(host);
+    var svg = emptySvg(760, 520, "肝、膽囊、胰和十二指腸的原創教學示意圖，管 B 為膽汁與胰液進入十二指腸的共同開口");
+    addGrad(svg, "livG", "#d9784a", "#a33b24");
+    addGrad(svg, "gbG", "#5aaa78", "#2d6a4f");
+    addGrad(svg, "duoG", "#f8e0d2", "#e8b49a");
+    addGrad(svg, "panG", "#f0d0b0", "#d4a373");
+    host.appendChild(svg);
+
+    /* liver — original rounded two-lobe shape, not a trace */
+    svg.appendChild(svgEl("path", {
+      d: "M90,70 C120,28 210,18 310,32 C400,44 500,28 580,48 C640,64 650,100 620,130 C590,158 500,150 430,148 C400,168 360,170 310,160 C250,175 180,170 130,150 C80,128 70,100 90,70 Z",
+      fill: "url(#livG)", stroke: "#7a2a16", "stroke-width": "2.2"
+    }));
+    /* hepatic duct branches inside liver */
+    svg.appendChild(svgEl("path", {
+      d: "M400,70 C390,90 380,110 360,128 M430,78 C410,100 390,118 360,128 M360,128 L348,170",
+      fill: "none", stroke: "#5b8a72", "stroke-width": "3.2", "stroke-linecap": "round"
+    }));
+
+    /* gallbladder: pear-shaped sac, neck pointing toward the cystic duct */
+    svg.appendChild(svgEl("path", {
+      d: "M168,188 C168,154 188,142 208,148 C230,155 244,176 236,202 C228,226 200,236 182,220 C164,206 156,208 168,188 Z",
+      fill: "url(#gbG)", stroke: "#1b4332", "stroke-width": "2"
+    }));
+    svg.appendChild(svgEl("path", {
+      d: "M232,186 C248,188 262,190 258,198",
+      fill: "none", stroke: "#1b4332", "stroke-width": "3.2", "stroke-linecap": "round"
+    }));
+    var stones = [[188, 180], [210, 186], [196, 202], [214, 204]];
+    var i, s;
+    for (i = 0; i < stones.length; i++) {
+      s = stones[i];
+      svg.appendChild(svgEl("polygon", {
+        points: (s[0]-7)+","+(s[1]-3)+" "+(s[0]+6)+","+(s[1]-5)+" "+(s[0]+8)+","+(s[1]+4)+" "+(s[0]-5)+","+(s[1]+6),
+        fill: "#c2b8a3", stroke: "#5c4a3a", "stroke-width": "1.2"
+      }));
+    }
+    /* cystic duct to common hepatic */
+    svg.appendChild(svgEl("path", {
+      d: "M246,196 C280,200 310,190 338,176",
+      fill: "none", stroke: "#5b8a72", "stroke-width": "4", "stroke-linecap": "round"
+    }));
+    /* common bile duct down to junction */
+    svg.appendChild(svgEl("path", {
+      d: "M348,170 C346,210 350,250 352,295",
+      fill: "none", stroke: "#5b8a72", "stroke-width": "4.5", "stroke-linecap": "round"
+    }));
+
+    /* duodenum cutaway, C-shaped opening toward right / around pancreas head */
+    svg.appendChild(svgEl("path", {
+      d: "M250,250 C230,250 220,270 226,300 C236,350 270,390 330,398 C390,406 430,380 438,340 L410,332 C404,360 376,378 332,374 C286,368 262,342 256,308 C252,282 260,268 278,268 L286,250 Z",
+      fill: "url(#duoG)", stroke: "#b57058", "stroke-width": "2.2"
+    }));
+    /* lumen inner wall */
+    svg.appendChild(svgEl("path", {
+      d: "M270,270 C255,272 248,290 252,312 C258,344 286,366 328,370 C366,374 392,356 398,336",
+      fill: "none", stroke: "#d18b70", "stroke-width": "2"
+    }));
+    /* open top of cutaway */
+    svg.appendChild(svgEl("ellipse", {
+      cx: "268", cy: "256", rx: "22", ry: "10",
+      fill: "#fbeee6", stroke: "#b57058", "stroke-width": "2"
+    }));
+
+    /* pancreas A, lobulated original outline */
+    svg.appendChild(svgEl("path", {
+      d: "M400,250 C430,230 470,228 520,236 C570,246 630,240 670,258 C690,270 688,300 660,312 C610,328 550,318 500,322 C460,324 430,330 404,318 C388,308 386,280 400,250 Z",
+      fill: "url(#panG)", stroke: "#8a5a32", "stroke-width": "2"
+    }));
+    /* lobule marks */
+    var lobs = ["M460,248 C455,268 458,290 452,312", "M520,242 C516,268 522,296 518,320", "M580,246 C576,270 582,298 578,318", "M630,250 C628,272 634,296 630,314"];
+    for (i = 0; i < lobs.length; i++) {
+      svg.appendChild(svgEl("path", { d: lobs[i], fill: "none", stroke: "#c08552", "stroke-width": "1.3" }));
+    }
+    /* pancreatic duct */
+    svg.appendChild(svgEl("path", {
+      d: "M650,278 C580,282 500,290 400,298 C380,300 365,302 354,300",
+      fill: "none", stroke: "#b8860b", "stroke-width": "3.6", "stroke-linecap": "round"
+    }));
+
+    /* shared opening B into duodenum */
+    svg.appendChild(svgEl("path", {
+      d: "M352,295 C340,300 328,308 316,320",
+      fill: "none", stroke: "#5b8a72", "stroke-width": "6", "stroke-linecap": "round"
+    }));
+
+    var blocked = q1b.mode === "block";
+    /* flowing juices */
+    var bilePts = [[400, 90], [370, 130], [348, 200], [352, 280], [330, 308], [300, 330]];
+    var panPts = [[640, 278], [520, 288], [420, 298], [360, 300], [330, 308], [300, 330]];
+    function drawStream(pts, color, on) {
+      var k, a, b, t, x, y;
+      for (k = 0; k < pts.length - 1; k++) {
+        if (blocked && k >= 4) break;
+        a = pts[k]; b = pts[k + 1];
+        t = ((q1b.t + k * 3) % 8) / 8;
+        x = a[0] + (b[0] - a[0]) * t;
+        y = a[1] + (b[1] - a[1]) * t;
+        svg.appendChild(svgEl("circle", {
+          cx: String(x), cy: String(y), r: on ? "5" : "3.5",
+          fill: color, opacity: on ? "0.95" : "0.55"
+        }));
+      }
+    }
+    var hiBile = q1b.sel.bile || q1bCount() === 0;
+    var hiPan = q1b.sel.lipase || q1b.sel.bicarb || q1bCount() === 0;
+    if (q1b.mode === "flow" || blocked) {
+      if (!reduceMotion() || q1b.mode === "flow") {
+        drawStream(bilePts, "#2d6a4f", hiBile);
+        drawStream(panPts, "#d4a017", hiPan);
+      }
+    }
+    if (blocked) {
+      /* backup puddle just before stone */
+      svg.appendChild(svgEl("ellipse", {
+        cx: "348", cy: "292", rx: "10", ry: "8",
+        fill: "#2d6a4f", opacity: "0.45"
+      }));
+      svg.appendChild(svgEl("ellipse", {
+        cx: "362", cy: "298", rx: "9", ry: "7",
+        fill: "#d4a017", opacity: "0.45"
+      }));
+    }
+
+    /* blocking stone at B */
+    svg.appendChild(svgEl("polygon", {
+      points: "308,312 326,306 336,320 322,334 306,326",
+      fill: "#5c4a3a", stroke: blocked ? "#9b1c1c" : "#3a2e24",
+      "stroke-width": blocked ? "3" : "1.5"
+    }));
+    if (blocked) {
+      svg.appendChild(svgEl("circle", {
+        cx: "320", cy: "320", r: "22",
+        fill: "none", stroke: "#9b1c1c", "stroke-width": "2", "stroke-dasharray": "4 3"
+      }));
+    }
+
+    /* fat droplets in duodenum */
+    var fats;
+    var emulsified = (q1b.mode === "flow") && !q1b.sel.bile;
+    /* If flowing and bile not specifically being "missing", droplets are small.
+       If blocked, or bile is selected as a missing component, large droplets. */
+    var large = blocked && (q1b.sel.bile || q1bCount() === 0);
+    var medium = blocked && !large;
+    if (q1b.mode === "flow") {
+      fats = [[290, 300, 5], [308, 318, 4], [276, 328, 5], [300, 346, 4], [268, 310, 3.5], [318, 360, 4]];
+    } else if (large) {
+      fats = [[292, 310, 16], [270, 340, 14], [310, 350, 15], [286, 368, 12]];
+    } else {
+      fats = [[290, 305, 9], [272, 330, 8], [308, 338, 10], [286, 358, 8], [300, 370, 7]];
+    }
+    for (i = 0; i < fats.length; i++) {
+      svg.appendChild(svgEl("ellipse", {
+        cx: String(fats[i][0]), cy: String(fats[i][1]), rx: String(fats[i][2]), ry: String(fats[i][2] * 0.8),
+        fill: "#f3e6b3", stroke: "#c9a227", "stroke-width": "1.2"
+      }));
+    }
+
+    if (blocked && q1b.sel.bicarb) {
+      svg.appendChild(svgEl("rect", {
+        x: "232", y: "286", width: "64", height: "28", rx: "8",
+        fill: "#fdecea", stroke: "#9b1c1c", "stroke-width": "1.5"
+      }));
+      svg.appendChild(svgText(264, 305, "pH 偏低", "middle", 12, "#9b1c1c", "800"));
+    }
+
+    /* labels — keep every character inside the viewBox */
+    svg.appendChild(svgEl("line", { x1: "168", y1: "188", x2: "20", y2: "188", stroke: "#152033", "stroke-width": "1.3" }));
+    svg.appendChild(svgText(20, 178, "內有膽石的膽囊", "start", 13, "#152033", "800"));
+    svg.appendChild(svgEl("line", { x1: "246", y1: "300", x2: "20", y2: "300", stroke: "#152033", "stroke-width": "1.3" }));
+    svg.appendChild(svgText(20, 290, "十二指腸", "start", 13, "#152033", "800"));
+    svg.appendChild(svgEl("line", { x1: "318", y1: "328", x2: "150", y2: "455", stroke: "#152033", "stroke-width": "1.3" }));
+    svg.appendChild(svgText(20, 470, "膽石（堵住開口）", "start", 13, blocked ? "#9b1c1c" : "#152033", "800"));
+    svg.appendChild(svgEl("line", { x1: "600", y1: "248", x2: "600", y2: "218", stroke: "#152033", "stroke-width": "1.3" }));
+    svg.appendChild(svgText(600, 210, "A  胰／胰臟", "middle", 14, "#152033", "800"));
+    svg.appendChild(svgEl("line", { x1: "354", y1: "292", x2: "500", y2: "168", stroke: "#152033", "stroke-width": "1.3" }));
+    svg.appendChild(svgText(504, 164, "B  共同開口", "start", 14, "#152033", "800"));
+
+    svg.appendChild(svgText(380, 22, "原創教學示意圖（比例已簡化）", "middle", 12, "#4a5a70"));
+
+    /* captions outside */
+    var cap;
+    if (q1b.mode === "flow") {
+      cap = "對照：管 B 暢通時，膽汁（綠）和胰液（黃）都進入十二指腸，脂肪滴較細，較容易被消化。";
+    } else if (q1bCount() === 0) {
+      cap = "膽石堵住管 B，膽汁和胰液都被擋在開口外。十二指腸內留下較大的脂肪滴。請選兩種被擋住的成分。";
+    } else if (q1b.sel.bile && q1b.sel.lipase && !q1b.sel.bicarb) {
+      cap = "你選了膽鹽和脂酶：乳化與化學消化都會減弱。這是完整的兩組。";
+    } else if (q1b.sel.bile && q1b.sel.bicarb && !q1b.sel.lipase) {
+      cap = "你選了膽鹽和碳酸氫鈉：乳化減弱，而且腸內 pH 不是最適值。這是完整的兩組。";
+    } else if (q1b.sel.lipase && q1b.sel.bicarb && !q1b.sel.bile) {
+      cap = "你選了脂酶和碳酸氫鈉：化學消化減弱，而且腸內 pH 不是最適值。這是完整的兩組。";
+    } else if (q1bCount() === 3) {
+      cap = "三種成分都可以接受。答卷只需任寫兩組「成分＋過程」。";
+    } else if (q1b.sel.bile) {
+      cap = "已選膽鹽：乳化減弱，脂肪滴保持較大。還差一組才有 4 分。";
+    } else if (q1b.sel.lipase) {
+      cap = "已選脂酶：脂肪的化學消化減弱。還差一組才有 4 分。";
+    } else {
+      cap = "已選碳酸氫鈉：腸內 pH 不是消化脂肪的最適值。還差一組才有 4 分。";
+    }
+    setHtml(qs("q1bcap"), cap);
+    drawQ1bPairs();
+  }
+
+  function startQ1bAnim() {
+    clearTimer("q1b");
+    if (reduceMotion()) return;
+    timers.q1b = setInterval(function () {
+      q1b.t += 1;
+      drawQ1b();
+    }, 220);
+  }
+  function syncQ1bComps() {
+    var ids = ["bile", "lipase", "bicarb"];
+    var i, btn, key;
+    var buttons = qs("q1bcomps") ? qs("q1bcomps").querySelectorAll("button") : [];
+    for (i = 0; i < buttons.length; i++) {
+      key = buttons[i].getAttribute("data-comp");
+      if (q1b.sel[key]) buttons[i].classList.add("is-on");
+      else buttons[i].classList.remove("is-on");
+    }
+  }
+  function wireQ1b() {
+    function setMode(mode, btn) {
+      q1b.mode = mode;
+      setActive([qs("q1bmodeFlow"), qs("q1bmodeBlock")], btn);
+      drawQ1b();
+    }
+    on(qs("q1bmodeFlow"), "click", function () { setMode("flow", qs("q1bmodeFlow")); });
+    on(qs("q1bmodeBlock"), "click", function () { setMode("block", qs("q1bmodeBlock")); });
+    var box = qs("q1bcomps");
+    if (box) {
+      var buttons = box.querySelectorAll("button");
+      var i;
+      for (i = 0; i < buttons.length; i++) {
+        (function (btn) {
+          on(btn, "click", function () {
+            var key = btn.getAttribute("data-comp");
+            q1b.sel[key] = !q1b.sel[key];
+            /* auto switch to blocked view when choosing a missing component */
+            if (q1b.sel[key]) {
+              q1b.mode = "block";
+              setActive([qs("q1bmodeFlow"), qs("q1bmodeBlock")], qs("q1bmodeBlock"));
+            }
+            syncQ1bComps();
+            drawQ1b();
+          });
+        })(buttons[i]);
+      }
+    }
+    on(qs("q1bcheckBtn"), "click", function () {
+      var n = q1bCount();
+      if (n < 2) {
+        showFb("q1bcheckfb", "bad", "還不夠兩組。本題要任選兩種成分，並且每種都寫出它如何影響脂肪消化。");
+        return;
+      }
+      if (n === 3) {
+        showFb("q1bcheckfb", "ok", "三種都正確，答卷寫其中兩組即可。每組都要同時有「哪一種成分到不了」和「因此哪一個過程減弱」。");
+        return;
+      }
+      showFb("q1bcheckfb", "ok", "這兩組都可以給分。請確保每組都寫了成分和對應過程：膽鹽配乳化、脂酶配化學消化、碳酸氫鈉配最適 pH。");
+    });
+    wirePred("q1bpred", "q1bpredfb", "ok", {
+      ok: "正確。4 分來自任何兩組「成分＋過程」。管 B 同時擋住膽汁和胰液，所以膽鹽、脂酶、碳酸氫鈉都可以寫。",
+      enzyme: "只寫「酶減少，消化變慢」沒有指名成分，也沒有寫出對應過程，通常拿不到這 4 分。",
+      bileonly: "這是生物學上的誤解。管 B 是膽管與胰管匯合後的共同開口，脂酶和碳酸氫鈉同樣會被這顆膽石擋住。"
+    });
+    toggleReveal("q1brevealBtn", "q1breveal");
+    wireMc("q1bmc", "q1bmcfb",
+      "正確。這是完整的兩組：膽鹽配乳化，脂酶配化學消化。碳酸氫鈉配最適 pH 也可以取代其中一組。",
+      "第一句太含糊；第三句把管 B 當成只運送膽汁，因而漏掉胰液中的脂酶和碳酸氫鈉。");
+    q1b.mode = "block";
+  }
+
+  /* ===================== boot ===================== */
+  function boot() {
+    wireQ2c();
+    wireQ2bii();
+    wireQ2a();
+    wireQ2bi();
+    wireQ3b();
+    wireQ1b();
+    show(currentMod());
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+})();
+</script>
+</body>
+</html>
