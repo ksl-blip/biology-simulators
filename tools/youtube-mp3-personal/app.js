@@ -76,12 +76,35 @@
     bar.style.width = Math.max(0, Math.min(100, pct || 0)) + "%";
   }
 
+  function defaultFolder() {
+    const cfg = window.APP_CONFIG || {};
+    const id = String(cfg.DEFAULT_FOLDER_ID || "").trim();
+    if (!id) return null;
+    const name = String(cfg.DEFAULT_FOLDER_NAME || "").trim() || "共用同步資料夾";
+    return { id, name };
+  }
+
   function folders() {
+    let list = [];
     try {
       const raw = JSON.parse(localStorage.getItem(LS_FOLDERS) || "[]");
-      return Array.isArray(raw) ? raw : [];
+      if (Array.isArray(raw)) list = raw.slice();
     } catch {
-      return [];
+      list = [];
+    }
+    const def = defaultFolder();
+    if (def && !list.some((x) => x.id === def.id)) {
+      list.unshift({ id: def.id, name: def.name });
+    }
+    return list;
+  }
+
+  function ensureDefaultFolder() {
+    const def = defaultFolder();
+    if (!def) return;
+    const selected = localStorage.getItem(LS_SELECTED);
+    if (!selected || !folders().some((x) => x.id === selected)) {
+      localStorage.setItem(LS_SELECTED, def.id);
     }
   }
 
@@ -461,6 +484,11 @@
       showStatus("drive-status", "warn", "請先選擇要刪除嘅資料夾。");
       return;
     }
+    const def = defaultFolder();
+    if (def && id === def.id) {
+      showStatus("drive-status", "warn", "呢個係預設共用資料夾，唔可以從清單刪除。你仍然可以加其他資料夾。");
+      return;
+    }
     if (!confirm("確定刪除此資料夾登記？（不會刪除 Google Drive 上的實際資料夾）")) return;
     saveFolders(folders().filter((f) => f.id !== id));
     if (localStorage.getItem(LS_SELECTED) === id) localStorage.removeItem(LS_SELECTED);
@@ -596,6 +624,7 @@
 
   async function init() {
     bind();
+    ensureDefaultFolder();
     refreshFolderSelect();
     syncApiBaseInputs();
     initGoogle().catch((err) => {

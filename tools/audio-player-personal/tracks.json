@@ -1,4 +1,19 @@
 {
   "version": 1,
-  "tracks": []
+  "tracks": [
+    {
+      "id": "mate60-pro-cmhk-mate60-mate-x5-12999-mwvx4tc0",
+      "title": "突發直播 Mate60 Pro 使用感想 CMHK 香港引入Mate60系列Mate X5 開價了12999起",
+      "file": "media/mate60-pro-cmhk-mate60-mate-x5-12999-mwvx4tc0.mp3",
+      "bytes": 34046184,
+      "duration": 4255.608
+    },
+    {
+      "id": "mate-60-pro-vs-iphone-15-9000s-55gnearli-mwvx4smb",
+      "title": "Mate 60 Pro vs iPhone 15華為萍果科技對決華為麒麟9000S衛星通話55GNearLinkXMAGE對戰萍果A16A17",
+      "file": "media/mate-60-pro-vs-iphone-15-9000s-55gnearli-mwvx4smb.mp3",
+      "bytes": 9708910,
+      "duration": 1213.518
+    }
+  ]
 }
