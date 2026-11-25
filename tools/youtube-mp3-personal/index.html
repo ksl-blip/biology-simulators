@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="私人 MP3">
+  <meta name="theme-color" content="#1f3a5f">
+  <title>私人 YouTube 轉 MP3</title>
+  <meta name="description" content="福建中學鄺劭良老師私人使用，非公開轉換服務。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="gate" class="gate">
+    <form id="gate-form" class="gate-card" autocomplete="current-password">
+      <p class="eyebrow">PRIVATE TOOL</p>
+      <h1>私人 YouTube 轉 MP3</h1>
+      <p class="lede">此頁面只供福建中學鄺劭良老師私人使用，唔係公開轉換服務。請輸入通行密碼。</p>
+      <label for="password">通行密碼</label>
+      <input id="password" name="password" type="password" required enterkeyhint="done" autocomplete="current-password">
+      <div class="btn-row">
+        <button class="btn btn-primary" type="submit" id="gate-submit">進入</button>
+      </div>
+      <div id="gate-status" class="status" hidden role="status"></div>
+    </form>
+  </div>
+
+  <div id="app" class="hidden">
+    <header class="app-header">
+      <button type="button" class="logout" id="btn-lock">鎖定</button>
+      <span class="private-tag">私人工具 · 非公開服務</span>
+      <h1>YouTube 轉 MP3</h1>
+      <p class="lede">貼上 YouTube 網址，轉換成 MP3，可喺呢頁播放、下載，或者上傳到已儲存嘅 Google Drive 資料夾。</p>
+    </header>
+    <main>
+      <section class="card" aria-labelledby="convert-title">
+        <h2 id="convert-title">轉換</h2>
+        <form id="convert-form">
+          <div class="convert-row">
+            <div class="field">
+              <label for="yt-url">YouTube 網址</label>
+              <input id="yt-url" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://youtu.be/…… 或完整 YouTube 連結" required>
+            </div>
+            <button class="btn btn-primary inline" type="submit" id="btn-convert">轉換</button>
+          </div>
+        </form>
+        <div class="progress-wrap hidden" id="progress-wrap" aria-hidden="true">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p class="meta" id="convert-meta"></p>
+        <div id="convert-status" class="status" hidden role="status"></div>
+        <details class="advanced">
+          <summary>進階：轉換伺服器網址</summary>
+          <p class="hint">通常唔使改。若轉換服務網址有更新，先貼上新嘅伺服器網址再撳儲存。</p>
+          <label for="api-base">伺服器網址</label>
+          <div class="folder-actions">
+            <input id="api-base" type="url" inputmode="url" placeholder="https://……">
+            <button type="button" class="btn btn-ghost" id="btn-save-api">儲存</button>
+          </div>
+        </details>
+      </section>
+
+      <section class="card hidden" id="player-card" aria-labelledby="player-title">
+        <h2 id="player-title">播放同下載</h2>
+        <p id="track-title"></p>
+        <p class="meta" id="track-meta"></p>
+        <audio id="player" controls playsinline preload="metadata"></audio>
+        <div class="btn-row">
+          <button type="button" class="btn btn-bean" id="btn-download">下載 MP3</button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="drive-title">
+        <h2 id="drive-title">上傳到 Google Drive</h2>
+        <p class="user-line" id="drive-user">尚未登入 Google。登入後可以將轉好嘅 MP3 上傳到已儲存嘅資料夾。</p>
+        <div class="btn-row">
+          <button type="button" class="btn btn-ghost" id="btn-drive-login">登入 Google</button>
+          <button type="button" class="btn btn-ghost hidden" id="btn-drive-logout">登出 Google</button>
+        </div>
+        <div class="field" style="margin-top:16px">
+          <label for="folder-url">資料夾連結或 ID</label>
+          <div class="folder-actions">
+            <input id="folder-url" type="text" autocomplete="off" spellcheck="false" placeholder="https://drive.google.com/drive/folders/……">
+            <button type="button" class="btn btn-ghost" id="btn-save-folder">儲存資料夾</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="folder-select">已儲存的資料夾</label>
+          <div class="saved-row">
+            <select id="folder-select">
+              <option value="">— 請選擇已儲存的資料夾 —</option>
+            </select>
+            <button type="button" class="btn btn-ghost" id="btn-delete-folder">刪除</button>
+          </div>
+          <p class="hint">刪除只會喺呢部裝置嘅清單移除，唔會刪除 Google Drive 上嘅實際資料夾。</p>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" id="btn-upload" disabled>上傳 MP3 到資料夾</button>
+        </div>
+        <div id="drive-status" class="status" hidden role="status"></div>
+        <p class="note" id="drive-link" hidden></p>
+      </section>
+    </main>
+    <footer>
+      福建中學 · 鄺劭良老師私人播放工具。呢頁唔對外開放，亦唔係公開 YouTube 轉檔服務。
+    </footer>
+  </div>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
