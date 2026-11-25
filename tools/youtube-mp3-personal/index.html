@@ -21,7 +21,15 @@
     <form id="gate-form" class="gate-card" autocomplete="current-password">
       <p class="eyebrow">PRIVATE TOOL</p>
       <h1>私人 YouTube 轉 MP3</h1>
-      <p class="lede">此頁面只供福建中學鄺劭良老師私人使用，唔係公開轉換服務。請輸入通行密碼。</p>
+      <p class="lede">此頁面只供福建中學鄺劭良老師私人使用，唔係公開轉換服務。</p>
+      <div class="field">
+        <label for="gate-api-base">轉換伺服器網址</label>
+        <div class="folder-actions">
+          <input id="gate-api-base" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://……">
+          <button type="button" class="btn btn-ghost" id="btn-save-gate-api">儲存</button>
+        </div>
+        <p class="hint">請先貼上轉換伺服器嘅 HTTPS 網址並撳「儲存」，然後再輸入通行密碼。</p>
+      </div>
       <label for="password">通行密碼</label>
       <input id="password" name="password" type="password" required enterkeyhint="done" autocomplete="current-password">
       <div class="btn-row">

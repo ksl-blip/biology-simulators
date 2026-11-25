@@ -29,6 +29,26 @@
     return "";
   }
 
+  function syncApiBaseInputs() {
+    const current = apiBase();
+    const appInput = $("api-base");
+    const gateInput = $("gate-api-base");
+    if (appInput) appInput.value = current;
+    if (gateInput) gateInput.value = current;
+  }
+
+  function saveApiBaseFrom(inputId, statusId) {
+    const input = $(inputId);
+    const value = (input ? input.value : "").trim().replace(/\/+$/, "");
+    if (value) localStorage.setItem(LS_API, value);
+    else localStorage.removeItem(LS_API);
+    syncApiBaseInputs();
+    if (statusId) {
+      showStatus(statusId, "good", value ? "已儲存轉換伺服器網址。" : "已改回預設伺服器網址。");
+    }
+    return value;
+  }
+
   function apiUrl(path) {
     const base = apiBase();
     return (base || "") + path;
@@ -524,10 +544,15 @@
       $("gate-submit").disabled = true;
       showStatus("gate-status", "info", "核對密碼中…");
       try {
+        const typed = ($("gate-api-base").value || "").trim().replace(/\/+$/, "");
+        if (typed) {
+          localStorage.setItem(LS_API, typed);
+          syncApiBaseInputs();
+        }
         try {
           await api("/api/health");
         } catch (connErr) {
-          throw new Error("轉換伺服器連線失敗。請喺「進階：轉換伺服器網址」填上有效網址，或稍後再試。");
+          throw new Error("轉換伺服器連線失敗。請喺上方「轉換伺服器網址」填上有效嘅 HTTPS 網址並撳「儲存」，或稍後再試。");
         }
         await unlock($("password").value);
         showStatus("gate-status");
@@ -543,11 +568,11 @@
       startConvert($("yt-url").value.trim());
     });
     $("btn-download").addEventListener("click", downloadMp3);
+    $("btn-save-gate-api").addEventListener("click", () => {
+      saveApiBaseFrom("gate-api-base", "gate-status");
+    });
     $("btn-save-api").addEventListener("click", () => {
-      const value = $("api-base").value.trim().replace(/\/+$/, "");
-      if (value) localStorage.setItem(LS_API, value);
-      else localStorage.removeItem(LS_API);
-      showStatus("convert-status", "good", value ? "已儲存轉換伺服器網址。" : "已改回預設伺服器網址。");
+      saveApiBaseFrom("api-base", "convert-status");
     });
     $("btn-drive-login").addEventListener("click", async () => {
       try {
@@ -572,7 +597,7 @@
   async function init() {
     bind();
     refreshFolderSelect();
-    $("api-base").value = apiBase();
+    syncApiBaseInputs();
     initGoogle().catch((err) => {
       console.warn(err);
     });
