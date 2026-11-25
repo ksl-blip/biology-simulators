@@ -102,6 +102,7 @@
     border-bottom: 1px solid #cfe6dc;
   }
   .admin-bar p { margin: 0; font-size: 0.86rem; color: var(--accent-dark); }
+  .admin-bar #drive-user { font-size: 0.84rem; }
   .admin-bar .folder-field { width: 100%; margin: 0; }
   .admin-bar .folder-field input { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   .actions, .row-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -284,11 +285,14 @@
     <div class="layout">
       <section class="panel" aria-label="播放清單">
         <div class="admin-bar" id="admin-bar" hidden>
-          <p>管理模式。密碼只係呢部裝置嘅本地鎖，唔係伺服器登入。立即同步、改資料夾、刪除同換檔會經 webhook 叫機器人更新網站檔案。每小時同步由機器人做。網頁入面冇寫入金鑰。</p>
+          <p>管理模式。密碼只係呢部裝置嘅本地鎖，唔係伺服器登入。刪除會即時喺呢頁收起，並寫入共用 Drive 資料夾嘅忽略清單；其他裝置會喺下次自動同步之後更新。立即同步會提醒你自動同步時間；儲存資料夾會記喺呢部裝置，並可寫入共用設定。網頁入面冇寫入金鑰，亦唔會刪除 Drive 入面嘅音頻檔。</p>
           <label class="field folder-field">Drive 資料夾
             <input type="text" id="folder-input" autocomplete="off" spellcheck="false" placeholder="貼上資料夾連結或 ID">
           </label>
+          <p id="drive-user">刪除播放清單項目前，請先登入 Google，以便寫入共用忽略清單。</p>
           <div class="actions">
+            <button type="button" class="btn" id="drive-login">登入 Google</button>
+            <button type="button" class="ghost" id="drive-logout" hidden>登出 Google</button>
             <button type="button" class="primary" id="sync-btn">立即同步</button>
             <button type="button" class="btn" id="folder-save">儲存資料夾</button>
             <button type="button" class="ghost" id="pw-open">更改密碼</button>
@@ -349,13 +353,13 @@
       <h2>點樣加入錄音</h2>
       <p class="note">播放清單同 mp3 放喺網站檔案入面，所以任何人開 <span id="public-url">呢條連結</span> 都聽得同同一批。唔使 API 金鑰。網頁唔可以自己上傳：寫入儲存庫要有提交權限，金鑰唔可以放喺瀏覽器入面。</p>
       <ol class="steps">
-        <li>撳「管理」，用密碼解鎖。未改過密碼時，預設係 admin。可以改 Drive 資料夾，再撳「立即同步」，叫機器人由該資料夾複製 mp3。每小時同步由機器人做。</li>
+        <li>撳「管理」，用密碼解鎖。未改過密碼時，預設係 admin。可以登入 Google 後刪除曲目，或儲存共用 Drive 資料夾。資料夾根目錄嘅新 MP3 會由自動同步加入播放器，通常最多約一小時。</li>
         <li>喺儲存庫根目錄執行：
           <code class="cmd">node tools/audio-player-personal/add-track.mjs 錄音.mp3 --title "標題"</code>
         </li>
         <li>提交 <code>tracks.json</code> 同 <code>media/</code> 入面新檔，推上 main。同步都要複製 mp3，唔好只寫 Drive 連結。</li>
       </ol>
-      <p class="note">未填 webhook 時，「立即同步」、「儲存資料夾」、「刪除」同「換檔」都會話尚未設定。網址貼喺 <code>sync-config.js</code>。密碼只鎖呢部裝置，詳細步驟喺 <code>tools/audio-player-personal/README.md</code>。</p>
+      <p class="note">刪除播放清單項目要登入 Google，寫入共用資料夾嘅 <code>deleted-tracks.json</code>；唔會刪除 Drive 入面嘅音頻檔。「立即同步」同「儲存資料夾」唔使改任何設定檔。密碼只鎖呢部裝置，詳細步驟喺 <code>tools/audio-player-personal/README.md</code>。</p>
       <div class="dialog-actions">
         <button type="submit" class="primary">關閉</button>
       </div>
@@ -413,7 +417,11 @@
   const AUDIO_NAME = /\.(mp3|m4a|aac|wav|ogg|oga|flac|webm|opus)$/i;
   const LEGACY_DB = "personal-audio-player";
   const ID_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
-  const FOLDER_ID = "1TsrCPfxRIx1tY0AcUWDAupKqWlXd_8F0";
+  const FOLDER_ID = "1uhlh_vmDyVBXIed7RzqGS1V44RlhvPbJ";
+  const DELETED_FILE_NAME = "deleted-tracks.json";
+  const LOCAL_DELETED_KEY = "personal-audio-player:deleted";
+  const DEFAULT_DRIVE_CLIENT_ID = "805456217247-f43qsos9k5nau7m4p5cnhmgtor0ok7sk.apps.googleusercontent.com";
+  const DEFAULT_DRIVE_SCOPES = "https://www.googleapis.com/auth/drive";
 
   const audio = document.getElementById("player");
   const seek = document.getElementById("seek");
@@ -448,6 +456,11 @@
   let admin = false;
   let replaceTargetId = null;
   const pendingDelete = new Set();
+  let driveTokenClient = null;
+  let driveAccessToken = "";
+  let driveTokenExpiresAt = 0;
+  let driveEmail = "";
+  let driveSignedIn = false;
 
   document.getElementById("public-url").textContent = PUBLIC_URL;
 
@@ -484,7 +497,7 @@
     } catch (e) {}
   }
 
-  function toast(msg) {
+  function toast(msg, ms) {
     let el = document.getElementById("toast");
     if (!el) {
       el = document.createElement("div");
@@ -495,7 +508,7 @@
     }
     el.textContent = msg;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.remove(), 3200);
+    toastTimer = setTimeout(() => el.remove(), ms || 3200);
   }
 
   function artwork() {
@@ -586,7 +599,7 @@
         emptyText.textContent = loadError;
       } else {
         emptyTitle.textContent = "未有錄音";
-        emptyText.textContent = "解鎖「管理」之後可以改資料夾同立即同步，或者用「點樣加入」將 mp3 放上網站。提交 media/ 同 tracks.json 之後，任何人打開呢頁都聽得。";
+        emptyText.textContent = "解鎖「管理」之後可以刪除、儲存資料夾，或者用「點樣加入」將 mp3 放上網站。共用 Drive 資料夾入面嘅新檔會喺自動同步之後出現。";
       }
     }
     countEl.textContent = tracks.length + " 個";
@@ -812,6 +825,19 @@
     const rawCount = data.tracks.length;
     tracks = data.tracks.map((raw) => normalize(raw, seen)).filter(Boolean);
     if (tracks.length !== rawCount) toast("有部分曲目路徑唔接受，已跳過。");
+    const hidden = await collectDeletedEntries();
+    if (hidden.length) {
+      const before = tracks.length;
+      tracks = tracks.filter((t) => !isTombstoned(t, hidden));
+      if (currentId && !tracks.some((t) => t.id === currentId)) {
+        currentId = null;
+        audio.removeAttribute("src");
+        audio.load();
+      }
+      if (tracks.length !== before) {
+        /* Already-deleted items stay hidden even if tracks.json is stale. */
+      }
+    }
     const saved = readLocal(SPEED_KEY);
     const savedSpeed = saved == null ? NaN : Number(saved);
     if (savedSpeed >= 0.5 && savedSpeed <= 2) speed = quantize(savedSpeed);
@@ -1018,6 +1044,8 @@
   const FOLDER_ID_RE = /^[a-zA-Z0-9_-]{10,80}$/;
 
   function currentFolderId() {
+    const local = readLocal("personal-audio-player:folder-id");
+    if (local && FOLDER_ID_RE.test(local)) return local;
     const cfg = window.PERSONAL_AUDIO_SYNC;
     const id = cfg && typeof cfg.folderId === "string" ? cfg.folderId.trim() : "";
     return FOLDER_ID_RE.test(id) ? id : FOLDER_ID;
@@ -1058,19 +1086,14 @@
     return { url: "", reason: "invalid" };
   }
 
-  function webhookToast(reason) {
-    toast(reason === "invalid"
-      ? "同步網址唔正確。請喺 sync-config.js 填一個 https webhook。"
-      : "同步尚未設定。請喺 sync-config.js 填上 Grok Bot 嘅 webhook 網址。");
-  }
+  const FOLDER_PREF_KEY = "personal-audio-player:folder-id";
+  const PREFERRED_FOLDER_FILE = "preferred-folder.json";
+  const SYNC_REQUEST_FILE = "sync-now.json";
 
   async function postAdmin(action, extra, button) {
     if (!admin) return false;
     const target = syncWebhookUrl();
-    if (!target.url) {
-      webhookToast(target.reason);
-      return false;
-    }
+    if (!target.url) return false;
     if (button) button.disabled = true;
     try {
       const response = await fetch(target.url, {
@@ -1086,8 +1109,65 @@
       if (!response.ok) throw new Error("HTTP " + response.status);
       return true;
     } catch (e) {
-      toast("要求送唔出。請稍後再試。");
       return false;
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }
+
+  async function writeDriveJson(name, payload, button) {
+    if (button) button.disabled = true;
+    try {
+      const token = await ensureDriveToken();
+      const folderId = currentFolderId();
+      const q = encodeURIComponent("'" + folderId + "' in parents and name = '" + name + "' and trashed = false");
+      const listRes = await fetch(
+        "https://www.googleapis.com/drive/v3/files?q=" + q +
+          "&fields=files(id,name)&pageSize=5&supportsAllDrives=true&includeItemsFromAllDrives=true",
+        { headers: { Authorization: "Bearer " + token } }
+      );
+      if (!listRes.ok) throw await driveApiError(listRes);
+      const listed = await listRes.json();
+      const existingId = listed.files && listed.files[0] && listed.files[0].id;
+      const body = JSON.stringify(payload, null, 2) + "\n";
+      if (existingId) {
+        const res = await fetch(
+          "https://www.googleapis.com/upload/drive/v3/files/" + encodeURIComponent(existingId) +
+            "?uploadType=media&supportsAllDrives=true",
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "application/json; charset=UTF-8"
+            },
+            body: body
+          }
+        );
+        if (!res.ok) throw await driveApiError(res);
+      } else {
+        const metadata = { name: name, parents: [folderId], mimeType: "application/json" };
+        const boundary = "-------personalplayer" + Date.now();
+        const mixed = "--" + boundary + "\r\n" +
+          "Content-Type: application/json; charset=UTF-8\r\n\r\n" +
+          JSON.stringify(metadata) + "\r\n" +
+          "--" + boundary + "\r\n" +
+          "Content-Type: application/json; charset=UTF-8\r\n\r\n" +
+          body + "\r\n" +
+          "--" + boundary + "--";
+        const res = await fetch(
+          "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true",
+          {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "multipart/related; boundary=" + boundary
+            },
+            body: mixed
+          }
+        );
+        if (!res.ok) throw await driveApiError(res);
+      }
+      return true;
     } finally {
       if (button) button.disabled = false;
     }
@@ -1095,37 +1175,394 @@
 
   document.getElementById("sync-btn").addEventListener("click", async () => {
     if (!admin) return;
-    const ok = await postAdmin("sync", { immediate: true }, document.getElementById("sync-btn"));
-    if (ok) toast("已送出即時同步。更新可能要等一陣，然後重新載入頁面。");
+    const button = document.getElementById("sync-btn");
+    const ok = await postAdmin("sync", { immediate: true }, button);
+    if (ok) {
+      toast("已送出即時同步。更新可能要等一陣，然後重新載入頁面。", 5000);
+      return;
+    }
+    try {
+      await writeDriveJson(SYNC_REQUEST_FILE, {
+        version: 1,
+        requestedAt: new Date().toISOString(),
+        folderId: currentFolderId(),
+        source: "personal-audio-player"
+      }, button);
+      toast("已記下同步要求。自動同步會盡快處理共用資料夾，通常最多約一小時；完成後重新載入呢頁。", 7000);
+    } catch (err) {
+      toast("而家用緊共用資料夾自動同步。新檔同刪除會喺下次自動同步之後出現，通常最多約一小時。唔使改任何設定。", 7000);
+    }
   });
 
   document.getElementById("folder-save").addEventListener("click", async () => {
     if (!admin) return;
     const input = document.getElementById("folder-input");
+    const button = document.getElementById("folder-save");
     const id = parseFolderId(input.value);
     if (!id) {
       toast("呢條資料夾連結唔正確。請貼 Drive 資料夾網址，或者資料夾 ID。");
       return;
     }
-    const ok = await postAdmin("set-folder", { folderId: id }, document.getElementById("folder-save"));
-    if (!ok) return;
     if (!window.PERSONAL_AUDIO_SYNC || typeof window.PERSONAL_AUDIO_SYNC !== "object") {
       window.PERSONAL_AUDIO_SYNC = {};
     }
     window.PERSONAL_AUDIO_SYNC.folderId = id;
+    writeLocal(FOLDER_PREF_KEY, id);
     input.value = id;
-    toast("已送出資料夾更新。機器人會寫入 sync-config.js，每小時同步都用呢個資料夾。");
+    const ok = await postAdmin("set-folder", { folderId: id }, button);
+    if (ok) {
+      toast("已更新呢部裝置用嘅資料夾，亦已送出共用更新要求。", 5000);
+      return;
+    }
+    try {
+      await writeDriveJson(PREFERRED_FOLDER_FILE, {
+        version: 1,
+        folderId: id,
+        updatedAt: new Date().toISOString(),
+        source: "personal-audio-player"
+      }, button);
+      toast("已儲存資料夾。呢部裝置同共用設定都會用呢個資料夾；網站播放清單會喺下次自動同步之後對準。", 7000);
+    } catch (err) {
+      toast("已喺呢部裝置儲存資料夾。刪除會寫入呢個資料夾嘅忽略清單；網站播放清單仍跟自動同步。", 7000);
+    }
   });
 
-  async function requestDelete(track) {
-    if (!admin) return;
-    pendingDelete.delete(track.id);
-    renderList();
-    const ok = await postAdmin("delete", {
-      track: { id: track.id, title: track.title, file: track.file }
-    });
-    if (ok) toast("已送出刪除要求。機器人提交之後，重新載入先會喺大家嘅播放清單消失。");
+  function driveClientId() {
+    const cfg = window.PERSONAL_AUDIO_SYNC;
+    const id = cfg && typeof cfg.clientId === "string" ? cfg.clientId.trim() : "";
+    return id || DEFAULT_DRIVE_CLIENT_ID;
   }
+
+  function driveScopes() {
+    const cfg = window.PERSONAL_AUDIO_SYNC;
+    const scopes = cfg && typeof cfg.scopes === "string" ? cfg.scopes.trim() : "";
+    return scopes || DEFAULT_DRIVE_SCOPES;
+  }
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[src="' + src + '"]');
+      if (existing) {
+        if (window.google && google.accounts && google.accounts.oauth2) resolve();
+        else existing.addEventListener("load", () => resolve(), { once: true });
+        return;
+      }
+      const s = document.createElement("script");
+      s.src = src;
+      s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error("無法載入 Google 登入元件。"));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function initGoogle() {
+    if (!driveClientId()) return;
+    await loadScript("https://accounts.google.com/gsi/client");
+    if (driveTokenClient) return;
+    driveTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: driveClientId(),
+      scope: driveScopes(),
+      callback: () => {}
+    });
+  }
+
+  function requestGoogleToken(promptConsent) {
+    return new Promise((resolve, reject) => {
+      if (!driveTokenClient) {
+        reject(new Error("Google 登入尚未準備好。請用 GitHub Pages 網址開啟呢頁再試。"));
+        return;
+      }
+      driveTokenClient.callback = async (resp) => {
+        if (resp.error) {
+          reject(new Error(resp.error_description || resp.error));
+          return;
+        }
+        driveAccessToken = resp.access_token;
+        const expiresIn = Number(resp.expires_in) || 3600;
+        driveTokenExpiresAt = Date.now() + expiresIn * 1000;
+        try {
+          const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: { Authorization: "Bearer " + driveAccessToken }
+          });
+          const info = await res.json();
+          driveEmail = info.email || "";
+        } catch (e) {
+          driveEmail = "";
+        }
+        driveSignedIn = true;
+        updateDriveUser();
+        resolve();
+      };
+      const opts = {};
+      if (promptConsent || !driveAccessToken) opts.prompt = "consent";
+      driveTokenClient.requestAccessToken(opts);
+    });
+  }
+
+  async function ensureDriveToken() {
+    if (driveSignedIn && driveAccessToken && Date.now() < driveTokenExpiresAt - 5000) {
+      return driveAccessToken;
+    }
+    await initGoogle();
+    await requestGoogleToken(false);
+    return driveAccessToken;
+  }
+
+  function updateDriveUser() {
+    const el = document.getElementById("drive-user");
+    const login = document.getElementById("drive-login");
+    const logout = document.getElementById("drive-logout");
+    if (!el || !login || !logout) return;
+    if (driveSignedIn) {
+      el.textContent = driveEmail
+        ? "已登入：" + driveEmail + "。刪除會寫入共用忽略清單，唔會刪除 Drive 音頻檔。"
+        : "已登入 Google。刪除會寫入共用忽略清單，唔會刪除 Drive 音頻檔。";
+      login.hidden = true;
+      logout.hidden = false;
+    } else {
+      el.textContent = "刪除播放清單項目前，請先登入 Google，以便寫入共用忽略清單。";
+      login.hidden = false;
+      logout.hidden = true;
+    }
+  }
+
+  function googleSignOut() {
+    const token = driveAccessToken;
+    driveSignedIn = false;
+    driveEmail = "";
+    driveAccessToken = "";
+    driveTokenExpiresAt = 0;
+    if (token && window.google && google.accounts && google.accounts.oauth2) {
+      google.accounts.oauth2.revoke(token, () => {});
+    }
+    updateDriveUser();
+  }
+
+  function emptyDeletedDoc() {
+    return {
+      version: 1,
+      description: "Owner-deleted personal-player tracks. Hourly Drive sync must not re-add any item that matches a deleted entry by id, title, or driveFileName. Leave the Google Drive files in place.",
+      deleted: []
+    };
+  }
+
+  function readLocalDeleted() {
+    try {
+      const raw = readLocal(LOCAL_DELETED_KEY);
+      if (!raw) return [];
+      const data = JSON.parse(raw);
+      return Array.isArray(data) ? data : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function writeLocalDeleted(entries) {
+    writeLocal(LOCAL_DELETED_KEY, JSON.stringify(entries));
+  }
+
+  function entryMatches(entry, track) {
+    if (!entry || !track) return false;
+    if (entry.id && track.id && entry.id === track.id) return true;
+    if (entry.title && track.title && entry.title === track.title) return true;
+    if (entry.file && track.file && entry.file === track.file) return true;
+    const driveName = entry.driveFileName ? String(entry.driveFileName) : "";
+    if (driveName && track.title && driveName.indexOf(track.title) !== -1) return true;
+    if (driveName && track.file && driveName.indexOf(String(track.file).split("/").pop()) !== -1) return true;
+    return false;
+  }
+
+  function isTombstoned(track, list) {
+    return (list || []).some((entry) => entryMatches(entry, track));
+  }
+
+  function rememberLocalDeleted(entry, persisted) {
+    const list = readLocalDeleted();
+    const next = Object.assign({}, entry, { persisted: !!persisted });
+    const idx = list.findIndex((item) => entryMatches(item, entry));
+    if (idx >= 0) list[idx] = Object.assign({}, list[idx], next);
+    else list.push(next);
+    writeLocalDeleted(list);
+  }
+
+  async function loadPublishedDeleted() {
+    try {
+      const res = await fetch(DELETED_FILE_NAME + "?" + Date.now(), { cache: "no-store" });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data && data.deleted) ? data.deleted : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async function collectDeletedEntries() {
+    const published = await loadPublishedDeleted();
+    const local = readLocalDeleted();
+    const out = published.slice();
+    local.forEach((entry) => {
+      if (!out.some((item) => entryMatches(item, entry))) out.push(entry);
+    });
+    return out;
+  }
+
+  async function driveApiError(res) {
+    let msg = "Google Drive 請求失敗（HTTP " + res.status + "）";
+    try {
+      const data = await res.json();
+      if (data && data.error && data.error.message) msg = data.error.message;
+    } catch (e) {}
+    return new Error(msg);
+  }
+
+  async function findDeletedFileId() {
+    const folderId = currentFolderId();
+    const q = encodeURIComponent("'" + folderId + "' in parents and name = '" + DELETED_FILE_NAME + "' and trashed = false");
+    const token = await ensureDriveToken();
+    const res = await fetch(
+      "https://www.googleapis.com/drive/v3/files?q=" + q +
+        "&fields=files(id,name)&pageSize=10&supportsAllDrives=true&includeItemsFromAllDrives=true",
+      { headers: { Authorization: "Bearer " + token } }
+    );
+    if (!res.ok) throw await driveApiError(res);
+    const data = await res.json();
+    const files = (data && data.files) || [];
+    return files[0] && files[0].id ? files[0].id : "";
+  }
+
+  async function downloadDeletedDoc(fileId) {
+    const token = await ensureDriveToken();
+    const res = await fetch(
+      "https://www.googleapis.com/drive/v3/files/" + encodeURIComponent(fileId) +
+        "?alt=media&supportsAllDrives=true",
+      { headers: { Authorization: "Bearer " + token } }
+    );
+    if (!res.ok) throw await driveApiError(res);
+    return res.json();
+  }
+
+  async function persistDeletedToDrive(entry) {
+    let fileId = await findDeletedFileId();
+    let doc = emptyDeletedDoc();
+    if (fileId) {
+      const existing = await downloadDeletedDoc(fileId);
+      if (existing && typeof existing === "object") {
+        doc = existing;
+        if (doc.version == null) doc.version = 1;
+        if (!doc.description) doc.description = emptyDeletedDoc().description;
+      }
+    }
+    if (!Array.isArray(doc.deleted)) doc.deleted = [];
+    if (!doc.deleted.some((item) => entryMatches(item, entry))) {
+      const clean = {
+        id: entry.id,
+        title: entry.title,
+        deletedAt: entry.deletedAt
+      };
+      if (entry.file) clean.file = entry.file;
+      if (entry.driveFileName) clean.driveFileName = entry.driveFileName;
+      if (entry.bytes != null && Number.isFinite(Number(entry.bytes))) clean.bytes = Number(entry.bytes);
+      doc.deleted.push(clean);
+    }
+    const body = JSON.stringify(doc, null, 2) + "\n";
+    const token = await ensureDriveToken();
+    if (fileId) {
+      const res = await fetch(
+        "https://www.googleapis.com/upload/drive/v3/files/" + encodeURIComponent(fileId) +
+          "?uploadType=media&supportsAllDrives=true",
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json; charset=UTF-8"
+          },
+          body: body
+        }
+      );
+      if (!res.ok) throw await driveApiError(res);
+    } else {
+      const metadata = {
+        name: DELETED_FILE_NAME,
+        parents: [currentFolderId()],
+        mimeType: "application/json"
+      };
+      const boundary = "-------personalplayer" + Date.now();
+      const mixed = "--" + boundary + "\r\n" +
+        "Content-Type: application/json; charset=UTF-8\r\n\r\n" +
+        JSON.stringify(metadata) + "\r\n" +
+        "--" + boundary + "\r\n" +
+        "Content-Type: application/json; charset=UTF-8\r\n\r\n" +
+        body + "\r\n" +
+        "--" + boundary + "--";
+      const res = await fetch(
+        "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true",
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "multipart/related; boundary=" + boundary
+          },
+          body: mixed
+        }
+      );
+      if (!res.ok) throw await driveApiError(res);
+    }
+  }
+
+  function hideTrackLocally(track) {
+    pendingDelete.delete(track.id);
+    tracks = tracks.filter((item) => item.id !== track.id);
+    if (currentId === track.id) {
+      currentId = null;
+      try { audio.pause(); } catch (e) {}
+      audio.removeAttribute("src");
+      audio.load();
+    }
+    renderList();
+    updateNow();
+  }
+
+  function tombstoneFromTrack(track) {
+    const entry = {
+      id: track.id,
+      title: track.title,
+      deletedAt: new Date().toISOString()
+    };
+    if (track.file) entry.file = track.file;
+    if (track.bytes != null && Number.isFinite(Number(track.bytes))) entry.bytes = Number(track.bytes);
+    return entry;
+  }
+
+  async function flushPendingDeleted() {
+    const pending = readLocalDeleted().filter((item) => item && item.persisted !== true);
+    if (!pending.length) return;
+    for (const entry of pending) {
+      try {
+        await persistDeletedToDrive(entry);
+        rememberLocalDeleted(entry, true);
+      } catch (e) {
+        return;
+      }
+    }
+  }
+
+  async function requestDelete(track) {
+    if (!admin || !track) return;
+    const entry = tombstoneFromTrack(track);
+    hideTrackLocally(track);
+    rememberLocalDeleted(entry, false);
+    toast("已從呢頁移除。正在寫入共用忽略清單…", 5000);
+    try {
+      await persistDeletedToDrive(entry);
+      rememberLocalDeleted(entry, true);
+      toast("已從呢頁移除，並已記入共用忽略清單。其他裝置會喺下次自動同步之後更新，最多約一小時。唔會刪除 Google Drive 入面嘅音頻檔。", 7000);
+    } catch (err) {
+      const msg = err && err.message ? err.message : "寫入忽略清單失敗。";
+      toast(msg + " 呢頁已收起呢首，但尚未同步到其他裝置。請登入 Google，系統會再試一次。", 7000);
+    }
+  }
+
 
   function toBase64(buffer) {
     const bytes = new Uint8Array(buffer);
@@ -1148,7 +1585,7 @@
       return;
     }
     if (file.size <= 0 || file.size > REPLACE_MAX) {
-      toast("呢個檔太大或者係空嘅。瀏覽器換檔上限係 12 MB，更大請用 add-track 再提交。");
+      toast("呢個檔太大或者係空嘅。請把新 MP3 放到共用 Drive 資料夾，等自動同步更新。");
       return;
     }
     let dataBase64 = "";
@@ -1165,7 +1602,11 @@
       bytes: file.size,
       dataBase64: dataBase64
     });
-    if (ok) toast("已送出換檔要求。機器人提交之後，重新載入先會聽到新檔。");
+    if (ok) {
+      toast("已送出換檔要求。更新之後重新載入，就會聽到新檔。", 5000);
+      return;
+    }
+    toast("呢頁而家唔會直接換檔。請把新 MP3 放到共用 Drive 資料夾，自動同步會更新播放器，通常最多約一小時。", 7000);
   });
 
   function setAdmin(on) {
@@ -1177,6 +1618,8 @@
       replaceTargetId = null;
     } else {
       showFolder();
+      updateDriveUser();
+      flushPendingDeleted();
     }
     try {
       if (on) sessionStorage.setItem(ADMIN_SESSION, "1");
@@ -1284,6 +1727,29 @@
     if (e.target.closest("input, textarea, button") || howDialog.open || gateDialog.open || pwDialog.open) return;
     if (e.code === "Space") { e.preventDefault(); playBtn.click(); }
   });
+
+  const driveLogin = document.getElementById("drive-login");
+  const driveLogout = document.getElementById("drive-logout");
+  if (driveLogin) {
+    driveLogin.addEventListener("click", async () => {
+      try {
+        await initGoogle();
+        await requestGoogleToken(false);
+        await flushPendingDeleted();
+        toast("已登入 Google。刪除而家會寫入共用忽略清單。", 4000);
+      } catch (err) {
+        toast((err && err.message) || "Google 登入失敗。");
+      }
+    });
+  }
+  if (driveLogout) {
+    driveLogout.addEventListener("click", () => {
+      googleSignOut();
+      toast("已登出 Google");
+    });
+  }
+  updateDriveUser();
+  initGoogle().catch(() => {});
 
   installMediaHandlers();
   try {
