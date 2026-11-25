@@ -1,4 +1,33 @@
 {
   "version": 1,
-  "tracks": []
+  "tracks": [
+    {
+      "id": "t-mww3g7e4",
+      "title": "紅豆 - 王菲【高音質｜動態歌詞】",
+      "file": "media/t-mww3g7e4.mp3",
+      "bytes": 8005292,
+      "duration": 255.432
+    },
+    {
+      "id": "t-mww3g78e",
+      "title": "蔡天鳳案三父子當庭互篤灰",
+      "file": "media/t-mww3g78e.mp3",
+      "bytes": 52271925,
+      "duration": 1841.592
+    },
+    {
+      "id": "day45-cctv-mww3g747",
+      "title": "蔡天鳳案Day45｜郭莎樂出動CCTV連消帶打",
+      "file": "media/day45-cctv-mww3g747.mp3",
+      "bytes": 24526269,
+      "duration": 1342.56
+    },
+    {
+      "id": "t-mww3g6i8",
+      "title": "突發消息：南非媒體率先報導，霍宏聲聖誕後放棄牌照",
+      "file": "media/t-mww3g6i8.mp3",
+      "bytes": 13126245,
+      "duration": 617.568
+    }
+  ]
 }
