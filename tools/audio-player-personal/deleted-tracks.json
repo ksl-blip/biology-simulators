@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "description": "Owner-deleted personal-player tracks. Hourly Drive sync must not re-add any item that matches a deleted entry by id, title, or driveFileName. Leave the Google Drive files in place.",
+  "deleted": [
+    {
+      "id": "mate60-pro-cmhk-mate60-mate-x5-12999-mwvx4tc0",
+      "title": "突發直播 Mate60 Pro 使用感想 CMHK 香港引入Mate60系列Mate X5 開價了12999起",
+      "driveFileName": "tomp3.cc - 突發直播 Mate60 Pro 使用感想  CMHK 香港引入Mate60系列Mate X5 開價了12999起_64kbps.mp3",
+      "file": "media/mate60-pro-cmhk-mate60-mate-x5-12999-mwvx4tc0.mp3",
+      "bytes": 34046184,
+      "deletedAt": "2026-11-25T17:35:49+08:00"
+    },
+    {
+      "id": "mate-60-pro-vs-iphone-15-9000s-55gnearli-mwvx4smb",
+      "title": "Mate 60 Pro vs iPhone 15華為萍果科技對決華為麒麟9000S衛星通話55GNearLinkXMAGE對戰萍果A16A17",
+      "driveFileName": "tomp3.cc - Mate 60 Pro vs iPhone 15華為萍果科技對決華為麒麟9000S衛星通話55GNearLinkXMAGE對戰萍果A16A17_64kbps.mp3",
+      "file": "media/mate-60-pro-vs-iphone-15-9000s-55gnearli-mwvx4smb.mp3",
+      "bytes": 9708910,
+      "deletedAt": "2026-11-25T17:35:49+08:00"
+    }
+  ]
+}
