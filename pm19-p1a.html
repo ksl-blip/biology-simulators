@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="description" content="校本 PM19 卷一甲部（取材 2013 DSE 生物卷一甲部）本校答對率最低十題的原創互動教學模擬。第 9 題經考評局刪去，不計分。圖表為原創重繪，題幹已改寫。">
+<title>PM19 卷一甲部 · 校本最低答對率十題講解模擬器</title>
+<style>
+:root {
+  --paper: #eef3f7;
+  --ink: #152033;
+  --muted: #4a5a70;
+  --teal: #0b6e7a;
+  --teal-d: #08545d;
+  --teal-l: #e6f4f5;
+  --card: #ffffff;
+  --line: #cfd8e3;
+  --ok: #145a32;
+  --ok-bg: #e8f6ed;
+  --bad: #9b1c1c;
+  --bad-bg: #fdecea;
+  --warn: #9a4a00;
+  --warn-bg: #fff6e8;
+  --gold: #b8860b;
+  --violet: #5b3d8f;
+  --focus: #0b6e7a;
+  --low: #b71c1c;
+  --low-bg: #fff5f5;
+  --forest: #1b4332;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 400px at 10% -10%, #d7eef0 0%, transparent 50%),
+    radial-gradient(800px 300px at 100% 0%, #e4eaf6 0%, transparent 46%),
+    var(--paper);
+  color: var(--ink);
+  font-family: "PingFang HK", "Microsoft JhengHei", "Noto Sans TC",
+    "Noto Sans CJK HK", "Heiti TC", "Segoe UI", sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+button, input, select { font-family: inherit; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 16px 16px 80px; }
+.kicker {
+  letter-spacing: 0.04em; color: var(--muted); margin: 0 0 4px;
+  font-size: 13px; font-weight: 700;
+}
+h1 {
+  font-size: 24px;
+  font-size: clamp(22px, 3.2vw, 30px);
+  line-height: 1.3; margin: 4px 0 8px; color: var(--teal-d);
+}
+h2 { font-size: 20px; margin: 0 0 10px; color: var(--teal-d); line-height: 1.35; }
+h3 { font-size: 16px; margin: 0 0 8px; }
+p { margin: 6px 0; }
+a.back {
+  color: var(--teal-d); font-weight: 800; font-size: 14px;
+}
+.banner {
+  background: #fff8e8; border: 1px solid #e6cf8e; border-radius: 14px;
+  padding: 10px 14px; margin: 10px 0 14px; font-size: 15px;
+}
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 14px 16px; margin: 12px 0;
+}
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.lead { font-size: 16px; }
+
+button.act, button.ghost, a.act, a.ghost, button.opt, button.plus, button.chip, button.hcell, summary.tap {
+  font-family: inherit; font-weight: 700; font-size: 15px;
+  min-height: 44px; border-radius: 999px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+button.act, a.act {
+  display: inline-block; background: var(--teal); color: #fff; border: 0;
+  padding: 10px 18px; text-decoration: none; line-height: 24px; text-align: center;
+}
+button.ghost, a.ghost {
+  display: inline-block; background: transparent; color: var(--teal-d);
+  border: 1.5px solid var(--teal); padding: 10px 16px; text-decoration: none;
+  line-height: 22px; text-align: center;
+}
+button.act:hover, a.act:hover { background: var(--teal-d); }
+button.ghost:hover, a.ghost:hover { background: var(--teal-l); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--focus); outline-offset: 2px;
+}
+
+.mod-nav-wrap {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(238,243,247,0.96);
+  margin: 0 -16px;
+  padding: 8px 16px 6px;
+}
+.mod-nav { display: flex; flex-wrap: wrap; }
+.mod-nav a {
+  display: inline-block;
+  background: #e7eef4; border: 1px solid var(--line); border-radius: 12px;
+  padding: 8px 11px; font-size: 14px; font-weight: 800; color: var(--ink);
+  text-decoration: none; min-height: 44px; line-height: 26px;
+  margin-right: 6px; margin-bottom: 6px;
+}
+.mod-nav a.is-active { background: var(--teal-l); border-color: var(--teal); color: var(--teal-d); }
+.mod-nav a.low { border-color: #f3b4b4; }
+.mod-nav a.mid { border-color: #efd2a8; }
+
+.hub { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 12px 0 6px; }
+@media (min-width: 720px) {
+  .hub { grid-template-columns: 1fr 1fr; }
+}
+.hcard {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 14px; min-height: 100%;
+}
+.hcard:hover { border-color: var(--teal); }
+.hcard.lowest { border: 2px solid var(--low); background: linear-gradient(180deg, #fff6f6 0%, #fff 48%); }
+.hcard .tag-q { font-size: 13px; font-weight: 800; color: var(--muted); }
+.hcard h3 { font-size: 16px; margin: 6px 0 8px; line-height: 1.4; color: var(--ink); }
+.rates { display: flex; flex-wrap: wrap; }
+.rates span, .rates .rate { margin-right: 6px; margin-bottom: 6px; }
+.rate {
+  display: inline-block; background: #f2f5f8; border-radius: 999px; padding: 3px 8px;
+  font-size: 13px; font-weight: 700; color: var(--muted);
+}
+.rate.bad { background: var(--low-bg); color: var(--low); }
+.rate.off { background: #eef2f6; color: var(--muted); }
+.rate.hot { background: var(--warn-bg); color: var(--warn); }
+.go { display: inline-block; margin-top: 8px; font-size: 14px; font-weight: 800; color: var(--teal-d); }
+
+.view.hidden, .hidden { display: none !important; }
+.mod-kicker { font-size: 13px; font-weight: 800; color: var(--muted); margin: 0 0 4px; }
+.mod-foot { display: flex; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.mod-foot a { margin-right: 8px; margin-bottom: 8px; }
+
+.row { display: flex; flex-wrap: wrap; align-items: center; }
+.row > * { margin-right: 8px; margin-bottom: 8px; }
+
+.opt-line { display: flex; flex-wrap: wrap; align-items: stretch; margin: 0 0 8px; }
+.opt-line .opt { flex: 1 1 220px; margin-right: 8px; }
+.opt-line .plus, .opt-line .vc { margin-bottom: 0; }
+button.opt {
+  display: flex; text-align: left; background: #fff; color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 12px;
+  min-height: 44px; width: 100%;
+}
+button.opt .k {
+  flex: 0 0 28px; font-weight: 900; color: var(--teal-d); margin-right: 8px;
+}
+button.opt .ot { flex: 1 1 auto; }
+button.opt.is-on { border-color: var(--teal); background: var(--teal-l); }
+button.opt.is-ok { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+button.opt.is-bad { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+button.opt.is-hot { box-shadow: inset 0 0 0 2px #e0b85c; }
+button.plus {
+  flex: 0 0 52px; width: 52px; border-radius: 12px; border: 1.5px solid var(--line);
+  background: #fff; font-weight: 900; font-size: 18px;
+}
+button.plus:hover { background: var(--teal-l); }
+.vc {
+  flex: 0 0 44px; min-height: 44px; line-height: 44px; text-align: center;
+  font-weight: 800; color: var(--muted); margin-left: 4px;
+}
+
+.col-ok, .col-bad, .col-note, .col-warn {
+  border-radius: 14px; padding: 12px 14px; margin: 8px 0;
+}
+.col-ok { background: var(--ok-bg); border: 1px solid #bde0c7; }
+.col-bad { background: var(--bad-bg); border: 1px solid #f5c2c2; }
+.col-note { background: var(--teal-l); border: 1px solid #b4d9de; }
+.col-warn { background: var(--warn-bg); border: 1px solid #efd2a8; }
+.col-ok h3 { color: var(--ok); }
+.col-bad h3 { color: var(--bad); }
+.col-ok ul, .col-bad ul, .col-note ul, .teach ul, .why-list { margin: 6px 0 0; padding-left: 1.15em; }
+.col-ok li, .col-bad li, .col-note li, .teach li, .why-list li { margin: 4px 0; }
+
+.caption {
+  background: #f6f9fb; border-left: 4px solid var(--teal); border-radius: 0 10px 10px 0;
+  padding: 8px 12px; margin: 8px 0; font-size: 14px;
+}
+.scene-wrap {
+  width: 100%; background: #f7fbfc; border: 1px solid var(--line); border-radius: 14px;
+  overflow: hidden; margin: 6px 0;
+}
+.scene-wrap svg { display: block; width: 100%; height: auto; }
+.readout {
+  background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 12px; min-height: 44px; font-weight: 700;
+}
+.two { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 860px) {
+  .two { grid-template-columns: 1.05fr 0.95fr; }
+}
+.steps { margin: 8px 0; }
+.step {
+  background: #fff; border: 1.5px solid var(--line); border-radius: 12px;
+  padding: 10px 12px; margin: 0 0 8px;
+}
+.step .n {
+  display: inline-block; min-width: 28px; height: 28px; line-height: 28px;
+  text-align: center; border-radius: 50%; background: var(--teal); color: #fff;
+  font-size: 13px; font-weight: 800; margin-right: 8px;
+}
+.step.is-go { border-color: var(--ok); background: var(--ok-bg); }
+.step.is-stop { border-color: var(--bad); background: var(--bad-bg); }
+.step.is-hold { border-color: var(--teal); background: var(--teal-l); }
+
+.heat {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin: 8px 0;
+}
+@media (min-width: 800px) {
+  .heat { grid-template-columns: repeat(9, 1fr); }
+}
+button.hcell {
+  border: 1px solid var(--line); border-radius: 10px; background: #f4f7fa;
+  padding: 4px 2px; line-height: 1.2; min-height: 44px;
+}
+button.hcell b { display: block; font-size: 14px; }
+button.hcell small { display: block; font-size: 11px; font-weight: 700; color: var(--muted); }
+button.hcell.weak { box-shadow: inset 0 0 0 2px #c05621; }
+button.hcell.void { background: #eceff3; color: #64748b; }
+.legend { display: flex; flex-wrap: wrap; font-size: 13px; font-weight: 700; color: var(--muted); }
+.legend span { margin-right: 12px; margin-bottom: 4px; }
+.legend i {
+  display: inline-block; width: 14px; height: 14px; border-radius: 3px;
+  margin-right: 4px; vertical-align: -2px; border: 1px solid var(--line);
+}
+
+.dist { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: #e8eef2; margin: 6px 0; }
+.dist i { display: block; height: 14px; }
+.dist i.a { background: #8aa0b8; }
+.dist i.b { background: #e0b85c; }
+.dist i.c { background: #7dbaa4; }
+.dist i.d { background: #c4b0e0; }
+.dist i.key { outline: 2px solid var(--ok); outline-offset: -2px; }
+
+.bar-row { display: flex; align-items: center; margin: 0 0 6px; }
+.bar-row .pl { flex: 0 0 24px; font-weight: 900; }
+.bar-row .track { flex: 1 1 auto; height: 16px; background: #e8eef2; border-radius: 8px; margin-right: 8px; }
+.bar-row .track i { display: block; height: 16px; border-radius: 8px; background: #b7c3cf; }
+.bar-row.is-key .track i { background: var(--ok); }
+.bar-row.is-hot .track i { background: #c05621; }
+.bar-row .vv { flex: 0 0 118px; font-size: 13px; font-weight: 700; text-align: right; }
+
+.stage {
+  display: block; width: 100%; text-align: left; margin: 0 0 8px;
+  border: 1.5px solid var(--line); background: #fff; border-radius: 12px;
+  padding: 10px 12px; min-height: 44px; font-weight: 800; font-size: 15px;
+  font-family: inherit; cursor: pointer;
+}
+.stage.is-on { border-color: var(--teal); background: var(--teal-l); color: var(--teal-d); }
+
+.cross-btn.is-on { border-color: var(--teal); background: var(--teal-l); color: var(--teal-d); }
+
+details.teach { margin: 10px 0; }
+summary.tap {
+  display: flex; align-items: center; border-radius: 12px;
+  background: #f4f7fa; border: 1px solid var(--line); padding: 8px 12px;
+  font-weight: 800;
+}
+.foot-note {
+  color: var(--muted); font-size: 13px; margin-top: 24px;
+  padding-top: 12px; border-top: 1px solid var(--line);
+}
+.toast {
+  position: fixed; left: 50%; bottom: 16px;
+  top: auto; right: auto;
+  transform: translateX(-50%);
+  background: #152033; color: #fff; border-radius: 12px;
+  padding: 10px 14px; max-width: 90%;
+  display: none; z-index: 50; font-weight: 700;
+}
+.toast.show { display: block; }
+
+.quiz-opt { margin-bottom: 8px; }
+.score-ring { font-size: 28px; font-weight: 900; color: var(--teal-d); }
+
+table.sum { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.sum th, table.sum td { border: 1px solid var(--line); padding: 8px; text-align: left; vertical-align: top; }
+table.sum th { background: #f4f7fa; }
+
+.rule-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 720px) {
+  .rule-grid { grid-template-columns: 1fr 1fr; }
+}
+.rule {
+  background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px;
+}
+.rule .tag {
+  display: inline-block; background: var(--teal-l); color: var(--teal-d);
+  font-weight: 800; font-size: 12px; border-radius: 999px; padding: 2px 8px;
+}
+
+@media (max-width: 639px) {
+  .wrap { padding: 12px 12px 72px; }
+  .mod-nav-wrap { margin-left: -12px; margin-right: -12px; padding-left: 12px; padding-right: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+@media print {
+  .mod-nav-wrap, .no-print, .toast { display: none !important; }
+  .view { display: none !important; }
+  #view-recap { display: block !important; }
+  body { background: #fff; min-height: auto; }
+  .wrap { max-width: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<span id="hub" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<header>
+  <p class="kicker">HKDSE 生物 · 校本 PM19 卷一甲部 · 福建中學（小西灣）· 課堂講解</p>
+  <h1>PM19 卷一甲部：校本答對率最低的十題</h1>
+  <p class="muted small">取材自 2013 年文憑試生物試卷一甲部的概念。本頁是課堂用的原創互動模擬：題幹已改寫，圖表全部重繪，並非重刊考評局試卷、評卷參考或原圖。每題 1 分，卷面分等於原分。第 9 題經考評局刪去，不設答案，也不是單元。</p>
+  <p class="no-print"><a class="back" href="index.html">返回模擬目錄</a></p>
+</header>
+
+<div class="mod-nav-wrap no-print">
+  <nav class="mod-nav" aria-label="模組導覽">
+    <a href="#hub" data-mod="hub">總覽</a>
+    <a href="#q30" data-mod="q30" class="low" title="第 30 題，校本 27.27%">30</a>
+    <a href="#q21" data-mod="q21" class="low" title="第 21 題，校本 36.36%">21</a>
+    <a href="#q25" data-mod="q25" class="low" title="第 25 題，校本 36.36%">25</a>
+    <a href="#q8" data-mod="q8" class="mid" title="第 8 題，校本 45.45%">8</a>
+    <a href="#q26" data-mod="q26" class="mid" title="第 26 題，校本 45.45%">26</a>
+    <a href="#q10" data-mod="q10" title="第 10 題，校本 54.55%">10</a>
+    <a href="#q15" data-mod="q15" title="第 15 題，校本 54.55%">15</a>
+    <a href="#q27" data-mod="q27" title="第 27 題，校本 54.55%">27</a>
+    <a href="#q11" data-mod="q11" title="第 11 題，校本 59.09%">11</a>
+    <a href="#q17" data-mod="q17" title="第 17 題，校本 59.09%">17</a>
+    <a href="#quiz" data-mod="quiz">自測</a>
+    <a href="#recap" data-mod="recap">速記</a>
+  </nav>
+</div>
+
+<div id="view-hub" class="view">
+  <div class="banner">
+    本模擬器按<strong>校本 PM19 卷一甲部</strong>（2026/2027 中六，22 人應考）答對率由低至高排列十題。請先預測或投票，再操作模型，最後才按「揭曉」。百分率只使用 22 人的合計，不顯示姓名、班號或個人分數。
+  </div>
+  <div class="card">
+    <p class="lead" id="hub-lead">十題平均正在計算。</p>
+    <p class="muted small" id="below-line"></p>
+  </div>
+
+  <h2>全卷 36 題校本答對率</h2>
+  <p class="muted small">橙色內框是這十題。第 9 題標「刪」，不計分。其餘題目只作對照，沒有單元。顏色愈深愈低，不代表答案。</p>
+  <div class="heat" id="heat" role="list"></div>
+  <div class="legend">
+    <span><i style="background:#f6d0cb"></i>低於 40%</span>
+    <span><i style="background:#f8e3c4"></i>40–54%</span>
+    <span><i style="background:#f3efd4"></i>55–69%</span>
+    <span><i style="background:#d7ead4"></i>70–84%</span>
+    <span><i style="background:#b7ddc4"></i>85% 或以上</span>
+    <span><i style="box-shadow:inset 0 0 0 2px #c05621"></i>橙框＝這十題</span>
+  </div>
+
+  <h2>十題次序</h2>
+  <p class="muted small">顏色只區分 A–D，揭曉前不標出哪個字母才是答案。Q11 與 Q17 答對率相同，沿用原分析的先後。</p>
+  <div class="hub" id="hub-cards"></div>
+
+  <div class="card">
+    <h2>課堂可以這樣用</h2>
+    <ol>
+      <li>先讓學生選一個選項。老師可按「+1」累計本堂票數，或載入校本 22 人的選擇。載入之後仍未標對錯。</li>
+      <li>再用模型：移動呼吸曲線、比較細胞、改蔗糖濃度、關掉 ATP、點譜系或日間視覺。</li>
+      <li>最後揭曉，對照全港官方百分率和最多人走進的陷阱。課末可開「速記」列印十句，或做「自測」。</li>
+    </ol>
+    <div class="row">
+      <a class="act" href="#q30">由第 30 題開始</a>
+      <a class="ghost" href="#quiz">學生自測十題</a>
+      <a class="ghost" href="#recap">十句速記</a>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Q30 ========== -->
+<div id="view-q30" class="view hidden" data-no="30" data-key="C" data-hk="7" data-counts="1,11,6,4" data-rank="1" data-topic="呼吸運動" data-title="肺內容積最大的時刻，是氣壓最低，還是氣壓回到大氣壓？" data-one="氣壓回到與大氣壓相同、吸氣剛剛結束的那一刻，肺容積才最大。">
+<span id="q30" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 1 · 第 30 題 · 呼吸運動 · 氣壓差與肺容積</p>
+<h2>肺裡何時裝得最滿？</h2>
+<p class="rates">
+  <span class="rate bad">校本 27.27%（6/22）</span>
+  <span class="rate off">全港官方 7%</span>
+  <span class="rate hot">最多人選 B · 50%（11/22）</span>
+</p>
+<div class="card">
+  <p>下圖是一次平靜呼吸裡，肺內氣壓怎樣隨時間改變。虛線是當時的大氣壓，一直是 760 mmHg。肺裡裝得最滿、容積最大，是哪一個時刻？</p>
+  <div class="scene-wrap">
+    <svg id="fig-30" viewBox="0 0 680 300" role="img" aria-label="原創教學圖：一次呼吸的肺內氣壓曲線，標出時刻 P、Q、R、S">
+      <rect x="0" y="0" width="680" height="300" fill="#f7fbfc"/>
+      <text x="70" y="28" fill="#4a5a70" font-size="13" font-weight="700">肺內氣壓（mmHg）</text>
+      <text x="560" y="268" fill="#4a5a70" font-size="13" font-weight="700">時間 →</text>
+      <line x1="70" y1="40" x2="70" y2="240" stroke="#9fb0c0" stroke-width="1.5"/>
+      <line x1="70" y1="240" x2="620" y2="240" stroke="#9fb0c0" stroke-width="1.5"/>
+      <line x1="70" y1="130" x2="620" y2="130" stroke="#0b6e7a" stroke-width="1.5" stroke-dasharray="6 5"/>
+      <text x="78" y="48" fill="#4a5a70" font-size="12">762</text>
+      <text x="78" y="126" fill="#0b6e7a" font-size="12" font-weight="700">760 大氣壓</text>
+      <text x="78" y="214" fill="#4a5a70" font-size="12">758</text>
+      <path id="lung-curve" d="" fill="none" stroke="#0b6e7a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle id="mk-P" r="7" fill="#fff" stroke="#152033" stroke-width="2"/>
+      <circle id="mk-Q" r="7" fill="#fff" stroke="#152033" stroke-width="2"/>
+      <circle id="mk-R" r="7" fill="#fff" stroke="#152033" stroke-width="2"/>
+      <circle id="mk-S" r="7" fill="#fff" stroke="#152033" stroke-width="2"/>
+      <circle id="lung-dot" r="9" fill="#b71c1c" stroke="#fff" stroke-width="2"/>
+      <text id="lab-P" font-size="14" font-weight="800" fill="#152033">P</text>
+      <text id="lab-Q" font-size="14" font-weight="800" fill="#152033">Q</text>
+      <text id="lab-R" font-size="14" font-weight="800" fill="#152033">R</text>
+      <text id="lab-S" font-size="14" font-weight="800" fill="#152033">S</text>
+    </svg>
+  </div>
+  <p class="caption">原創教學圖，不是試卷原圖。曲線低於虛線時，肺內氣壓比大氣低；高於虛線時，肺內氣壓比大氣高。</p>
+  <div class="opts" data-opts>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">時刻 P</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">時刻 Q</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">時刻 R</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">時刻 S</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+  <p class="small muted" data-vote-note>票數只是本堂統計，尚未標出對錯。</p>
+</div>
+<div class="card">
+  <h3>先看模型：氣壓差怎樣帶動氣流</h3>
+  <div class="two">
+    <div>
+      <div class="row">
+        <button type="button" class="ghost" data-act="lung" data-t="0">P</button>
+        <button type="button" class="ghost" data-act="lung" data-t="0.25">Q</button>
+        <button type="button" class="ghost" data-act="lung" data-t="0.5">R</button>
+        <button type="button" class="ghost" data-act="lung" data-t="0.75">S</button>
+        <button type="button" class="act" data-act="lung-play" id="lung-play">播放一次呼吸</button>
+      </div>
+      <p class="readout" id="lung-read">按 P、Q、R、S 或播放，看這一刻的氣流方向和肺容積。</p>
+    </div>
+    <div class="scene-wrap" aria-hidden="true">
+      <svg viewBox="0 0 260 180">
+        <rect width="260" height="180" fill="#f7fbfc"/>
+        <path d="M130 28 v36" stroke="#7d9aa8" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <ellipse id="lung-l" cx="92" cy="110" rx="34" ry="42" fill="#9fd8d2" stroke="#0b6e7a" stroke-width="2"/>
+        <ellipse id="lung-r" cx="168" cy="110" rx="34" ry="42" fill="#9fd8d2" stroke="#0b6e7a" stroke-width="2"/>
+        <text id="lung-flow" x="130" y="172" text-anchor="middle" font-size="13" font-weight="700" fill="#08545d">待播放</text>
+      </svg>
+    </div>
+  </div>
+</div>
+<div class="row no-print">
+  <button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button>
+</div>
+<div class="reveal-body" id="rev-30">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 C · 時刻 R</h3>
+    <p>肺內氣壓低於 760 mmHg 的整段，空氣都在流入，肺一直變大。Q 只是流得最快的一刻，肺還沒有停止膨脹。到 R，氣壓回到 760，流入停下，這一次吸氣結束，容積最大。其後氣壓高於 760，空氣被擠出，容積轉而變小。</p>
+  </div>
+  <div class="col-bad">
+    <h3>最多人走進的陷阱</h3>
+    <p><b>B · 時刻 Q（11/22，50%）</b>把「氣壓最低」當成「體積最大」。氣壓差只決定氣流的方向和快慢：低於大氣壓表示空氣仍在進入，不表示已經吸滿。</p>
+    <p><b>D · 時刻 S（4/22，18.18%）</b>S 是呼氣途中氣壓最高的一刻，空氣正被推出，容積正在減小，還沒有減到最小。壓力的極值不等於容積的極值。</p>
+  </div>
+  <ul class="why-list">
+    <li><b>A</b> P 是起點。氣壓仍等於大氣壓，這一次吸氣還沒有把肺擴大。（1/22，4.55%）</li>
+    <li><b>B</b> 見上方。氣流最快，不是容積最大。</li>
+    <li><b>C</b> 吸氣結束、氣流暫停，容積最大。</li>
+    <li><b>D</b> 見上方。呼氣中段，容積正在下降。</li>
+  </ul>
+  <p class="one"><b>帶走一句：</b>氣壓回到與大氣壓相同、吸氣剛剛結束的那一刻，肺容積才最大。</p>
+</div>
+<details class="teach">
+  <summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>曲線低於 760 的整段，空氣往哪裡流？</li>
+    <li>吸氣結束時，肺內氣壓應該回到多少？圖上是哪一點？</li>
+    <li>「流得最快」和「已經裝滿」是同一時刻嗎？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#hub">返回總覽</a>
+  <a class="act" href="#q21">下一題 · 21</a>
+</div>
+</div>
+
+<!-- ========== Q21 ========== -->
+<div id="view-q21" class="view hidden" data-no="21" data-key="D" data-hk="54" data-counts="6,4,4,8" data-rank="2" data-topic="原核與真核" data-title="真細菌和原生生物，哪一列兩格都說對？" data-one="真細菌沒有線粒體；原生生物有線粒體。細胞壁和體積都不是判準。">
+<span id="q21" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 2 · 第 21 題 · 原核與真核 · 真細菌與原生生物</p>
+<h2>哪一列比較是對的？</h2>
+<p class="rates">
+  <span class="rate bad">校本 36.36%（8/22）</span>
+  <span class="rate off">全港官方 54%</span>
+  <span class="rate hot">最多錯選 A · 27.27%（6/22）</span>
+</p>
+<div class="card">
+  <p>下面每一列都在比較真細菌和原生生物。哪一列裡，左右兩句都正確？</p>
+  <div class="opts">
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">真細菌通常較大；原生生物通常較小</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">真細菌沒有細胞壁；原生生物有細胞壁</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">真細菌有核膜包圍的細胞核；原生生物沒有</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">真細菌沒有線粒體；原生生物有線粒體</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+</div>
+<div class="card">
+  <h3>對照兩類細胞</h3>
+  <p class="small muted">點一下要查看的構造。模型只顯示事實，不代你選字母。</p>
+  <div class="row">
+    <button type="button" class="ghost" data-act="cell" data-part="size">相對大小</button>
+    <button type="button" class="ghost" data-act="cell" data-part="wall">細胞壁</button>
+    <button type="button" class="ghost" data-act="cell" data-part="nuc">細胞核</button>
+    <button type="button" class="ghost" data-act="cell" data-part="mito">線粒體</button>
+  </div>
+  <div class="scene-wrap">
+    <svg id="fig-21" viewBox="0 0 640 280" role="img" aria-label="原創教學圖：真細菌與一個原生生物細胞的構造對照">
+      <rect width="640" height="280" fill="#f7fbfc"/>
+      <text x="120" y="28" text-anchor="middle" font-size="15" font-weight="800" fill="#1d4e89">真細菌（原核）</text>
+      <text x="430" y="28" text-anchor="middle" font-size="15" font-weight="800" fill="#0f766e">原生生物（真核）</text>
+      <g id="cell-bact">
+        <ellipse cx="120" cy="150" rx="52" ry="70" fill="#e8f0fb" stroke="#1d4e89" stroke-width="8"/>
+        <ellipse cx="120" cy="150" rx="40" ry="56" fill="#f7fbff" stroke="#8fb0d6" stroke-width="2"/>
+        <path id="part-nuc-b" d="M100 140 q20 -18 40 0 q-20 16 -40 0" fill="none" stroke="#1d4e89" stroke-width="2"/>
+        <text x="120" y="248" text-anchor="middle" font-size="12" fill="#4a5a70">擬核，沒有核膜</text>
+      </g>
+      <g id="cell-prot">
+        <path d="M360 90 q40 -40 90 10 q50 20 30 70 q20 40 -30 55 q-50 20 -70 -10 q-30 -30 -20 -70 q10 -30 0 -55 z" fill="#e6f7f4" stroke="#0f766e" stroke-width="3"/>
+        <circle id="part-nuc-p" cx="430" cy="145" r="28" fill="#fff" stroke="#0f766e" stroke-width="2"/>
+        <circle cx="438" cy="150" r="8" fill="#0f766e"/>
+        <ellipse id="part-mito" cx="380" cy="180" rx="16" ry="9" fill="#fde68a" stroke="#b45309" stroke-width="1.5" transform="rotate(-20 380 180)"/>
+        <ellipse cx="470" cy="115" rx="14" ry="8" fill="#fde68a" stroke="#b45309" stroke-width="1.5" transform="rotate(25 470 115)"/>
+        <text x="430" y="248" text-anchor="middle" font-size="12" fill="#4a5a70">有核膜、有線粒體、無細胞壁</text>
+      </g>
+    </svg>
+  </div>
+  <p class="caption">原創教學圖。左為小型真細菌：細胞壁、沒有核膜的擬核、沒有線粒體。右為較大的原生生物細胞：核膜、線粒體，圖中不畫細胞壁。</p>
+  <p class="readout" id="cell-read">選擇一項構造，看它在兩類細胞裡有沒有。</p>
+</div>
+<div class="row no-print"><button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button></div>
+<div class="reveal-body" id="rev-21">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 D</h3>
+    <p>真細菌是原核生物，沒有線粒體這類由膜包圍的細胞器。原生生物是真核生物，有線粒體。這一列兩格都對。</p>
+  </div>
+  <div class="col-bad">
+    <h3>常見陷阱</h3>
+    <p><b>A（6/22，27.27%）</b>把「原核」聽成「又細又原始」。原核指的是核還沒有核膜，不是指體積。真細菌一般約 1–5 μm，變形蟲、草履蟲這類原生生物通常更大。</p>
+    <p><b>C（4/22，18.18%）</b>把有核、無核對調。真細菌沒有真正的細胞核；原生生物有。</p>
+    <p><b>B（4/22，18.18%）</b>真細菌多數有細胞壁（肽聚糖）。原生生物不能一律說成有細胞壁，例如變形蟲就沒有。</p>
+  </div>
+  <p class="one"><b>帶走一句：</b>真細菌沒有線粒體；原生生物有線粒體。細胞壁和體積都不是判準。</p>
+</div>
+<details class="teach"><summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>「原核」的「原」是指體積小，還是核未成形？</li>
+    <li>真細菌缺少哪些由膜包圍的細胞器？</li>
+    <li>變形蟲有細胞壁嗎？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#q30">上一題 · 30</a>
+  <a class="act" href="#q25">下一題 · 25</a>
+</div>
+</div>
+
+<!-- ========== Q25 ========== -->
+<div id="view-q25" class="view hidden" data-no="25" data-key="B" data-hk="24" data-counts="0,8,2,12" data-rank="3" data-topic="滲透作用" data-title="哪一種改動會令一日後的最終液面更高？" data-one="最終液面只看濃度差；削去外皮只改變快慢。">
+<span id="q25" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 3 · 第 25 題 · 滲透作用 · 濃度差與表面積</p>
+<h2>最終液面由甚麼決定？</h2>
+<p class="rates">
+  <span class="rate bad">校本 36.36%（8/22）</span>
+  <span class="rate off">全港官方 24%</span>
+  <span class="rate hot">最多人選 D · 54.55%（12/22），多於答案</span>
+</p>
+<div class="card">
+  <p>馬鈴薯做成杯子：杯內起初是 10% 蔗糖溶液，杯子放在蒸餾水裡，只有底部切面接觸到水，側邊仍有外皮。一日之後，哪一種改動會令杯內液面停在比這個裝置更高的平衡位置？</p>
+  <ol>
+    <li>杯內蔗糖由 10% 改成 5%。</li>
+    <li>杯內蔗糖由 10% 改成 20%。</li>
+    <li>整塊外皮都削掉，而不只是底部切面接觸水。</li>
+  </ol>
+  <div class="scene-wrap">
+    <svg id="fig-25" viewBox="0 0 640 340" role="img" aria-label="原創教學圖：放在蒸餾水中的馬鈴薯杯，杯內為蔗糖溶液">
+      <rect width="640" height="340" fill="#f7fbfc"/>
+      <path d="M150 36 h300 l-28 268 h-244 z" fill="#f8fbff" stroke="#24506a" stroke-width="3"/>
+      <path d="M168 168 h268 l-14 122 h-240 z" fill="#d5eef8"/>
+      <path d="M168 168 q134 14 268 0" fill="none" stroke="#7eb6d6" stroke-width="2"/>
+      <rect x="214" y="72" width="156" height="168" rx="8" fill="#f6e7cf" stroke="#e4d0aa"/>
+      <g id="potato-skin">
+        <rect x="214" y="72" width="24" height="132" rx="6" fill="#8d5a32"/>
+        <rect x="346" y="72" width="24" height="132" rx="6" fill="#8d5a32"/>
+      </g>
+      <rect x="238" y="90" width="108" height="108" fill="#fffaf3" stroke="#e7d3a8"/>
+      <rect id="sucrose" x="242" y="176" width="100" height="22" fill="#f0c36a"/>
+      <line id="ref-line" x1="238" y1="140" x2="346" y2="140" stroke="#0b6e7a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line id="cut-mark" x1="214" y1="228" x2="370" y2="228" stroke="#9a3412" stroke-width="4"/>
+      <text id="ref-lab" x="378" y="144" font-size="13" fill="#0b6e7a">10% 參考液面</text>
+      <text x="378" y="232" font-size="13" fill="#9a3412">底部切面（無外皮）</text>
+      <text x="40" y="110" font-size="14" font-weight="700" fill="#24506a">燒杯</text>
+      <text x="40" y="210" font-size="14" font-weight="700" fill="#24506a">蒸餾水</text>
+      <text x="470" y="100" font-size="14" font-weight="700" fill="#8d5a32">馬鈴薯外皮</text>
+      <text x="470" y="160" font-size="14" font-weight="700" fill="#9a6b12">杯內蔗糖溶液</text>
+    </svg>
+  </div>
+  <p class="caption">原創教學圖。外皮畫成深色側壁；底部是切開後接觸蒸餾水的切面。虛線是 10% 蔗糖時的參考最終液面，方便和改動後比較。</p>
+  <div class="opts">
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">只有改動 (1)</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">只有改動 (2)</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">改動 (1) 和 (3)</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">改動 (2) 和 (3)</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+</div>
+<div class="card">
+  <h3>改濃度或削皮，看最終高度和快慢</h3>
+  <div class="row">
+    <button type="button" class="ghost" data-act="conc" data-conc="5">5% 蔗糖</button>
+    <button type="button" class="ghost" data-act="conc" data-conc="10">10% 蔗糖</button>
+    <button type="button" class="ghost" data-act="conc" data-conc="20">20% 蔗糖</button>
+    <button type="button" class="ghost" data-act="peel" id="peel-btn">削去全部外皮</button>
+    <button type="button" class="act" data-act="osm-run">開始觀察</button>
+    <button type="button" class="ghost" data-act="osm-reset">重置</button>
+  </div>
+  <p class="readout" id="osm-read">先選濃度和是否削皮，再按開始。虛線固定在 10% 的最終液面。</p>
+</div>
+<div class="row no-print"><button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button></div>
+<div class="reveal-body" id="rev-25">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 B · 只有 (2)</h3>
+    <p>最終液面停在哪裡，由杯內蔗糖溶液和外面蒸餾水的濃度差決定。20% 比 10% 差得更遠，要吸入更多水才到達新的平衡，最終液面更高。5% 差得更近，最終液面反而更低。</p>
+  </div>
+  <div class="col-bad">
+    <h3>最多人走進的陷阱</h3>
+    <p><b>D（12/22，54.55%）</b>把 (2) 和 (3) 綁在一起。削去全部外皮會加大接觸面積，水進入得更快，但濃度差沒有變，平衡時的液面高度不變。(3) 改變速率，不改變最終水平。</p>
+  </div>
+  <ul class="why-list">
+    <li><b>A</b> (1) 令濃度差變小，最終液面較低。沒有人選（0/22）。</li>
+    <li><b>B</b> 只有提高蔗糖濃度會抬高最終液面。</li>
+    <li><b>C</b> (1) 和 (3) 都不會令最終液面更高。（2/22，9.09%）</li>
+    <li><b>D</b> (2) 對，但 (3) 不影響最終高度。</li>
+  </ul>
+  <p class="one"><b>帶走一句：</b>最終液面只看濃度差；削去外皮只改變快慢。</p>
+</div>
+<details class="teach"><summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>液面最後停在哪裡，是濃度差決定，還是接觸面積決定？</li>
+    <li>削去全部外皮，杯內外的濃度差有沒有改變？</li>
+    <li>改成 5%，濃度差變大還是變小？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#q21">上一題 · 21</a>
+  <a class="act" href="#q8">下一題 · 8</a>
+</div>
+</div>
+
+<!-- ========== Q8 ========== -->
+<div id="view-q8" class="view hidden" data-no="8" data-key="C" data-hk="42" data-counts="1,6,10,5" data-rank="4" data-topic="光合作用" data-title="碳反應裡，哪些步驟要消耗 ATP？" data-one="固定二氧化碳不用 ATP；還原三碳化合物和再生 RuBP 才用。">
+<span id="q8" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 4 · 第 8 題 · 光合作用 · 碳反應與 ATP</p>
+<h2>哪些步驟要 ATP？</h2>
+<p class="rates">
+  <span class="rate bad">校本 45.45%（10/22）</span>
+  <span class="rate off">全港官方 42%</span>
+  <span class="rate hot">最多錯選 B · 27.27%（6/22）</span>
+</p>
+<div class="card">
+  <p>光合作用的碳反應裡，哪些步驟需要 ATP 供應能量？</p>
+  <ol>
+    <li>把二氧化碳固定下來，生成三碳化合物。</li>
+    <li>把三碳化合物還原，再走向葡萄糖。</li>
+    <li>重新生成接受二氧化碳的五碳化合物（RuBP）。</li>
+  </ol>
+  <div class="opts">
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">只有 (1) 和 (2)</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">只有 (1) 和 (3)</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">只有 (2) 和 (3)</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">(1)、(2) 和 (3)</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+</div>
+<div class="card">
+  <h3>關掉 ATP，看哪幾步停住</h3>
+  <div class="row">
+    <button type="button" class="act" data-act="atp" id="atp-btn" data-on="1">ATP 供應：開</button>
+  </div>
+  <div class="steps" id="cal-steps">
+    <div class="step" id="step-1"><span class="n">1</span><b>固定</b>　RuBP 與二氧化碳結合，生成三碳化合物。<span class="st"></span></div>
+    <div class="step" id="step-2"><span class="n">2</span><b>還原</b>　三碳化合物還原成三碳糖，再走向葡萄糖。這一步也用 NADPH。<span class="st"></span></div>
+    <div class="step" id="step-3"><span class="n">3</span><b>再生</b>　一部分三碳糖用來重新生成 RuBP。<span class="st"></span></div>
+  </div>
+  <p class="readout" id="atp-read">先保持 ATP 開通，再關掉，比較三步有沒有停。</p>
+</div>
+<div class="row no-print"><button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button></div>
+<div class="reveal-body" id="rev-8">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 C · 只有 (2) 和 (3)</h3>
+    <p>二氧化碳固定（RuBP 加上二氧化碳，生成兩分子三碳化合物）不消耗 ATP。ATP 用在後面兩步：三碳化合物還原，以及 RuBP 再生。還原同時要用 NADPH。</p>
+  </div>
+  <div class="col-bad">
+    <h3>常見陷阱</h3>
+    <p><b>B（6/22，27.27%）</b>「固定」二字令人以為要花能量抓住二氧化碳。固定本身不需 ATP。B 選了 (1) 和 (3)，漏了真正耗 ATP 的還原，又多加了不耗 ATP 的固定。</p>
+    <p><b>D（5/22，22.73%）</b>三步全選，把不需要 ATP 的固定也算進去。</p>
+    <p><b>A（1/22，4.55%）</b>把「生成三碳化合物」和「還原三碳化合物」當成同一件事。前者不用 ATP，後者才用。</p>
+  </div>
+  <p class="one"><b>帶走一句：</b>固定二氧化碳不用 ATP；還原三碳化合物和再生 RuBP 才用。</p>
+</div>
+<details class="teach"><summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>碳反應三步裡，哪一步不輸入 ATP？</li>
+    <li>光反應製造的 ATP 和 NADPH，在哪兩步被用掉？</li>
+    <li>「固定」和「還原」相差的是哪一種能量需求？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#q25">上一題 · 25</a>
+  <a class="act" href="#q26">下一題 · 26</a>
+</div>
+</div>
+
+<!-- ========== Q26 ========== -->
+<div id="view-q26" class="view hidden" data-no="26" data-key="B" data-hk="33" data-counts="3,10,8,1" data-rank="5" data-topic="小腸吸收" data-title="哪種養分主要靠簡單擴散進入小腸上皮？" data-one="脂肪酸能溶進磷脂雙層，所以走簡單擴散。">
+<span id="q26" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 5 · 第 26 題 · 小腸吸收 · 簡單擴散</p>
+<h2>哪種養分直接穿過脂雙層？</h2>
+<p class="rates">
+  <span class="rate bad">校本 45.45%（10/22）</span>
+  <span class="rate off">全港官方 33%</span>
+  <span class="rate hot">最多錯選 C · 36.36%（8/22）</span>
+</p>
+<div class="card">
+  <p>哪一種養分主要靠簡單擴散，直接穿過小腸上皮細胞膜的磷脂雙層？</p>
+  <div class="opts">
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">氨基酸</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">脂肪酸</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">單糖</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">核苷酸</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+</div>
+<div class="card">
+  <h3>把養分放到膜上看走哪條路</h3>
+  <div class="row">
+    <button type="button" class="ghost" data-act="nut" data-nut="aa">氨基酸</button>
+    <button type="button" class="ghost" data-act="nut" data-nut="fa">脂肪酸</button>
+    <button type="button" class="ghost" data-act="nut" data-nut="su">單糖</button>
+    <button type="button" class="ghost" data-act="nut" data-nut="nu">核苷酸</button>
+  </div>
+  <div class="scene-wrap">
+    <svg id="fig-26" viewBox="0 0 640 220" role="img" aria-label="原創教學圖：磷脂雙層與穿過或被擋住的養分">
+      <rect width="640" height="220" fill="#f7fbfc"/>
+      <text x="24" y="28" font-size="13" font-weight="700" fill="#4a5a70">腸腔</text>
+      <text x="24" y="200" font-size="13" font-weight="700" fill="#4a5a70">上皮細胞質</text>
+      <g id="bilayer">
+        <rect x="80" y="70" width="480" height="80" rx="8" fill="#f8e7c2" stroke="#d4b483"/>
+        <g fill="#e7c98a" stroke="#b08968">
+          <ellipse cx="120" cy="86" rx="16" ry="10"/><ellipse cx="180" cy="86" rx="16" ry="10"/>
+          <ellipse cx="240" cy="86" rx="16" ry="10"/><ellipse cx="300" cy="86" rx="16" ry="10"/>
+          <ellipse cx="360" cy="86" rx="16" ry="10"/><ellipse cx="420" cy="86" rx="16" ry="10"/>
+          <ellipse cx="480" cy="86" rx="16" ry="10"/><ellipse cx="530" cy="86" rx="16" ry="10"/>
+          <ellipse cx="120" cy="134" rx="16" ry="10"/><ellipse cx="180" cy="134" rx="16" ry="10"/>
+          <ellipse cx="240" cy="134" rx="16" ry="10"/><ellipse cx="300" cy="134" rx="16" ry="10"/>
+          <ellipse cx="360" cy="134" rx="16" ry="10"/><ellipse cx="420" cy="134" rx="16" ry="10"/>
+          <ellipse cx="480" cy="134" rx="16" ry="10"/><ellipse cx="530" cy="134" rx="16" ry="10"/>
+        </g>
+        <rect id="carrier" x="300" y="78" width="36" height="64" rx="8" fill="#0b6e7a" opacity="0"/>
+      </g>
+      <circle id="mol" cx="200" cy="40" r="14" fill="#b45309"/>
+      <text id="mol-lab" x="222" y="45" font-size="14" font-weight="800" fill="#152033">請選擇養分</text>
+    </svg>
+  </div>
+  <p class="caption">原創教學圖。磷脂頭部向外、尾部相向。脂溶性分子可溶進尾部區域；水溶性分子要靠膜蛋白。</p>
+  <p class="readout" id="nut-read">選擇一種養分。</p>
+</div>
+<div class="row no-print"><button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button></div>
+<div class="reveal-body" id="rev-26">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 B · 脂肪酸</h3>
+    <p>脂肪酸是脂溶性的，能溶進細胞膜的磷脂雙層，主要靠簡單擴散進入上皮細胞。甘油和維生素 A、D、E、K 也是同一類。</p>
+  </div>
+  <div class="col-bad">
+    <h3>常見陷阱</h3>
+    <p><b>C · 單糖（8/22，36.36%）</b>以為分子小就等於簡單擴散。關鍵是能不能與脂雙層相容。葡萄糖、半乳糖等單糖是水溶性的，要膜上的載體蛋白（協助擴散或主動運輸）。</p>
+    <p><b>A · 氨基酸（3/22，13.64%）</b>氨基酸水溶性，而且常常帶電荷，不能直接穿過脂雙層。</p>
+    <p><b>D · 核苷酸（1/22，4.55%）</b>水溶性，而且比脂肪酸更依賴特定轉運。</p>
+  </div>
+  <p class="one"><b>帶走一句：</b>脂肪酸能溶進磷脂雙層，所以走簡單擴散。</p>
+</div>
+<details class="teach"><summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>細胞膜的核心是磷脂雙層。哪些物質能溶進去？</li>
+    <li>葡萄糖和氨基酸是水溶性還是脂溶性？</li>
+    <li>「分子小」是否等於「可以簡單擴散」？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#q8">上一題 · 8</a>
+  <a class="act" href="#q10">下一題 · 10</a>
+</div>
+</div>
+
+<!-- ========== Q10 ========== -->
+<div id="view-q10" class="view hidden" data-no="10" data-key="D" data-hk="67" data-counts="0,5,5,12" data-rank="6" data-topic="呼吸作用" data-title="哪一組同時符合「需要氧」和「放出二氧化碳」？" data-one="氧化磷酸化需要氧；克雷伯氏循環放出二氧化碳。">
+<span id="q10" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 6 · 第 10 題 · 呼吸作用 · 階段與氣體</p>
+<h2>兩欄都要對上</h2>
+<p class="rates">
+  <span class="rate bad">校本 54.55%（12/22）</span>
+  <span class="rate off">全港官方 67%</span>
+  <span class="rate hot">B 與 C 並列錯選 · 各 22.73%（5/22）</span>
+</p>
+<div class="card">
+  <p>有氧呼吸的各個階段裡，哪一組配對同時符合兩欄？左欄要「這個過程需要氧」，右欄要「這個過程會放出二氧化碳」。</p>
+  <div class="opts">
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">左：丙酮酸轉成乙酰輔酶 A；右：糖酵解</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">左：丙酮酸轉成乙酰輔酶 A；右：克雷伯氏循環</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">左：氧化磷酸化；右：糖酵解</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">左：氧化磷酸化；右：克雷伯氏循環</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+</div>
+<div class="card">
+  <h3>逐個階段核對氧和二氧化碳</h3>
+  <button type="button" class="stage" data-act="stage" data-stage="gly">糖酵解</button>
+  <button type="button" class="stage" data-act="stage" data-stage="link">丙酮酸 → 乙酰輔酶 A（連接反應）</button>
+  <button type="button" class="stage" data-act="stage" data-stage="krebs">克雷伯氏循環</button>
+  <button type="button" class="stage" data-act="stage" data-stage="ox">氧化磷酸化</button>
+  <p class="readout" id="stage-read">點一個階段。左欄要的是「氧參與這個過程」，不是「它出現在有氧呼吸的路徑上」。</p>
+</div>
+<div class="row no-print"><button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button></div>
+<div class="reveal-body" id="rev-10">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 D</h3>
+    <p>氧化磷酸化以氧作為最終電子受體，所以需要氧，產物是水，不放出二氧化碳。克雷伯氏循環會脫羧，放出二氧化碳。兩欄都對上的是 D。</p>
+  </div>
+  <div class="col-bad">
+    <h3>兩種同樣常見的錯法</h3>
+    <p><b>C（5/22，22.73%）</b>左欄氧化磷酸化是對的，但右欄糖酵解不放出二氧化碳。只核對了左欄。</p>
+    <p><b>B（5/22，22.73%）</b>右欄克雷伯氏循環會放二氧化碳，是對的。左欄卻把「丙酮酸轉成乙酰輔酶 A」當成需要氧。連接反應的特徵是脫羧放二氧化碳，氧不是這一步的反應物。它處在有氧路徑上，不等於這一步用氧。</p>
+  </div>
+  <ul class="why-list">
+    <li><b>A</b> 兩欄都不符合。糖酵解不需氧，也不放二氧化碳。沒有人選（0/22）。</li>
+    <li><b>糖酵解</b>：不需要氧，不放出二氧化碳。</li>
+    <li><b>連接反應</b>：放出二氧化碳；不把氧當作反應物。</li>
+  </ul>
+  <p class="one"><b>帶走一句：</b>氧化磷酸化需要氧；克雷伯氏循環放出二氧化碳。兩欄都要成立。</p>
+</div>
+<details class="teach"><summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>糖酵解需要氧嗎？會放出二氧化碳嗎？</li>
+    <li>哪一個階段以氧為最終電子受體？</li>
+    <li>你剛才有沒有只檢查左欄？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#q26">上一題 · 26</a>
+  <a class="act" href="#q15">下一題 · 15</a>
+</div>
+</div>
+
+<!-- ========== Q15 ========== -->
+<div id="view-q15" class="view hidden" data-no="15" data-key="B" data-hk="47" data-counts="0,12,0,10" data-rank="7" data-topic="譜系" data-title="哪一次交配足以判斷哪個表現型是顯性？" data-one="正常父母生出受影響子女，才能斷定正常是顯性。">
+<span id="q15" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 7 · 第 15 題 · 譜系 · 哪一次交配能判斷顯性</p>
+<h2>哪一次交配足以判斷顯性？</h2>
+<p class="rates">
+  <span class="rate bad">校本 54.55%（12/22）</span>
+  <span class="rate off">全港官方 47%</span>
+  <span class="rate hot">最多錯選 D · 45.45%（10/22）</span>
+</p>
+<div class="card">
+  <p>這個性狀由常染色體上的一對等位基因控制。譜系標了三次交配 X、Y、Z。哪一次（或哪些）交配，單憑父母和子女的表現型，就足以判斷「正常」和「受影響」哪一個是顯性？</p>
+  <div class="scene-wrap"><div id="ped15"></div></div>
+  <p class="caption">原創教學圖。實心表示受影響，空心表示正常。圓形是女性，方形是男性。數字 1、2 是圖中標明的人；3、4 留待第 17 題。</p>
+  <div class="row">
+    <button type="button" class="ghost cross-btn" data-act="cross" data-cross="X">查看交配 X</button>
+    <button type="button" class="ghost cross-btn" data-act="cross" data-cross="Y">查看交配 Y</button>
+    <button type="button" class="ghost cross-btn" data-act="cross" data-cross="Z">查看交配 Z</button>
+  </div>
+  <p class="readout" id="cross-read">點一次交配，只看這一家的表現型。判斷顯性留到揭曉。</p>
+  <div class="opts">
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">只有交配 Y</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">只有交配 Z</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">只有交配 X 和 Y</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">只有交配 X 和 Z</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+</div>
+<div class="row no-print"><button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button></div>
+<div class="reveal-body" id="rev-15">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 B · 只有交配 Z</h3>
+    <p>要「斷定」哪一個表現型是顯性，必須找到一個在另一種假設下不可能出現的結果。交配 Z 的父母都正常，子女卻有人受影響。如果受影響是顯性，兩個正常的人都沒有顯性等位基因，不可能生出受影響的子女。所以只剩下一種結論：正常是顯性，受影響是隱性，兩名父母都是雜合子。有這一次交配就夠了。</p>
+  </div>
+  <div class="col-bad">
+    <h3>最多人走進的陷阱</h3>
+    <p><b>D（10/22，45.45%）</b>把交配 X 也當成已經證明受影響是隱性。圖中交配 X 是受影響女性配正常男性，子女都正常。這個結果在兩種假設下都可能出現：受影響若是隱性，可以是 aa × AA，子女全是正常的雜合子；受影響若是顯性，母親可以是 Aa、父親是 aa，子女也可以正常。兩種都說得通，所以 X 不能斷定。把它和 Z 放在一起就不對。</p>
+  </div>
+  <ul class="why-list">
+    <li><b>A</b> 交配 Y 的父母和子女都正常，沒有出現受影響的人，兩種顯隱假設都符合。沒有人選（0/22）。</li>
+    <li><b>C</b> X 和 Y 都不能單獨斷定。沒有人選（0/22）。</li>
+    <li><b>Y 的子女</b>全部正常，看不到受影響性狀重新出現。</li>
+  </ul>
+  <p class="one"><b>帶走一句：</b>正常父母生出受影響子女，才能斷定正常是顯性。</p>
+</div>
+<details class="teach"><summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>交配 Z 若假設「受影響是顯性」，父母的基因型可以是甚麼？</li>
+    <li>交配 X 的子女全部正常。這能不能排除「受影響是顯性」？</li>
+    <li>交配 Y 有沒有出現父母沒有、子女卻有的表現型？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#q10">上一題 · 10</a>
+  <a class="act" href="#q27">下一題 · 27</a>
+</div>
+</div>
+
+<!-- ========== Q27 ========== -->
+<div id="view-q27" class="view hidden" data-no="27" data-key="B" data-hk="64" data-counts="5,12,4,1" data-rank="8" data-topic="視覺" data-title="日間看物點 X 和 Y，哪一句描述是對的？" data-one="中央凹的視錐細胞令影像清晰、能辨色；日間視桿細胞不活躍。">
+<span id="q27" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 8 · 第 27 題 · 視覺 · 視錐與視桿</p>
+<h2>日間的 X 和 Y 看起來怎樣？</h2>
+<p class="rates">
+  <span class="rate bad">校本 54.55%（12/22）</span>
+  <span class="rate off">全港官方 64%</span>
+  <span class="rate hot">最多錯選 A · 22.73%（5/22）</span>
+</p>
+<div class="card">
+  <p>物點 X 的光線沿光軸進入眼睛，成像在視網膜的 X₁。物點 Y 偏離光軸，成像在 Y₁。在白天光線充足時，哪一句是對的？</p>
+  <div class="scene-wrap">
+    <svg id="fig-27" viewBox="0 0 680 320" role="img" aria-label="原創教學圖：眼球水平切面，物點 X、Y 分別成像於 X1 與 Y1">
+      <rect width="680" height="320" fill="#f7fbfc"/>
+      <ellipse cx="390" cy="160" rx="210" ry="130" fill="#f4f8fb" stroke="#1e3a5f" stroke-width="3"/>
+      <path d="M200 70 q-70 90 0 180" fill="#e8eef5" stroke="#1e3a5f" stroke-width="2"/>
+      <ellipse cx="214" cy="160" rx="26" ry="58" fill="#d7e6f2" stroke="#1e3a5f" stroke-width="2"/>
+      <ellipse cx="198" cy="160" rx="22" ry="46" fill="#2a6f97"/>
+      <ellipse cx="202" cy="160" rx="9" ry="20" fill="#14213d"/>
+      <path d="M250 90 q70 70 0 140 q-20 -70 0 -140 z" fill="none" stroke="#7f8c9b" stroke-width="2"/>
+      <path d="M575 70 q-40 90 0 180" fill="none" stroke="#c45c26" stroke-width="6" stroke-linecap="round"/>
+      <circle id="x1" cx="548" cy="160" r="7" fill="#b45309"/>
+      <circle id="y1" cx="530" cy="102" r="7" fill="#1d4e89"/>
+      <line x1="36" y1="160" x2="548" y2="160" stroke="#b45309" stroke-width="2"/>
+      <line x1="36" y1="214" x2="214" y2="170" stroke="#1d4e89" stroke-width="2"/>
+      <line x1="214" y1="168" x2="530" y2="102" stroke="#1d4e89" stroke-width="2"/>
+      <text x="20" y="154" font-size="16" font-weight="800" fill="#b45309">X</text>
+      <text x="16" y="232" font-size="16" font-weight="800" fill="#1d4e89">Y</text>
+      <text x="560" y="166" font-size="16" font-weight="800" fill="#b45309">X₁</text>
+      <text x="500" y="90" font-size="16" font-weight="800" fill="#1d4e89">Y₁</text>
+      <g id="cones" fill="#b45309">
+        <path d="M544 168 l4 14 h-8 z"/><path d="M552 166 l4 14 h-8 z"/><path d="M536 170 l4 12 h-8 z"/>
+      </g>
+      <g id="rods" stroke="#1d4e89" stroke-width="2">
+        <line x1="520" y1="96" x2="520" y2="112"/><line x1="528" y1="90" x2="528" y2="108"/>
+        <line x1="512" y1="104" x2="512" y2="120"/>
+      </g>
+      <text x="250" y="300" font-size="13" fill="#4a5a70">角膜與晶狀體把光線折向視網膜。X₁ 在中央凹，Y₁ 在周邊。</text>
+    </svg>
+  </div>
+  <p class="caption">原創教學圖。影像是倒立的：較低的物點 Y 成像在視網膜較高的一側。X₁ 畫了視錐細胞，Y₁ 畫了視桿細胞。</p>
+  <div class="opts">
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">X 看起來較光亮，因為 X₁ 有視錐細胞</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">X 看起來較清晰，因為 X₁ 有視錐細胞</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">Y 看起來只有黑白，因為 Y₁ 有視桿細胞</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">Y 看起來較模糊，因為 Y₁ 有視桿細胞</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+</div>
+<div class="card">
+  <h3>切換日間和弱光</h3>
+  <div class="row">
+    <button type="button" class="act" data-act="light" data-light="day" id="btn-day">日間</button>
+    <button type="button" class="ghost" data-act="light" data-light="night" id="btn-night">弱光</button>
+    <button type="button" class="ghost" data-act="spot" data-spot="x">看 X₁</button>
+    <button type="button" class="ghost" data-act="spot" data-spot="y">看 Y₁</button>
+  </div>
+  <p class="readout" id="eye-read">日間先看中央凹和周邊各有甚麼感光細胞在工作。</p>
+</div>
+<div class="row no-print"><button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button></div>
+<div class="reveal-body" id="rev-27">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 B</h3>
+    <p>X₁ 落在視網膜中央的中央凹，視錐細胞密集。日間視錐細胞負責高解像和顏色，所以物點 X 看起來較清晰。題目問的是日間。</p>
+  </div>
+  <div class="col-bad">
+    <h3>常見陷阱</h3>
+    <p><b>A（5/22，22.73%）</b>把視錐細胞說成「較光亮」。亮度、弱光視覺是視桿細胞的工作。視錐細胞帶來的是清晰和顏色，不是「更光」。</p>
+    <p><b>C（4/22，18.18%）</b>視桿細胞確實不辨色，但日間它們不活躍。不能說「因為 Y₁ 有視桿細胞，所以日間的 Y 呈黑白」。</p>
+    <p><b>D（1/22，4.55%）</b>Y 較不清晰，是因為周邊視錐細胞少、解像低，不是「因為有視桿細胞」。</p>
+  </div>
+  <p class="one"><b>帶走一句：</b>中央凹的視錐細胞令影像清晰、能辨色；日間視桿細胞不活躍。</p>
+</div>
+<details class="teach"><summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>X₁ 和 Y₁ 一個在中央、一個在周邊。哪裡視錐細胞最多？</li>
+    <li>視錐和視桿，哪一種負責顏色和細節？哪一種負責弱光？</li>
+    <li>白天光線充足時，視桿細胞活躍嗎？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#q15">上一題 · 15</a>
+  <a class="act" href="#q11">下一題 · 11</a>
+</div>
+</div>
+
+<!-- ========== Q11 ========== -->
+<div id="view-q11" class="view hidden" data-no="11" data-key="C" data-hk="35" data-counts="2,4,13,3" data-rank="9" data-topic="遺傳密碼" data-title="關於密碼子，哪一句是對的？" data-one="密碼子在 mRNA 上，多數氨基酸有多於一個密碼子；終止密碼子不對應氨基酸。">
+<span id="q11" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 9 · 第 11 題 · 遺傳密碼 · 密碼子與反密碼子</p>
+<h2>哪一句說中了密碼子？</h2>
+<p class="rates">
+  <span class="rate bad">校本 59.09%（13/22）</span>
+  <span class="rate off">全港官方 35%</span>
+  <span class="rate hot">最多錯選 B · 18.18%（4/22）</span>
+</p>
+<div class="card">
+  <p>關於密碼子，哪一句是對的？</p>
+  <div class="opts">
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">密碼子可以由 A、C、G 或 T 組成</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">密碼子是轉運 RNA 上連續三個鹼基</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">大多數氨基酸不只有一個密碼子</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">每一個密碼子都對應一種氨基酸</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+</div>
+<div class="card">
+  <h3>在 mRNA 和 tRNA 上指認</h3>
+  <div class="row">
+    <button type="button" class="ghost" data-act="code" data-code="mrna">看密碼子在哪</button>
+    <button type="button" class="ghost" data-act="code" data-code="trna">看反密碼子</button>
+    <button type="button" class="ghost" data-act="code" data-code="deg">看同一種氨基酸</button>
+    <button type="button" class="ghost" data-act="code" data-code="stop">看終止密碼子</button>
+  </div>
+  <div class="scene-wrap">
+    <svg id="fig-11" viewBox="0 0 680 240" role="img" aria-label="原創教學圖：mRNA 上的密碼子與 tRNA 上的反密碼子">
+      <rect width="680" height="240" fill="#f7fbfc"/>
+      <text x="24" y="28" font-size="14" font-weight="800" fill="#0b6e7a">mRNA</text>
+      <g id="codons">
+        <rect x="40" y="48" width="90" height="44" rx="8" fill="#fff" stroke="#0b6e7a" stroke-width="2"/>
+        <rect x="138" y="48" width="90" height="44" rx="8" fill="#fff" stroke="#0b6e7a" stroke-width="2"/>
+        <rect x="236" y="48" width="90" height="44" rx="8" fill="#fff" stroke="#9b1c1c" stroke-width="2"/>
+        <text x="85" y="76" text-anchor="middle" font-size="18" font-weight="800">GAA</text>
+        <text x="183" y="76" text-anchor="middle" font-size="18" font-weight="800">GAG</text>
+        <text x="281" y="76" text-anchor="middle" font-size="18" font-weight="800" fill="#9b1c1c">UAA</text>
+        <text x="85" y="112" text-anchor="middle" font-size="12" fill="#4a5a70">谷氨酸</text>
+        <text x="183" y="112" text-anchor="middle" font-size="12" fill="#4a5a70">谷氨酸</text>
+        <text x="281" y="112" text-anchor="middle" font-size="12" fill="#9b1c1c">終止</text>
+      </g>
+      <text x="400" y="28" font-size="14" font-weight="800" fill="#5b3d8f">tRNA</text>
+      <path d="M470 150 q40 -70 80 0 q30 20 10 50 q-40 16 -70 0 q-20 -24 -20 -50 z" fill="#f3e8ff" stroke="#5b3d8f" stroke-width="2"/>
+      <rect x="488" y="168" width="64" height="28" rx="6" fill="#fff" stroke="#5b3d8f"/>
+      <text x="520" y="188" text-anchor="middle" font-size="16" font-weight="800" fill="#5b3d8f">CUU</text>
+      <text x="520" y="214" text-anchor="middle" font-size="12" fill="#5b3d8f">反密碼子</text>
+      <text x="40" y="160" font-size="13" fill="#152033">鹼基是 A、C、G、U。這裡沒有 T。</text>
+      <text x="40" y="186" font-size="13" fill="#152033">GAA 與 GAG 都對應谷氨酸。</text>
+      <text x="40" y="212" font-size="13" fill="#152033">UAA 不對應氨基酸，翻譯在這裡停下。</text>
+    </svg>
+  </div>
+  <p class="caption">原創教學圖。密碼子畫在 mRNA 上；tRNA 下緣的三聯體標成反密碼子，與 GAA 互補。</p>
+  <p class="readout" id="code-read">點一項，圖上會標出對應位置。</p>
+</div>
+<div class="row no-print"><button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button></div>
+<div class="reveal-body" id="rev-11">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 C</h3>
+    <p>遺傳密碼有簡併性：61 個有義密碼子對應 20 種氨基酸，大多數氨基酸有多於一個密碼子。圖中的谷氨酸就是 GAA 和 GAG 兩例。</p>
+  </div>
+  <div class="col-bad">
+    <h3>常見陷阱</h3>
+    <p><b>B（4/22，18.18%）</b>密碼子和反密碼子只差一個字，位置卻不同。密碼子在 mRNA；tRNA 上與它互補的三聯體叫反密碼子。</p>
+    <p><b>D（3/22，13.64%）</b>UAA、UAG、UGA 三個終止密碼子不編碼氨基酸。</p>
+    <p><b>A（2/22，9.09%）</b>把 DNA 的 T 套到 mRNA 上。密碼子在 mRNA，鹼基是 A、C、G、U，沒有 T。</p>
+  </div>
+  <p class="one"><b>帶走一句：</b>密碼子在 mRNA 上，多數氨基酸有多於一個密碼子；終止密碼子不對應氨基酸。</p>
+</div>
+<details class="teach"><summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>密碼子在哪一種 RNA？反密碼子在哪一種？</li>
+    <li>mRNA 有沒有 T？</li>
+    <li>64 個密碼子裡，有幾個不對應氨基酸？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#q27">上一題 · 27</a>
+  <a class="act" href="#q17">下一題 · 17</a>
+</div>
+</div>
+
+<!-- ========== Q17 ========== -->
+<div id="view-q17" class="view hidden" data-no="17" data-key="B" data-hk="71" data-counts="6,13,1,2" data-rank="10" data-topic="孿生" data-title="若 3 和 4 是孿生，可以得出哪一個結論？" data-one="一人受影響、一人正常，就不可能來自同一個受精卵。">
+<span id="q17" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">優次 10 · 第 17 題 · 孿生 · 同卵與異卵</p>
+<h2>3 和 4 若是孿生，來自幾個受精卵？</h2>
+<p class="rates">
+  <span class="rate bad">校本 59.09%（13/22）</span>
+  <span class="rate off">全港官方 71%</span>
+  <span class="rate hot">最多錯選 A · 27.27%（6/22）</span>
+</p>
+<div class="card">
+  <p>沿用上一題的譜系和同一個常染色體性狀。如果個體 3 和 4 是孿生，可以得出哪一個結論？</p>
+  <div class="scene-wrap"><div id="ped17"></div></div>
+  <p class="caption">原創教學圖。3 是受影響男性，4 是正常男性，兩人是交配 Z 的子女。括號只表示「若他們是孿生」這個假設。</p>
+  <div class="opts">
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="A"><span class="k">A</span><span class="ot">兩人由同一個受精卵發育而成</span></button><button type="button" class="plus" data-act="vote" data-k="A" aria-label="A 加一票">+1</button><span class="vc" data-vc="A">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="B"><span class="k">B</span><span class="ot">兩人由不同的受精卵發育而成</span></button><button type="button" class="plus" data-act="vote" data-k="B" aria-label="B 加一票">+1</button><span class="vc" data-vc="B">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="C"><span class="k">C</span><span class="ot">就表現連續變異的性狀而言，兩人的基因型不同</span></button><button type="button" class="plus" data-act="vote" data-k="C" aria-label="C 加一票">+1</button><span class="vc" data-vc="C">0</span></div>
+    <div class="opt-line"><button type="button" class="opt" data-act="pred" data-k="D"><span class="k">D</span><span class="ot">就表現不連續變異的性狀而言，兩人的基因型不同</span></button><button type="button" class="plus" data-act="vote" data-k="D" aria-label="D 加一票">+1</button><span class="vc" data-vc="D">0</span></div>
+  </div>
+  <div class="row">
+    <button type="button" class="ghost" data-act="load">載入校本 22 人的選擇</button>
+    <button type="button" class="ghost" data-act="clear">清除本堂票</button>
+  </div>
+</div>
+<div class="card">
+  <h3>用兩種孿生假設檢驗 3 和 4</h3>
+  <div class="row">
+    <button type="button" class="ghost" data-act="twin" data-twin="same">假設同一個受精卵</button>
+    <button type="button" class="ghost" data-act="twin" data-twin="diff">假設不同受精卵</button>
+  </div>
+  <p class="readout" id="twin-read">同卵孿生的基因型相同。先看 3 和 4 的表現型是否容許這一點。</p>
+</div>
+<div class="row no-print"><button type="button" class="act" data-act="reveal">揭曉答案與校本分佈</button></div>
+<div class="reveal-body" id="rev-17">
+  <div class="bars" data-bars></div>
+  <div class="col-ok">
+    <h3>答案 B</h3>
+    <p>3 受這個隱性性狀影響，4 正常，兩人的基因型不同。同卵孿生來同一個受精卵，基因型應該相同，所以他們不可能是同卵。他們由不同受精卵發育而成，也就是異卵孿生。</p>
+  </div>
+  <div class="col-bad">
+    <h3>常見陷阱</h3>
+    <p><b>A（6/22，27.27%）</b>一見「孿生」就當成同卵。孿生只表示一同出生。一人受影響、一人正常，直接否定同一個受精卵。</p>
+    <p><b>D（2/22，9.09%）</b>推理停在半路。這個單基因性狀的表現型不同，確實表示基因型不同，但題目要的結論是「不同的受精卵」。D 沒有走到這一步，也把依據說成「不連續變異的特徵」這一類，而不是直接的親緣結論。</p>
+    <p><b>C（1/22，4.55%）</b>連續變異（例如身高）受環境影響大，不能單憑它斷定基因型不同。這裡的直接證據是這個單基因性狀。</p>
+  </div>
+  <p class="one"><b>帶走一句：</b>一人受影響、一人正常，就不可能來自同一個受精卵。</p>
+</div>
+<details class="teach"><summary class="tap">教師可追問的三句</summary>
+  <ol>
+    <li>同卵孿生的基因型是否相同？</li>
+    <li>3 和 4 的差別，是這個單基因性狀，還是連續變異？</li>
+    <li>「基因型不同」之後，受精卵的數目必然是多少？</li>
+  </ol>
+</details>
+<div class="mod-foot">
+  <a class="ghost" href="#q11">上一題 · 11</a>
+  <a class="act" href="#recap">看十句速記</a>
+</div>
+</div>
+
+<!-- ========== QUIZ ========== -->
+<div id="view-quiz" class="view hidden">
+<span id="quiz" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="mod-kicker">學生自測 · 十題 · 每題 1 分</p>
+<h2>先做完再對答案</h2>
+<div id="quiz-body"></div>
+<div class="mod-foot">
+  <a class="ghost" href="#hub">返回總覽</a>
+  <a class="ghost" href="#recap">看十句速記</a>
+</div>
+</div>
+
+<!-- ========== RECAP ========== -->
+<div id="view-recap" class="view hidden">
+<span id="recap" style="position:absolute;top:0;left:0;height:0;width:0;overflow:hidden;" aria-hidden="true"></span>
+<p class="kicker">帶走 · 十句</p>
+<h2>這十題，各自一句</h2>
+<p class="muted">可直接列印。答案字母在這裡才集中列出。</p>
+<div class="rule-grid" id="recap-cards"></div>
+<div class="card">
+  <h3>一覽</h3>
+  <div style="overflow-x:auto">
+    <table class="sum" id="recap-table">
+      <thead><tr><th>題</th><th>答案</th><th>校本</th><th>全港</th><th>一句</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+<div class="row no-print">
+  <button type="button" class="act" id="print-btn">列印這頁速記</button>
+  <a class="ghost" href="#hub">返回總覽</a>
+  <a class="ghost" href="#quiz">去做自測</a>
+</div>
+</div>
+
+<footer class="foot-note">
+  福建中學（小西灣）課堂用。本頁為原創教學模擬、重繪圖表與改寫題幹，用以講解 2013 年文憑試生物卷一甲部相關概念，並非重刊香港考試及評核局試卷、評卷參考或原圖。校本答對率按 PM19（2026/2027 中六，22 人合計）標示；全港官方百分率來自 2013 DSE 評卷參考。第 9 題經考評局刪去，不設答案、不設單元。模擬數值用來顯示方向和邏輯，不是真實實驗讀數。頁面不記錄學生姓名、班號或個人分數。
+</footer>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+(function () {
+  "use strict";
+
+  var ORDER = [30, 21, 25, 8, 26, 10, 15, 27, 11, 17];
+  var ALLQ = [
+    [1,59.09],[2,86.36],[3,68.18],[4,95.45],[5,68.18],[6,77.27],
+    [7,59.09],[8,45.45],[9,null],[10,54.55],[11,59.09],[12,100],
+    [13,86.36],[14,59.09],[15,54.55],[16,68.18],[17,59.09],[18,63.64],
+    [19,81.82],[20,90.91],[21,36.36],[22,72.73],[23,72.73],[24,72.73],
+    [25,36.36],[26,45.45],[27,54.55],[28,77.27],[29,77.27],[30,27.27],
+    [31,77.27],[32,77.27],[33,95.45],[34,77.27],[35,81.82],[36,68.18]
+  ];
+  var MODS = ["hub","q30","q21","q25","q8","q26","q10","q15","q27","q11","q17","quiz","recap"];
+  var LETTERS = ["A","B","C","D"];
+  var META = {};
+  var state = { pred: {}, votes: {}, open: {}, quiz: { i: 0, ans: {}, done: false, built: false } };
+  var timers = { lung: null, osm: null };
+  var lung = { t: 0 };
+  var osm = { conc: "10", peel: false, level: 22 };
+  var atpOn = true;
+
+  function qs(id) { return document.getElementById(id); }
+  function viewOf(no) { return qs("view-q" + no); }
+  function reduceMotion() {
+    try { return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
+    catch (err) { return false; }
+  }
+  function toast(msg) {
+    var el = qs("toast");
+    el.textContent = msg;
+    el.className = "toast show";
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.className = "toast"; }, 2600);
+  }
+  function pctNum(count) { return count / 22 * 100; }
+  function pctStr(count) {
+    if (!count) return "0%";
+    return pctNum(count).toFixed(2) + "%";
+  }
+  function readMeta(no) {
+    var el = viewOf(no);
+    var parts = el.getAttribute("data-counts").split(",");
+    var counts = { A: +parts[0], B: +parts[1], C: +parts[2], D: +parts[3] };
+    return {
+      no: no,
+      key: el.getAttribute("data-key"),
+      hk: +el.getAttribute("data-hk"),
+      counts: counts,
+      rank: +el.getAttribute("data-rank"),
+      topic: el.getAttribute("data-topic"),
+      title: el.getAttribute("data-title"),
+      one: el.getAttribute("data-one")
+    };
+  }
+  function hotWrong(q) {
+    var best = -1;
+    var list = [];
+    for (var i = 0; i < LETTERS.length; i++) {
+      var k = LETTERS[i];
+      if (k === q.key) continue;
+      var c = q.counts[k];
+      if (c > best) { best = c; list = [k]; }
+      else if (c === best && c > 0) list.push(k);
+    }
+    return { letters: list, n: best };
+  }
+  function heatColor(p) {
+    if (p < 40) return "#f6d0cb";
+    if (p < 55) return "#f8e3c4";
+    if (p < 70) return "#f3efd4";
+    if (p < 85) return "#d7ead4";
+    return "#b7ddc4";
+  }
+  function svgEl(name, attrs, text) {
+    var e = document.createElementNS("http://www.w3.org/2000/svg", name);
+    attrs = attrs || {};
+    var keys = Object.keys(attrs);
+    for (var i = 0; i < keys.length; i++) e.setAttribute(keys[i], attrs[keys[i]]);
+    if (text != null && text !== "") e.textContent = text;
+    return e;
+  }
+  function clearEl(el) {
+    while (el && el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function buildHeat() {
+    var host = qs("heat");
+    clearEl(host);
+    var weak = {};
+    for (var i = 0; i < ORDER.length; i++) weak[ORDER[i]] = true;
+    for (var j = 0; j < ALLQ.length; j++) {
+      var no = ALLQ[j][0];
+      var p = ALLQ[j][1];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "hcell" + (weak[no] ? " weak" : "") + (p === null ? " void" : "");
+      b.setAttribute("data-act", "heat");
+      b.setAttribute("data-q", String(no));
+      if (p === null) {
+        b.setAttribute("aria-label", "第 9 題，已刪去，不計分");
+        b.innerHTML = "<b>9</b><small>刪</small>";
+      } else {
+        b.style.background = heatColor(p);
+        b.setAttribute("aria-label", "第 " + no + " 題，校本答對率 " + p + "%");
+        b.innerHTML = "<b>" + no + "</b><small>" + p + "</small>";
+      }
+      host.appendChild(b);
+    }
+  }
+  function stackHtml(q, revealed) {
+    var html = "";
+    for (var i = 0; i < LETTERS.length; i++) {
+      var k = LETTERS[i];
+      var c = q.counts[k];
+      if (!c) continue;
+      var cls = "seg " + k.toLowerCase();
+      if (revealed && k === q.key) cls += " key";
+      html += "<i class=\"" + cls + "\" style=\"width:" + (c / 22 * 100) + "%\"></i>";
+    }
+    return html;
+  }
+  function buildHub() {
+    var host = qs("hub-cards");
+    clearEl(host);
+    var got = 0;
+    var below = [];
+    for (var i = 0; i < ORDER.length; i++) {
+      var q = META[ORDER[i]];
+      got += q.counts[q.key];
+      var school = pctNum(q.counts[q.key]);
+      if (school < q.hk) below.push(q.no);
+      var a = document.createElement("a");
+      a.className = "hcard" + (q.rank === 1 ? " lowest" : "");
+      a.href = "#q" + q.no;
+      var hot = hotWrong(q);
+      var hotTxt = hot.letters.join(" 與 ");
+      var hotLabel = hot.n > q.counts[q.key] ? "最多人選" : "最多錯選";
+      a.innerHTML =
+        "<div class=\"tag-q\">優次 " + q.rank + " · 第 " + q.no + " 題 · " + q.topic + "</div>" +
+        "<h3>" + q.title + "</h3>" +
+        "<div class=\"rates\">" +
+          "<span class=\"rate bad\">校本 " + school.toFixed(2) + "%（" + q.counts[q.key] + "/22）</span>" +
+          "<span class=\"rate off\">全港官方 " + q.hk + "%</span>" +
+          "<span class=\"rate hot\">" + hotLabel + " " + hotTxt + " · " + pctStr(hot.n) + "</span>" +
+        "</div>" +
+        "<span class=\"dist\" aria-hidden=\"true\">" + stackHtml(q, !!state.open[q.no]) + "</span>" +
+        "<span class=\"go\">進入這個單元 →</span>";
+      host.appendChild(a);
+    }
+    var avg = got / 22;
+    var rate = got / 220 * 100;
+    qs("hub-lead").textContent = "22 人全卷平均約 23.9／35（第 9 題不計）。這十題合計平均答對 " +
+      avg.toFixed(1) + " 題，答對率 " + rate.toFixed(1) + "%。若十題都答對，每人可多取約 " +
+      (10 - avg).toFixed(1) + " 分。";
+    qs("below-line").textContent = below.length
+      ? "校本低於全港官方的是第 " + below.join("、") + " 題。其餘題目校本百分率不低於全港，仍按校本由低至高講。"
+      : "";
+  }
+
+  function currentMod() {
+    var raw = location.hash || "#hub";
+    var h = raw.replace(/^#/, "");
+    if (!h) h = "hub";
+    return h;
+  }
+  function stopTimers() {
+    if (timers.lung) { clearInterval(timers.lung); timers.lung = null; }
+    if (timers.osm) { clearInterval(timers.osm); timers.osm = null; }
+    var play = qs("lung-play");
+    if (play) play.textContent = "播放一次呼吸";
+  }
+  function show(mod) {
+    if (mod === "q9") {
+      toast("第 9 題經考評局刪去，不計分，沒有答案，也不是單元。");
+      mod = "hub";
+    }
+    if (MODS.indexOf(mod) === -1) {
+      if (mod.indexOf("q") === 0) toast("第 " + mod.replace("q", "") + " 題不在這十題之內。");
+      mod = "hub";
+    }
+    for (var i = 0; i < MODS.length; i++) {
+      var el = qs("view-" + MODS[i]);
+      if (!el) continue;
+      if (MODS[i] === mod) el.classList.remove("hidden");
+      else el.classList.add("hidden");
+    }
+    var links = document.querySelectorAll(".mod-nav a");
+    for (var j = 0; j < links.length; j++) {
+      if (links[j].getAttribute("data-mod") === mod) links[j].classList.add("is-active");
+      else links[j].classList.remove("is-active");
+    }
+    stopTimers();
+    if (mod === "hub") buildHub();
+    if (mod === "quiz") renderQuiz();
+    if (mod === "recap") buildRecap();
+    if (mod.indexOf("q") === 0) {
+      var no = +mod.replace("q", "");
+      if (META[no]) syncModule(no);
+    }
+    try { window.scrollTo(0, 0); } catch (err) {}
+  }
+
+  function ensureVotes(no) {
+    if (!state.votes[no]) state.votes[no] = { A: 0, B: 0, C: 0, D: 0 };
+    return state.votes[no];
+  }
+  function syncModule(no) {
+    var root = viewOf(no);
+    var votes = ensureVotes(no);
+    var vcs = root.querySelectorAll("[data-vc]");
+    for (var i = 0; i < vcs.length; i++) {
+      var k = vcs[i].getAttribute("data-vc");
+      vcs[i].textContent = String(votes[k] || 0);
+    }
+    var opts = root.querySelectorAll("button.opt");
+    var pred = state.pred[no];
+    var q = META[no];
+    var hot = hotWrong(q);
+    for (var j = 0; j < opts.length; j++) {
+      var letter = opts[j].getAttribute("data-k");
+      opts[j].classList.remove("is-on", "is-ok", "is-bad", "is-hot");
+      if (state.open[no]) {
+        if (letter === q.key) opts[j].classList.add("is-ok");
+        else if (letter === pred) opts[j].classList.add("is-bad");
+        if (hot.letters.indexOf(letter) !== -1 && letter !== q.key) opts[j].classList.add("is-hot");
+      } else if (letter === pred) opts[j].classList.add("is-on");
+    }
+    var rev = qs("rev-" + no);
+    if (state.open[no]) {
+      rev.classList.add("open");
+      rev.style.display = "block";
+      fillBars(no);
+    } else {
+      rev.classList.remove("open");
+      rev.style.display = "none";
+    }
+  }
+  function fillBars(no) {
+    var root = viewOf(no);
+    var box = root.querySelector("[data-bars]");
+    if (!box) return;
+    var q = META[no];
+    var hot = hotWrong(q);
+    var html = "";
+    for (var i = 0; i < LETTERS.length; i++) {
+      var k = LETTERS[i];
+      var c = q.counts[k];
+      var cls = "bar-row";
+      if (k === q.key) cls += " is-key";
+      else if (hot.letters.indexOf(k) !== -1) cls += " is-hot";
+      html += "<div class=\"" + cls + "\"><span class=\"pl\">" + k + "</span><span class=\"track\"><i style=\"width:" +
+        (c / 22 * 100) + "%\"></i></span><span class=\"vv\">" + pctStr(c) + " · " + c + "/22</span></div>";
+    }
+    var school = pctNum(q.counts[q.key]);
+    var d = school - q.hk;
+    var sign = d > 0 ? "+" : "";
+    html += "<p class=\"small muted\">校本 " + school.toFixed(2) + "%　全港官方 " + q.hk + "%　相差 " + sign + d.toFixed(1) + " 個百分點</p>";
+    box.innerHTML = html;
+  }
+
+  /* ---------- lung ---------- */
+  function lungP(t) {
+    var u, base, span, dir;
+    if (t < 0.25) { u = t / 0.25; base = 760; span = 2; dir = -1; }
+    else if (t < 0.5) { u = (t - 0.25) / 0.25; base = 758; span = 2; dir = 1; }
+    else if (t < 0.75) { u = (t - 0.5) / 0.25; base = 760; span = 2; dir = 1; }
+    else { u = (t - 0.75) / 0.25; base = 762; span = 2; dir = -1; }
+    var ease = (1 - Math.cos(u * Math.PI)) / 2;
+    return base + dir * span * ease;
+  }
+  function lungXY(t) {
+    var p = lungP(t);
+    return { x: 90 + t * 500, y: 40 + (762 - p) / 4 * 180, p: p };
+  }
+  function lungVol(t) {
+    if (t <= 0.5) return 0.32 + 0.68 * (t / 0.5);
+    return 1 - 0.68 * ((t - 0.5) / 0.5);
+  }
+  function initLung() {
+    var d = "";
+    for (var i = 0; i <= 60; i++) {
+      var pt = lungXY(i / 60);
+      d += (i === 0 ? "M" : "L") + pt.x.toFixed(1) + " " + pt.y.toFixed(1) + " ";
+    }
+    qs("lung-curve").setAttribute("d", d);
+    var marks = { P: 0, Q: 0.25, R: 0.5, S: 0.75 };
+    var labelOff = {
+      P: [-18, -16],
+      Q: [-6, -16],
+      R: [14, 22],
+      S: [14, 6]
+    };
+    var names = ["P", "Q", "R", "S"];
+    for (var n = 0; n < names.length; n++) {
+      var id = names[n];
+      var xy = lungXY(marks[id]);
+      var off = labelOff[id];
+      qs("mk-" + id).setAttribute("cx", xy.x);
+      qs("mk-" + id).setAttribute("cy", xy.y);
+      qs("lab-" + id).setAttribute("x", xy.x + off[0]);
+      qs("lab-" + id).setAttribute("y", xy.y + off[1]);
+    }
+    lungSet(0);
+  }
+  function lungSet(t) {
+    lung.t = t;
+    var xy = lungXY(t);
+    var v = lungVol(t);
+    qs("lung-dot").setAttribute("cx", xy.x);
+    qs("lung-dot").setAttribute("cy", xy.y);
+    var rx = 26 + 22 * v;
+    var ry = 34 + 26 * v;
+    qs("lung-l").setAttribute("rx", rx.toFixed(1));
+    qs("lung-l").setAttribute("ry", ry.toFixed(1));
+    qs("lung-r").setAttribute("rx", rx.toFixed(1));
+    qs("lung-r").setAttribute("ry", ry.toFixed(1));
+    var flow = "氣流暫停";
+    if (xy.p < 759.9) flow = "空氣流入";
+    else if (xy.p > 760.1) flow = "空氣流出";
+    qs("lung-flow").textContent = flow;
+    var volTxt = "肺容積正在改變";
+    if (t < 0.02) volTxt = "這是起點，這一次吸氣還沒有把肺擴大";
+    else if (Math.abs(t - 0.5) < 0.03) volTxt = "肺容積到達這一次呼吸的最大";
+    else if (t < 0.5) volTxt = "肺容積仍在增大";
+    else if (t > 0.97) volTxt = "呼氣結束，容積回到起始，不是最大";
+    else volTxt = "肺容積正在減小";
+    var pTxt = (Math.round(xy.p * 10) / 10).toFixed(1);
+    qs("lung-read").textContent = "肺內氣壓約 " + pTxt + " mmHg。" + flow + "。" + volTxt + "。";
+  }
+  function lungPlay() {
+    if (timers.lung) {
+      clearInterval(timers.lung);
+      timers.lung = null;
+      qs("lung-play").textContent = "播放一次呼吸";
+      return;
+    }
+    if (reduceMotion()) {
+      var keys = [0, 0.25, 0.5, 0.75, 1];
+      var idx = 0;
+      for (var i = 0; i < keys.length; i++) if (Math.abs(lung.t - keys[i]) < 0.04) idx = i;
+      lungSet(keys[(idx + 1) % keys.length]);
+      return;
+    }
+    qs("lung-play").textContent = "暫停";
+    timers.lung = setInterval(function () {
+      var t = lung.t + 0.008;
+      if (t > 1) t = 0;
+      lungSet(t);
+    }, 40);
+  }
+
+  /* ---------- cells ---------- */
+  var CELL_TEXT = {
+    size: "真細菌畫得較小。原生生物細胞通常更大。體積不是劃分原核和真核的標準。",
+    wall: "左圖真細菌有一圈細胞壁。右圖原生生物沒有細胞壁。不能說「原生生物都有細胞壁」，變形蟲就沒有；也不能說真細菌沒有細胞壁。",
+    nuc: "真細菌中央只有沒有核膜的擬核。原生生物有核膜包圍的細胞核。",
+    mito: "真細菌沒有線粒體。原生生物細胞裡畫了兩個線粒體。"
+  };
+  function showCell(part) {
+    qs("cell-read").textContent = CELL_TEXT[part] || "";
+    var nucB = qs("part-nuc-b");
+    var nucP = qs("part-nuc-p");
+    var mito = qs("part-mito");
+    nucB.setAttribute("stroke-width", part === "nuc" ? "4" : "2");
+    nucP.setAttribute("stroke-width", part === "nuc" ? "4" : "2");
+    mito.setAttribute("stroke-width", part === "mito" ? "3" : "1.5");
+  }
+
+  /* ---------- osmosis ---------- */
+  var OSM_FINAL = { "5": 34, "10": 58, "20": 96 };
+  var OSM_BOTTOM = 198;
+  function drawOsm() {
+    var h = osm.level;
+    var rect = qs("sucrose");
+    var y = OSM_BOTTOM - h;
+    rect.setAttribute("x", "242");
+    rect.setAttribute("width", "100");
+    rect.setAttribute("y", String(y));
+    rect.setAttribute("height", String(Math.max(2, h)));
+    var refY = OSM_BOTTOM - OSM_FINAL["10"];
+    var ref = qs("ref-line");
+    ref.setAttribute("y1", String(refY));
+    ref.setAttribute("y2", String(refY));
+    var refLab = qs("ref-lab");
+    if (refLab) refLab.setAttribute("y", String(refY + 4));
+    qs("potato-skin").setAttribute("opacity", osm.peel ? "0.12" : "1");
+  }
+  function osmMessage(done) {
+    var finalH = OSM_FINAL[osm.conc];
+    var ref = OSM_FINAL["10"];
+    var cmp = "與 10% 參考相同";
+    if (finalH > ref + 1) cmp = "比 10% 參考更高";
+    else if (finalH < ref - 1) cmp = "比 10% 參考更低";
+    var speed = osm.peel ? "外皮削去後，接觸面較大，升得較快。" : "只靠底部切面，升得較慢。";
+    var end = done ? "已到達最終液面：" + cmp + "。" : "尚未到達最終液面。最終將會" + cmp + "。";
+    qs("osm-read").textContent = "杯內是 " + osm.conc + "% 蔗糖。" + speed + end;
+  }
+  function osmStep() {
+    var finalH = OSM_FINAL[osm.conc];
+    var step = osm.peel ? 3.4 : 1.15;
+    if (reduceMotion()) step = finalH;
+    osm.level = Math.min(finalH, osm.level + step);
+    drawOsm();
+    var done = osm.level >= finalH - 0.1;
+    osmMessage(done);
+    return done;
+  }
+  function osmRun() {
+    if (timers.osm) clearInterval(timers.osm);
+    osm.level = 18;
+    if (osmStep()) { timers.osm = null; return; }
+    timers.osm = setInterval(function () {
+      if (osmStep()) { clearInterval(timers.osm); timers.osm = null; }
+    }, 45);
+  }
+  function syncConcButtons() {
+    var btns = document.querySelectorAll("[data-act=conc]");
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].getAttribute("data-conc") === osm.conc) btns[i].className = "act";
+      else btns[i].className = "ghost";
+    }
+    qs("peel-btn").textContent = osm.peel ? "已削去全部外皮（再按可還原）" : "削去全部外皮";
+    qs("peel-btn").className = osm.peel ? "act" : "ghost";
+  }
+
+  /* ---------- ATP ---------- */
+  function drawAtp() {
+    var s1 = qs("step-1");
+    var s2 = qs("step-2");
+    var s3 = qs("step-3");
+    s1.className = "step " + (atpOn ? "is-go" : "is-go");
+    s2.className = "step " + (atpOn ? "is-go" : "is-stop");
+    s3.className = "step " + (atpOn ? "is-go" : "is-stop");
+    s1.querySelector(".st").textContent = "　這一步沒有使用 ATP，供應關掉仍然進行。";
+    s2.querySelector(".st").textContent = atpOn ? "　ATP 與 NADPH 都在用，三碳糖可以生成。" : "　沒有 ATP，還原停住，葡萄糖形成不了。";
+    s3.querySelector(".st").textContent = atpOn ? "　ATP 用於再生 RuBP，固定可以繼續有受體。" : "　沒有 ATP，RuBP 再生停住。";
+    qs("atp-btn").textContent = atpOn ? "ATP 供應：開（按一下關掉）" : "ATP 供應：關（按一下打開）";
+    qs("atp-btn").className = atpOn ? "act" : "ghost";
+    qs("atp-read").textContent = atpOn
+      ? "ATP 開通時三步都在走。請關掉 ATP，看哪幾步其實依賴它。"
+      : "ATP 關掉之後：固定仍發生；還原和 RuBP 再生停住。";
+  }
+
+  /* ---------- nutrient ---------- */
+  var NUT = {
+    aa: { name: "氨基酸", pass: false, fill: "#1d4e89", text: "氨基酸水溶性，又常帶電荷，不能溶進脂雙層，要膜蛋白。" },
+    fa: { name: "脂肪酸", pass: true, fill: "#b45309", text: "脂肪酸脂溶性，可以溶進磷脂尾部，主要靠簡單擴散進入細胞。" },
+    su: { name: "單糖", pass: false, fill: "#0f766e", text: "單糖（例如葡萄糖）水溶性。分子小也不等於能簡單擴散，要載體蛋白。" },
+    nu: { name: "核苷酸", pass: false, fill: "#6d28d9", text: "核苷酸水溶性，不能直接穿過脂雙層。" }
+  };
+  function showNut(id) {
+    var n = NUT[id];
+    var mol = qs("mol");
+    var lab = qs("mol-lab");
+    var car = qs("carrier");
+    mol.setAttribute("fill", n.fill);
+    lab.textContent = n.name;
+    if (n.pass) {
+      mol.setAttribute("cx", "250");
+      mol.setAttribute("cy", "110");
+      car.setAttribute("opacity", "0");
+    } else {
+      mol.setAttribute("cx", "250");
+      mol.setAttribute("cy", "48");
+      car.setAttribute("opacity", "1");
+    }
+    qs("nut-read").textContent = n.text;
+  }
+
+  /* ---------- stages ---------- */
+  var STAGE = {
+    gly: "糖酵解：不需要氧，也不放出二氧化碳。它在細胞質進行。",
+    link: "丙酮酸轉成乙酰輔酶 A：這一步放出二氧化碳。氧不是這一步的反應物。它出現在有氧路徑上，不等於這一步「需要氧」。",
+    krebs: "克雷伯氏循環：會放出二氧化碳。氧同樣不是這一步的直接反應物。",
+    ox: "氧化磷酸化：氧是最終電子受體，所以這個過程需要氧。產物是水，不放出二氧化碳。"
+  };
+  function showStage(id, btn) {
+    var buttons = document.querySelectorAll("[data-act=stage]");
+    for (var i = 0; i < buttons.length; i++) buttons[i].classList.remove("is-on");
+    if (btn) btn.classList.add("is-on");
+    qs("stage-read").textContent = STAGE[id];
+  }
+
+  /* ---------- pedigree ---------- */
+  function person(g, x, y, sex, aff, lab) {
+    var fill = aff ? "#1f4b6e" : "#ffffff";
+    var stroke = "#1f4b6e";
+    if (sex === "f") g.appendChild(svgEl("circle", { cx: x, cy: y, r: 16, fill: fill, stroke: stroke, "stroke-width": 2 }));
+    else g.appendChild(svgEl("rect", { x: x - 16, y: y - 16, width: 32, height: 32, rx: 4, fill: fill, stroke: stroke, "stroke-width": 2 }));
+    if (lab) {
+      g.appendChild(svgEl("text", {
+        x: x + 20, y: y - 10, "font-size": 14, "font-weight": "800", fill: "#152033"
+      }, lab));
+    }
+  }
+  function drawPedigree(hostId, mode) {
+    var host = qs(hostId);
+    if (!host) return;
+    clearEl(host);
+    var svg = svgEl("svg", { viewBox: "0 0 760 500", role: "img", width: "100%" });
+    svg.appendChild(svgEl("rect", { width: 760, height: 500, fill: "#f7fbfc" }));
+    var gens = ["親代", "子一代", "子二代", "子三代"];
+    var gy = [58, 168, 292, 412];
+    for (var i = 0; i < gens.length; i++) {
+      svg.appendChild(svgEl("text", { x: 16, y: gy[i] + 4, "font-size": 13, "font-weight": "700", fill: "#4a5a70" }, gens[i]));
+    }
+    function line(x1, y1, x2, y2) {
+      svg.appendChild(svgEl("line", { x1: x1, y1: y1, x2: x2, y2: y2, stroke: "#5c6b7a", "stroke-width": 2 }));
+    }
+    function couple(x1, x2, y, name) {
+      line(x1 + 16, y, x2 - 16, y);
+      var mx = (x1 + x2) / 2;
+      svg.appendChild(svgEl("text", {
+        x: mx, y: y - 22, "text-anchor": "middle", "font-size": 13, "font-weight": "800", fill: "#0b6e7a"
+      }, "交配 " + name));
+      return mx;
+    }
+    function sibs(mx, fromY, barY, kids) {
+      line(mx, fromY, mx, barY);
+      line(kids[0], barY, kids[kids.length - 1], barY);
+      for (var i = 0; i < kids.length; i++) line(kids[i], barY, kids[i], barY + 28);
+    }
+    var y1 = 58, y2 = 168, y3 = 292, y4 = 412;
+    person(svg, 200, y1, "f", true, "");
+    person(svg, 340, y1, "m", false, "1");
+    var mx = couple(200, 340, y1, "X");
+    sibs(mx, y1 + 16, 124, [160, 300]);
+    person(svg, 160, y2, "m", false, "");
+    person(svg, 300, y2, "m", false, "");
+    person(svg, 460, y2, "f", false, "2");
+    var my = couple(300, 460, y2, "Y");
+    sibs(my, y2 + 16, 236, [360, 500]);
+    person(svg, 220, y3, "m", false, "");
+    person(svg, 360, y3, "f", false, "");
+    person(svg, 500, y3, "f", false, "");
+    var mz = couple(220, 360, y3, "Z");
+    sibs(mz, y3 + 16, 356, [150, 270, 390, 510]);
+    person(svg, 150, y4, "m", true, "3");
+    person(svg, 270, y4, "m", false, "4");
+    person(svg, 390, y4, "f", true, "");
+    person(svg, 510, y4, "m", false, "");
+    if (mode === "twins") {
+      svg.appendChild(svgEl("path", {
+        d: "M150 446 q60 28 120 0", fill: "none", stroke: "#0b6e7a", "stroke-width": 2
+      }));
+      svg.appendChild(svgEl("text", {
+        x: 210, y: 486, "text-anchor": "middle", "font-size": 13, "font-weight": "800", fill: "#0b6e7a"
+      }, "若 3 與 4 為孿生"));
+    }
+    svg.appendChild(svgEl("text", { x: 560, y: 450, "font-size": 12, fill: "#4a5a70" }, "實心＝受影響"));
+    svg.appendChild(svgEl("text", { x: 560, y: 470, "font-size": 12, fill: "#4a5a70" }, "空心＝正常"));
+    host.appendChild(svg);
+  }
+  var CROSS_TXT = {
+    X: "交配 X：受影響女性 × 正常男性（1）。圖中兩名子女都是正常男性。",
+    Y: "交配 Y：正常男性 × 正常女性（2）。圖中兩名子女都是正常女性。",
+    Z: "交配 Z：正常男性 × 正常女性。四名子女裡，有人受影響，也有人正常。"
+  };
+  function showCross(name) {
+    var btns = document.querySelectorAll("[data-act=cross]");
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].getAttribute("data-cross") === name) btns[i].className = "act cross-btn";
+      else btns[i].className = "ghost cross-btn";
+    }
+    qs("cross-read").textContent = CROSS_TXT[name] + " 這只是表現型，還沒有標出能不能判斷顯性。";
+  }
+
+  /* ---------- eye / code / twin ---------- */
+  function showLight(mode) {
+    var day = mode === "day";
+    qs("btn-day").className = day ? "act" : "ghost";
+    qs("btn-night").className = day ? "ghost" : "act";
+    qs("cones").setAttribute("opacity", day ? "1" : "0.25");
+    qs("rods").setAttribute("opacity", day ? "0.35" : "1");
+    qs("fig-27").style.background = day ? "#f7fbfc" : "#1b2430";
+    qs("eye-read").textContent = day
+      ? "日間：中央凹的視錐細胞活躍，負責清晰和顏色。周邊的視桿細胞在強光下不活躍。"
+      : "弱光：周邊視桿細胞負責看見光暗，但不辨色、不解像。中央凹幾乎沒有視桿細胞，弱光下並不清晰。題目問的是日間。";
+  }
+  function showSpot(which) {
+    qs("eye-read").textContent = which === "x"
+      ? "X₁ 在視網膜後方正中，也就是中央凹，視錐細胞最密。"
+      : "Y₁ 在中央凹以外的視網膜，視桿細胞較多，視錐細胞較疏。";
+  }
+  function showCode(which) {
+    var msg = {
+      mrna: "三個字母一組的密碼子畫在 mRNA 上。鹼基是 A、C、G、U，沒有 DNA 才有的 T。",
+      trna: "tRNA 下緣的 CUU 是反密碼子，跟 mRNA 上的 GAA 互補。它不叫密碼子。",
+      deg: "GAA 和 GAG 都對應谷氨酸。同一種氨基酸可以有多於一個密碼子。",
+      stop: "UAA 是終止密碼子。它不對應任何氨基酸，翻譯在這裡停止。"
+    };
+    qs("code-read").textContent = msg[which];
+  }
+  function showTwin(which) {
+    qs("twin-read").textContent = which === "same"
+      ? "若來自同一個受精卵，基因型應該相同，這個單基因性狀的表現型也應該相同。圖中 3 受影響、4 正常，與這個假設矛盾。"
+      : "若來自不同受精卵，基因型可以不同，就像普通的兄弟姊妹。3 受影響、4 正常，與這個假設相符。";
+  }
+
+  /* ---------- quiz & recap ---------- */
+  function renderQuiz() {
+    var host = qs("quiz-body");
+    var qz = state.quiz;
+    if (qz.done) {
+      var score = 0;
+      var wrong = [];
+      for (var i = 0; i < ORDER.length; i++) {
+        var no = ORDER[i];
+        if (qz.ans[no] === META[no].key) score++;
+        else wrong.push(no);
+      }
+      var html = "<div class=\"card\"><p class=\"score-ring\">" + score + " ／ 10</p>";
+      html += "<p>" + (score >= 8 ? "這十題的概念已能站住。" : score >= 5 ? "還有幾個固定陷阱，值得回到單元再看模型。" : "建議按錯題回到單元，先看模型再看揭曉。") + "</p>";
+      if (!wrong.length) html += "<p>十題都對上了。</p>";
+      else {
+        html += "<div class=\"why-list\">";
+        for (var w = 0; w < wrong.length; w++) {
+          var n = wrong[w];
+          var picked = qz.ans[n] || "未選";
+          html += "<p><a href=\"#q" + n + "\"><b>第 " + n + " 題</b></a>　你選了 " + picked +
+            "，答案是 " + META[n].key + "。" + META[n].one + "</p>";
+        }
+        html += "</div>";
+      }
+      html += "<div class=\"row\"><button type=\"button\" class=\"act\" data-act=\"quiz-reset\">再測一次</button></div></div>";
+      host.innerHTML = html;
+      return;
+    }
+    var no = ORDER[qz.i];
+    var q = META[no];
+    var root = viewOf(no);
+    var stem = root.querySelector(".card p");
+    var stemText = stem ? stem.textContent : q.title;
+    var ans = qz.ans[no];
+    var html2 = "<div class=\"card\"><p class=\"mod-kicker\">第 " + (qz.i + 1) + " ／ 10 題 · 第 " + no + " 題 · " + q.topic + "</p>";
+    html2 += "<p>" + stemText + "</p>";
+    var fig = qs("fig-" + no);
+    if (no === 15) fig = qs("ped15") ? qs("ped15").querySelector("svg") : null;
+    if (no === 17) fig = qs("ped17") ? qs("ped17").querySelector("svg") : null;
+    if (fig) {
+      html2 += "<div class=\"scene-wrap\">" + fig.outerHTML + "</div>";
+    }
+    if (no === 8 || no === 25) {
+      var lists = root.querySelectorAll(".card ol");
+      if (lists.length) html2 += "<ol>" + lists[0].innerHTML + "</ol>";
+    }
+    var opts = root.querySelectorAll("button.opt");
+    for (var k = 0; k < opts.length; k++) {
+      var letter = opts[k].getAttribute("data-k");
+      var label = opts[k].querySelector(".ot").textContent;
+      var cls = "opt quiz-opt";
+      if (ans) {
+        if (letter === q.key) cls += " is-ok";
+        else if (letter === ans) cls += " is-bad";
+      }
+      html2 += "<button type=\"button\" class=\"" + cls + "\" data-act=\"quiz-pick\" data-k=\"" + letter + "\"><span class=\"k\">" +
+        letter + "</span><span class=\"ot\">" + label + "</span></button>";
+    }
+    if (ans) {
+      var ok = ans === q.key;
+      html2 += "<div class=\"" + (ok ? "col-ok" : "col-bad") + "\"><p>" + (ok ? "答對了。" : "還未對上。答案是 " + q.key + "。") +
+        q.one + "</p></div>";
+      html2 += "<button type=\"button\" class=\"act\" data-act=\"quiz-next\">" + (qz.i === 9 ? "看成績" : "下一題") + "</button>";
+    }
+    html2 += "</div>";
+    host.innerHTML = html2;
+  }
+  function buildRecap() {
+    var cards = qs("recap-cards");
+    var body = qs("recap-table").querySelector("tbody");
+    if (cards.getAttribute("data-ready") === "1") return;
+    clearEl(cards);
+    clearEl(body);
+    for (var i = 0; i < ORDER.length; i++) {
+      var q = META[ORDER[i]];
+      var art = document.createElement("article");
+      art.className = "rule";
+      art.innerHTML = "<span class=\"tag\">第 " + q.no + " 題 · 答案 " + q.key + "</span><h3>" + q.topic + "</h3><p>" +
+        q.one + "</p><p class=\"small muted\">校本 " + pctNum(q.counts[q.key]).toFixed(2) + "%（" + q.counts[q.key] +
+        "/22）　全港 " + q.hk + "%</p><p><a href=\"#q" + q.no + "\">回到這一題</a></p>";
+      cards.appendChild(art);
+      var tr = document.createElement("tr");
+      tr.innerHTML = "<td>" + q.no + "</td><td><b>" + q.key + "</b></td><td>" +
+        pctNum(q.counts[q.key]).toFixed(2) + "%</td><td>" + q.hk + "%</td><td>" + q.one + "</td>";
+      body.appendChild(tr);
+    }
+    cards.setAttribute("data-ready", "1");
+  }
+
+  function onAct(btn) {
+    var act = btn.getAttribute("data-act");
+    var root = btn.closest ? btn.closest(".view") : null;
+    var no = root && root.getAttribute("data-no") ? +root.getAttribute("data-no") : 0;
+
+    if (act === "heat") {
+      var qn = +btn.getAttribute("data-q");
+      if (qn === 9) { toast("第 9 題經考評局刪去，不計分，沒有答案，也不是單元。"); return; }
+      if (ORDER.indexOf(qn) === -1) { toast("第 " + qn + " 題不在這十題之內，只作全卷對照。"); return; }
+      location.hash = "#q" + qn;
+      return;
+    }
+    if (act === "pred" && no) {
+      state.pred[no] = btn.getAttribute("data-k");
+      syncModule(no);
+      return;
+    }
+    if (act === "vote" && no) {
+      var votes = ensureVotes(no);
+      var letter = btn.getAttribute("data-k");
+      var total = votes.A + votes.B + votes.C + votes.D;
+      if (total >= 36) { toast("本堂票數已很多，可先清除再記。"); return; }
+      votes[letter] += 1;
+      syncModule(no);
+      return;
+    }
+    if (act === "load" && no) {
+      var q = META[no];
+      state.votes[no] = { A: q.counts.A, B: q.counts.B, C: q.counts.C, D: q.counts.D };
+      syncModule(no);
+      toast("已載入校本 22 人的選擇。還沒有標出哪個字母才對。");
+      return;
+    }
+    if (act === "clear" && no) {
+      state.votes[no] = { A: 0, B: 0, C: 0, D: 0 };
+      syncModule(no);
+      return;
+    }
+    if (act === "reveal" && no) {
+      state.open[no] = true;
+      syncModule(no);
+      var rev = qs("rev-" + no);
+      if (rev && rev.scrollIntoView) {
+        try { rev.scrollIntoView({ block: "nearest" }); } catch (err) {}
+      }
+      return;
+    }
+    if (act === "lung") { lungSet(+btn.getAttribute("data-t")); return; }
+    if (act === "lung-play") { lungPlay(); return; }
+    if (act === "cell") { showCell(btn.getAttribute("data-part")); return; }
+    if (act === "conc") {
+      osm.conc = btn.getAttribute("data-conc");
+      osm.level = 18;
+      if (timers.osm) { clearInterval(timers.osm); timers.osm = null; }
+      syncConcButtons();
+      drawOsm();
+      osmMessage(false);
+      return;
+    }
+    if (act === "peel") {
+      osm.peel = !osm.peel;
+      syncConcButtons();
+      drawOsm();
+      osmMessage(false);
+      return;
+    }
+    if (act === "osm-run") { osmRun(); return; }
+    if (act === "osm-reset") {
+      if (timers.osm) { clearInterval(timers.osm); timers.osm = null; }
+      osm.level = 22;
+      osm.conc = "10";
+      osm.peel = false;
+      syncConcButtons();
+      drawOsm();
+      qs("osm-read").textContent = "已回到 10% 蔗糖、外皮仍在。虛線就是這個裝置的最終液面。";
+      return;
+    }
+    if (act === "atp") { atpOn = !atpOn; drawAtp(); return; }
+    if (act === "nut") { showNut(btn.getAttribute("data-nut")); return; }
+    if (act === "stage") { showStage(btn.getAttribute("data-stage"), btn); return; }
+    if (act === "cross") { showCross(btn.getAttribute("data-cross")); return; }
+    if (act === "light") { showLight(btn.getAttribute("data-light")); return; }
+    if (act === "spot") { showSpot(btn.getAttribute("data-spot")); return; }
+    if (act === "code") { showCode(btn.getAttribute("data-code")); return; }
+    if (act === "twin") { showTwin(btn.getAttribute("data-twin")); return; }
+    if (act === "quiz-pick") {
+      if (state.quiz.ans[ORDER[state.quiz.i]]) return;
+      state.quiz.ans[ORDER[state.quiz.i]] = btn.getAttribute("data-k");
+      renderQuiz();
+      return;
+    }
+    if (act === "quiz-next") {
+      if (state.quiz.i < 9) state.quiz.i += 1;
+      else state.quiz.done = true;
+      renderQuiz();
+      try { window.scrollTo(0, 0); } catch (err2) {}
+      return;
+    }
+    if (act === "quiz-reset") {
+      state.quiz = { i: 0, ans: {}, done: false, built: false };
+      renderQuiz();
+      return;
+    }
+  }
+
+  document.addEventListener("click", function (e) {
+    var node = e.target;
+    if (node && node.nodeType !== 1) node = node.parentNode;
+    if (!node || !node.closest) return;
+    var btn = node.closest("[data-act]");
+    if (!btn) return;
+    onAct(btn);
+  });
+  window.addEventListener("hashchange", function () { show(currentMod()); });
+  qs("print-btn").addEventListener("click", function () {
+    if (currentMod() !== "recap") location.hash = "#recap";
+    setTimeout(function () { window.print(); }, 60);
+  });
+
+  for (var i = 0; i < ORDER.length; i++) META[ORDER[i]] = readMeta(ORDER[i]);
+  buildHeat();
+  buildHub();
+  initLung();
+  drawOsm();
+  syncConcButtons();
+  drawAtp();
+  drawPedigree("ped15", "cross");
+  drawPedigree("ped17", "twins");
+  show(currentMod());
+})();
+</script>
+</body>
+</html>
