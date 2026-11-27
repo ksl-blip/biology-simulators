@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="B002 測定未知濃度澱粉酶溶液的濃度：系列稀釋與標準曲線互動模擬器（福建中學（小西灣）生物科）">
+<title>B002 測定未知濃度澱粉酶溶液的濃度 · 系列稀釋與標準曲線模擬器</title>
+<style>
+/* B002 standard-curve classroom stimulator — system fonts only; iPad-safe CSS */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;padding:0;
+  background:#efe8d8;
+  color:#17202a;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang HK","PingFang TC","Hiragino Sans GB","Hiragino Sans","Microsoft JhengHei","Heiti TC","Noto Sans TC",sans-serif;
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+body{min-height:100vh;min-height:100dvh}
+img,svg{max-width:100%;height:auto;display:block}
+a{color:#0c5f52;text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{margin:0;font-weight:700;letter-spacing:.01em;color:#132018}
+h1{font-size:24px;font-size:clamp(20px,3.2vw,30px);line-height:1.28}
+h2{font-size:19px;font-size:clamp(17px,2.2vw,22px);line-height:1.35}
+h3{font-size:16px;line-height:1.4}
+p{margin:0 0 10px 0}
+p:last-child{margin-bottom:0}
+ul,ol{margin:0 0 10px 0;padding-left:1.3em}
+li{margin:3px 0}
+small{font-size:13px;color:#5a6873}
+b,strong{font-weight:700}
+button,input,select,textarea{font-family:inherit;font-size:16px}
+:focus{outline:none}
+:focus-visible{outline:3px solid #c9a227;outline-offset:2px}
+
+.page{width:100%;min-height:100vh;min-height:100dvh;display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient:vertical;-webkit-flex-direction:column;flex-direction:column}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 8px 16px;min-width:0;-webkit-box-flex:1;-webkit-flex:1;flex:1;width:100%}
+
+.topbar{
+  position:-webkit-sticky;position:sticky;top:0;z-index:40;
+  background:rgba(255,253,247,.96);
+  border-bottom:1px solid #d8d0c0;
+  box-shadow:0 1px 0 rgba(23,32,42,.04);
+}
+.topbar .inner{max-width:1100px;margin:0 auto;padding:8px 16px 7px 16px}
+.brandline{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-flex-wrap:wrap;flex-wrap:wrap}
+.brandmark{
+  display:inline-block;background:#0c5f52;color:#fff;font-weight:700;font-size:12px;
+  letter-spacing:.08em;padding:4px 8px;border-radius:6px;margin-right:10px;margin-bottom:2px;
+}
+.brandtitle{font-weight:700;font-size:14px;color:#17202a;margin-right:10px;margin-bottom:2px}
+.brandsub{font-size:12.5px;color:#5a6873;margin-right:10px;margin-bottom:2px}
+.scorepill{
+  margin-left:auto;margin-bottom:2px;font-size:12.5px;font-weight:700;color:#0c5f52;
+  background:#e6f3ef;border:1px solid #b7d6cf;border-radius:999px;padding:4px 11px;white-space:nowrap;
+}
+.navscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;margin-top:6px;padding-bottom:3px}
+.navscroll::-webkit-scrollbar{height:4px}
+.navscroll::-webkit-scrollbar-thumb{background:#cfc6b3;border-radius:4px}
+.navrow{display:-webkit-box;display:-webkit-flex;display:flex;white-space:nowrap}
+.navlink{
+  display:inline-block;font-size:13px;color:#3e4c56;background:#f3eee3;
+  border:1px solid #ddd4c3;border-radius:999px;padding:6px 12px;margin-right:6px;
+  text-decoration:none;line-height:1.4;min-height:32px;
+}
+.navlink:hover{background:#e9e1cf;text-decoration:none}
+.navlink.on{background:#0c5f52;border-color:#0c5f52;color:#fff;font-weight:700}
+.navlink .nk{font-size:11px;opacity:.75;margin-left:3px}
+
+.sec{display:none;padding:18px 0 48px 0}
+.sec.on{display:block}
+.sechead{margin-bottom:14px}
+.kicker{font-size:11.5px;letter-spacing:.14em;color:#8a6a2c;font-weight:700}
+.sechead h1{margin-top:4px}
+.lede{font-size:14.5px;color:#4d5d67;margin-top:6px}
+
+.card{
+  background:#fffdf8;border:1px solid #d8d0c0;border-radius:14px;
+  padding:16px 16px 14px 16px;margin:0 0 14px 0;
+  box-shadow:0 1px 0 rgba(23,32,42,.03);
+}
+.card.tint{background:#f7f3e9}
+.card.key{border-color:#b7d6cf;background:#f4faf8}
+.card.warn{border-color:#e4d0a4;background:#fbf6ea}
+.chead{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin-bottom:10px}
+.chead h2,.chead h3{margin-right:10px}
+.badge{
+  display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;
+  padding:3px 9px;margin:2px 6px 2px 0;border:1px solid transparent;letter-spacing:.02em;
+}
+.b-teal{background:#e6f3ef;color:#0c5f52;border-color:#b7d6cf}
+.b-amber{background:#f8eedc;color:#8a5a10;border-color:#e4d0a4}
+.b-grey{background:#eef0f1;color:#4d5d67;border-color:#d5dadd}
+.b-rose{background:#f8e8e4;color:#9a3b2f;border-color:#e8c4bc}
+
+.grid2{display:grid;grid-template-columns:1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:760px){
+  .grid2{grid-template-columns:1fr 1fr}
+  .grid3{grid-template-columns:1fr 1fr 1fr}
+}
+.grid2 > .card,.grid3 > .card{margin:0}
+
+.kv{display:-webkit-box;display:-webkit-flex;display:flex;padding:7px 0;border-bottom:1px solid #ece6d8}
+.kv:last-child{border-bottom:0}
+.kv .k{width:108px;min-width:108px;font-size:12.5px;font-weight:700;color:#8a6a2c;padding-top:1px}
+.kv .v{font-size:14.5px;-webkit-box-flex:1;-webkit-flex:1;flex:1}
+
+.formula{
+  background:#132018;color:#eef6f2;border-radius:12px;padding:14px 16px;margin:10px 0;
+  font-size:14.5px;line-height:1.55;
+}
+.formula .big{display:block;font-size:20px;font-weight:700;margin-top:6px;color:#ffe7a3;letter-spacing:.01em}
+.formula .sub{display:block;font-size:12.5px;color:#b7c9c2;margin-top:6px}
+
+.note{background:#f3eee3;border:1px solid #e0d7c4;border-radius:10px;padding:10px 12px;margin:10px 0;font-size:14px;color:#3e4c56}
+.note.teal{background:#e6f3ef;border-color:#b7d6cf;color:#1d3b35}
+.note.amber{background:#f8eedc;border-color:#e4d0a4;color:#5a3d0e}
+.note.rose{background:#f8e8e4;border-color:#e8c4bc;color:#6a2a22}
+.hint{font-size:14px;color:#4d5d67;margin:0 0 10px 0}
+.tagline{font-size:12.5px;color:#7a8790;margin-top:8px}
+.qtag{font-size:11.5px;font-weight:700;letter-spacing:.1em;color:#8a6a2c;margin:0 0 6px 0}
+.qtext{font-size:15.5px;font-weight:700;color:#17202a;margin:0 0 8px 0}
+.qblock{margin:0 0 16px 0;padding-bottom:4px;border-bottom:1px dashed #e4dccb}
+.qblock:last-child{border-bottom:0;margin-bottom:0}
+
+.btnrow{margin-top:12px}
+.btnrow .btn,.btnrow .btnlink,.btnrow small,.btnrow .plain{margin:0 8px 8px 0;vertical-align:middle}
+.btn{
+  display:inline-block;background:#0c5f52;color:#fff;border:1px solid #0c5f52;
+  border-radius:10px;padding:9px 16px;font-weight:700;font-size:15px;line-height:1.3;
+  min-height:44px;cursor:pointer;text-decoration:none;text-align:center;
+}
+.btn:hover{background:#094a41;border-color:#094a41;text-decoration:none;color:#fff}
+.btn:disabled{background:#9bb8b2;border-color:#9bb8b2;color:#eef6f2;cursor:not-allowed}
+.btn.ghost{background:#fffdf8;color:#0c5f52;border-color:#0c5f52}
+.btn.ghost:hover{background:#e6f3ef;color:#0c5f52}
+.btn.plain{background:#f3eee3;color:#3e4c56;border-color:#d8d0c0;font-weight:600}
+.btn.plain:hover{background:#e9e1cf;color:#17202a}
+.btn.sm{min-height:44px;padding:7px 12px;font-size:14px}
+.btn.danger{background:#9a3b2f;border-color:#9a3b2f;color:#fff}
+.btn.danger:hover{background:#7c2d24;border-color:#7c2d24;color:#fff}
+.btnlink{display:inline-block;color:#0c5f52;font-weight:700;padding:8px 0;text-decoration:none}
+.btnlink:hover{text-decoration:underline}
+
+.chips{display:block}
+.chip{
+  display:inline-block;font-size:14px;line-height:1.4;color:#17202a;background:#f3eee3;
+  border:1px solid #d8d0c0;border-radius:10px;padding:8px 11px;margin:0 8px 8px 0;
+  cursor:pointer;text-align:left;min-height:44px;
+}
+.chip:hover{background:#e9e1cf}
+.chip.on{background:#0c5f52;border-color:#0c5f52;color:#fff;font-weight:700}
+.chip.warn{background:#f8eedc;border-color:#d4b36a}
+.optlist{margin:0}
+.opt{
+  display:block;background:#f7f3e9;border:1px solid #e0d7c4;border-radius:10px;
+  padding:10px 12px;margin:0 0 8px 0;cursor:pointer;min-height:44px;
+}
+.opt:hover{border-color:#b7d6cf;background:#eef7f4}
+.opt.sel{border-color:#0c5f52;background:#e6f3ef;box-shadow:inset 3px 0 0 #0c5f52}
+.opt input{margin-right:8px;vertical-align:middle}
+.opt span{vertical-align:middle}
+
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff}
+caption{text-align:left;font-size:12.5px;color:#5a6873;padding:0 0 6px 0}
+th,td{border:1px solid #d8d0c0;padding:8px 9px;text-align:left;vertical-align:top}
+th{background:#f3eee3;font-weight:700;color:#132018}
+td.num,th.num{text-align:center;white-space:nowrap}
+tr.ok td{background:#eef7f4}
+tr.bad td{background:#fdf4f2}
+tr.miss td{background:#fdf4f2}
+input.cell,select.cell{
+  width:100%;min-width:72px;min-height:44px;border:1px solid #d8d0c0;border-radius:8px;
+  padding:6px 8px;font-size:16px;background:#fff;
+}
+input.cell.ok{border-color:#0c5f52;background:#eef7f4}
+input.cell.bad{border-color:#9a3b2f;background:#fdf4f2}
+
+.reveal{display:none;margin-top:14px;padding-top:12px;border-top:1px dashed #d8d0c0}
+.reveal.on{display:block}
+.revealhead{font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#8a6a2c;margin:0 0 8px 0}
+
+label.chk{display:block;padding:8px 0;cursor:pointer;border-bottom:1px solid #ece6d8;min-height:44px}
+label.chk input{margin-right:8px}
+
+details{background:#fffdf8;border:1px solid #d8d0c0;border-radius:12px;padding:0;margin:0 0 14px 0}
+details summary{cursor:pointer;font-weight:700;padding:12px 16px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary:before{content:"+  ";color:#0c5f52}
+details[open] summary:before{content:"–  "}
+.dbody{padding:0 16px 14px 16px}
+
+.modcard{
+  display:block;background:#fffdf8;border:1px solid #d8d0c0;border-radius:12px;
+  padding:12px 14px;text-decoration:none;color:inherit;min-height:96px;
+}
+.modcard:hover{border-color:#0c5f52;text-decoration:none;box-shadow:0 0 0 2px rgba(12,95,82,.12)}
+.modcard .ms{font-size:12px;font-weight:700;color:#0c5f52}
+.modcard h3{margin:2px 0 4px 0}
+.modcard p{font-size:13.5px;color:#4d5d67;margin:0}
+.modst{font-size:12.5px;font-weight:700;color:#8a6a2c;margin-top:8px}
+
+.field{margin:0 0 10px 0}
+.field label,.flab{display:block;font-size:13px;font-weight:700;color:#3e4c56;margin:0 0 4px 0}
+.field input,.field select,input.wide,select.wide{
+  width:100%;min-height:44px;border:1px solid #d8d0c0;border-radius:10px;
+  padding:8px 10px;background:#fff;font-size:16px;
+}
+.fields{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:640px){
+  .fields.f2{grid-template-columns:1fr 1fr}
+  .fields.f3{grid-template-columns:1fr 1fr 1fr}
+  .fields.f4{grid-template-columns:1fr 1fr 1fr 1fr}
+}
+
+.bottles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (min-width:700px){.bottles{grid-template-columns:1fr 1fr 1fr 1fr}}
+.bottle{
+  background:#fff;border:1px solid #d8d0c0;border-radius:12px;padding:10px;text-align:center;font-size:13px;
+}
+.bottle.on{border-color:#0c5f52;box-shadow:inset 0 0 0 2px #0c5f52}
+.bottle .bn{font-weight:700;font-size:14px;margin-top:6px}
+.bottle .bs{font-size:12px;color:#5a6873}
+.tubegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;margin-top:8px}
+.tube{
+  background:#fff;border:1px solid #d8d0c0;border-radius:12px;padding:10px;text-align:center;font-size:13px;position:relative;
+}
+.tube.unmixed{border-color:#d4b36a;background:#fbf6ea}
+.tube.bad{border-color:#e8c4bc;background:#fdf4f2}
+.tube.ok{border-color:#b7d6cf;background:#f4faf8}
+.tube .tn{font-weight:700;font-size:14px;margin:4px 0 2px 0}
+.tube .ts{font-size:12px;color:#5a6873}
+.liq{
+  width:36px;height:52px;margin:0 auto;border:2px solid #8a8070;border-top:0;border-radius:0 0 16px 16px;
+  background:linear-gradient(#e8f0f0 0%,#c5ddd8 100%);position:relative;
+}
+.liq.enz{background:linear-gradient(#f3f0e4 0%,#e6d9a8 100%)}
+.liq.water{background:linear-gradient(#f4fbff 0%,#d7eaf4 100%)}
+.liq.starch{background:linear-gradient(#fff 0%,#f0e6c8 100%)}
+.liq.none{background:#f7f3e9}
+.liq.unmixed:after{
+  content:"";position:absolute;left:0;right:0;top:18px;height:8px;background:rgba(138,106,44,.35);
+}
+
+.chartbox{background:#fff;border:1px solid #d8d0c0;border-radius:12px;padding:8px 6px 2px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.chartbox svg{width:100%;height:auto;display:block;max-width:100%}
+.figcap{font-size:12px;color:#5a6873;margin:6px 0 8px 0;text-align:center}
+.legendrow{font-size:12.5px;color:#3e4c56;margin:0 0 8px 0}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:middle}
+.livewells{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+@media (min-width:700px){.livewells{grid-template-columns:1fr 1fr 1fr}}
+.livewell{background:#fff;border:1px solid #e0d7c4;border-radius:12px;padding:10px;text-align:center}
+.livewell .nm{font-weight:700;font-size:14px;margin-bottom:6px}
+.livewell .dot{width:56px;height:56px;border-radius:50%;margin:0 auto 6px auto;border:2px solid #8a8070}
+.livewell .st{font-size:12.5px;color:#4d5d67}
+
+.plate{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:8px 0}
+.well{
+  background:#f7f3e9;border:1px solid #d8d0c0;border-radius:10px;padding:6px 4px;text-align:center;
+}
+.well .wdot{width:28px;height:28px;border-radius:50%;margin:0 auto 4px auto;border:2px solid #8a8070}
+.well .wt{font-size:11px;color:#5a6873}
+
+.stepsbar{display:block;margin:0 0 10px 0}
+.stpill{
+  display:inline-block;font-size:12.5px;border:1px solid #d8d0c0;background:#f3eee3;color:#3e4c56;
+  border-radius:999px;padding:6px 10px;margin:0 6px 6px 0;
+}
+.stpill.on{background:#0c5f52;border-color:#0c5f52;color:#fff;font-weight:700}
+.stpill.done{background:#e6f3ef;border-color:#b7d6cf;color:#0c5f52}
+
+.rangebox{margin:8px 0}
+input[type=range]{width:100%;height:32px}
+.clock{font-size:28px;font-weight:700;color:#0c5f52;letter-spacing:.02em}
+.clock sm{font-size:14px;font-weight:600;color:#5a6873}
+
+.foot{color:#5a6873;font-size:12.5px;padding:8px 0 36px 0;border-top:1px solid #d8d0c0;margin-top:8px}
+.foot p{margin:0 0 6px 0}
+
+@media (max-width:600px){
+  .brandtitle{font-size:13px}
+  .kv .k{width:86px;min-width:86px}
+  .formula .big{font-size:17px}
+  .clock{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="topbar">
+  <div class="inner">
+    <div class="brandline">
+      <span class="brandmark">B002</span>
+      <span class="brandtitle">系列稀釋與標準曲線</span>
+      <span class="brandsub">福建中學（小西灣）· 生物科</span>
+      <span class="scorepill" id="scorePill">已完成 0 / 5 個模組</span>
+    </div>
+    <div class="navscroll">
+      <div class="navrow" id="navRow">
+        <a class="navlink" href="#hub" data-nav="hub">總覽</a>
+        <a class="navlink" href="#dilution" data-nav="dilution">系列稀釋<span class="nk">主軸</span></a>
+        <a class="navlink" href="#assay" data-nav="assay">測定時間</a>
+        <a class="navlink" href="#curve" data-nav="curve">標準曲線<span class="nk">主軸</span></a>
+        <a class="navlink" href="#compare" data-nav="compare">比較方法</a>
+        <a class="navlink" href="#limits" data-nav="limits">過高限制</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section class="sec" id="hub">
+  <div class="sechead">
+    <div class="kicker">生物科實驗工作紙 · 系列稀釋與標準曲線模擬器</div>
+    <h1>測定未知濃度澱粉酶溶液的濃度</h1>
+    <p class="lede">2026年12月4日（星期五）第 1、2 節 · 生物實驗室 · 本頁把工作紙延伸挑戰做成主軸：自己配製標準系列，再用線圖內插求樣本 X 的濃度。</p>
+  </div>
+
+  <div class="card key">
+    <div class="chead"><h2>為甚麼單一 0.2% 公式有時不夠</h2><span class="badge b-teal">先想清楚再用</span></div>
+    <p>工作紙以 0.2% 標準組為單一參考點，並假設在線性範圍內，完全分解時間與酶濃度成反比：</p>
+    <div class="formula">
+      反應速率 ＝ 1 ÷ 完全分解所需時間
+      <span class="big">c ＝ 0.2% × 9.5 ÷ t</span>
+      <span class="sub">此式只在酶濃度處於線性反應範圍內成立；是本頁的對照教具，不是主算法。</span>
+    </div>
+    <p>若樣本 X 的濃度明顯偏離 0.2%，單靠這一點推算會不準確，應改用<strong>系列稀釋</strong>繪製<strong>標準曲線</strong>，再以<strong>內插法</strong>讀出濃度。這正是本模擬器要你親手做的兩件事。</p>
+  </div>
+
+  <div class="grid2" style="margin-bottom:14px">
+    <a class="modcard" href="#dilution">
+      <div class="ms">主軸一</div>
+      <h3>配製系列稀釋</h3>
+      <p>由課堂加設的 0.4% 貯存液，自己配成 0.05%、0.1%、0.2%、0.4% 標準系列。常見錯誤會有後果。</p>
+      <div class="modst" id="st-dilution">未開始</div>
+    </a>
+    <a class="modcard" href="#curve">
+      <div class="ms">主軸二</div>
+      <h3>繪製標準曲線並內插</h3>
+      <p>先畫「酶濃度—完全分解時間」曲線，再用樣本 X 的時間內插求濃度；輔以 1／t 對濃度的直線圖。</p>
+      <div class="modst" id="st-curve">未開始</div>
+    </a>
+  </div>
+  <div class="grid3" style="margin-bottom:14px">
+    <a class="modcard" href="#assay">
+      <div class="ms">測定</div>
+      <h3>測定完全分解時間</h3>
+      <p>沿用 10 mL 澱粉 ＋ 1 mL 酶、分開預熱、碘液終點與蒸餾水對照，測定各標準點及樣本 X。</p>
+      <div class="modst" id="st-assay">未開始</div>
+    </a>
+    <a class="modcard" href="#compare">
+      <div class="ms">對照</div>
+      <h3>公式與曲線比較</h3>
+      <p>線性範圍內，內插結果應與 c ＝ 0.2% × 9.5 ÷ t 大致相符；偏離時兩者不再可靠。</p>
+      <div class="modst" id="st-compare">未開始</div>
+    </a>
+    <a class="modcard" href="#limits">
+      <div class="ms">限制</div>
+      <h3>酶濃度過高時</h3>
+      <p>時間不再按反比縮短，因為受混合速度及取樣間隔限制。不要無理外推曲線。</p>
+      <div class="modst" id="st-limits">未開始</div>
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>必須沿用的基本實驗條件</h2><span class="badge b-amber">數值不可改</span></div>
+    <div class="kv"><div class="k">用量</div><div class="v">10 mL 2% 澱粉溶液 ＋ 1 mL 澱粉酶溶液（或蒸餾水），總體積 11 mL</div></div>
+    <div class="kv"><div class="k">預熱</div><div class="v">兩種溶液先分別置於 40℃ 水浴預熱 5 分鐘，然後才混合</div></div>
+    <div class="kv"><div class="k">混合與計時</div><div class="v">把酶溶液加入澱粉溶液，混合後立即放回 40℃ 水浴，並立即開始計時</div></div>
+    <div class="kv"><div class="k">終點</div><div class="v">首次取樣加碘液不再呈藍黑色。0.2% 標準組在正確操作下約 9.5 min 到達終點</div></div>
+    <div class="kv"><div class="k">對照組</div><div class="v">以 1 mL 蒸餾水代替酶溶液，總體積仍為 11 mL，用以證明顏色變化確由酶引起</div></div>
+    <div class="kv"><div class="k">設計原則</div><div class="v">沿用上述底物體積、酶體積、總體積、溫度及預熱時間，只改變酶的濃度</div></div>
+    <p class="tagline">樣本 X 為不明濃度澱粉酶溶液，使用前須搖勻。本頁所有時間均為課堂示例數據，不是該班當次真實結果。</p>
+  </div>
+
+  <div class="card tint">
+    <div class="chead"><h2>材料一覽</h2><span class="badge b-amber">課堂加設貯存液</span></div>
+    <p>工作紙基本材料表只有 0.2% 澱粉酶溶液（供單一標準組）。<strong>本課為繪製標準曲線，另外加設 0.4% 澱粉酶貯存液</strong>，供你配製 0.05%、0.1%、0.2%、0.4% 系列。不要以為工作紙本來就有 0.4%，也不要因此改動上面的基本反應條件。</p>
+    <div class="tblwrap">
+      <table>
+        <caption>實驗室提供（各組共用）＋ 本課加設</caption>
+        <thead><tr><th>材料或儀器</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>0.4% 澱粉酶貯存液</td><td><strong>課堂加設</strong>，供配製標準系列；使用前須搖勻</td></tr>
+          <tr><td>不明濃度澱粉酶溶液（樣本 X）</td><td>適量，使用前須搖勻</td></tr>
+          <tr><td>2% 澱粉溶液、碘液、蒸餾水</td><td>澱粉為底物；碘液判定終點；蒸餾水作對照及稀釋用</td></tr>
+          <tr><td>試管 6 支、試管架、滴管、針筒、滴試板</td><td>預熱時每組需要兩支管（澱粉管＋酶管），標準系列＋對照＋樣本 X 須分批進行</td></tr>
+          <tr><td>40℃ 恆溫水浴、計時器、標籤筆、燒杯</td><td>水浴維持 40℃；燒杯可盛熱水輔助保溫</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>建議課堂節奏</h2><span class="badge b-grey">教師備課提示</span></div>
+    <p>本模擬器支援第 1、2 節在生物實驗室使用。建議先讓學生預測與動手，再揭示。教師提示只談節奏，不含標準答案。</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>時段</th><th>建議用法</th></tr></thead>
+        <tbody>
+          <tr><td>導入（約 8–10 分鐘）</td><td>回顧「酶愈濃、完全分解時間愈短」，指出單一 0.2% 公式的限制，然後進入系列稀釋。</td></tr>
+          <tr><td>主軸一（約 15–18 分鐘）</td><td>學生在「系列稀釋」自己配製四個標準濃度，討論 6 支試管須分批，以及 0.05% 可能來不及在 30 分鐘內看到終點。</td></tr>
+          <tr><td>測定（約 12–15 分鐘）</td><td>用簡化時間軸複習分開預熱、碘液終點與對照組，記下示例時間。</td></tr>
+          <tr><td>主軸二（約 15–18 分鐘）</td><td>先畫時間—濃度曲線並內插，再對照 1／t 直線圖。最後才核對讀數。</td></tr>
+          <tr><td>比較與限制（約 8–10 分鐘）</td><td>對照公式與內插；再看酶濃度過高時時間不再按反比縮短。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tagline">若要對照「單一 0.2% 標準組＋實驗步驟設計」的 40 分工作紙訓練，可開啟原設計版。</p>
+    <div class="btnrow">
+      <a class="btn ghost" href="b002-amylase.html">開啟原實驗設計版</a>
+      <a class="btn plain" href="index.html">返回模擬器目錄</a>
+    </div>
+  </div>
+</section>
+
+
+<section class="sec" id="dilution">
+  <div class="sechead">
+    <div class="kicker">主軸一 · 自己配製，不要一打開就用現成溶液</div>
+    <h1>配製系列稀釋</h1>
+    <p class="lede">目標是得到 0.05%、0.1%、0.2%、0.4% 四個標準濃度。建議主路徑是由 0.4% 貯存液做連續倍比稀釋；也可以用 C₁V₁＝C₂V₂ 由貯存液一次配成某一濃度，並核對計算。</p>
+  </div>
+
+  <div class="card key">
+    <div class="chead"><h2>本課加設的貯存液</h2><span class="badge b-amber">課堂加設</span></div>
+    <p>工作紙材料表只有 0.2% 標準液。為了繪製標準曲線，本課<strong>另外提供 0.4% 澱粉酶貯存液</strong>。基本反應條件不變：測定時仍是 10 mL 2% 澱粉 ＋ 1 mL<strong>已稀釋</strong>的酶溶液，總體積 11 mL。</p>
+    <div class="note amber">實驗室只有 6 支試管。預熱時每組需要兩支管（一支盛澱粉、一支盛酶或蒸餾水），因此標準系列 4 組 ＋ 對照組 ＋ 樣本 X 合共 6 組，必須分批進行，不能一次全部預熱。</div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>枱上的溶液</h2><span class="badge b-grey">選來源後再取液</span></div>
+    <p class="hint">點選你要取用的來源。稀釋只能用澱粉酶溶液加蒸餾水；不要把澱粉溶液拿去「稀釋酶」。</p>
+    <div class="bottles" id="bottleRow"></div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>這一配製步驟</h2><span class="badge b-teal" id="dilModeBadge">連續倍比稀釋</span></div>
+    <div class="chips" id="dilModeChips">
+      <button type="button" class="chip on" data-mode="serial" id="modeSerial">建議：連續倍比稀釋（1 體積 ＋ 1 體積）</button>
+      <button type="button" class="chip" data-mode="direct" id="modeDirect">用 C₁V₁＝C₂V₂ 一次配成</button>
+    </div>
+    <div id="serialHint" class="note teal">連續倍比：取 1 體積 0.4% 貯存液，加 1 體積蒸餾水，混勻後得 0.2%；再由 0.2% 同樣操作得 0.1%，再得 0.05%。0.4% 可直接取用貯存液。體積可同比例放大，例如 5 mL ＋ 5 mL。</div>
+    <div id="directHint" class="note teal" style="display:none">由貯存液一次配成目標濃度時，C₁V₁＝C₂V₂，即 V₁ ＝ C₂ × V₂ ÷ C₁，其餘以蒸餾水補足至 V₂。配完必須混勻，並核對計算。</div>
+
+    <div class="fields f4" style="margin-top:10px">
+      <div class="field">
+        <label for="srcVol">取來源體積</label>
+        <input id="srcVol" type="number" min="0" step="0.1" value="5" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="srcUnit">單位</label>
+        <select id="srcUnit">
+          <option value="mL" selected>mL</option>
+          <option value="uL">μL</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="watVol">加入蒸餾水體積</label>
+        <input id="watVol" type="number" min="0" step="0.1" value="5" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="watUnit">單位</label>
+        <select id="watUnit">
+          <option value="mL" selected>mL</option>
+          <option value="uL">μL</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="tubeLabel">這支新管你打算標籤為</label>
+      <select id="tubeLabel">
+        <option value="">請選擇標籤</option>
+        <option value="0.4%">0.4% 澱粉酶</option>
+        <option value="0.2%">0.2% 澱粉酶</option>
+        <option value="0.1%">0.1% 澱粉酶</option>
+        <option value="0.05%">0.05% 澱粉酶</option>
+        <option value="other">其他／自訂（不列入標準系列）</option>
+      </select>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn" id="btnMakeTube">加入新試管</button>
+      <button type="button" class="btn ghost" id="btnMixLast">把最近一管混勻</button>
+      <button type="button" class="btn plain" id="btnResetDil">重設全部配製</button>
+    </div>
+    <div id="dilMsg" class="note" style="display:none"></div>
+
+    <div id="c1v1box" style="display:none;margin-top:8px">
+      <h3>核對 C₁V₁＝C₂V₂</h3>
+      <p class="hint">先自己算，再按核對。C₁ 為貯存液濃度 0.4%。</p>
+      <div class="fields f3">
+        <div class="field">
+          <label for="c1v1c2">目標濃度 C₂（%）</label>
+          <input id="c1v1c2" type="number" min="0" step="0.01" value="0.1" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="c1v1v2">目標總體積 V₂（mL）</label>
+          <input id="c1v1v2" type="number" min="0" step="0.1" value="10" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="c1v1v1">你算出要取的貯存液體積 V₁（mL）</label>
+          <input id="c1v1v1" type="number" min="0" step="0.1" inputmode="decimal" placeholder="例如 2.5">
+        </div>
+      </div>
+      <div class="btnrow">
+        <button type="button" class="btn ghost" id="btnCheckC1V1">核對這次計算</button>
+      </div>
+      <div id="c1v1out" class="note" style="display:none"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>已配製的試管</h2><span class="badge b-grey">未混勻會影響後面測定</span></div>
+    <p class="hint">0.4% 可直接使用貯存液，不必再稀釋。新配的管必須按「混勻」才算完成該步。</p>
+    <div class="tubegrid" id="tubeGrid"></div>
+    <div class="tblwrap" style="margin-top:12px">
+      <table>
+        <caption>標準系列核對清單（標籤是否齊全，先由你判斷）</caption>
+        <thead><tr><th>目標濃度</th><th>你的標籤是否已有</th><th>是否已混勻</th></tr></thead>
+        <tbody id="seriesCheckBody">
+          <tr><td>0.4%</td><td id="sc-04-lab">尚未</td><td id="sc-04-mix">—</td></tr>
+          <tr><td>0.2%</td><td id="sc-02-lab">尚未</td><td id="sc-02-mix">—</td></tr>
+          <tr><td>0.1%</td><td id="sc-01-lab">尚未</td><td id="sc-01-mix">—</td></tr>
+          <tr><td>0.05%</td><td id="sc-005-lab">尚未</td><td id="sc-005-mix">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn" id="btnCheckSeries">核對系列（先配再揭曉）</button>
+      <a class="btn ghost" href="#assay">下一步：測定時間</a>
+    </div>
+    <div class="reveal" id="dilReveal">
+      <div class="revealhead">核對與常見錯誤後果</div>
+      <div id="dilRevealBody"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="assay">
+  <div class="sechead">
+    <div class="kicker">沿用同一套條件 · 測定各標準點與樣本 X</div>
+    <h1>測定完全分解時間</h1>
+    <p class="lede">這不是整份 40 分步驟設計卷。重點是用正確條件為四個標準濃度、對照組和樣本 X 取得完全分解時間，供下一頁畫標準曲線。</p>
+  </div>
+
+  <div class="card key">
+    <div class="chead"><h2>課堂示例的樣本 X</h2><span class="badge b-amber">示例數據</span></div>
+    <p>下列兩個時間都是課堂示例，不是該班當次真實結果。先選一個，全頁（測定、曲線、比較）會跟同一個示例。</p>
+    <div class="chips" id="sampleChips">
+      <button type="button" class="chip on" data-sample="A" id="sampleA">示例 A：t ＝ 6.3 min（介於 0.2% 與 0.4%）</button>
+      <button type="button" class="chip" data-sample="B" id="sampleB">示例 B：t ＝ 12.7 min（介於 0.1% 與 0.2%）</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>測定前先確認條件</h2><span class="badge b-teal">錯了會影響時間</span></div>
+    <p class="hint">先選你打算怎麼做，再開始模擬。不要先看終點時間。</p>
+    <div class="qblock">
+      <div class="qtag">條件 1</div>
+      <div class="qtext">每組的用量是？</div>
+      <div class="optlist" id="aqVolume"></div>
+    </div>
+    <div class="qblock">
+      <div class="qtag">條件 2</div>
+      <div class="qtext">澱粉與酶溶液怎樣預熱？</div>
+      <div class="optlist" id="aqPreheat"></div>
+    </div>
+    <div class="qblock">
+      <div class="qtag">條件 3</div>
+      <div class="qtext">終點怎樣判定？</div>
+      <div class="optlist" id="aqEnd"></div>
+    </div>
+    <div class="qblock">
+      <div class="qtag">條件 4</div>
+      <div class="qtext">對照組怎樣設置？</div>
+      <div class="optlist" id="aqCtrl"></div>
+    </div>
+    <label class="chk"><input type="checkbox" id="aqShake"> 樣本 X 使用前已搖勻</label>
+    <div class="btnrow">
+      <button type="button" class="btn" id="btnLockAssay">鎖定條件並開始測定</button>
+    </div>
+    <div id="assayLockMsg" class="note" style="display:none"></div>
+  </div>
+
+  <div class="card" id="assayRunCard">
+    <div class="chead"><h2>分批測定</h2><span class="badge b-amber">只有 6 支試管</span></div>
+    <p>預熱時每組兩支管，每批最多同時做 3 組。建議第 1 批先做較濃的標準與對照組（較早到達終點）；第 2 批做較稀的標準與樣本 X。0.05% 按反比約需 38 min，已超出工作紙約 30 分鐘的實驗時段，課堂上可能來不及看到終點——這是值得討論的設計點。</p>
+    <div class="fields f2">
+      <div class="field">
+        <label for="assayPick">選擇要模擬的這一組</label>
+        <select id="assayPick">
+          <option value="0.4">標準 0.4%</option>
+          <option value="0.2">標準 0.2%</option>
+          <option value="0.1">標準 0.1%</option>
+          <option value="0.05">標準 0.05%</option>
+          <option value="X">樣本 X</option>
+          <option value="ctrl">對照組（蒸餾水）</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="assayBatch">這一組放在第幾批（備忘）</label>
+        <select id="assayBatch">
+          <option value="1">第 1 批（建議：0.4%、0.2%、對照組）</option>
+          <option value="2">第 2 批（建議：0.1%、樣本 X、0.05%）</option>
+        </select>
+      </div>
+    </div>
+    <div id="bathSvg" class="chartbox"></div>
+    <p class="figcap">原創教學示意：40℃ 水浴中，澱粉管與酶管（或蒸餾水管）分開預熱；混合後才成為一支反應管。</p>
+    <div class="grid2">
+      <div class="card tint" style="margin:0">
+        <div class="qtag">計時</div>
+        <div class="clock" id="assayClock">0.0 <sm>min</sm></div>
+        <div class="rangebox">
+          <input type="range" id="assayRange" min="0" max="40" step="0.25" value="0" disabled>
+        </div>
+        <div class="btnrow">
+          <button type="button" class="btn sm" id="btnAssayStep" disabled>下一步取樣</button>
+          <button type="button" class="btn sm plain" id="btnAssayRewind" disabled>回到 0</button>
+          <button type="button" class="btn sm ghost" id="btnAssayRecord" disabled>記錄這一刻為終點</button>
+        </div>
+        <p class="tagline" id="assayTickHint">鎖定條件後才可開始。建議濃標準較早開始取樣；稀標準及 0.05% 要有心理準備可能超過 30 min。</p>
+      </div>
+      <div class="card tint" style="margin:0">
+        <div class="qtag">今次取樣 · 加碘液</div>
+        <div class="livewells" style="grid-template-columns:1fr">
+          <div class="livewell">
+            <div class="nm" id="wellName">尚未開始</div>
+            <div class="dot" id="wellDot" style="background:#f7f3e9"></div>
+            <div class="st" id="wellSt">—</div>
+          </div>
+        </div>
+        <p class="hint" id="wellNote">藍黑色表示仍有澱粉；不再呈藍黑色表示已達終點（碘液本身呈黃褐色）。</p>
+      </div>
+    </div>
+    <div id="plateBox">
+      <div class="qtag">滴試板時間軸（原創教學示意）</div>
+      <div class="plate" id="assayPlate"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>結果記錄</h2><span class="badge b-amber">示例時間 · 先記錄再揭曉</span></div>
+    <p class="hint">單位為 min。對照組若在實驗時段內一直呈藍黑色，可記錄「未到終點」。0.05% 若在 30 min 仍呈藍黑色，不要虛構一個終點。</p>
+    <div class="tblwrap">
+      <table>
+        <caption>完全分解時間（首次加碘液不再呈藍黑色）</caption>
+        <thead>
+          <tr><th>組別</th><th>酶溶液</th><th class="num">你記錄的時間 / min</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>對照組</td><td>蒸餾水 1 mL</td><td><input class="cell" id="rec-ctrl" placeholder="例如：未到終點"></td></tr>
+          <tr><td>標準</td><td>0.4% 澱粉酶 1 mL</td><td><input class="cell" id="rec-04" inputmode="decimal" placeholder=""></td></tr>
+          <tr><td>標準</td><td>0.2% 澱粉酶 1 mL</td><td><input class="cell" id="rec-02" inputmode="decimal" placeholder=""></td></tr>
+          <tr><td>標準</td><td>0.1% 澱粉酶 1 mL</td><td><input class="cell" id="rec-01" inputmode="decimal" placeholder=""></td></tr>
+          <tr><td>標準</td><td>0.05% 澱粉酶 1 mL</td><td><input class="cell" id="rec-005" inputmode="decimal" placeholder=""></td></tr>
+          <tr><td>待測組</td><td>樣本 X 1 mL</td><td><input class="cell" id="rec-x" inputmode="decimal" placeholder=""></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn" id="btnAssayCheck">核對示例時間</button>
+      <button type="button" class="btn plain" id="btnUseIdeal">把示例時間填入記錄表（核對後可用）</button>
+      <a class="btn ghost" href="#curve">下一步：畫標準曲線</a>
+    </div>
+    <div class="reveal" id="assayReveal">
+      <div class="revealhead">示例數據與設計討論</div>
+      <div id="assayRevealBody"></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="sec" id="curve">
+  <div class="sechead">
+    <div class="kicker">主軸二 · 先畫點、再連線、然後內插，最後才揭示讀數</div>
+    <h1>繪製標準曲線並內插</h1>
+    <p class="lede">工作紙指定的主圖是「酶濃度—完全分解時間」曲線（橫軸酶濃度，縱軸時間）。這是雙曲線形，不是穿過原點的直線。輔圖以反應速率（1／t）對酶濃度作圖，線性範圍內應接近通過原點的直線，較易內插。兩圖描述同一組數據。</p>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>確認四個標準點</h2><span class="badge b-amber">示例數據須自行填入或由測定帶入</span></div>
+    <p>先輸入或確認四個標準濃度的完全分解時間，再繪到圖上。正確操作、線性範圍內的課堂示例值，是由 0.2% → 9.5 min 按反比推得，<strong>不是該班當次真實結果</strong>。</p>
+    <div class="tblwrap">
+      <table>
+        <caption>標準系列（課堂示例錨點：0.2% 需 9.5 min）</caption>
+        <thead>
+          <tr><th>酶濃度 / %</th><th class="num">完全分解時間 t / min</th><th class="num">1／t / min⁻¹（自動計算）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0.05</td><td><input class="cell" id="t-005" inputmode="decimal"></td><td class="num" id="inv-005">—</td></tr>
+          <tr><td>0.1</td><td><input class="cell" id="t-01" inputmode="decimal"></td><td class="num" id="inv-01">—</td></tr>
+          <tr><td>0.2</td><td><input class="cell" id="t-02" inputmode="decimal"></td><td class="num" id="inv-02">—</td></tr>
+          <tr><td>0.4</td><td><input class="cell" id="t-04" inputmode="decimal"></td><td class="num" id="inv-04">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn" id="btnPlotPoints">把四點繪到圖上</button>
+      <button type="button" class="btn ghost" id="btnDrawCurve" disabled>連成線圖</button>
+      <button type="button" class="btn plain" id="btnFillFromAssay">從測定記錄帶入</button>
+    </div>
+    <div id="plotMsg" class="note" style="display:none"></div>
+  </div>
+
+  <div class="card key">
+    <div class="chead"><h2>主圖：酶濃度—完全分解時間</h2><span class="badge b-teal">工作紙指定的曲線</span></div>
+    <p class="hint" id="curveHint">先繪四個標準點，再連成線。樣本 X 的內插不要急著看答案：先在縱軸標出 t，畫水平線至曲線，再由交點垂直讀出濃度。</p>
+    <div class="stepsbar" id="interpSteps">
+      <span class="stpill" id="sp0">0 繪點</span>
+      <span class="stpill" id="sp1">1 標出 t</span>
+      <span class="stpill" id="sp2">2 水平畫至曲線</span>
+      <span class="stpill" id="sp3">3 垂直讀出濃度</span>
+      <span class="stpill" id="sp4">4 寫下讀數</span>
+    </div>
+    <div class="chartbox" id="timeChartBox"></div>
+    <p class="figcap">原創教學示意：橫軸為酶濃度（%），縱軸為完全分解時間（min）。曲線呈雙曲線形，不穿過原點。</p>
+    <div class="btnrow">
+      <button type="button" class="btn" id="btnInterpNext" disabled>進行下一步內插</button>
+      <button type="button" class="btn plain" id="btnInterpReset" disabled>重做內插</button>
+    </div>
+    <div id="interpGuessBox" style="display:none">
+      <div class="fields f2">
+        <div class="field">
+          <label for="interpGuess">你從主圖讀到的樣本 X 濃度（%）</label>
+          <input id="interpGuess" type="number" min="0" step="0.01" inputmode="decimal" placeholder="例如 0.30">
+        </div>
+        <div class="field">
+          <label>樣本 X 的示例時間</label>
+          <div class="note" id="interpTNote" style="margin-top:0">—</div>
+        </div>
+      </div>
+      <div class="btnrow">
+        <button type="button" class="btn" id="btnInterpCheck">核對主圖讀數</button>
+      </div>
+    </div>
+    <div class="reveal" id="interpReveal">
+      <div class="revealhead">主圖內插讀數</div>
+      <div id="interpRevealBody"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>輔圖：反應速率（1／t）對酶濃度</h2><span class="badge b-grey">較易看成直線標準曲線</span></div>
+    <p>同一組數據改為「1／t 對酶濃度」。在線性範圍內，這應接近一條通過原點的直線，因為反應速率與酶濃度成正比。內插時：先算出樣本 X 的 1／t，在縱軸標出，畫水平線至直線，再垂直讀出濃度。</p>
+    <div class="btnrow">
+      <button type="button" class="btn ghost" id="btnPlotRate">繪製速率—濃度圖</button>
+    </div>
+    <div class="chartbox" id="rateChartBox"></div>
+    <p class="figcap">原創教學示意：橫軸為酶濃度（%），縱軸為 1／t（min⁻¹）。線性範圍內接近通過原點的直線。</p>
+    <div id="rateGuessBox" style="display:none">
+      <div class="fields f2">
+        <div class="field">
+          <label for="rateGuess">你從輔圖讀到的樣本 X 濃度（%）</label>
+          <input id="rateGuess" type="number" min="0" step="0.01" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label>樣本 X 的 1／t</label>
+          <div class="note" id="rateInvNote" style="margin-top:0">—</div>
+        </div>
+      </div>
+      <div class="btnrow">
+        <button type="button" class="btn" id="btnRateCheck">核對輔圖讀數</button>
+        <a class="btn ghost" href="#compare">下一步：比較兩種方法</a>
+      </div>
+      <div class="reveal" id="rateReveal">
+        <div class="revealhead">輔圖內插讀數</div>
+        <div id="rateRevealBody"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="compare">
+  <div class="sechead">
+    <div class="kicker">對照教具 · 線性範圍內兩者應大致相符</div>
+    <h1>比較單一公式與標準曲線內插</h1>
+    <p class="lede">單一 0.2% 反比式 c ＝ 0.2% × 9.5 ÷ t 仍要會用，但它只是對照，不是本頁主算法。先自己算、自己判斷，再揭曉。</p>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>先用公式算一次</h2><span class="badge b-teal">對照教具</span></div>
+    <div class="formula">
+      已知 0.2% 標準組需 9.5 min；樣本 X 平均時間為 t
+      <span class="big">c ＝ 0.2% × 9.5 ÷ t</span>
+      <span class="sub">假設反應速率與酶濃度成正比，且樣本處於線性範圍內。</span>
+    </div>
+    <p id="cmpTLine" class="hint">目前示例的 t 會顯示在這裏。</p>
+    <div class="fields f2">
+      <div class="field">
+        <label for="cmpFormula">你用公式求得的 c（%）</label>
+        <input id="cmpFormula" type="number" min="0" step="0.01" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label for="cmpCurve">你在標準曲線上讀到的 c（%）</label>
+        <input id="cmpCurve" type="number" min="0" step="0.01" inputmode="decimal">
+      </div>
+    </div>
+    <div class="qblock">
+      <div class="qtag">判斷</div>
+      <div class="qtext">在這個示例裏，兩種方法的結果應該怎樣？</div>
+      <div class="optlist" id="cmpJudge"></div>
+    </div>
+    <div class="qblock">
+      <div class="qtag">限制</div>
+      <div class="qtext">這個反比關係在甚麼情況下會不準確？可多選。</div>
+      <label class="chk"><input type="checkbox" name="cmpLim" value="linear"> 只在酶濃度處於線性反應範圍內才成立</label>
+      <label class="chk"><input type="checkbox" name="cmpLim" value="far"> 樣本 X 若明顯偏離 0.2%，單靠一個標準點推算會不準，應改用系列稀釋與標準曲線</label>
+      <label class="chk"><input type="checkbox" name="cmpLim" value="extra"> 把曲線無理外推到遠高於 0.4% 的濃度，推算會不準</label>
+      <label class="chk"><input type="checkbox" name="cmpLim" value="always"> 無論濃度高低，這個公式永遠精確，不需要標準曲線</label>
+      <label class="chk"><input type="checkbox" name="cmpLim" value="vol"> 即使各組總體積不同，只要代入 9.5 min 就仍然準確</label>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn" id="btnCompare">核對比較</button>
+      <a class="btn ghost" href="#limits">下一步：酶濃度過高時</a>
+    </div>
+    <div class="reveal" id="compareReveal">
+      <div class="revealhead">比較與限制</div>
+      <div id="compareRevealBody"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="limits">
+  <div class="sechead">
+    <div class="kicker">工作紙延伸第二點 · 不是標準系列的一部分</div>
+    <h1>酶濃度過高時，時間不再按反比縮短</h1>
+    <p class="lede">若酶濃度繼續升高，例如到 0.8%，按反比應把時間再減半。實際上，混合速度及取樣間隔會限制你能記錄到的最短時間。這一點是額外示範，不要把它畫進工作紙那四個標準點裏。</p>
+  </div>
+
+  <div class="card">
+    <div class="chead"><h2>先預測，再看示範</h2><span class="badge b-amber">額外模擬 · 示例數據</span></div>
+    <p>已知線性範圍內：0.4% 約 4.75 min，0.2% 約 9.5 min。若反比仍然成立，0.8% 的完全分解時間應是多少？</p>
+    <div class="qblock">
+      <div class="qtag">預測</div>
+      <div class="qtext">0.8% 若仍按反比，t 應約為？</div>
+      <div class="optlist" id="limPred"></div>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn" id="btnLimRun">執行「過高酶濃度」示範</button>
+    </div>
+    <div id="limRunMsg" class="note" style="display:none"></div>
+    <div class="chartbox" id="limChartBox"></div>
+    <p class="figcap">原創教學示意：實線為線性範圍內的反比曲線（0.05%–0.4%）；空心點為 0.8% 的記錄時間，明顯高於反比外推值。0.8% 不是標準系列的一員。</p>
+    <div class="qblock" id="limWhyBox" style="display:none">
+      <div class="qtag">解釋</div>
+      <div class="qtext">為甚麼記錄時間不再按反比縮短到 2.375 min？可多選你認為正確的原因。</div>
+      <label class="chk"><input type="checkbox" name="limWhy" value="mix"> 混合需要時間：把酶加入澱粉、混勻、放回水浴再取第一滴樣，本身已耗去一段時間</label>
+      <label class="chk"><input type="checkbox" name="limWhy" value="interval"> 取樣間隔（例如每 30 秒至 1 分鐘一次）限制了終點的解析度，記錄到的終點往往比真正完成的時刻遲</label>
+      <label class="chk"><input type="checkbox" name="limWhy" value="sub"> 在極高酶量下，底物可能迅速耗盡，測定方法跟不上真正的初速（可作為簡短補充，不是本課唯一解釋）</label>
+      <label class="chk"><input type="checkbox" name="limWhy" value="denature"> 濃度愈高，酶在 40℃ 會立即全部變性，所以時間反而更長</label>
+      <label class="chk"><input type="checkbox" name="limWhy" value="iodine"> 碘液在高酶濃度下會失效，顏色變化不再反映澱粉是否還在</label>
+    </div>
+    <div class="btnrow" id="limWhyBtns" style="display:none">
+      <button type="button" class="btn" id="btnLimCheck">核對解釋與推算後果</button>
+    </div>
+    <div class="reveal" id="limitsReveal">
+      <div class="revealhead">示範結果與教學要點</div>
+      <div id="limitsRevealBody"></div>
+    </div>
+  </div>
+
+  <div class="card tint">
+    <div class="chead"><h2>回到總覽</h2></div>
+    <p>你已經練習了兩件主軸工作：自己由貯存液配製系列，以及用線圖內插求樣本 X。單一 0.2% 公式在線性範圍內可以作為對照，但碰上明顯偏離或酶濃度過高，就要改用標準曲線，並且不要無理外推。</p>
+    <div class="btnrow">
+      <a class="btn" href="#hub">返回總覽</a>
+      <a class="btn ghost" href="b002-amylase.html">對照原實驗設計版</a>
+    </div>
+  </div>
+</section>
+
+<div class="foot">
+  <p><strong>B002 測定未知濃度澱粉酶溶液的濃度 · 系列稀釋與標準曲線模擬器</strong> · 福建中學（小西灣）生物科 · 2026年12月4日（星期五）第 1、2 節</p>
+  <p>頁內貯存液與試管、水浴、滴試板顏色、標準曲線及內插示意均為<strong>原創教學示意（SVG 繪製）</strong>，不是真實實驗照片或掃描圖。所有時間（4.75、9.5、19、38、6.3、12.7、3.8 min 等）僅供課堂練習，不代表任何一次真實實驗結果。</p>
+  <p>本頁不收集姓名、班別或學號；進度只保存在你目前開啟的頁面，重新載入即重設。原實驗步驟設計版見 <a href="b002-amylase.html">b002-amylase.html</a>。</p>
+</div>
+
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+function id(x){ return document.getElementById(x); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function r1(x){ return Math.round(x*10)/10; }
+function r2(x){ return Math.round(x*100)/100; }
+function r3(x){ return Math.round(x*1000)/1000; }
+function f1(x){ return (Math.round(x*10)/10).toFixed(1); }
+function f2(x){ return (Math.round(x*100)/100).toFixed(2); }
+function f3(x){ return (Math.round(x*1000)/1000).toFixed(3); }
+function clamp(x,a,b){ return x<a?a:(x>b?b:x); }
+function num(v){
+  if(v===null || v===undefined || v==="") return null;
+  var x=parseFloat(String(v).replace(/[^0-9.\-]/g,""));
+  return isNaN(x)?null:x;
+}
+function almost(a,b,tol){
+  if(a===null || b===null || a===undefined || b===undefined) return false;
+  return Math.abs(a-b) <= (tol===undefined?0.02:tol);
+}
+function showNote(el, kind, html){
+  if(!el) return;
+  el.style.display="block";
+  el.className="note"+(kind?(" "+kind):"");
+  el.innerHTML=html;
+}
+function hideNote(el){ if(el){ el.style.display="none"; el.innerHTML=""; } }
+function setOn(el, on){ if(el) el.className = el.className.replace(/ ?on\b/g,"") + (on?" on":""); }
+function hasClass(el, c){ return (" "+el.className+" ").indexOf(" "+c+" ")>=0; }
+
+var K=0.2*9.5; /* 1.9 %-min */
+var IDEAL={"0.05":38,"0.1":19,"0.2":9.5,"0.4":4.75};
+var HIGH_C=0.8, HIGH_THEORY=2.375, HIGH_OBS=3.8;
+var ROUTES=["hub","dilution","assay","curve","compare","limits"];
+var DONE={dilution:false,assay:false,curve:false,compare:false,limits:false};
+var ST={sample:"A"};
+
+function currentSample(){
+  if(ST.sample==="B") return {id:"B", t:12.7, c:K/12.7, show:"0.15", between:"介於 0.1% 與 0.2%"};
+  return {id:"A", t:6.3, c:K/6.3, show:"0.30", between:"介於 0.2% 與 0.4%"};
+}
+
+function setDone(mod){
+  DONE[mod]=true;
+  updateScore();
+}
+function updateScore(){
+  var n=0,k;
+  for(k in DONE){ if(DONE.hasOwnProperty(k) && DONE[k]) n++; }
+  var p=id("scorePill");
+  if(p) p.innerHTML="已完成 "+n+" / 5 個模組";
+  var map={
+    dilution:DONE.dilution?"已核對系列":(dil.tubes.length?"配製中":"未開始"),
+    assay:DONE.assay?"已核對示例時間":(assay.locked?"測定中":"未開始"),
+    curve:DONE.curve?"已完成內插":(curve.pointsPlotted?"繪圖中":"未開始"),
+    compare:DONE.compare?"已核對比較":"未開始",
+    limits:DONE.limits?"已看過示範":(limits.ran?"示範已執行":"未開始")
+  };
+  for(k in map){
+    if(!map.hasOwnProperty(k)) continue;
+    var el=id("st-"+k);
+    if(el) el.innerHTML=map[k];
+  }
+}
+
+function route(){
+  var h=(location.hash||"#hub").substring(1);
+  if(ROUTES.indexOf(h)<0) h="hub";
+  var secs=document.querySelectorAll(".sec"),i;
+  for(i=0;i<secs.length;i++){
+    secs[i].className="sec"+(secs[i].id===h?" on":"");
+  }
+  var links=document.querySelectorAll(".navlink"),active=null;
+  for(i=0;i<links.length;i++){
+    var on=(links[i].getAttribute("data-nav")===h);
+    links[i].className="navlink"+(on?" on":"");
+    if(on) active=links[i];
+  }
+  var ns=document.querySelector(".navscroll");
+  if(ns && active){
+    var left=active.offsetLeft-24;
+    ns.scrollLeft=left<0?0:left;
+  }
+  var sec=id(h),bar=document.querySelector(".topbar");
+  var off=(bar?bar.offsetHeight:64)+8;
+  if(sec){
+    var y=sec.getBoundingClientRect().top+(window.pageYOffset||document.documentElement.scrollTop||0)-off;
+    window.scrollTo(0,y<0?0:y);
+  }
+  if(h==="curve"){ syncCurveNote(); }
+  if(h==="compare"){ syncCompareT(); }
+}
+
+/* ========== Dilution ========== */
+var SRC={
+  stock:{id:"stock", name:"0.4% 澱粉酶貯存液", kind:"enz", conc:0.4, extra:"課堂加設", cls:"enz"},
+  water:{id:"water", name:"蒸餾水", kind:"water", conc:0, extra:"稀釋及對照用", cls:"water"},
+  starch:{id:"starch", name:"2% 澱粉溶液", kind:"starch", conc:0, extra:"這是底物，不是酶", cls:"starch"},
+  x:{id:"x", name:"樣本 X", kind:"x", conc:null, extra:"未知濃度，不要用來配標準", cls:"enz"}
+};
+var dil={selected:"stock", mode:"serial", tubes:[], nextId:1, revealed:false};
+
+function toMl(vol, unit){
+  var x=num(vol);
+  if(x===null) return null;
+  if(unit==="uL") return x/1000;
+  return x;
+}
+function concText(c){
+  if(c===null || c===undefined) return "不明";
+  if(c===0) return "0%（沒有酶）";
+  var r=Math.round(c*1000)/1000;
+  return r+"%";
+}
+
+function sourceOf(){
+  var sel=dil.selected;
+  if(sel && sel.indexOf("tube:")===0){
+    var n=parseInt(sel.substring(5),10), i;
+    for(i=0;i<dil.tubes.length;i++){
+      if(dil.tubes[i].id===n) return tubeAsSource(dil.tubes[i]);
+    }
+    return null;
+  }
+  return SRC[sel]||null;
+}
+function tubeAsSource(t){
+  return {
+    id:"tube:"+t.id,
+    name:"試管 "+t.id+"（標籤 "+(t.label||"未標籤")+"）",
+    kind:t.kind,
+    conc:t.mixed?t.actualConc:t.actualConc,
+    extra:t.mixed?"已混勻":"未混勻",
+    cls:t.kind==="enz"?"enz":(t.kind==="starch"?"starch":"water"),
+    mixed:t.mixed,
+    unmixed:!t.mixed,
+    fromTube:t
+  };
+}
+
+function renderBottles(){
+  var host=id("bottleRow"); if(!host) return;
+  var keys=["stock","water","starch","x"], i,h="";
+  for(i=0;i<keys.length;i++){
+    var s=SRC[keys[i]];
+    var on=dil.selected===s.id?" on":"";
+    h+='<button type="button" class="bottle'+on+'" data-src="'+s.id+'">';
+    h+='<div class="liq '+s.cls+'"></div>';
+    h+='<div class="bn">'+esc(s.name)+'</div>';
+    h+='<div class="bs">'+esc(s.extra)+'</div></button>';
+  }
+  host.innerHTML=h;
+}
+
+function renderTubes(){
+  var host=id("tubeGrid"); if(!host) return;
+  var h="", i;
+  h+='<div class="tube ok"><div class="liq enz"></div><div class="tn">貯存液</div><div class="ts">0.4% · 可直接使用<br>已搖勻</div></div>';
+  if(dil.tubes.length===0){
+    h+='<div class="tube"><div class="liq none"></div><div class="tn">尚未配製</div><div class="ts">請在上面取液加入新管</div></div>';
+  }
+  for(i=0;i<dil.tubes.length;i++){
+    var t=dil.tubes[i];
+    var cls="tube"+(t.mixed?(t.flags.bad?" bad":" ok"):" unmixed");
+    var liq="liq "+(t.kind==="starch"?"starch":(t.kind==="enz"?"enz":"water"))+(t.mixed?"":" unmixed");
+    h+='<div class="'+cls+'">';
+    h+='<div class="'+liq+'"></div>';
+    h+='<div class="tn">管 '+t.id+' · '+(t.label?esc(t.label):"未標籤")+'</div>';
+    h+='<div class="ts">'+esc(t.brief)+'</div>';
+    h+='<div class="btnrow" style="margin-top:8px">';
+    if(!t.mixed) h+='<button type="button" class="btn sm" data-mix="'+t.id+'">混勻</button>';
+    h+='<button type="button" class="btn sm plain" data-usesrc="tube:'+t.id+'">作為來源</button>';
+    h+='<button type="button" class="btn sm plain" data-deltube="'+t.id+'">刪去</button>';
+    h+='</div></div>';
+  }
+  host.innerHTML=h;
+  updateSeriesChecklist();
+  updateScore();
+}
+
+function updateSeriesChecklist(){
+  var targets=["0.4%","0.2%","0.1%","0.05%"];
+  var ids=["sc-04","sc-02","sc-01","sc-005"];
+  var i;
+  for(i=0;i<targets.length;i++){
+    var info=seriesStatus(targets[i]);
+    var lab=id(ids[i]+"-lab"), mix=id(ids[i]+"-mix");
+    if(lab) lab.innerHTML=info.lab;
+    if(mix) mix.innerHTML=info.mix;
+  }
+}
+function seriesStatus(label){
+  if(label==="0.4%"){
+    var t=findLabel(label);
+    if(t) return {lab:"有自製管（貯存液亦可用）", mix:t.mixed?"已混勻":"尚未混勻", tube:t, ok:t.mixed};
+    return {lab:"可用貯存液（課堂加設）", mix:"貯存液已搖勻", ok:true, stock:true};
+  }
+  var u=findLabel(label);
+  if(!u) return {lab:"尚未", mix:"—", ok:false};
+  return {lab:"已有標籤", mix:u.mixed?"已混勻":"尚未混勻", tube:u, ok:!!u.mixed};
+}
+function findLabel(label){
+  var i, found=null;
+  for(i=0;i<dil.tubes.length;i++){
+    if(dil.tubes[i].label===label) found=dil.tubes[i];
+  }
+  return found;
+}
+
+function makeTube(){
+  var src=sourceOf();
+  var msg=id("dilMsg");
+  if(!src){ showNote(msg,"rose","請先在上面點選來源溶液。"); return; }
+  var vSrc=toMl(id("srcVol").value, id("srcUnit").value);
+  var vWat=toMl(id("watVol").value, id("watUnit").value);
+  if(vSrc===null || vSrc<0 || vWat===null || vWat<0){
+    showNote(msg,"rose","請輸入有效的體積數字。"); return;
+  }
+  if(vSrc===0 && vWat===0){ showNote(msg,"rose","兩種體積都是 0，沒有製成溶液。"); return; }
+  var label=id("tubeLabel").value;
+  if(label==="other") label="";
+  var unitSrc=id("srcUnit").value, unitWat=id("watUnit").value;
+  var flags={bad:false, starch:false, noenz:false, unitmix:false, unmixed:true, fromX:false, fromUnmixed:false};
+  if(unitSrc!==unitWat && vSrc>0 && vWat>0) flags.unitmix=true;
+  var kind="enz", actual=null;
+  if(src.kind==="starch" || (src.kind==="water" && vSrc>0 && (sourceOf().id==="water" || src.kind==="water") && true)){
+    /* decided below */
+  }
+  if(src.kind==="starch"){
+    kind="starch"; actual=0; flags.starch=true; flags.bad=true;
+  } else if(src.kind==="water" || (src.conc===0 && src.kind!=="x")){
+    kind="water"; actual=0; flags.noenz=true; flags.bad=true;
+  } else if(src.kind==="x"){
+    kind="enz"; actual=null; flags.fromX=true; flags.bad=true;
+  } else {
+    var total=vSrc+vWat;
+    if(total<=0){ showNote(msg,"rose","總體積必須大於 0。"); return; }
+    if(src.conc===null){ actual=null; flags.bad=true; }
+    else actual=src.conc*vSrc/total;
+    kind="enz";
+    if(vSrc===0){ actual=0; flags.noenz=true; flags.bad=true; kind="water"; }
+  }
+  if(src.unmixed){ flags.fromUnmixed=true; flags.bad=true; }
+  var mixed=false;
+  if(vWat===0 && src.kind==="enz" && src.conc!==null && !src.unmixed){
+    mixed=true; flags.unmixed=false; /* 只是分取已混勻的酶溶液 */
+  }
+  var brief="取 "+fmtVol(vSrc,unitSrc)+" "+src.name+" ＋ "+fmtVol(vWat,unitWat)+" 蒸餾水";
+  if(flags.unitmix) brief+="（單位不一致）";
+  var t={
+    id:dil.nextId++,
+    label:label,
+    kind:kind,
+    actualConc:actual,
+    mixed:mixed,
+    flags:flags,
+    brief:brief,
+    vSrc:vSrc, vWat:vWat,
+    srcName:src.name
+  };
+  dil.tubes.push(t);
+  dil.revealed=false;
+  var rev=id("dilReveal"); if(rev) rev.className="reveal";
+  renderTubes();
+  var tip="已加入試管 "+t.id+"。";
+  if(!t.mixed) tip+="請按「混勻」，否則濃度不均一。";
+  if(flags.starch) tip="注意：你取用的是澱粉溶液，不是澱粉酶。先完成配製，核對時會說明後果。";
+  if(flags.noenz) tip="這一管似乎沒有取用澱粉酶。核對時會說明後果。";
+  if(flags.unitmix) tip="兩個體積的單位不同（mL 與 μL），實際濃度可能與你想的差很遠。";
+  showNote(msg, flags.bad||!t.mixed?"amber":"teal", tip);
+}
+function fmtVol(ml, unitChosen){
+  /* display the typed unit if provided via conversion back is messy; show in mL, plus μL if <0.2 */
+  if(ml===0) return "0 mL";
+  if(ml<0.2) return (Math.round(ml*1000)/1000)+" mL（即 "+(Math.round(ml*1000))+" μL）";
+  return (Math.round(ml*100)/100)+" mL";
+}
+function mixTube(tid){
+  var i;
+  for(i=0;i<dil.tubes.length;i++){
+    if(dil.tubes[i].id===tid){ dil.tubes[i].mixed=true; dil.tubes[i].flags.unmixed=false; }
+  }
+  renderTubes();
+  showNote(id("dilMsg"),"teal","試管 "+tid+" 已混勻。稀釋後必須混勻，各部分濃度才會一致。");
+}
+function delTube(tid){
+  var i, next=[];
+  for(i=0;i<dil.tubes.length;i++){
+    if(dil.tubes[i].id!==tid) next.push(dil.tubes[i]);
+  }
+  dil.tubes=next;
+  if(dil.selected==="tube:"+tid) dil.selected="stock";
+  renderBottles(); renderTubes();
+}
+function resetDil(){
+  dil.tubes=[]; dil.nextId=1; dil.revealed=false; dil.selected="stock";
+  var rev=id("dilReveal"); if(rev) rev.className="reveal";
+  hideNote(id("dilMsg")); hideNote(id("c1v1out"));
+  renderBottles(); renderTubes();
+}
+
+function checkC1V1(){
+  var c2=num(id("c1v1c2").value), v2=num(id("c1v1v2").value), v1=num(id("c1v1v1").value);
+  var box=id("c1v1out");
+  if(c2===null || v2===null || v2<=0){ showNote(box,"rose","請先填寫目標濃度 C₂ 和總體積 V₂。"); return; }
+  if(c2>0.4){ showNote(box,"rose","C₂ 高於貯存液 0.4%，不能用稀釋配成，除非另有更濃的貯存液（本課沒有）。"); return; }
+  if(c2<0){ showNote(box,"rose","濃度不能為負。"); return; }
+  var expect=0.4>0?(c2*v2/0.4):null;
+  var water=v2-expect;
+  if(v1===null){
+    showNote(box,"amber","請先寫出你算出的 V₁，再核對。提示形式：V₁ ＝ C₂ × V₂ ÷ C₁。");
+    return;
+  }
+  if(almost(v1,expect,0.06) || (expect!==0 && Math.abs(v1-expect)/expect<=0.03)){
+    showNote(box,"teal","正確。C₁＝0.4%，C₂＝"+c2+"%，V₂＝"+v2+" mL，應取貯存液 V₁ ＝ "+f2(expect)+" mL，再加蒸餾水 "+f2(water)+" mL，然後必須混勻。你可把上面的「取來源體積／蒸餾水體積」設成這兩個數值（單位 mL），來源選 0.4% 貯存液，再加入新試管。");
+  } else {
+    showNote(box,"rose","尚未相符。V₁ ＝ C₂ × V₂ ÷ C₁ ＝ "+c2+" × "+v2+" ÷ 0.4 ＝ "+f2(expect)+" mL，蒸餾水應為 "+f2(water)+" mL。請檢查有沒有把 C₁、C₂ 寫反，或忘記單位是 mL。");
+  }
+}
+
+function targetConc(label){
+  if(label==="0.4%") return 0.4;
+  if(label==="0.2%") return 0.2;
+  if(label==="0.1%") return 0.1;
+  if(label==="0.05%") return 0.05;
+  return null;
+}
+function checkSeries(){
+  var body=id("dilRevealBody"), wrap=id("dilReveal");
+  var lines=[], okCount=0, i;
+  var targets=["0.4%","0.2%","0.1%","0.05%"];
+  for(i=0;i<targets.length;i++){
+    var lab=targets[i], want=targetConc(lab);
+    if(lab==="0.4%" && !findLabel(lab)){
+      lines.push("<p><strong>0.4%</strong>：可用課堂加設的貯存液，不必再稀釋。這點已齊備。</p>");
+      okCount++;
+      continue;
+    }
+    var t=findLabel(lab);
+    if(!t){
+      lines.push("<p><strong>"+lab+"</strong>：還沒有標了這個濃度的試管。</p>");
+      continue;
+    }
+    if(!t.mixed){
+      lines.push("<p><strong>"+lab+"</strong>：有標籤但<strong>尚未混勻</strong>。未混勻的溶液各部分濃度不一，後面測定的時間會飄忽不定，不能用來畫標準曲線。</p>");
+      continue;
+    }
+    if(t.flags.starch){
+      lines.push("<p><strong>"+lab+"</strong>：來源其實是澱粉溶液。這一管沒有澱粉酶，測定時會像對照組一樣一直呈藍黑色。</p>");
+      continue;
+    }
+    if(t.flags.noenz || t.actualConc===0){
+      lines.push("<p><strong>"+lab+"</strong>：沒有取用澱粉酶（只加水或來源沒有酶），實際酶濃度為 0。</p>");
+      continue;
+    }
+    if(t.flags.fromX){
+      lines.push("<p><strong>"+lab+"</strong>：你用了未知的樣本 X 來配「標準」。標準系列必須來自已知濃度的貯存液，否則曲線沒有已知的橫軸位置。</p>");
+      continue;
+    }
+    if(t.actualConc===null){
+      lines.push("<p><strong>"+lab+"</strong>：無法確定實際濃度。</p>");
+      continue;
+    }
+    if(almost(t.actualConc,want,0.008) || Math.abs(t.actualConc-want)/want<=0.06){
+      lines.push("<p><strong>"+lab+"</strong>：標籤與實際濃度相符（約 "+concText(t.actualConc)+"）。</p>");
+      okCount++;
+    } else {
+      lines.push("<p><strong>"+lab+"</strong>：標籤是 "+lab+"，但按取液量推算，實際濃度約為 <strong>"+concText(t.actualConc)+"</strong>。若仍把它當 "+lab+" 使用，標準點會畫錯位置，內插也不準。常見原因：用錯原液、倍比時體積不相等，或 mL／μL 單位混亂。</p>");
+    }
+  }
+  var extras="<h3>建議主路徑（連續倍比稀釋）</h3>";
+  extras+="<ol class='stepsol'>";
+  extras+="<li>0.4%：直接使用貯存液（課堂加設）。</li>";
+  extras+="<li>取 1 體積 0.4% ＋ 1 體積蒸餾水，混勻，得 0.2%（例如 5 mL ＋ 5 mL）。</li>";
+  extras+="<li>取 1 體積剛配好的 0.2% ＋ 1 體積蒸餾水，混勻，得 0.1%。</li>";
+  extras+="<li>再同樣由 0.1% 配成 0.05%。</li>";
+  extras+="</ol>";
+  extras+="<p>也可用 C₁V₁＝C₂V₂ 由 0.4% 一次配成某一濃度，例如配 10 mL 0.1%：V₁＝0.1×10÷0.4＝2.5 mL 貯存液 ＋ 7.5 mL 蒸餾水，然後混勻。</p>";
+  extras+="<h3>測定時不要改動反應總體積</h3>";
+  extras+="<p>系列配好後，測定仍是 <strong>10 mL 2% 澱粉 ＋ 1 mL 已稀釋酶溶液</strong>，總體積 11 mL。不要為了「酶少了」而把酶體積加大，否則底物相對濃度與總體積都變了，不能跟 9.5 min 的錨點比較。</p>";
+  extras+="<h3>6 支試管要分批</h3>";
+  extras+="<p>預熱時每組兩支管，每批最多 3 組。例如第 1 批：0.4%、0.2%、對照組；第 2 批：0.1%、樣本 X、0.05%。較濃的標準較早到達終點，宜較早開始取樣。</p>";
+  var head="";
+  if(okCount===4){
+    head='<div class="note teal">四個標準濃度都齊備而且合理。可以進入「測定時間」，用同一套條件量度完全分解時間。</div>';
+    setDone("dilution");
+  } else {
+    head='<div class="note amber">目前有 '+okCount+'／4 個標準點可用。請按下面的說明補正，或重設後沿建議的倍比路徑再做一次。</div>';
+  }
+  body.innerHTML=head+lines.join("")+extras;
+  wrap.className="reveal on";
+  dil.revealed=true;
+  updateScore();
+}
+
+
+/* ========== Assay ========== */
+var assay={
+  locked:false,
+  volume:"ok",
+  preheat:"ok",
+  endpt:"ok",
+  ctrl:"ok",
+  shake:false,
+  pick:"0.4",
+  t:0,
+  recorded:{},
+  revealed:false
+};
+
+function optHtml(name,val,text){
+  return '<label class="opt"><input type="radio" name="'+name+'" value="'+esc(val)+'"><span>'+esc(text)+'</span></label>';
+}
+function renderAssayOptions(){
+  id("aqVolume").innerHTML=
+    optHtml("aqVolume","ok","10 mL 2% 澱粉溶液 ＋ 1 mL 酶溶液（或蒸餾水），總體積 11 mL")+
+    optHtml("aqVolume","enz2","10 mL 2% 澱粉溶液 ＋ 2 mL 酶溶液，總體積改為 12 mL")+
+    optHtml("aqVolume","st5","5 mL 2% 澱粉溶液 ＋ 1 mL 酶溶液")+
+    optHtml("aqVolume","swap","10 mL 酶溶液 ＋ 1 mL 澱粉溶液（把用量對調）");
+  id("aqPreheat").innerHTML=
+    optHtml("aqPreheat","ok","兩種溶液分開置於 40℃ 水浴預熱 5 分鐘，然後才混合")+
+    optHtml("aqPreheat","together","預熱前已把酶與澱粉混合，一起放進水浴 5 分鐘")+
+    optHtml("aqPreheat","none","不預熱，在室溫直接混合後才放入水浴")+
+    optHtml("aqPreheat","starchonly","只預熱澱粉溶液，酶溶液由實驗枱直接倒入");
+  id("aqEnd").innerHTML=
+    optHtml("aqEnd","ok","以「首次取樣加碘液不再呈藍黑色」為終點")+
+    optHtml("aqEnd","pale","以「顏色變淺」為終點，不必等到不再呈藍黑色")+
+    optHtml("aqEnd","any","只要對照組或其他組顏色看起來有變化就一併記錄為終點");
+  id("aqCtrl").innerHTML=
+    optHtml("aqCtrl","ok","設對照組：1 mL 蒸餾水代替酶溶液，總體積仍為 11 mL")+
+    optHtml("aqCtrl","none","不設對照組，只做標準系列和樣本 X")+
+    optHtml("aqCtrl","std","用 0.2% 標準組當作對照組");
+  bindOptList("aqVolume"); bindOptList("aqPreheat"); bindOptList("aqEnd"); bindOptList("aqCtrl");
+}
+function bindOptList(hostId){
+  var host=id(hostId); if(!host) return;
+  host.addEventListener("change", function(){ markOpts(host); });
+  host.addEventListener("click", function(){ var h=host; setTimeout(function(){ markOpts(h); },0); });
+}
+function markOpts(host){
+  var labs=host.getElementsByTagName("label"), i;
+  for(i=0;i<labs.length;i++){
+    var inp=labs[i].getElementsByTagName("input")[0];
+    labs[i].className="opt"+(inp && inp.checked?" sel":"");
+  }
+}
+function radioVal(name){
+  var els=document.getElementsByName(name), i;
+  for(i=0;i<els.length;i++){ if(els[i].checked) return els[i].value; }
+  return null;
+}
+
+function lockAssay(){
+  var v=radioVal("aqVolume"), p=radioVal("aqPreheat"), e=radioVal("aqEnd"), c=radioVal("aqCtrl");
+  var box=id("assayLockMsg");
+  if(!v || !p || !e || !c){
+    showNote(box,"rose","請先為四項條件各選一個做法，才開始測定。");
+    return;
+  }
+  assay.volume=v; assay.preheat=p; assay.endpt=e; assay.ctrl=c;
+  assay.shake=!!(id("aqShake") && id("aqShake").checked);
+  assay.locked=true; assay.t=0; assay.revealed=false;
+  var rev=id("assayReveal"); if(rev) rev.className="reveal";
+  var bits=[], kind="teal";
+  if(v==="ok" && p==="ok" && e==="ok" && c==="ok"){
+    bits.push("條件已按工作紙鎖定：10 mL 澱粉 ＋ 1 mL 酶、分開預熱 5 分鐘（40℃）、碘液終點為不再呈藍黑色、並設蒸餾水對照。可以開始分批測定。");
+    if(!assay.shake) bits.push("提醒：樣本 X 使用前須搖勻，否則三次重複會很分散。本頁示例在未搖勻時會讓樣本 X 的終點變得不穩定。");
+  } else {
+    kind="amber";
+    bits.push("條件已鎖定，但有些做法與工作紙要求不同，模擬時間會顯示相應後果。你仍可繼續測定，稍後核對時會對照正確操作下的示例值。");
+  }
+  showNote(box,kind,bits.join("<br>"));
+  id("assayRange").disabled=false;
+  id("btnAssayStep").disabled=false;
+  id("btnAssayRewind").disabled=false;
+  id("btnAssayRecord").disabled=false;
+  setAssayTime(0);
+  updateScore();
+}
+
+function trueTime(code){
+  /* returns numeric minutes, or null if no endpoint */
+  if(code==="ctrl"){
+    if(assay.endpt!=="ok") return 12; /* 誤判對照組也「完成」 */
+    return null;
+  }
+  var t;
+  if(code==="X") t=currentSample().t;
+  else if(IDEAL[code]!==undefined) t=IDEAL[code];
+  else t=null;
+  if(t===null) return null;
+  /* dilution error: if student prepared a wrong tube for this label, override */
+  if(code!=="X" && code!=="ctrl"){
+    var lab=code+"%", tube=findLabel(lab);
+    if(tube){
+      if(!tube.mixed){ t = t*1.15; }
+      if(tube.flags.starch || tube.actualConc===0){ return (assay.endpt==="ok"?null:12); }
+      if(tube.actualConc!==null && !almost(tube.actualConc, parseFloat(code), 0.008)){
+        t = K/tube.actualConc;
+      }
+    }
+  }
+  if(assay.preheat==="none" || assay.preheat==="starchonly") t=t*1.18;
+  if(assay.preheat==="together") t=t*0.48;
+  if(assay.volume==="enz2" || assay.volume==="swap") t=t*0.55;
+  if(assay.volume==="st5") t=t*0.7;
+  if(assay.endpt==="pale" || assay.endpt==="any") t=Math.max(0.5, t-0.9);
+  if(code==="X" && !assay.shake){ /* 示意：未搖勻令終點偏移 */
+    t = t*(ST.sample==="B"?1.22:0.84);
+  }
+  return r2(t);
+}
+
+function iodineColor(t, endT){
+  if(endT===null || endT===undefined){
+    return {color:"#1a237e", label:"仍呈藍黑色（仍有澱粉）", done:false};
+  }
+  if(t+0.001<endT){
+    if(endT-t<=0.5) return {color:"#31408f", label:"仍偏藍黑（接近終點）", done:false};
+    return {color:"#1a237e", label:"呈藍黑色（仍有澱粉）", done:false};
+  }
+  return {color:"#c9a24a", label:"不再呈藍黑色（已達終點）", done:true};
+}
+
+function groupTitle(code){
+  if(code==="ctrl") return "對照組（蒸餾水）";
+  if(code==="X") return "樣本 X（示例 "+currentSample().id+"）";
+  return "標準 "+code+"%";
+}
+
+function plateTimes(code){
+  if(code==="0.4") return [3,3.5,4,4.5,5,5.5,6,7];
+  if(code==="0.2") return [5,6,7,8,9,9.5,10,11];
+  if(code==="0.1") return [10,12,14,16,18,19,20,22];
+  if(code==="0.05") return [20,25,28,30,32,35,38,40];
+  if(code==="ctrl") return [5,10,15,20,25,30,35,40];
+  if(currentSample().id==="B") return [8,10,11,12,12.5,13,14,16];
+  return [4,5,5.5,6,6.5,7,8,9];
+}
+
+function renderBath(preheat){
+  var host=id("bathSvg"); if(!host) return;
+  var code=id("assayPick")?id("assayPick").value:"0.4";
+  var enzLab=(code==="ctrl")?"蒸餾水 1 mL":(code==="X")?"樣本 X 1 mL":("酶 "+code+"% 1 mL");
+  var temp=(assay.locked && (assay.preheat==="none") && preheat)?"約室溫":"40℃";
+  var h='<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="水浴示意">';
+  h+='<rect x="0" y="0" width="640" height="220" fill="#f7fbf9"/>';
+  h+='<rect x="40" y="70" width="560" height="120" rx="10" fill="#c5e3de" stroke="#5f8f86" stroke-width="3"/>';
+  h+='<rect x="48" y="80" width="544" height="30" rx="4" fill="#e7f6f3"/>';
+  h+='<text x="60" y="42" fill="#0c5f52" font-size="14" font-weight="700" font-family="-apple-system,BlinkMacSystemFont,PingFang HK,Microsoft JhengHei,sans-serif">恆溫水浴　'+esc(temp)+'</text>';
+  if(preheat && assay.t<=0){
+    h+=drawTube(180,78,"2% 澱粉 10 mL","#f3ead0");
+    h+=drawTube(360,78,enzLab,(code==="ctrl")?"#d7eaf4":"#e6d9a8");
+    h+='<text x="320" y="205" text-anchor="middle" fill="#5a6873" font-size="12" font-family="-apple-system,BlinkMacSystemFont,PingFang HK,Microsoft JhengHei,sans-serif">預熱階段：兩管分開（原創教學示意）</text>';
+  } else {
+    h+=drawTube(270,78,"混合後 11 mL　"+groupTitle(code),"#efe3b8");
+    h+='<text x="320" y="205" text-anchor="middle" fill="#5a6873" font-size="12" font-family="-apple-system,BlinkMacSystemFont,PingFang HK,Microsoft JhengHei,sans-serif">混合後立即放回水浴並計時（原創教學示意）</text>';
+  }
+  h+='</svg>';
+  host.innerHTML=h;
+}
+function drawTube(x,y,label,fill){
+  var s="";
+  s+='<rect x="'+x+'" y="'+y+'" width="44" height="96" rx="0" fill="none" stroke="#5a5040" stroke-width="3"/>';
+  s+='<path d="M'+x+' '+(y+70)+' h44 v18 a22 18 0 0 1-44 0 z" fill="'+fill+'" stroke="#5a5040" stroke-width="2"/>';
+  s+='<rect x="'+(x-2)+'" y="'+(y-10)+'" width="48" height="12" rx="2" fill="#d8d0c0" stroke="#5a5040" stroke-width="2"/>';
+  s+='<text x="'+(x+22)+'" y="'+(y+128)+'" text-anchor="middle" fill="#17202a" font-size="11" font-family="-apple-system,BlinkMacSystemFont,PingFang HK,Microsoft JhengHei,sans-serif">'+esc(label)+'</text>';
+  return s;
+}
+
+function setAssayTime(t){
+  assay.t=clamp(t,0,40);
+  assay.pick=id("assayPick")?id("assayPick").value:"0.4";
+  var clock=id("assayClock");
+  if(clock) clock.innerHTML=f1(assay.t)+' <sm>min</sm>';
+  var rng=id("assayRange");
+  if(rng && Math.abs(parseFloat(rng.value)-assay.t)>0.05) rng.value=String(assay.t);
+  var endT=assay.locked?trueTime(assay.pick):null;
+  if(!assay.locked) endT=undefined;
+  var col;
+  if(!assay.locked){ col={color:"#f7f3e9", label:"尚未開始", done:false}; }
+  else col=iodineColor(assay.t, endT===undefined?null:endT);
+  var dot=id("wellDot"), st=id("wellSt"), nm=id("wellName"), note=id("wellNote");
+  if(nm) nm.innerHTML=groupTitle(assay.pick)+"　t＝"+f1(assay.t)+" min";
+  if(dot) dot.style.background=col.color;
+  if(st) st.innerHTML=col.label;
+  if(note){
+    var extra="";
+    if(assay.t>=30 && assay.t<40) extra="已到工作紙約 30 分鐘實驗時段。";
+    if(assay.pick==="0.05" && assay.locked && trueTime("0.05")!==null && assay.t<trueTime("0.05") && assay.t>=30){
+      extra="0.05% 在課堂時段結束時可能仍未到終點（示例約 38 min）。不要虛構終點。";
+    }
+    note.innerHTML=col.label+(extra?(" "+extra):"")+" 藍黑色表示仍有澱粉；不再呈藍黑色表示已達終點（碘液本身呈黃褐色）。";
+  }
+  renderBath(!(assay.locked && assay.t>0));
+  renderPlate();
+  var hint=id("assayTickHint");
+  if(hint && assay.locked){
+    hint.innerHTML="取樣間隔可按「下一步取樣」推進。較濃標準宜較早開始取樣；0.05% 可能超過 30 min。滑桿也可直接拖動。";
+  }
+}
+function renderPlate(){
+  var host=id("assayPlate"); if(!host) return;
+  if(!assay.locked){ host.innerHTML=""; return; }
+  var times=plateTimes(assay.pick), endT=trueTime(assay.pick), i,h="";
+  for(i=0;i<times.length;i++){
+    var tm=times[i], seen=assay.t+0.001>=tm;
+    var col=seen?iodineColor(tm,endT):{color:"#f7f3e9", label:"未取樣"};
+    h+='<div class="well"><div class="wdot" style="background:'+col.color+'"></div>';
+    h+='<div class="wt">'+tm+' min</div></div>';
+  }
+  host.innerHTML=h;
+}
+function assayStep(){
+  if(!assay.locked) return;
+  var dt=0.5;
+  if(assay.pick==="0.1" || assay.pick==="0.05" || assay.pick==="ctrl") dt=1;
+  if(assay.pick==="0.05" && assay.t>=20) dt=2;
+  setAssayTime(assay.t+dt);
+}
+function recordEndpoint(){
+  if(!assay.locked) return;
+  var code=assay.pick, recId=recordId(code);
+  var el=id(recId);
+  if(!el) return;
+  if(code==="ctrl" && assay.endpt==="ok"){
+    if(assay.t>=30) el.value="30 min 內未到終點";
+    else el.value=f1(assay.t);
+  } else {
+    el.value=f1(assay.t);
+  }
+  showNote(id("assayLockMsg"),"teal","已把 "+groupTitle(code)+" 在 t＝"+f1(assay.t)+" min 的判定記入記錄表。若顏色仍是藍黑色，這可能還不是終點。");
+}
+function recordId(code){
+  if(code==="0.4") return "rec-04";
+  if(code==="0.2") return "rec-02";
+  if(code==="0.1") return "rec-01";
+  if(code==="0.05") return "rec-005";
+  if(code==="X") return "rec-x";
+  return "rec-ctrl";
+}
+function fillIdealTimes(){
+  if(!assay.revealed){
+    showNote(id("assayLockMsg"),"amber","請先按「核對示例時間」，才把正確操作下的示例值填入記錄表。");
+    return;
+  }
+  id("rec-04").value="4.75";
+  id("rec-02").value="9.5";
+  id("rec-01").value="19";
+  id("rec-005").value="38";
+  id("rec-x").value=String(currentSample().t);
+  id("rec-ctrl").value="30 min 內未到終點";
+  pushTimesToCurve();
+  showNote(id("assayLockMsg"),"teal","已填入正確操作下的課堂示例時間，並可帶到標準曲線頁。這些不是該班當次真實結果。");
+}
+function pushTimesToCurve(){
+  if(id("t-04")) id("t-04").value=id("rec-04").value;
+  if(id("t-02")) id("t-02").value=id("rec-02").value;
+  if(id("t-01")) id("t-01").value=id("rec-01").value;
+  if(id("t-005")) id("t-005").value=id("rec-005").value;
+  updateInvCells();
+}
+function checkAssay(){
+  var wrap=id("assayReveal"), body=id("assayRevealBody");
+  var samp=currentSample();
+  var rows=[
+    {lab:"對照組（蒸餾水）", rec:id("rec-ctrl").value, ideal:"實驗時段內一直呈藍黑色，未到終點", ok:isCtrlOk(id("rec-ctrl").value)},
+    {lab:"0.4%", rec:id("rec-04").value, ideal:"4.75 min", ok:numClose(id("rec-04").value,4.75,0.3)},
+    {lab:"0.2%", rec:id("rec-02").value, ideal:"9.5 min", ok:numClose(id("rec-02").value,9.5,0.4)},
+    {lab:"0.1%", rec:id("rec-01").value, ideal:"19 min", ok:numClose(id("rec-01").value,19,0.8)},
+    {lab:"0.05%", rec:id("rec-005").value, ideal:"38 min（30 min 時仍未到終點）", ok:is005Ok(id("rec-005").value)},
+    {lab:"樣本 X（示例 "+samp.id+"）", rec:id("rec-x").value, ideal:samp.t+" min", ok:numClose(id("rec-x").value,samp.t,0.4)}
+  ];
+  var h="<p>下列是<strong>正確操作、線性範圍內</strong>的課堂示例時間，由 0.2% → 9.5 min 按反比推得，不是該班當次真實結果。</p>";
+  h+='<div class="tblwrap"><table><thead><tr><th>組別</th><th>你的記錄</th><th>示例時間</th><th>對照</th></tr></thead><tbody>';
+  var i;
+  for(i=0;i<rows.length;i++){
+    h+="<tr class='"+(rows[i].ok?"ok":"miss")+"'><td>"+esc(rows[i].lab)+"</td><td>"+esc(rows[i].rec||"（空白）")+"</td><td>"+esc(rows[i].ideal)+"</td><td>"+(rows[i].ok?"大致相符":"請再對照")+"</td></tr>";
+  }
+  h+="</tbody></table></div>";
+  h+="<h3>為甚麼是這些數字？</h3>";
+  h+="<p>酶濃度加倍，完全分解時間約減半：0.4% 為 9.5÷2＝4.75 min；0.1% 為 9.5×2＝19 min；0.05% 為 9.5×4＝38 min。樣本 X 示例 A 為 6.3 min，示例 B 為 12.7 min。</p>";
+  h+="<h3>設計討論：0.05% 與 30 分鐘時段</h3>";
+  h+="<p>0.05% 需要約 38 min，已超出工作紙約 30 分鐘的實驗時段。課堂上這個最稀的標準點可能來不及看到終點，圖上就少了一個點。取樣安排也要配合：較濃標準較早到達終點（0.4% 約 4.75 min，不宜仍等到第 5 分鐘才取第一次樣），較稀標準則要預留足夠時間。</p>";
+  if(assay.volume!=="ok" || assay.preheat!=="ok" || assay.endpt!=="ok" || assay.ctrl!=="ok" || !assay.shake){
+    h+="<h3>你這次鎖定的條件所產生的後果</h3><ul>";
+    if(assay.volume!=="ok") h+="<li>體積或總體積與標準條件不同，底物相對濃度改變，不能直接用 9.5 min 錨點或這條標準曲線比較。</li>";
+    if(assay.preheat==="none" || assay.preheat==="starchonly") h+="<li>未分開預熱到 40℃ 才混合，混合時溫度偏低，反應時間會偏長。</li>";
+    if(assay.preheat==="together") h+="<li>預熱時已混合，計時起點與真正反應起點不一致，記錄時間會偏短，甚至第一次取樣前已過終點。</li>";
+    if(assay.endpt!=="ok") h+="<li>以「變淺」或不統一的標準作終點，各組判定不一，對照組也可能被誤判為已完成。</li>";
+    if(assay.ctrl!=="ok") h+="<li>沒有合格的蒸餾水對照，難以證明顏色變化確由酶引起。</li>";
+    if(!assay.shake) h+="<li>樣本 X 未搖勻，終點會不穩定，不應只靠一次記錄。</li>";
+    h+="</ul>";
+  }
+  body.innerHTML=h;
+  wrap.className="reveal on";
+  assay.revealed=true;
+  setDone("assay");
+}
+function numClose(val, target, tol){
+  var n=num(val);
+  if(n===null) return false;
+  return Math.abs(n-target)<=tol;
+}
+function isCtrlOk(val){
+  if(!val) return false;
+  if(num(val)!==null && num(val)<25) return false;
+  return true; /* 空白不算；寫未到終點或大數字算合理 */
+}
+function is005Ok(val){
+  if(!val) return false;
+  var n=num(val);
+  if(n===null) return true; /* 文字如「30 min 仍未到終點」 */
+  return n>=29; /* 30 或 38 都可以討論 */
+}
+
+/* ========== Charts ========== */
+var curve={
+  pointsPlotted:false,
+  curveDrawn:false,
+  interpStep:0,
+  interpRevealed:false,
+  ratePlotted:false,
+  rateRevealed:false
+};
+
+function readStdTimes(){
+  return [
+    {c:0.05, t:num(id("t-005").value), key:"005"},
+    {c:0.1, t:num(id("t-01").value), key:"01"},
+    {c:0.2, t:num(id("t-02").value), key:"02"},
+    {c:0.4, t:num(id("t-04").value), key:"04"}
+  ];
+}
+function updateInvCells(){
+  var pts=readStdTimes(), i;
+  for(i=0;i<pts.length;i++){
+    var el=id("inv-"+pts[i].key);
+    if(!el) continue;
+    if(pts[i].t===null || pts[i].t<=0) el.innerHTML="—";
+    else el.innerHTML=f3(1/pts[i].t);
+  }
+}
+function allTimesIn(){
+  var pts=readStdTimes(), i;
+  for(i=0;i<pts.length;i++){ if(pts[i].t===null || pts[i].t<=0) return false; }
+  return true;
+}
+
+function svgText(x,y,s,anchor,fill,fs,fw){
+  return '<text x="'+x+'" y="'+y+'" text-anchor="'+(anchor||"start")+'" fill="'+(fill||"#17202a")+'" font-size="'+(fs||12)+'" font-weight="'+(fw||"400")+'" font-family="-apple-system,BlinkMacSystemFont,PingFang HK,Microsoft JhengHei,sans-serif">'+esc(s)+'</text>';
+}
+function chartFrame(w,h,padL,padR,padT,padB, xmin,xmax, ymin,ymax, xlab, ylab, yticks, xticks){
+  var innerW=w-padL-padR, innerH=h-padT-padB;
+  function X(v){ return padL + (v-xmin)/(xmax-xmin)*innerW; }
+  function Y(v){ return padT + (1-(v-ymin)/(ymax-ymin))*innerH; }
+  var s='<svg viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+  s+='<rect x="0" y="0" width="'+w+'" height="'+h+'" fill="#fffdf8"/>';
+  var i;
+  for(i=0;i<yticks.length;i++){
+    var y=Y(yticks[i].v);
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(w-padR)+'" y2="'+y+'" stroke="#ece6d8" stroke-width="1"/>';
+    s+=svgText(padL-8, y+4, yticks[i].lab, "end", "#5a6873", 11);
+  }
+  for(i=0;i<xticks.length;i++){
+    var x=X(xticks[i].v);
+    s+='<line x1="'+x+'" y1="'+padT+'" x2="'+x+'" y2="'+(h-padB)+'" stroke="#ece6d8" stroke-width="1"/>';
+    s+=svgText(x, h-padB+18, xticks[i].lab, "middle", "#5a6873", 11);
+  }
+  s+='<line x1="'+padL+'" y1="'+padT+'" x2="'+padL+'" y2="'+(h-padB)+'" stroke="#17202a" stroke-width="1.6"/>';
+  s+='<line x1="'+padL+'" y1="'+(h-padB)+'" x2="'+(w-padR)+'" y2="'+(h-padB)+'" stroke="#17202a" stroke-width="1.6"/>';
+  s+=svgText(w/2, h-8, xlab, "middle", "#17202a", 13, "700");
+  s+=svgText(16, 16, ylab, "start", "#17202a", 13, "700");
+  return {s:s, X:X, Y:Y, close:function(){ return "</svg>"; }};
+}
+
+function drawTimeChart(opts){
+  opts=opts||{};
+  var pts=opts.points||[];
+  var w=640,h=400,padL=58,padR=20,padT=28,padB=52;
+  var xmax=0.5, ymax=42;
+  var xt=[{v:0,lab:"0"},{v:0.05,lab:"0.05"},{v:0.1,lab:"0.1"},{v:0.15,lab:"0.15"},{v:0.2,lab:"0.2"},{v:0.3,lab:"0.3"},{v:0.4,lab:"0.4"},{v:0.5,lab:"0.5"}];
+  var yt=[{v:0,lab:"0"},{v:5,lab:"5"},{v:9.5,lab:"9.5"},{v:15,lab:"15"},{v:19,lab:"19"},{v:25,lab:"25"},{v:30,lab:"30"},{v:38,lab:"38"},{v:42,lab:"42"}];
+  var fr=chartFrame(w,h,padL,padR,padT,padB,0,xmax,0,ymax,"酶濃度 / %","時間 / min",yt,xt);
+  var s=fr.s, i;
+  /* class-period marker */
+  var y30=fr.Y(30);
+  s+='<line x1="'+fr.X(0)+'" y1="'+y30+'" x2="'+fr.X(xmax)+'" y2="'+y30+'" stroke="#c9a227" stroke-width="1" stroke-dasharray="5 4"/>';
+  s+=svgText(fr.X(xmax)-4, y30-6, "約 30 min 課堂時段", "end", "#8a6a2c", 11);
+  if(opts.drawIdeal || opts.drawCurve){
+    var d="", c;
+    for(c=0.045;c<=0.48;c+=0.005){
+      var tt=K/c;
+      if(tt>ymax) continue;
+      d+=(d===""?"M":"L")+fr.X(c)+" "+fr.Y(tt)+" ";
+    }
+    if(opts.drawCurve){
+      /* if student points differ from ideal, build curve via 1/t linear interpolation between points */
+      var used=studentCurvePath(fr, pts, xmax, ymax);
+      if(used) d=used;
+    }
+    s+='<path d="'+d+'" fill="none" stroke="#0c5f52" stroke-width="2.2"/>';
+  }
+  for(i=0;i<pts.length;i++){
+    if(pts[i].t===null) continue;
+    var x=fr.X(pts[i].c), y=fr.Y(Math.min(pts[i].t,ymax));
+    s+='<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="#0c5f52" stroke="#fff" stroke-width="1.5"/>';
+    s+=svgText(x+8, y-8, pts[i].c+"%， "+pts[i].t+" min", "start", "#0c5f52", 11);
+  }
+  if(opts.interpStep>=1){
+    var tx=currentSample().t, yx=fr.Y(tx);
+    s+='<circle cx="'+fr.X(0)+'" cy="'+yx+'" r="5" fill="#9a3b2f"/>';
+    s+=svgText(fr.X(0)+8, yx-8, "樣本 X：t＝"+tx+" min", "start", "#9a3b2f", 12, "700");
+    if(opts.interpStep>=2){
+      var cx=opts.hideAnswer?guessIntersectC(pts,tx):currentSample().c;
+      if(opts.hideAnswer) cx=guessIntersectC(pts,tx);
+      var xi=fr.X(cx);
+      s+='<line x1="'+fr.X(0)+'" y1="'+yx+'" x2="'+xi+'" y2="'+yx+'" stroke="#9a3b2f" stroke-width="1.6" stroke-dasharray="6 4"/>';
+      s+='<circle cx="'+xi+'" cy="'+yx+'" r="6" fill="none" stroke="#9a3b2f" stroke-width="2"/>';
+      if(opts.interpStep>=3){
+        s+='<line x1="'+xi+'" y1="'+yx+'" x2="'+xi+'" y2="'+fr.Y(0)+'" stroke="#9a3b2f" stroke-width="1.6" stroke-dasharray="6 4"/>';
+        if(opts.showC){
+          s+='<circle cx="'+xi+'" cy="'+fr.Y(0)+'" r="5" fill="#9a3b2f"/>';
+          s+=svgText(xi, fr.Y(0)+32, "c ≈ "+currentSample().show+"%", "middle", "#9a3b2f", 12, "700");
+        } else {
+          s+=svgText(xi, fr.Y(0)+32, "c ＝ ？", "middle", "#9a3b2f", 12, "700");
+        }
+      }
+    }
+  }
+  s+=fr.close();
+  return s;
+}
+function studentCurvePath(fr, pts, xmax, ymax){
+  var good=[], i;
+  for(i=0;i<pts.length;i++){ if(pts[i].t!==null && pts[i].t>0) good.push(pts[i]); }
+  if(good.length<2) return "";
+  good.sort(function(a,b){ return a.c-b.c; });
+  /* use inverse-time piecewise linear in c, which becomes a hyperbolic-looking curve */
+  var d="", c, first=true;
+  var c0=Math.max(0.045, good[0].c*0.9), c1=Math.min(0.48, good[good.length-1].c*1.08);
+  for(c=c0;c<=c1+0.0001;c+=0.005){
+    var tt=interpT(good,c);
+    if(tt===null || tt>ymax || tt<0) continue;
+    d+=(first?"M":"L")+fr.X(c)+" "+fr.Y(tt)+" ";
+    first=false;
+  }
+  return d;
+}
+function interpT(pts, c){
+  /* piecewise linear in 1/t vs c; fall back to linear in t */
+  if(!pts || !pts.length) return K/c;
+  if(c<=pts[0].c){
+    return interpSeg(pts[0], pts.length>1?pts[1]:null, c);
+  }
+  var i;
+  for(i=0;i<pts.length-1;i++){
+    if(c>=pts[i].c && c<=pts[i+1].c) return interpSeg(pts[i], pts[i+1], c);
+  }
+  return interpSeg(pts[pts.length-2], pts[pts.length-1], c);
+}
+function interpSeg(a,b,c){
+  if(!b) return a.t;
+  var ua=1/a.t, ub=1/b.t;
+  if(b.c===a.c) return a.t;
+  var u=ua+(ub-ua)*(c-a.c)/(b.c-a.c);
+  if(u<=0) return a.t;
+  return 1/u;
+}
+function guessIntersectC(pts, t){
+  var good=[], i;
+  for(i=0;i<pts.length;i++){ if(pts[i].t!==null && pts[i].t>0) good.push(pts[i]); }
+  if(good.length>=2){
+    good.sort(function(a,b){ return a.c-b.c; });
+    /* invert interpT by bisection */
+    var lo=0.04, hi=0.5, k;
+    for(k=0;k<24;k++){
+      var mid=(lo+hi)/2, tm=interpT(good,mid);
+      /* t decreases as c increases */
+      if(tm>t) lo=mid; else hi=mid;
+    }
+    return (lo+hi)/2;
+  }
+  return K/t;
+}
+
+function drawRateChart(opts){
+  opts=opts||{};
+  var pts=opts.points||[];
+  var w=640,h=380,padL=58,padR=20,padT=28,padB=52;
+  var xmax=0.5, ymax=0.28;
+  var xt=[{v:0,lab:"0"},{v:0.05,lab:"0.05"},{v:0.1,lab:"0.1"},{v:0.2,lab:"0.2"},{v:0.3,lab:"0.3"},{v:0.4,lab:"0.4"},{v:0.5,lab:"0.5"}];
+  var yt=[{v:0,lab:"0"},{v:0.05,lab:"0.05"},{v:0.105,lab:"0.105"},{v:0.15,lab:"0.15"},{v:0.21,lab:"0.21"},{v:0.28,lab:"0.28"}];
+  var fr=chartFrame(w,h,padL,padR,padT,padB,0,xmax,0,ymax,"酶濃度 / %","1／t　/ min⁻¹",yt,xt);
+  var s=fr.s, i;
+  if(opts.drawLine){
+    /* line through origin using 0.2% point if present, else ideal slope 1/1.9 */
+    var slope=1/K, good=[];
+    for(i=0;i<pts.length;i++){ if(pts[i].t!==null && pts[i].t>0) good.push(pts[i]); }
+    if(good.length>=2){
+      var nume=0, deno=0;
+      for(i=0;i<good.length;i++){ nume+=(1/good[i].t)*good[i].c; deno+=good[i].c*good[i].c; }
+      if(deno>0) slope=nume/deno;
+    }
+    var x2=fr.X(xmax), y2=fr.Y(Math.min(slope*xmax,ymax));
+    s+='<line x1="'+fr.X(0)+'" y1="'+fr.Y(0)+'" x2="'+x2+'" y2="'+y2+'" stroke="#0c5f52" stroke-width="2.2"/>';
+    opts._slope=slope;
+  }
+  for(i=0;i<pts.length;i++){
+    if(pts[i].t===null || pts[i].t<=0) continue;
+    var x=fr.X(pts[i].c), y=fr.Y(Math.min(1/pts[i].t,ymax));
+    s+='<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="#0c5f52" stroke="#fff" stroke-width="1.5"/>';
+    s+=svgText(x+8, y-8, pts[i].c+"%", "start", "#0c5f52", 11);
+  }
+  if(opts.showInterp){
+    var tx=currentSample().t, u=1/tx, yu=fr.Y(u);
+    var cx=currentSample().c;
+    if(opts.slope) cx=u/opts.slope;
+    else if(opts._slope) cx=u/opts._slope;
+    if(!opts.showC) {
+      /* still need a position for the lines; use computed but hide label */
+    }
+    var xi=fr.X(cx);
+    s+='<circle cx="'+fr.X(0)+'" cy="'+yu+'" r="5" fill="#9a3b2f"/>';
+    s+=svgText(fr.X(0)+8, yu-8, "1／t ＝ "+f3(u)+" min⁻¹", "start", "#9a3b2f", 12, "700");
+    s+='<line x1="'+fr.X(0)+'" y1="'+yu+'" x2="'+xi+'" y2="'+yu+'" stroke="#9a3b2f" stroke-width="1.6" stroke-dasharray="6 4"/>';
+    s+='<line x1="'+xi+'" y1="'+yu+'" x2="'+xi+'" y2="'+fr.Y(0)+'" stroke="#9a3b2f" stroke-width="1.6" stroke-dasharray="6 4"/>';
+    s+='<circle cx="'+xi+'" cy="'+yu+'" r="6" fill="none" stroke="#9a3b2f" stroke-width="2"/>';
+    if(opts.showC){
+      s+='<circle cx="'+xi+'" cy="'+fr.Y(0)+'" r="5" fill="#9a3b2f"/>';
+      s+=svgText(xi, fr.Y(0)+32, "c ≈ "+currentSample().show+"%", "middle", "#9a3b2f", 12, "700");
+    } else {
+      s+=svgText(xi, fr.Y(0)+32, "c ＝ ？", "middle", "#9a3b2f", 12, "700");
+    }
+  }
+  s+=fr.close();
+  return s;
+}
+
+function emptyTimeChart(){
+  return drawTimeChart({points:[], interpStep:0});
+}
+function emptyRateChart(){
+  return drawRateChart({points:[], drawLine:false});
+}
+function refreshTimeChart(){
+  var host=id("timeChartBox"); if(!host) return;
+  var pts=curve.pointsPlotted?readStdTimes():[];
+  host.innerHTML=drawTimeChart({
+    points:pts,
+    drawCurve:curve.curveDrawn,
+    interpStep:curve.interpStep,
+    showC:curve.interpRevealed,
+    hideAnswer:!curve.interpRevealed
+  });
+}
+function refreshRateChart(){
+  var host=id("rateChartBox"); if(!host) return;
+  if(!curve.ratePlotted){ host.innerHTML=emptyRateChart(); return; }
+  host.innerHTML=drawRateChart({
+    points:readStdTimes(),
+    drawLine:true,
+    showInterp:curve.ratePlotted && curve.interpStep>=1,
+    showC:curve.rateRevealed
+  });
+}
+
+
+function plotPoints(){
+  var msg=id("plotMsg");
+  if(!allTimesIn()){
+    showNote(msg,"rose","請先為 0.05%、0.1%、0.2%、0.4% 四個標準點都填上完全分解時間，才繪到圖上。可從測定記錄帶入，或自行填寫。");
+    return;
+  }
+  updateInvCells();
+  curve.pointsPlotted=true;
+  curve.curveDrawn=false;
+  curve.interpStep=0;
+  curve.interpRevealed=false;
+  id("btnDrawCurve").disabled=false;
+  id("btnInterpNext").disabled=true;
+  id("btnInterpReset").disabled=true;
+  var box=id("interpGuessBox"); if(box) box.style.display="none";
+  var rev=id("interpReveal"); if(rev) rev.className="reveal";
+  refreshTimeChart();
+  showNote(msg,"teal","四個標準點已繪上。請觀察點的分布，再按「連成線圖」。0.05% 若是 38 min，會接近或高於 30 min 課堂時段線。");
+  updateInterpPills();
+  updateScore();
+}
+function drawCurveLine(){
+  if(!curve.pointsPlotted || !allTimesIn()){
+    showNote(id("plotMsg"),"rose","請先把四點繪到圖上。");
+    return;
+  }
+  curve.curveDrawn=true;
+  id("btnInterpNext").disabled=false;
+  id("btnInterpReset").disabled=false;
+  refreshTimeChart();
+  showNote(id("plotMsg"),"teal","已連成「酶濃度—完全分解時間」曲線。這是雙曲線形，不穿過原點。接下來用樣本 X 的時間做內插：先標出 t，再畫水平線至曲線，然後垂直讀出濃度。");
+  updateInterpPills();
+}
+function updateInterpPills(){
+  var step=curve.interpStep;
+  var i, ids=["sp0","sp1","sp2","sp3","sp4"];
+  for(i=0;i<ids.length;i++){
+    var el=id(ids[i]); if(!el) continue;
+    var cls="stpill";
+    if(i===0 && curve.pointsPlotted) cls+=(curve.curveDrawn||step>0)?" done":" on";
+    else if(i===step && step>0) cls+=" on";
+    else if(i<step) cls+=" done";
+    if(i===0 && curve.pointsPlotted && step===0) cls="stpill"+(curve.curveDrawn?" done":" on");
+    el.className=cls;
+  }
+  if(step>=4 && id("sp4")) id("sp4").className="stpill on";
+}
+function interpNext(){
+  if(!curve.curveDrawn){ showNote(id("plotMsg"),"rose","請先連成線圖，再開始內插。"); return; }
+  if(curve.interpStep<3) curve.interpStep+=1;
+  else curve.interpStep=4;
+  if(curve.interpStep>=1){
+    var tn=id("interpTNote");
+    var samp=currentSample();
+    if(tn) tn.innerHTML="示例 "+samp.id+"：t ＝ "+samp.t+" min（"+samp.between+"）。這是課堂示例，不是該班當次真實結果。";
+  }
+  if(curve.interpStep>=4){
+    var box=id("interpGuessBox"); if(box) box.style.display="block";
+  }
+  refreshTimeChart();
+  updateInterpPills();
+  var hint=id("curveHint");
+  if(hint){
+    if(curve.interpStep===1) hint.innerHTML="已在縱軸標出樣本 X 的時間 t。下一步：由這個高度畫水平線，直到與曲線相交。";
+    else if(curve.interpStep===2) hint.innerHTML="水平線已畫至曲線，交點已標出。下一步：由交點垂直向下，讀出橫軸的酶濃度。";
+    else if(curve.interpStep>=3) hint.innerHTML="垂直線已畫到橫軸。請在下面寫下你讀到的濃度，再核對。現在不要猜測「應該等於公式答案」，先練習讀圖。";
+  }
+}
+function interpReset(){
+  curve.interpStep=0;
+  curve.interpRevealed=false;
+  var box=id("interpGuessBox"); if(box) box.style.display="none";
+  var rev=id("interpReveal"); if(rev) rev.className="reveal";
+  if(id("interpGuess")) id("interpGuess").value="";
+  refreshTimeChart();
+  updateInterpPills();
+  var hint=id("curveHint");
+  if(hint) hint.innerHTML="先繪四個標準點，再連成線。樣本 X 的內插不要急著看答案：先在縱軸標出 t，畫水平線至曲線，再由交點垂直讀出濃度。";
+}
+function checkInterp(){
+  var g=num(id("interpGuess").value);
+  var samp=currentSample();
+  var wrap=id("interpReveal"), body=id("interpRevealBody");
+  if(g===null){
+    body.innerHTML='<div class="note rose">請先寫下你從主圖讀到的濃度，再核對。</div>';
+    wrap.className="reveal on";
+    return;
+  }
+  var exact=samp.c;
+  var ok=Math.abs(g-exact)<=0.04 || Math.abs(g-parseFloat(samp.show))<=0.04;
+  var h="";
+  if(ok) h+='<div class="note teal">你的讀數 '+f2(g)+"% 與內插結果大致相符。</div>";
+  else h+='<div class="note amber">你的讀數是 '+f2(g)+"%。請再看水平線與垂直線的交點落在橫軸何處；允許有小量讀圖誤差。</div>";
+  h+="<p>課堂示例 "+samp.id+" 的 t ＝ "+samp.t+" min，"+samp.between+"。按曲線（以及反比關係）內插，樣本 X 的酶濃度約為 <strong>"+samp.show+"%</strong>（計算值 0.2% × 9.5 ÷ "+samp.t+" ＝ "+f3(exact)+"%）。</p>";
+  h+="<p>主圖是工作紙指定的「酶濃度—完全分解時間」曲線，呈雙曲線形。讀圖時由縱軸的 t 畫至曲線，再垂直向下，不要沿直線連到原點。</p>";
+  body.innerHTML=h;
+  wrap.className="reveal on";
+  curve.interpRevealed=true;
+  refreshTimeChart();
+  if(ok) maybeFinishCurve();
+  updateScore();
+}
+function plotRate(){
+  if(!allTimesIn()){
+    showNote(id("plotMsg"),"rose","請先填妥四個標準點的時間，才能畫 1／t 圖。");
+    return;
+  }
+  if(!curve.pointsPlotted){ plotPoints(); }
+  curve.ratePlotted=true;
+  var box=id("rateGuessBox"); if(box) box.style.display="block";
+  var samp=currentSample();
+  var n=id("rateInvNote");
+  if(n) n.innerHTML="t ＝ "+samp.t+" min，故 1／t ＝ "+f3(1/samp.t)+" min⁻¹。先在縱軸標出這個速率，再水平畫至直線，垂直讀出濃度。";
+  refreshRateChart();
+}
+function checkRate(){
+  if(!curve.ratePlotted){ plotRate(); }
+  var g=num(id("rateGuess").value);
+  var samp=currentSample();
+  var wrap=id("rateReveal"), body=id("rateRevealBody");
+  if(g===null){
+    body.innerHTML='<div class="note rose">請先寫下你從輔圖讀到的濃度，再核對。</div>';
+    wrap.className="reveal on";
+    return;
+  }
+  var exact=samp.c;
+  var ok=Math.abs(g-exact)<=0.04 || Math.abs(g-parseFloat(samp.show))<=0.04;
+  var h="";
+  if(ok) h+='<div class="note teal">輔圖讀數 '+f2(g)+"% 與內插結果大致相符。</div>";
+  else h+='<div class="note amber">你的讀數是 '+f2(g)+"%。直線通過原點時，讀圖通常比雙曲線容易，請再對一下垂直線落在橫軸的位置。</div>";
+  h+="<p>同一組示例數據：1／t ＝ 1／"+samp.t+" ＝ "+f3(1/samp.t)+" min⁻¹，對應濃度約 <strong>"+samp.show+"%</strong>。這與主圖內插、以及 c ＝ 0.2% × 9.5 ÷ t 在線性範圍內應大致相符。</p>";
+  h+="<p>兩圖描述同一組數據。時間—濃度圖是工作紙指定的曲線；速率—濃度圖較易看成直線標準曲線。不要把主圖誤認成穿過原點的直線。</p>";
+  body.innerHTML=h;
+  wrap.className="reveal on";
+  curve.rateRevealed=true;
+  refreshRateChart();
+  maybeFinishCurve();
+}
+function maybeFinishCurve(){
+  if(curve.interpRevealed) setDone("curve");
+  updateScore();
+}
+function fillFromAssay(){
+  var a=id("rec-04").value, b=id("rec-02").value, c=id("rec-01").value, d=id("rec-005").value;
+  if(!a && !b && !c && !d){
+    showNote(id("plotMsg"),"amber","測定記錄表還是空的。你可以先到「測定時間」做完並核對，或在本表自行填入示例時間（核對測定後可用「把示例時間填入記錄表」）。");
+    return;
+  }
+  if(a) id("t-04").value=a;
+  if(b) id("t-02").value=b;
+  if(c) id("t-01").value=c;
+  if(d) id("t-005").value=d;
+  updateInvCells();
+  showNote(id("plotMsg"),"teal","已嘗試從測定記錄帶入時間。請檢查是否為數字（對照組的文字不要帶進來），然後把四點繪到圖上。");
+}
+function syncCurveNote(){
+  var tn=id("interpTNote");
+  var samp=currentSample();
+  if(tn) tn.innerHTML="示例 "+samp.id+"：t ＝ "+samp.t+" min（"+samp.between+"）。這是課堂示例，不是該班當次真實結果。";
+  var n=id("rateInvNote");
+  if(n) n.innerHTML="t ＝ "+samp.t+" min，故 1／t ＝ "+f3(1/samp.t)+" min⁻¹。";
+  if(curve.pointsPlotted) refreshTimeChart();
+  if(curve.ratePlotted) refreshRateChart();
+}
+
+/* ========== Compare ========== */
+function renderCompareOptions(){
+  id("cmpJudge").innerHTML=
+    optHtml("cmpJudge","agree","應該大致相符，因為這個示例的濃度落在標準系列的線性範圍內")+
+    optHtml("cmpJudge","disagree","一定會相差很遠，因為公式和曲線永遠互相矛盾")+
+    optHtml("cmpJudge","formulaonly","只有公式正確，標準曲線只是多餘的圖")+
+    optHtml("cmpJudge","curveonly","只有曲線正確，公式在線性範圍內也不能用");
+  bindOptList("cmpJudge");
+}
+function syncCompareT(){
+  var samp=currentSample();
+  var el=id("cmpTLine");
+  if(el) el.innerHTML="目前使用示例 "+samp.id+"：t ＝ <strong>"+samp.t+" min</strong>（"+samp.between+"）。請先代入公式計算，再寫下你在標準曲線上的讀數。";
+  if(curve.interpRevealed && id("cmpCurve") && !id("cmpCurve").value){
+    /* do not auto-fill answers */
+  }
+}
+function checkCompare(){
+  var samp=currentSample();
+  var f=num(id("cmpFormula").value), g=num(id("cmpCurve").value);
+  var j=radioVal("cmpJudge");
+  var wrap=id("compareReveal"), body=id("compareRevealBody");
+  var lims=checkedValues("cmpLim");
+  var h="";
+  if(f===null || g===null || !j){
+    h='<div class="note rose">請先寫出公式求得的 c、曲線上的讀數，並選擇兩者應否相符，再核對。</div>';
+    body.innerHTML=h; wrap.className="reveal on"; return;
+  }
+  var exact=samp.c, show=samp.show;
+  var fOk=Math.abs(f-exact)<=0.03 || Math.abs(f-parseFloat(show))<=0.03;
+  var gOk=Math.abs(g-exact)<=0.05 || Math.abs(g-parseFloat(show))<=0.05;
+  h+="<p>示例 "+samp.id+"：t ＝ "+samp.t+" min。</p>";
+  h+="<p>公式：c ＝ 0.2% × 9.5 ÷ "+samp.t+" ＝ <strong>"+f3(exact)+"%</strong>，約 <strong>"+show+"%</strong>。你寫的是 "+f2(f)+"% "+(fOk?"（相符）":"（請再代入一次）")+"。</p>";
+  h+="<p>標準曲線內插約為 <strong>"+show+"%</strong>。你寫的是 "+f2(g)+"% "+(gOk?"（與內插大致相符）":"（請回到主圖或輔圖再讀一次）")+"。</p>";
+  if(j==="agree"){
+    h+='<div class="note teal">判斷正確：在線性範圍內，兩種方法應大致相符，可用來互相核對，而不是互相矛盾。這個示例正好落在 0.05%–0.4% 系列之間。</div>';
+  } else {
+    h+='<div class="note amber">這個示例仍在線性範圍內，公式與內插應大致相符。公式並非「永遠不能用」，只是當樣本明顯偏離 0.2%、或超出線性範圍時才會不準。</div>';
+  }
+  var need=["linear","far","extra"], wrong=["always","vol"];
+  var gotNeed=0, i, hasWrong=false;
+  for(i=0;i<need.length;i++){ if(lims.indexOf(need[i])>=0) gotNeed++; }
+  for(i=0;i<wrong.length;i++){ if(lims.indexOf(wrong[i])>=0) hasWrong=true; }
+  h+="<h3>關係式成立的條件</h3>";
+  h+="<p>反比式只在酶濃度處於線性反應範圍內成立。樣本 X 若明顯偏離 0.2%，應改用系列稀釋與標準曲線。把曲線無理外推到遠高於 0.4% 的濃度（見下一頁）也不準。各組總體積必須同為 11 mL，否則 9.5 min 這個錨點不能直接套用。</p>";
+  if(gotNeed>=3 && !hasWrong){
+    h+='<div class="note teal">你選對了限制條件，也沒有選「公式永遠精確」或「總體積不同仍然準確」這兩項錯誤說法。</div>';
+  } else {
+    h+='<div class="note amber">限制條件應包括：線性範圍、樣本明顯偏離 0.2% 時要改用標準曲線、以及不可無理外推。公式並非永遠精確；總體積不同時也不能直接代入 9.5 min。</div>';
+  }
+  body.innerHTML=h;
+  wrap.className="reveal on";
+  setDone("compare");
+}
+function checkedValues(name){
+  var els=document.getElementsByName(name), i, out=[];
+  for(i=0;i<els.length;i++){ if(els[i].checked) out.push(els[i].value); }
+  return out;
+}
+
+/* ========== Limits ========== */
+var limits={ran:false, revealed:false};
+function renderLimPred(){
+  id("limPred").innerHTML=
+    optHtml("limPred","2.375","約 2.375 min（4.75 再減半，或 9.5 ÷ 4）")+
+    optHtml("limPred","4.75","仍是 4.75 min，與 0.4% 相同")+
+    optHtml("limPred","0","幾乎是 0 min，因為酶愈濃反應瞬間完成")+
+    optHtml("limPred","9.5","仍是 9.5 min，與濃度無關");
+  bindOptList("limPred");
+}
+function drawLimChart(showObs){
+  var w=640,h=400,padL=58,padR=24,padT=28,padB=52;
+  var xmax=1.0, ymax=22;
+  var xt=[{v:0,lab:"0"},{v:0.1,lab:"0.1"},{v:0.2,lab:"0.2"},{v:0.4,lab:"0.4"},{v:0.8,lab:"0.8"},{v:1,lab:"1.0"}];
+  var yt=[{v:0,lab:"0"},{v:5,lab:"5"},{v:4.75,lab:"4.75"},{v:9.5,lab:"9.5"},{v:15,lab:"15"},{v:19,lab:"19"}];
+  if(showObs){
+    yt=[{v:0,lab:"0"},{v:2.375,lab:"2.375"},{v:3.8,lab:"3.8"},{v:4.75,lab:"4.75"},{v:9.5,lab:"9.5"},{v:19,lab:"19"}];
+  }
+  var fr=chartFrame(w,h,padL,padR,padT,padB,0,xmax,0,ymax,"酶濃度 / %","時間 / min",yt,xt);
+  var s=fr.s, d="", c;
+  for(c=0.09;c<=0.42;c+=0.005){
+    d+=(d===""?"M":"L")+fr.X(c)+" "+fr.Y(K/c)+" ";
+  }
+  s+='<path d="'+d+'" fill="none" stroke="#0c5f52" stroke-width="2.2"/>';
+  if(showObs){
+    var d2="M"+fr.X(0.4)+" "+fr.Y(K/0.4)+" L"+fr.X(0.8)+" "+fr.Y(HIGH_THEORY);
+    s+='<path d="'+d2+'" fill="none" stroke="#0c5f52" stroke-width="1.6" stroke-dasharray="6 4"/>';
+  }
+  var std=[{c:0.1,t:19},{c:0.2,t:9.5},{c:0.4,t:4.75}];
+  var i;
+  for(i=0;i<std.length;i++){
+    s+='<circle cx="'+fr.X(std[i].c)+'" cy="'+fr.Y(std[i].t)+'" r="5.5" fill="#0c5f52" stroke="#fff" stroke-width="1.5"/>';
+  }
+  s+=svgText(fr.X(0.4)+8, fr.Y(4.75)-8, "標準系列（0.1–0.4%）", "start", "#0c5f52", 11);
+  if(showObs){
+    s+=svgText(fr.X(0.8), fr.Y(HIGH_THEORY)-12, "反比外推 2.375 min", "middle", "#5a6873", 11);
+    s+='<circle cx="'+fr.X(0.8)+'" cy="'+fr.Y(HIGH_THEORY)+'" r="5" fill="none" stroke="#5a6873" stroke-width="1.6"/>';
+    s+='<circle cx="'+fr.X(0.8)+'" cy="'+fr.Y(HIGH_OBS)+'" r="7" fill="none" stroke="#9a3b2f" stroke-width="2.2"/>';
+    s+='<circle cx="'+fr.X(0.8)+'" cy="'+fr.Y(HIGH_OBS)+'" r="3" fill="#9a3b2f"/>';
+    s+=svgText(fr.X(0.8), fr.Y(HIGH_OBS)+22, "記錄時間約 3.8 min", "middle", "#9a3b2f", 12, "700");
+  }
+  s+=svgText(fr.X(0.02), fr.Y(21), "實線＝標準系列範圍；虛線＝無理外推；空心點＝0.8% 不是系列成員", "start", "#5a6873", 11);
+  s+=fr.close();
+  return s;
+}
+function runLimits(){
+  var pred=radioVal("limPred");
+  var box=id("limRunMsg");
+  if(!pred){
+    showNote(box,"rose","請先預測：若反比仍然成立，0.8% 應需多少時間，再執行示範。");
+    return;
+  }
+  limits.ran=true;
+  var h="";
+  if(pred==="2.375") h="你的反比推算是對的：0.8% 應為 4.75÷2 ＝ 9.5÷4 ＝ 2.375 min。現在看看實際能記錄到的時間是否真的這麼短。";
+  else h="若反比仍成立，0.8% 應為 4.75 min 再減半，即 2.375 min（也等於 9.5÷4）。請看示範：記錄到的時間並不是這個值。";
+  showNote(box, pred==="2.375"?"teal":"amber", h);
+  id("limChartBox").innerHTML=drawLimChart(true);
+  id("limWhyBox").style.display="block";
+  id("limWhyBtns").style.display="block";
+  updateScore();
+}
+function checkLimits(){
+  if(!limits.ran){ runLimits(); if(!limits.ran) return; }
+  var pred=radioVal("limPred");
+  var why=checkedValues("limWhy");
+  var wrap=id("limitsReveal"), body=id("limitsRevealBody");
+  var h="";
+  h+="<p>按反比，0.8% 應約 <strong>2.375 min</strong>。本課示例中，由於混合與取樣跟不上這麼快的反應，記錄到的終點約為 <strong>3.8 min</strong>，明顯長於反比預測。這是課堂示意數據，不是一次真實動力學測量。0.8% 這一點<strong>不是</strong>工作紙四點標準系列的一部分。</p>";
+  var good=0;
+  if(why.indexOf("mix")>=0) good++;
+  if(why.indexOf("interval")>=0) good++;
+  var bad=why.indexOf("denature")>=0 || why.indexOf("iodine")>=0;
+  if(good>=2 && !bad){
+    h+='<div class="note teal">你選對了主要原因：混合速度和取樣間隔會限制能記錄到的最短時間。</div>';
+  } else if(good>=1 && !bad){
+    h+='<div class="note amber">方向正確。工作紙特別指出兩項限制：混合速度及取樣間隔。極高酶量下底物迅速耗盡、測定跟不上初速，可作為簡短補充，但不是要你改口說「40℃ 下酶全部變性」或「碘液失效」。</div>';
+  } else {
+    h+='<div class="note amber">主要原因是混合速度及取樣間隔，不是因為 40℃ 下濃度愈高酶就立即全部變性，也不是碘液失效。40℃ 仍是本實驗設定的溫度；高酶量只是讓真正的反應完成得太快，記錄方法跟不上。</div>';
+  }
+  if(why.indexOf("sub")>=0 && !bad){
+    h+="<p>你亦選了底物迅速耗盡這一項補充：在極高酶量下，底物可能很快用完，碘液目測或較疏的取樣無法反映真正初速。</p>";
+  }
+  h+="<h3>若仍用單一公式，或把曲線外推，會怎樣？</h3>";
+  h+="<p>若把記錄到的 3.8 min 代入 c ＝ 0.2% × 9.5 ÷ t，會得到 c ＝ 1.9 ÷ 3.8 ＝ <strong>0.50%</strong>，明顯低估真正的 0.8%。若假定反比一直成立而由 0.4% 外推，又會以為終點是 2.375 min，與記錄不符。所以：標準曲線只宜在已測定、呈線性的範圍內內插；不要無理外推，也不要把過高酶濃度的記錄時間硬套單一 0.2% 公式。</p>";
+  h+="<p>課堂上把標準系列停在 0.4%，並用內插求樣本 X（示例約 0.15% 或 0.30%），正是為了留在較可靠的範圍內。</p>";
+  body.innerHTML=h;
+  wrap.className="reveal on";
+  limits.revealed=true;
+  setDone("limits");
+}
+
+/* ========== Sample switch / events / init ========== */
+function setSample(which){
+  ST.sample=which;
+  if(id("sampleA")) id("sampleA").className="chip"+(which==="A"?" on":"");
+  if(id("sampleB")) id("sampleB").className="chip"+(which==="B"?" on":"");
+  /* reset interpolation answers because t changed, keep standard times */
+  curve.interpRevealed=false;
+  curve.rateRevealed=false;
+  if(curve.interpStep>0) { /* keep step but hide answers */ }
+  var ir=id("interpReveal"); if(ir) ir.className="reveal";
+  var rr=id("rateReveal"); if(rr) rr.className="reveal";
+  var cr=id("compareReveal"); if(cr) cr.className="reveal";
+  syncCurveNote();
+  syncCompareT();
+  if(assay.locked) setAssayTime(assay.t);
+}
+
+function setDilMode(mode){
+  dil.mode=mode;
+  if(id("modeSerial")) id("modeSerial").className="chip"+(mode==="serial"?" on":"");
+  if(id("modeDirect")) id("modeDirect").className="chip"+(mode==="direct"?" on":"");
+  if(id("dilModeBadge")) id("dilModeBadge").innerHTML=mode==="serial"?"連續倍比稀釋":"C₁V₁＝C₂V₂";
+  if(id("serialHint")) id("serialHint").style.display=mode==="serial"?"block":"none";
+  if(id("directHint")) id("directHint").style.display=mode==="direct"?"block":"none";
+  if(id("c1v1box")) id("c1v1box").style.display=mode==="direct"?"block":"none";
+}
+
+function bindClicks(){
+  if(id("bottleRow")){
+    id("bottleRow").addEventListener("click", function(e){
+      var t=e.target;
+      while(t && t!==id("bottleRow") && !t.getAttribute("data-src")) t=t.parentNode;
+      if(t && t.getAttribute("data-src")){ dil.selected=t.getAttribute("data-src"); renderBottles(); }
+    });
+  }
+  if(id("tubeGrid")){
+    id("tubeGrid").addEventListener("click", function(e){
+      var t=e.target;
+      while(t && t!==id("tubeGrid") && t.nodeName!=="BUTTON") t=t.parentNode;
+      if(!t || t===id("tubeGrid")) return;
+      if(t.getAttribute("data-mix")) mixTube(parseInt(t.getAttribute("data-mix"),10));
+      if(t.getAttribute("data-deltube")) delTube(parseInt(t.getAttribute("data-deltube"),10));
+      if(t.getAttribute("data-usesrc")){ dil.selected=t.getAttribute("data-usesrc"); renderBottles(); showNote(id("dilMsg"),"teal","已改為以這支試管作為下一步的來源。請確認體積後再加入新試管。"); }
+    });
+  }
+  on("btnMakeTube","click", makeTube);
+  on("btnMixLast","click", function(){
+    var i, last=null;
+    for(i=0;i<dil.tubes.length;i++){ if(!dil.tubes[i].mixed) last=dil.tubes[i]; }
+    if(!last){ showNote(id("dilMsg"),"amber","沒有尚未混勻的試管。"); return; }
+    mixTube(last.id);
+  });
+  on("btnResetDil","click", resetDil);
+  on("btnCheckC1V1","click", checkC1V1);
+  on("btnCheckSeries","click", checkSeries);
+  on("modeSerial","click", function(){ setDilMode("serial"); });
+  on("modeDirect","click", function(){ setDilMode("direct"); });
+
+  on("sampleA","click", function(){ setSample("A"); });
+  on("sampleB","click", function(){ setSample("B"); });
+  on("btnLockAssay","click", lockAssay);
+  on("btnAssayStep","click", assayStep);
+  on("btnAssayRewind","click", function(){ if(assay.locked) setAssayTime(0); });
+  on("btnAssayRecord","click", recordEndpoint);
+  on("btnAssayCheck","click", checkAssay);
+  on("btnUseIdeal","click", fillIdealTimes);
+  if(id("assayRange")){
+    id("assayRange").addEventListener("input", function(){ if(assay.locked) setAssayTime(parseFloat(this.value)||0); });
+    id("assayRange").addEventListener("change", function(){ if(assay.locked) setAssayTime(parseFloat(this.value)||0); });
+  }
+  if(id("assayPick")){
+    id("assayPick").addEventListener("change", function(){ if(assay.locked) setAssayTime(0); else renderBath(true); });
+  }
+
+  on("btnPlotPoints","click", plotPoints);
+  on("btnDrawCurve","click", drawCurveLine);
+  on("btnInterpNext","click", interpNext);
+  on("btnInterpReset","click", interpReset);
+  on("btnInterpCheck","click", checkInterp);
+  on("btnPlotRate","click", plotRate);
+  on("btnRateCheck","click", checkRate);
+  on("btnFillFromAssay","click", fillFromAssay);
+  var ids=["t-005","t-01","t-02","t-04"], j;
+  for(j=0;j<ids.length;j++){ on(ids[j],"input", updateInvCells); on(ids[j],"change", updateInvCells); }
+
+  on("btnCompare","click", checkCompare);
+  on("btnLimRun","click", runLimits);
+  on("btnLimCheck","click", checkLimits);
+}
+function on(elid, ev, fn){
+  var el=id(elid); if(el) el.addEventListener(ev, fn);
+}
+
+function ready(){
+  renderBottles();
+  renderTubes();
+  renderAssayOptions();
+  renderCompareOptions();
+  renderLimPred();
+  renderBath(true);
+  if(id("timeChartBox")) id("timeChartBox").innerHTML=emptyTimeChart();
+  if(id("rateChartBox")) id("rateChartBox").innerHTML=emptyRateChart();
+  if(id("limChartBox")) id("limChartBox").innerHTML=drawLimChart(false);
+  setDilMode("serial");
+  bindClicks();
+  updateInvCells();
+  syncCurveNote();
+  syncCompareT();
+  updateScore();
+  updateInterpPills();
+  route();
+}
+
+window.addEventListener("hashchange", route);
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded", ready);
+} else {
+  ready();
+}
+})();
+</script>
+</body>
+</html>
