@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>第1題 PCR 溫度循環與拷貝數 · E4 教師工具</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%236d28d9'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="sim.css">
+</head>
+<body>
+<div class="wrap" id="pcr-app">
+  <p><a class="back" href="index.html">← 返回教師工具</a></p>
+  <p class="teacher-flag">教師工具 · 第1題 · 10 分</p>
+  <p class="kicker">HKDSE · 選修 E4 · 第1章 A卷</p>
+  <h1>聚合酶鏈反應：一個循環的溫度與拷貝數</h1>
+  <p class="muted small">對照試卷圖 1。P 約 95°C 變性，Q 約 55°C 退火，R 約 72°C 延伸，然後重複。</p>
+  <div class="banner">播放時溫度點沿圖 1 的曲線走。DNA 由雙鏈分開成單鏈模板，引物在兩端結合，聚合酶由引物延伸。分子數按 N × 2ⁿ 增加。</div>
+
+  <div class="card">
+    <div class="controls">
+      <button type="button" class="act" id="btnPlay" aria-pressed="false">播放</button>
+      <button type="button" class="ghost" id="btnStep">單步</button>
+      <button type="button" class="ghost" id="btnReset">重設</button>
+      <span class="step-tag" id="poseTag">起始</span>
+    </div>
+    <div class="slider-line">
+      <label for="startN">起始目標分子 N</label>
+      <input type="range" id="startN" min="1" max="20" step="1" value="10" aria-valuemin="1" aria-valuemax="20">
+      <span class="day-big" id="startNOut">N = 10</span>
+    </div>
+    <div class="slider-line">
+      <label for="targetCycles">播放至第 n 個循環</label>
+      <input type="range" id="targetCycles" min="1" max="8" step="1" value="6" aria-valuemin="1" aria-valuemax="8">
+      <span class="day-big" id="targetOut">n = 6</span>
+    </div>
+    <div class="status">
+      <div class="stat"><div class="lab">階段</div><div class="val" id="statPhase">起始</div></div>
+      <div class="stat"><div class="lab">溫度</div><div class="val" id="statTemp">25°C</div></div>
+      <div class="stat"><div class="lab">已完成循環後的分子數</div><div class="val" id="statMol">10</div></div>
+    </div>
+    <p class="formula" id="formulaNow">現時：10 × 2⁰ = 10</p>
+    <p class="small muted" id="formulaTarget">播放至 6 個完整循環：10 × 2⁶ = 640</p>
+  </div>
+
+  <div class="grid-main">
+    <div class="card">
+      <p class="panel-title">圖 1　一個反應循環中的溫度變化</p>
+      <div class="stage" id="graphStage">
+        <svg id="graph" viewBox="0 0 640 380" role="img" aria-label="PCR 一個循環的溫度曲線"></svg>
+      </div>
+    </div>
+    <div class="card">
+      <p class="panel-title">這個溫度下 DNA 發生甚麼事</p>
+      <div class="stage" id="dnaStage">
+        <svg id="scene" viewBox="0 0 640 400" role="img" aria-label="PCR 變性、退火與延伸"></svg>
+      </div>
+      <div class="legend-row" aria-hidden="true">
+        <span><i class="swatch" style="background:#2563eb"></i>模板鏈</span>
+        <span><i class="swatch" style="background:#db2777"></i>另一條模板</span>
+        <span><i class="swatch" style="background:#d97706"></i>引物</span>
+        <span><i class="swatch" style="background:#16a34a"></i>新合成鏈</span>
+        <span><i class="swatch" style="background:#7c3aed"></i>DNA 聚合酶</span>
+      </div>
+      <div class="caption" id="caption" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="mark-grid" aria-label="評分要點">
+    <article class="mark" id="cardP">
+      <h3>P · 約 95°C · 2 分</h3>
+      <p><strong class="key">高溫使兩條鏈之間的氫鍵斷裂</strong>，雙鏈解開，成為兩條單鏈模板。</p>
+    </article>
+    <article class="mark" id="cardQ">
+      <h3>Q · 約 55°C · 2 分</h3>
+      <p>兩種<strong class="key">引物</strong>與單鏈上<strong class="key">互補序列結合（退火）</strong>，標示要擴增區域的兩端。</p>
+    </article>
+    <article class="mark" id="cardR">
+      <h3>R · 約 72°C · 4 分</h3>
+      <p><strong class="key">游離核苷酸</strong>在 DNA 聚合酶催化下從引物接上。來自<strong class="key">嗜熱細菌</strong>的酶在 95°C 不會變性，下一循環<strong class="key">毋須重新加入</strong>。</p>
+    </article>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>拷貝數條形 · 2ⁿ</h2>
+    <p class="small muted">每完成一個循環，目標分子數加倍。條形高度跟 2ⁿ（不是線性加 n）。</p>
+    <div class="bar-row" id="bars" aria-hidden="true"></div>
+    <p class="small muted" style="margin-top:22px">n = 0 是起始，尚未循環。</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>短練習 · 第 (d) 題 · 2 分</h2>
+    <p>實驗開始時有 <strong>10</strong> 個含目標序列的 DNA 分子。經過 <strong>6</strong> 個完整循環後，有多少個？</p>
+    <form class="quiz" id="quizForm">
+      <label for="quizAns" class="small">分子數目</label>
+      <input type="number" id="quizAns" inputmode="numeric" min="0" step="1" required>
+      <button type="submit" class="act">核對</button>
+      <p class="quiz-msg" id="quizMsg" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <footer>
+    模擬教學模型，用來對照參考答案，不是實驗協議。普通的 DNA 聚合酶在階段 P 會變性失效，所以要用耐熱的酶。<br>
+    鍵盤：空白鍵播放／暫停，右箭咀單步。<br>
+    <a href="index.html">教師工具目錄</a>
+  </footer>
+</div>
+<script src="pcr.js"></script>
+</body>
+</html>

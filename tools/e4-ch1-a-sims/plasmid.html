@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>第2題 質粒、HGH 與抗生素篩選 · E4 教師工具</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23b45309'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="sim.css">
+</head>
+<body>
+<div class="wrap" id="plasmid-app">
+  <p><a class="back" href="index.html">← 返回教師工具</a></p>
+  <p class="teacher-flag">教師工具 · 第2題 · 10 分</p>
+  <p class="kicker">HKDSE · 選修 E4 · 第1章 A卷</p>
+  <h1>把 HGH 基因插入質粒，再用抗生素篩選</h1>
+  <p class="muted small">質粒有氨苄青霉素抗性基因（ampR）和四環素抗性基因（tetR）。HGH 插在 tetR 裡面。</p>
+  <div class="banner">跟着步驟看切割、黏端、連接酶，以及培養基 X（氨苄青霉素，80 個菌落）和 Y（四環素，30 個菌落）。帶有 HGH 的是只在 X 生長的 50 個。</div>
+
+  <div class="card">
+    <div class="controls">
+      <button type="button" class="act" id="btnPlay" aria-pressed="false">播放</button>
+      <button type="button" class="ghost" id="btnPrev">上一步</button>
+      <button type="button" class="ghost" id="btnNext">下一步</button>
+      <button type="button" class="ghost" id="btnReset">重設</button>
+      <span class="step-tag" id="stepTag">步驟 1</span>
+    </div>
+    <div class="status">
+      <div class="stat"><div class="lab">ampR</div><div class="val" id="statAmp">完整</div></div>
+      <div class="stat"><div class="lab">tetR</div><div class="val" id="statTet">完整</div></div>
+      <div class="stat"><div class="lab">帶 HGH 的菌落</div><div class="val" id="statHgh">尚未推斷</div></div>
+    </div>
+  </div>
+
+  <div class="grid-main">
+    <div>
+      <div class="card">
+        <p class="panel-title" id="sceneTitle">質粒</p>
+        <div class="stage" id="stage">
+          <svg id="scene" viewBox="0 0 680 460" role="img" aria-label="質粒與 HGH 插入"></svg>
+        </div>
+        <div class="caption" id="caption" aria-live="polite"></div>
+        <div id="plateBlock" hidden>
+          <div class="controls" style="margin-top:10px">
+            <button type="button" class="ghost" id="btnInfer" aria-pressed="false">推斷哪些菌落帶有 HGH</button>
+          </div>
+          <div class="plate-grid">
+            <div class="dish-wrap">
+              <h2>培養基 X</h2>
+              <p class="small">含氨苄青霉素 · <strong id="countX">80</strong> 個菌落</p>
+              <div class="dish" id="dishX" role="img" aria-label="培養基 X，80 個菌落"></div>
+            </div>
+            <div class="dish-wrap">
+              <h2>培養基 Y</h2>
+              <p class="small">含四環素 · <strong id="countY">30</strong> 個菌落</p>
+              <div class="dish" id="dishY" role="img" aria-label="培養基 Y，30 個菌落"></div>
+            </div>
+          </div>
+          <div class="legend-row">
+            <span><i class="swatch" style="background:#f8fafc"></i>未推斷時，菌落外觀相同</span>
+            <span><i class="swatch" style="background:#fbbf24"></i>推斷：AmpR TetS，有 HGH</span>
+            <span><i class="swatch" style="background:#93c5fd"></i>推斷：AmpR TetR，沒有 HGH</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card flow">
+      <h2>評分要點 · 跟住步驟走</h2>
+      <p class="small muted">現時步驟會反黃。可點步驟跳轉。</p>
+      <div id="flowSteps"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>短練習 · 第 (c) 題</h2>
+    <p>X 有 80 個菌落，Y 有 30 個。最有可能攜有 HGH 基因的菌落有多少個？</p>
+    <form class="quiz" id="quizForm">
+      <label for="quizAns" class="small">菌落數目</label>
+      <input type="number" id="quizAns" inputmode="numeric" min="0" step="1" required>
+      <button type="submit" class="act">核對</button>
+      <p class="quiz-msg" id="quizMsg" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <footer>
+    參考答案：在 X 生長但不在 Y 生長的菌落 = 80 − 30 = 50。重組質粒是 AmpR TetS。若病原體取得抗性質粒，可能無藥可治。<br>
+    鍵盤：左右箭咀轉步驟，空白鍵播放／暫停。<br>
+    <a href="index.html">教師工具目錄</a>
+  </footer>
+</div>
+<script src="plasmid.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>第3題 EcoRI 切位與凝膠電泳 · E4 教師工具</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%230f766e'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="sim.css">
+</head>
+<body>
+<div class="wrap" id="restriction-app">
+  <p><a class="back" href="index.html">← 返回教師工具</a></p>
+  <p class="teacher-flag">教師工具 · 第3題 · 10 分</p>
+  <p class="kicker">HKDSE · 選修 E4 · 第1章 A卷</p>
+  <h1>EcoRI 識別部位、黏端與凝膠帶</h1>
+  <p class="muted small">圓形質粒總長標為 100 kb。點選被切開的兩個部位，看線性片段和凝膠會出現甚麼帶。</p>
+  <div class="banner">試卷圖 3 的標示是 W–X 10 kb、X–Y 10 kb、Y–Z 25 kb、Z–W 50 kb（加總 95 kb）。凝膠圖有約 60 kb 和約 40 kb 兩條帶。參考答案寫切開 X 與 Z，並把 40 kb 寫成 15 kb + 25 kb。</div>
+
+  <div class="card">
+    <div class="controls">
+      <button type="button" class="ghost" id="btnClear">清除選擇</button>
+      <span class="step-tag" id="pickTag">未選擇</span>
+    </div>
+    <div class="slider-line">
+      <span class="small" id="modeLabel">計算用的距離</span>
+      <div class="mode-row" role="group" aria-labelledby="modeLabel">
+        <button type="button" class="choice" id="modeFigure" aria-pressed="true">圖 3 標示（X–Y = 10 kb）</button>
+        <button type="button" class="choice" id="modeMark" aria-pressed="false">參考答案寫法（X–Y = 15 kb）</button>
+      </div>
+    </div>
+    <div class="site-row" role="group" aria-label="選擇識別部位">
+      <button type="button" class="site-btn" data-site="W" aria-pressed="false">W</button>
+      <button type="button" class="site-btn" data-site="X" aria-pressed="false">X</button>
+      <button type="button" class="site-btn" data-site="Y" aria-pressed="false">Y</button>
+      <button type="button" class="site-btn" data-site="Z" aria-pressed="false">Z</button>
+    </div>
+  </div>
+
+  <div class="grid-main">
+    <div class="card">
+      <p class="panel-title">圖 3　四個 EcoRI 識別部位</p>
+      <div class="stage">
+        <svg id="plasmid" viewBox="0 0 640 520" role="img" aria-label="質粒上的 W X Y Z 切位"></svg>
+      </div>
+      <p class="small muted">點圓上的字母，或用上面的按鈕。再點一次可取消。</p>
+    </div>
+    <div class="card">
+      <p class="panel-title">凝膠電泳　較大片段較近起點</p>
+      <div class="gel-wrap">
+        <svg id="gel" viewBox="0 0 460 420" role="img" aria-label="凝膠：題目結果與你的預測"></svg>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="grid-even">
+    <div class="card">
+      <h2>兩段線性 DNA</h2>
+      <div id="fragBox" class="small">選擇兩個部位後，這裡會列出沿圓的兩段弧長。</div>
+    </div>
+    <div class="card">
+      <h2>六種切法比較</h2>
+      <div class="table-wrap">
+        <table class="pairs" id="pairTable">
+          <thead>
+            <tr><th>切開</th><th>較長</th><th>較短</th><th>對上 60 與 40？</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>黏端是甚麼 · 1 分</h2>
+    <p><strong class="key">黏端是 DNA 片段切口上的一小段單鏈 DNA。</strong></p>
+    <div class="sticky-wrap">
+      <svg viewBox="0 0 720 250" role="img" aria-label="EcoRI 切開後留下 5 端突出的黏端，互補後可以接合">
+        <text x="16" y="28" font-size="14" font-weight="800" fill="#5a493c">EcoRI 把識別序列錯開切斷</text>
+        <text x="16" y="78" font-size="16" font-weight="800" fill="#1e3a8a">5'-G</text>
+        <text x="78" y="78" font-size="16" font-weight="800" fill="#b45309">AATT</text>
+        <text x="138" y="78" font-size="16" font-weight="800" fill="#1e3a8a">C-3'</text>
+        <text x="16" y="104" font-size="16" font-weight="800" fill="#1e3a8a">3'-CTTAA</text>
+        <text x="138" y="104" font-size="16" font-weight="800" fill="#1e3a8a">G-5'</text>
+        <line x1="70" y1="62" x2="70" y2="112" stroke="#b42318" stroke-width="2" stroke-dasharray="3 3"/>
+        <line x1="132" y1="62" x2="132" y2="112" stroke="#b42318" stroke-width="2" stroke-dasharray="3 3"/>
+        <text x="16" y="140" font-size="13" fill="#b42318">橙色 AATT 是單鏈突出，這就是黏端。</text>
+
+        <text x="400" y="28" font-size="14" font-weight="800" fill="#5a493c">相同的黏端可以互補接合</text>
+        <text x="400" y="70" font-size="15" font-weight="800" fill="#1e3a8a">5'-…G</text>
+        <text x="470" y="70" font-size="15" font-weight="800" fill="#b45309">AATTC…-3'</text>
+        <text x="400" y="96" font-size="15" font-weight="800" fill="#1e3a8a">3'-…CTTAA</text>
+        <text x="512" y="96" font-size="15" font-weight="800" fill="#1e3a8a">G…-5'</text>
+        <text x="400" y="132" font-size="13" fill="#14532d">未配對的鹼基互補，以氫鍵連結。</text>
+        <text x="400" y="156" font-size="13" fill="#14532d">DNA 連接酶再封上共價鍵，形成重組 DNA。</text>
+        <text x="400" y="196" font-size="13" fill="#5a493c">所以 EcoRI 在重組 DNA 技術中很有用：（1）留下黏端</text>
+        <text x="400" y="218" font-size="13" fill="#5a493c">（2）相同酶的黏端互補　（3）方便接上質粒。</text>
+      </svg>
+    </div>
+  </div>
+
+  <footer>
+    圖 3 已核對試卷附圖。參考答案的得分句：切開的是 X 和 Z；60 kb 由 10 kb 和 50 kb 組成；40 kb 由 15 kb 和 25 kb 組成。<br>
+    <a href="index.html">教師工具目錄</a>
+  </footer>
+</div>
+<script src="restriction.js"></script>
+</body>
+</html>
