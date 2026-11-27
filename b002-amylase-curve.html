@@ -292,7 +292,6 @@ input[type=range]{width:100%;height:32px}
 </head>
 <body>
 <div class="page">
-
 <div class="topbar">
   <div class="inner">
     <div class="brandline">
@@ -320,25 +319,25 @@ input[type=range]{width:100%;height:32px}
   <div class="sechead">
     <div class="kicker">生物科實驗工作紙 · 系列稀釋與標準曲線模擬器</div>
     <h1>測定未知濃度澱粉酶溶液的濃度</h1>
-    <p class="lede">2026年12月4日（星期五）第 1、2 節 · 生物實驗室 · 本頁把工作紙延伸挑戰做成主軸：自己配製標準系列，再用線圖內插求樣本 X 的濃度。</p>
+    <p class="lede">2026年12月4日（星期五）第 1、2 節 · 生物實驗室 · 本頁把工作紙延伸挑戰做成主軸：由 0.2% 原液按比例配製標準系列，再用線圖內插求樣本 X 的濃度。</p>
   </div>
 
   <div class="card key">
     <div class="chead"><h2>為甚麼單一 0.2% 公式有時不夠</h2><span class="badge b-teal">先想清楚再用</span></div>
-    <p>工作紙以 0.2% 標準組為單一參考點，並假設在線性範圍內，完全分解時間與酶濃度成反比：</p>
+    <p>工作紙以 0.2% 澱粉酶原液為單一參考。本課在指定條件下實測，1 mL 0.2% 原液約 10 min 到達碘液終點。若假設在線性範圍內，完全分解時間與酶濃度成反比，便可用：</p>
     <div class="formula">
       反應速率 ＝ 1 ÷ 完全分解所需時間
-      <span class="big">c ＝ 0.2% × 9.5 ÷ t</span>
-      <span class="sub">此式只在酶濃度處於線性反應範圍內成立；是本頁的對照教具，不是主算法。</span>
+      <span class="big">c ＝ 0.2% × 10 ÷ t</span>
+      <span class="sub">亦即 c ＝ 2.0 ÷ t。式中的 0.2% 是原液（本課實測約 10 min），不是曲線上四個標準點之一。此式只在線性反應範圍內成立，是本頁的對照教具，不是主算法。</span>
     </div>
-    <p>若樣本 X 的濃度明顯偏離 0.2%，單靠這一點推算會不準確，應改用<strong>系列稀釋</strong>繪製<strong>標準曲線</strong>，再以<strong>內插法</strong>讀出濃度。這正是本模擬器要你親手做的兩件事。</p>
+    <p>若要檢查線性，或樣本濃度落在已測定的範圍內，應由原液按比例配製<strong>系列稀釋</strong>，繪製<strong>標準曲線</strong>，再以<strong>內插法</strong>讀出樣本 X 的濃度。這正是本模擬器要你親手做的兩件事。</p>
   </div>
 
   <div class="grid2" style="margin-bottom:14px">
     <a class="modcard" href="#dilution">
       <div class="ms">主軸一</div>
       <h3>配製系列稀釋</h3>
-      <p>由課堂加設的 0.4% 貯存液，自己配成 0.05%、0.1%、0.2%、0.4% 標準系列。常見錯誤會有後果。</p>
+      <p>由工作紙已提供的 0.2% 原液，按比例平行配成 0.04%、0.08%、0.12%、0.16% 標準系列。常見錯誤會有後果。</p>
       <div class="modst" id="st-dilution">未開始</div>
     </a>
     <a class="modcard" href="#curve">
@@ -358,13 +357,13 @@ input[type=range]{width:100%;height:32px}
     <a class="modcard" href="#compare">
       <div class="ms">對照</div>
       <h3>公式與曲線比較</h3>
-      <p>線性範圍內，內插結果應與 c ＝ 0.2% × 9.5 ÷ t 大致相符；偏離時兩者不再可靠。</p>
+      <p>線性範圍內，內插結果應與 c ＝ 0.2% × 10 ÷ t 大致相符；偏離或無理外推時兩者不再可靠。</p>
       <div class="modst" id="st-compare">未開始</div>
     </a>
     <a class="modcard" href="#limits">
       <div class="ms">限制</div>
       <h3>酶濃度過高時</h3>
-      <p>時間不再按反比縮短，因為受混合速度及取樣間隔限制。不要無理外推曲線。</p>
+      <p>時間不再按反比縮短，因為受混合速度及取樣間隔限制。標準系列停在 0.16%，不要無理外推。</p>
       <div class="modst" id="st-limits">未開始</div>
     </a>
   </div>
@@ -374,21 +373,22 @@ input[type=range]{width:100%;height:32px}
     <div class="kv"><div class="k">用量</div><div class="v">10 mL 2% 澱粉溶液 ＋ 1 mL 澱粉酶溶液（或蒸餾水），總體積 11 mL</div></div>
     <div class="kv"><div class="k">預熱</div><div class="v">兩種溶液先分別置於 40℃ 水浴預熱 5 分鐘，然後才混合</div></div>
     <div class="kv"><div class="k">混合與計時</div><div class="v">把酶溶液加入澱粉溶液，混合後立即放回 40℃ 水浴，並立即開始計時</div></div>
-    <div class="kv"><div class="k">終點</div><div class="v">首次取樣加碘液不再呈藍黑色。0.2% 標準組在正確操作下約 9.5 min 到達終點</div></div>
+    <div class="kv"><div class="k">終點</div><div class="v">首次取樣加碘液不再呈藍黑色</div></div>
+    <div class="kv"><div class="k">本課實測基準</div><div class="v">在上述條件下，1 mL 0.2% 澱粉酶原液約 <strong>10 min</strong> 到達終點。這是本課實測數據。四個稀釋標準的時間則由這個基準點按反比推得，屬課堂示例，不是另一次實測。</div></div>
     <div class="kv"><div class="k">對照組</div><div class="v">以 1 mL 蒸餾水代替酶溶液，總體積仍為 11 mL，用以證明顏色變化確由酶引起</div></div>
-    <div class="kv"><div class="k">設計原則</div><div class="v">沿用上述底物體積、酶體積、總體積、溫度及預熱時間，只改變酶的濃度</div></div>
-    <p class="tagline">樣本 X 為不明濃度澱粉酶溶液，使用前須搖勻。本頁所有時間均為課堂示例數據，不是該班當次真實結果。</p>
+    <div class="kv"><div class="k">設計原則</div><div class="v">沿用上述底物體積、酶體積、總體積、溫度及預熱時間，只改變酶的濃度。測定標準系列時，加入的是 1 mL<strong>已稀釋</strong>的酶溶液。</div></div>
+    <p class="tagline">樣本 X 為不明濃度澱粉酶溶液，使用前須搖勻。除 0.2%／10 min 這一個實測基準外，其餘時間均為課堂示例數據。</p>
   </div>
 
   <div class="card tint">
-    <div class="chead"><h2>材料一覽</h2><span class="badge b-amber">課堂加設貯存液</span></div>
-    <p>工作紙基本材料表只有 0.2% 澱粉酶溶液（供單一標準組）。<strong>本課為繪製標準曲線，另外加設 0.4% 澱粉酶貯存液</strong>，供你配製 0.05%、0.1%、0.2%、0.4% 系列。不要以為工作紙本來就有 0.4%，也不要因此改動上面的基本反應條件。</p>
+    <div class="chead"><h2>材料一覽</h2><span class="badge b-teal">原液已在材料表內</span></div>
+    <p>工作紙基本材料表已有 <strong>0.2% 澱粉酶溶液</strong>。本課用這瓶<strong>原液</strong>，按比例平行配製 0.04%、0.08%、0.12%、0.16% 四個標準濃度。原液本身不是曲線上的標準點；若以原液直接測定，本課實測約 10 min 到達終點。不要因此改動上面的基本反應條件。</p>
     <div class="tblwrap">
       <table>
-        <caption>實驗室提供（各組共用）＋ 本課加設</caption>
+        <caption>實驗室提供（各組共用）</caption>
         <thead><tr><th>材料或儀器</th><th>說明</th></tr></thead>
         <tbody>
-          <tr><td>0.4% 澱粉酶貯存液</td><td><strong>課堂加設</strong>，供配製標準系列；使用前須搖勻</td></tr>
+          <tr><td>0.2% 澱粉酶原液</td><td>工作紙已提供，供配製標準系列；使用前須搖勻。不是曲線上的四個標準點之一</td></tr>
           <tr><td>不明濃度澱粉酶溶液（樣本 X）</td><td>適量，使用前須搖勻</td></tr>
           <tr><td>2% 澱粉溶液、碘液、蒸餾水</td><td>澱粉為底物；碘液判定終點；蒸餾水作對照及稀釋用</td></tr>
           <tr><td>試管 6 支、試管架、滴管、針筒、滴試板</td><td>預熱時每組需要兩支管（澱粉管＋酶管），標準系列＋對照＋樣本 X 須分批進行</td></tr>
@@ -405,15 +405,15 @@ input[type=range]{width:100%;height:32px}
       <table>
         <thead><tr><th>時段</th><th>建議用法</th></tr></thead>
         <tbody>
-          <tr><td>導入（約 8–10 分鐘）</td><td>回顧「酶愈濃、完全分解時間愈短」，指出單一 0.2% 公式的限制，然後進入系列稀釋。</td></tr>
-          <tr><td>主軸一（約 15–18 分鐘）</td><td>學生在「系列稀釋」自己配製四個標準濃度，討論 6 支試管須分批，以及 0.05% 可能來不及在 30 分鐘內看到終點。</td></tr>
+          <tr><td>導入（約 8–10 分鐘）</td><td>回顧「酶愈濃、完全分解時間愈短」，交代本課實測基準（0.2% 原液約 10 min），指出單一公式的限制，然後進入系列稀釋。</td></tr>
+          <tr><td>主軸一（約 15–18 分鐘）</td><td>學生由 0.2% 原液按比例配製四個標準濃度，討論 6 支試管須分批，以及 0.04% 可能來不及在 30 分鐘內看到終點。</td></tr>
           <tr><td>測定（約 12–15 分鐘）</td><td>用簡化時間軸複習分開預熱、碘液終點與對照組，記下示例時間。</td></tr>
           <tr><td>主軸二（約 15–18 分鐘）</td><td>先畫時間—濃度曲線並內插，再對照 1／t 直線圖。最後才核對讀數。</td></tr>
           <tr><td>比較與限制（約 8–10 分鐘）</td><td>對照公式與內插；再看酶濃度過高時時間不再按反比縮短。</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="tagline">若要對照「單一 0.2% 標準組＋實驗步驟設計」的 40 分工作紙訓練，可開啟原設計版。</p>
+    <p class="tagline">若要對照「單一 0.2% 標準組＋實驗步驟設計」的 40 分工作紙訓練，可開啟原設計版。原設計版仍按其工作紙的單一標準參考時間；本頁以本課實測 10 min 為基準，請勿把兩組數據混用。</p>
     <div class="btnrow">
       <a class="btn ghost" href="b002-amylase.html">開啟原實驗設計版</a>
       <a class="btn plain" href="index.html">返回模擬器目錄</a>
@@ -426,12 +426,12 @@ input[type=range]{width:100%;height:32px}
   <div class="sechead">
     <div class="kicker">主軸一 · 自己配製，不要一打開就用現成溶液</div>
     <h1>配製系列稀釋</h1>
-    <p class="lede">目標是得到 0.05%、0.1%、0.2%、0.4% 四個標準濃度。建議主路徑是由 0.4% 貯存液做連續倍比稀釋；也可以用 C₁V₁＝C₂V₂ 由貯存液一次配成某一濃度，並核對計算。</p>
+    <p class="lede">目標是得到 0.04%、0.08%、0.12%、0.16% 四個等距的標準濃度（分別為 0.2% 原液的 1/5、2/5、3/5、4/5）。建議由同一瓶 0.2% 原液按比例平行配製；也可以用 C₁V₁＝C₂V₂ 核對計算。四點都必須稀釋並混勻，沒有一點是未經稀釋的原液。</p>
   </div>
 
   <div class="card key">
-    <div class="chead"><h2>本課加設的貯存液</h2><span class="badge b-amber">課堂加設</span></div>
-    <p>工作紙材料表只有 0.2% 標準液。為了繪製標準曲線，本課<strong>另外提供 0.4% 澱粉酶貯存液</strong>。基本反應條件不變：測定時仍是 10 mL 2% 澱粉 ＋ 1 mL<strong>已稀釋</strong>的酶溶液，總體積 11 mL。</p>
+    <div class="chead"><h2>用工作紙已有的 0.2% 原液</h2><span class="badge b-teal">不是額外加設的貯存液</span></div>
+    <p>工作紙材料表已有 0.2% 澱粉酶溶液。本課用這瓶<strong>原液</strong>按比例配製標準系列。原液若直接測定，本課實測約 10 min 到達終點；但它<strong>不是</strong>曲線上的四個標準點之一。測定標準系列時，條件不變：10 mL 2% 澱粉 ＋ 1 mL<strong>已稀釋</strong>的酶溶液，總體積 11 mL。</p>
     <div class="note amber">實驗室只有 6 支試管。預熱時每組需要兩支管（一支盛澱粉、一支盛酶或蒸餾水），因此標準系列 4 組 ＋ 對照組 ＋ 樣本 X 合共 6 組，必須分批進行，不能一次全部預熱。</div>
   </div>
 
@@ -442,18 +442,18 @@ input[type=range]{width:100%;height:32px}
   </div>
 
   <div class="card">
-    <div class="chead"><h2>這一配製步驟</h2><span class="badge b-teal" id="dilModeBadge">連續倍比稀釋</span></div>
+    <div class="chead"><h2>這一配製步驟</h2><span class="badge b-teal" id="dilModeBadge">按比例平行配製</span></div>
     <div class="chips" id="dilModeChips">
-      <button type="button" class="chip on" data-mode="serial" id="modeSerial">建議：連續倍比稀釋（1 體積 ＋ 1 體積）</button>
-      <button type="button" class="chip" data-mode="direct" id="modeDirect">用 C₁V₁＝C₂V₂ 一次配成</button>
+      <button type="button" class="chip on" data-mode="parallel" id="modeParallel">建議：由 0.2% 原液按比例平行配製</button>
+      <button type="button" class="chip" data-mode="direct" id="modeDirect">用 C₁V₁＝C₂V₂ 核對計算</button>
     </div>
-    <div id="serialHint" class="note teal">連續倍比：取 1 體積 0.4% 貯存液，加 1 體積蒸餾水，混勻後得 0.2%；再由 0.2% 同樣操作得 0.1%，再得 0.05%。0.4% 可直接取用貯存液。體積可同比例放大，例如 5 mL ＋ 5 mL。</div>
-    <div id="directHint" class="note teal" style="display:none">由貯存液一次配成目標濃度時，C₁V₁＝C₂V₂，即 V₁ ＝ C₂ × V₂ ÷ C₁，其餘以蒸餾水補足至 V₂。配完必須混勻，並核對計算。</div>
+    <div id="parallelHint" class="note teal">建議各配 10 mL，全部由同一瓶 0.2% 原液取出，再加蒸餾水：0.16%（4/5）用 8 mL 原液 ＋ 2 mL 蒸餾水；0.12%（3/5）用 6 mL ＋ 4 mL；0.08%（2/5）用 4 mL ＋ 6 mL；0.04%（1/5）用 2 mL ＋ 8 mL。每管配完必須混勻。</div>
+    <div id="directHint" class="note teal" style="display:none">由原液配成目標濃度時，C₁V₁＝C₂V₂，其中 C₁＝0.2%。即 V₁ ＝ C₂ × V₂ ÷ 0.2，其餘以蒸餾水補足至 V₂。配完必須混勻，並核對計算。</div>
 
     <div class="fields f4" style="margin-top:10px">
       <div class="field">
         <label for="srcVol">取來源體積</label>
-        <input id="srcVol" type="number" min="0" step="0.1" value="5" inputmode="decimal">
+        <input id="srcVol" type="number" min="0" step="0.1" value="8" inputmode="decimal">
       </div>
       <div class="field">
         <label for="srcUnit">單位</label>
@@ -464,7 +464,7 @@ input[type=range]{width:100%;height:32px}
       </div>
       <div class="field">
         <label for="watVol">加入蒸餾水體積</label>
-        <input id="watVol" type="number" min="0" step="0.1" value="5" inputmode="decimal">
+        <input id="watVol" type="number" min="0" step="0.1" value="2" inputmode="decimal">
       </div>
       <div class="field">
         <label for="watUnit">單位</label>
@@ -478,10 +478,10 @@ input[type=range]{width:100%;height:32px}
       <label for="tubeLabel">這支新管你打算標籤為</label>
       <select id="tubeLabel">
         <option value="">請選擇標籤</option>
-        <option value="0.4%">0.4% 澱粉酶</option>
-        <option value="0.2%">0.2% 澱粉酶</option>
-        <option value="0.1%">0.1% 澱粉酶</option>
-        <option value="0.05%">0.05% 澱粉酶</option>
+        <option value="0.16%">0.16% 澱粉酶</option>
+        <option value="0.12%">0.12% 澱粉酶</option>
+        <option value="0.08%">0.08% 澱粉酶</option>
+        <option value="0.04%">0.04% 澱粉酶</option>
         <option value="other">其他／自訂（不列入標準系列）</option>
       </select>
     </div>
@@ -494,19 +494,19 @@ input[type=range]{width:100%;height:32px}
 
     <div id="c1v1box" style="display:none;margin-top:8px">
       <h3>核對 C₁V₁＝C₂V₂</h3>
-      <p class="hint">先自己算，再按核對。C₁ 為貯存液濃度 0.4%。</p>
+      <p class="hint">先自己算，再按核對。C₁ 為原液濃度 0.2%。</p>
       <div class="fields f3">
         <div class="field">
           <label for="c1v1c2">目標濃度 C₂（%）</label>
-          <input id="c1v1c2" type="number" min="0" step="0.01" value="0.1" inputmode="decimal">
+          <input id="c1v1c2" type="number" min="0" step="0.01" value="0.16" inputmode="decimal">
         </div>
         <div class="field">
           <label for="c1v1v2">目標總體積 V₂（mL）</label>
           <input id="c1v1v2" type="number" min="0" step="0.1" value="10" inputmode="decimal">
         </div>
         <div class="field">
-          <label for="c1v1v1">你算出要取的貯存液體積 V₁（mL）</label>
-          <input id="c1v1v1" type="number" min="0" step="0.1" inputmode="decimal" placeholder="例如 2.5">
+          <label for="c1v1v1">你算出要取的原液體積 V₁（mL）</label>
+          <input id="c1v1v1" type="number" min="0" step="0.1" inputmode="decimal" placeholder="例如 8">
         </div>
       </div>
       <div class="btnrow">
@@ -518,17 +518,17 @@ input[type=range]{width:100%;height:32px}
 
   <div class="card">
     <div class="chead"><h2>已配製的試管</h2><span class="badge b-grey">未混勻會影響後面測定</span></div>
-    <p class="hint">0.4% 可直接使用貯存液，不必再稀釋。新配的管必須按「混勻」才算完成該步。</p>
+    <p class="hint">四個標準點都必須由 0.2% 原液稀釋而成，不可以把原液直接當作曲線上的一點。新配的管必須按「混勻」才算完成該步。</p>
     <div class="tubegrid" id="tubeGrid"></div>
     <div class="tblwrap" style="margin-top:12px">
       <table>
         <caption>標準系列核對清單（標籤是否齊全，先由你判斷）</caption>
         <thead><tr><th>目標濃度</th><th>你的標籤是否已有</th><th>是否已混勻</th></tr></thead>
         <tbody id="seriesCheckBody">
-          <tr><td>0.4%</td><td id="sc-04-lab">尚未</td><td id="sc-04-mix">—</td></tr>
-          <tr><td>0.2%</td><td id="sc-02-lab">尚未</td><td id="sc-02-mix">—</td></tr>
-          <tr><td>0.1%</td><td id="sc-01-lab">尚未</td><td id="sc-01-mix">—</td></tr>
-          <tr><td>0.05%</td><td id="sc-005-lab">尚未</td><td id="sc-005-mix">—</td></tr>
+          <tr><td>0.16%（4/5）</td><td id="sc-016-lab">尚未</td><td id="sc-016-mix">—</td></tr>
+          <tr><td>0.12%（3/5）</td><td id="sc-012-lab">尚未</td><td id="sc-012-mix">—</td></tr>
+          <tr><td>0.08%（2/5）</td><td id="sc-008-lab">尚未</td><td id="sc-008-mix">—</td></tr>
+          <tr><td>0.04%（1/5）</td><td id="sc-004-lab">尚未</td><td id="sc-004-mix">—</td></tr>
         </tbody>
       </table>
     </div>
@@ -552,10 +552,10 @@ input[type=range]{width:100%;height:32px}
 
   <div class="card key">
     <div class="chead"><h2>課堂示例的樣本 X</h2><span class="badge b-amber">示例數據</span></div>
-    <p>下列兩個時間都是課堂示例，不是該班當次真實結果。先選一個，全頁（測定、曲線、比較）會跟同一個示例。</p>
+    <p>下列兩個時間都是課堂示例，不是該班當次真實結果。兩個示例都落在 0.04%–0.16% 標準系列之內。先選一個，全頁（測定、曲線、比較）會跟同一個示例。</p>
     <div class="chips" id="sampleChips">
-      <button type="button" class="chip on" data-sample="A" id="sampleA">示例 A：t ＝ 6.3 min（介於 0.2% 與 0.4%）</button>
-      <button type="button" class="chip" data-sample="B" id="sampleB">示例 B：t ＝ 12.7 min（介於 0.1% 與 0.2%）</button>
+      <button type="button" class="chip on" data-sample="A" id="sampleA">示例 A：t ＝ 13.3 min（介於 0.12% 與 0.16%）</button>
+      <button type="button" class="chip" data-sample="B" id="sampleB">示例 B：t ＝ 19.4 min（介於 0.08% 與 0.12%）</button>
     </div>
   </div>
 
@@ -591,15 +591,15 @@ input[type=range]{width:100%;height:32px}
 
   <div class="card" id="assayRunCard">
     <div class="chead"><h2>分批測定</h2><span class="badge b-amber">只有 6 支試管</span></div>
-    <p>預熱時每組兩支管，每批最多同時做 3 組。建議第 1 批先做較濃的標準與對照組（較早到達終點）；第 2 批做較稀的標準與樣本 X。0.05% 按反比約需 38 min，已超出工作紙約 30 分鐘的實驗時段，課堂上可能來不及看到終點——這是值得討論的設計點。</p>
+    <p>預熱時每組兩支管，每批最多同時做 3 組。建議第 1 批先做較濃的標準與對照組（較早到達終點）；第 2 批做較稀的標準與樣本 X。0.04% 按反比約需 50 min，已超出工作紙約 30 分鐘的實驗時段，課堂上可能來不及看到終點——這是值得討論的設計點。</p>
     <div class="fields f2">
       <div class="field">
         <label for="assayPick">選擇要模擬的這一組</label>
         <select id="assayPick">
-          <option value="0.4">標準 0.4%</option>
-          <option value="0.2">標準 0.2%</option>
-          <option value="0.1">標準 0.1%</option>
-          <option value="0.05">標準 0.05%</option>
+          <option value="0.16">標準 0.16%</option>
+          <option value="0.12">標準 0.12%</option>
+          <option value="0.08">標準 0.08%</option>
+          <option value="0.04">標準 0.04%</option>
           <option value="X">樣本 X</option>
           <option value="ctrl">對照組（蒸餾水）</option>
         </select>
@@ -607,8 +607,8 @@ input[type=range]{width:100%;height:32px}
       <div class="field">
         <label for="assayBatch">這一組放在第幾批（備忘）</label>
         <select id="assayBatch">
-          <option value="1">第 1 批（建議：0.4%、0.2%、對照組）</option>
-          <option value="2">第 2 批（建議：0.1%、樣本 X、0.05%）</option>
+          <option value="1">第 1 批（建議：0.16%、0.12%、對照組）</option>
+          <option value="2">第 2 批（建議：0.08%、樣本 X、0.04%）</option>
         </select>
       </div>
     </div>
@@ -619,14 +619,14 @@ input[type=range]{width:100%;height:32px}
         <div class="qtag">計時</div>
         <div class="clock" id="assayClock">0.0 <sm>min</sm></div>
         <div class="rangebox">
-          <input type="range" id="assayRange" min="0" max="40" step="0.25" value="0" disabled>
+          <input type="range" id="assayRange" min="0" max="55" step="0.25" value="0" disabled>
         </div>
         <div class="btnrow">
           <button type="button" class="btn sm" id="btnAssayStep" disabled>下一步取樣</button>
           <button type="button" class="btn sm plain" id="btnAssayRewind" disabled>回到 0</button>
           <button type="button" class="btn sm ghost" id="btnAssayRecord" disabled>記錄這一刻為終點</button>
         </div>
-        <p class="tagline" id="assayTickHint">鎖定條件後才可開始。建議濃標準較早開始取樣；稀標準及 0.05% 要有心理準備可能超過 30 min。</p>
+        <p class="tagline" id="assayTickHint">鎖定條件後才可開始。建議濃標準較早開始取樣；稀標準及 0.04% 要有心理準備可能超過 30 min。</p>
       </div>
       <div class="card tint" style="margin:0">
         <div class="qtag">今次取樣 · 加碘液</div>
@@ -648,7 +648,7 @@ input[type=range]{width:100%;height:32px}
 
   <div class="card">
     <div class="chead"><h2>結果記錄</h2><span class="badge b-amber">示例時間 · 先記錄再揭曉</span></div>
-    <p class="hint">單位為 min。對照組若在實驗時段內一直呈藍黑色，可記錄「未到終點」。0.05% 若在 30 min 仍呈藍黑色，不要虛構一個終點。</p>
+    <p class="hint">單位為 min。對照組若在實驗時段內一直呈藍黑色，可記錄「未到終點」。0.04% 若在 30 min 仍呈藍黑色，不要虛構一個終點。</p>
     <div class="tblwrap">
       <table>
         <caption>完全分解時間（首次加碘液不再呈藍黑色）</caption>
@@ -657,10 +657,10 @@ input[type=range]{width:100%;height:32px}
         </thead>
         <tbody>
           <tr><td>對照組</td><td>蒸餾水 1 mL</td><td><input class="cell" id="rec-ctrl" placeholder="例如：未到終點"></td></tr>
-          <tr><td>標準</td><td>0.4% 澱粉酶 1 mL</td><td><input class="cell" id="rec-04" inputmode="decimal" placeholder=""></td></tr>
-          <tr><td>標準</td><td>0.2% 澱粉酶 1 mL</td><td><input class="cell" id="rec-02" inputmode="decimal" placeholder=""></td></tr>
-          <tr><td>標準</td><td>0.1% 澱粉酶 1 mL</td><td><input class="cell" id="rec-01" inputmode="decimal" placeholder=""></td></tr>
-          <tr><td>標準</td><td>0.05% 澱粉酶 1 mL</td><td><input class="cell" id="rec-005" inputmode="decimal" placeholder=""></td></tr>
+          <tr><td>標準</td><td>0.16% 澱粉酶 1 mL</td><td><input class="cell" id="rec-016" inputmode="decimal" placeholder=""></td></tr>
+          <tr><td>標準</td><td>0.12% 澱粉酶 1 mL</td><td><input class="cell" id="rec-012" inputmode="decimal" placeholder=""></td></tr>
+          <tr><td>標準</td><td>0.08% 澱粉酶 1 mL</td><td><input class="cell" id="rec-008" inputmode="decimal" placeholder=""></td></tr>
+          <tr><td>標準</td><td>0.04% 澱粉酶 1 mL</td><td><input class="cell" id="rec-004" inputmode="decimal" placeholder=""></td></tr>
           <tr><td>待測組</td><td>樣本 X 1 mL</td><td><input class="cell" id="rec-x" inputmode="decimal" placeholder=""></td></tr>
         </tbody>
       </table>
@@ -687,18 +687,18 @@ input[type=range]{width:100%;height:32px}
 
   <div class="card">
     <div class="chead"><h2>確認四個標準點</h2><span class="badge b-amber">示例數據須自行填入或由測定帶入</span></div>
-    <p>先輸入或確認四個標準濃度的完全分解時間，再繪到圖上。正確操作、線性範圍內的課堂示例值，是由 0.2% → 9.5 min 按反比推得，<strong>不是該班當次真實結果</strong>。</p>
+    <p>先輸入或確認四個標準濃度的完全分解時間，再繪到圖上。基準點是本課實測：0.2% 原液在相同條件下約 10 min 到達終點。四個稀釋標準的課堂示例值由 t ＝ 2.0 ÷ c 按反比推得，<strong>不是該班當次另一次實測結果</strong>。0.2% 原液本身不畫進這四個標準點。</p>
     <div class="tblwrap">
       <table>
-        <caption>標準系列（課堂示例錨點：0.2% 需 9.5 min）</caption>
+        <caption>標準系列（由本課實測基準 0.2% → 10 min 反比推得的示例）</caption>
         <thead>
           <tr><th>酶濃度 / %</th><th class="num">完全分解時間 t / min</th><th class="num">1／t / min⁻¹（自動計算）</th></tr>
         </thead>
         <tbody>
-          <tr><td>0.05</td><td><input class="cell" id="t-005" inputmode="decimal"></td><td class="num" id="inv-005">—</td></tr>
-          <tr><td>0.1</td><td><input class="cell" id="t-01" inputmode="decimal"></td><td class="num" id="inv-01">—</td></tr>
-          <tr><td>0.2</td><td><input class="cell" id="t-02" inputmode="decimal"></td><td class="num" id="inv-02">—</td></tr>
-          <tr><td>0.4</td><td><input class="cell" id="t-04" inputmode="decimal"></td><td class="num" id="inv-04">—</td></tr>
+          <tr><td>0.04</td><td><input class="cell" id="t-004" inputmode="decimal"></td><td class="num" id="inv-004">—</td></tr>
+          <tr><td>0.08</td><td><input class="cell" id="t-008" inputmode="decimal"></td><td class="num" id="inv-008">—</td></tr>
+          <tr><td>0.12</td><td><input class="cell" id="t-012" inputmode="decimal"></td><td class="num" id="inv-012">—</td></tr>
+          <tr><td>0.16</td><td><input class="cell" id="t-016" inputmode="decimal"></td><td class="num" id="inv-016">—</td></tr>
         </tbody>
       </table>
     </div>
@@ -721,7 +721,7 @@ input[type=range]{width:100%;height:32px}
       <span class="stpill" id="sp4">4 寫下讀數</span>
     </div>
     <div class="chartbox" id="timeChartBox"></div>
-    <p class="figcap">原創教學示意：橫軸為酶濃度（%），縱軸為完全分解時間（min）。曲線呈雙曲線形，不穿過原點。</p>
+    <p class="figcap">原創教學示意：橫軸為酶濃度（%），縱軸為完全分解時間（min）。曲線呈雙曲線形，不穿過原點。0.2% 處可標示原液實測基準，但它不是四個標準點之一。</p>
     <div class="btnrow">
       <button type="button" class="btn" id="btnInterpNext" disabled>進行下一步內插</button>
       <button type="button" class="btn plain" id="btnInterpReset" disabled>重做內插</button>
@@ -730,7 +730,7 @@ input[type=range]{width:100%;height:32px}
       <div class="fields f2">
         <div class="field">
           <label for="interpGuess">你從主圖讀到的樣本 X 濃度（%）</label>
-          <input id="interpGuess" type="number" min="0" step="0.01" inputmode="decimal" placeholder="例如 0.30">
+          <input id="interpGuess" type="number" min="0" step="0.001" inputmode="decimal" placeholder="例如 0.150">
         </div>
         <div class="field">
           <label>樣本 X 的示例時間</label>
@@ -759,7 +759,7 @@ input[type=range]{width:100%;height:32px}
       <div class="fields f2">
         <div class="field">
           <label for="rateGuess">你從輔圖讀到的樣本 X 濃度（%）</label>
-          <input id="rateGuess" type="number" min="0" step="0.01" inputmode="decimal">
+          <input id="rateGuess" type="number" min="0" step="0.001" inputmode="decimal">
         </div>
         <div class="field">
           <label>樣本 X 的 1／t</label>
@@ -782,25 +782,25 @@ input[type=range]{width:100%;height:32px}
   <div class="sechead">
     <div class="kicker">對照教具 · 線性範圍內兩者應大致相符</div>
     <h1>比較單一公式與標準曲線內插</h1>
-    <p class="lede">單一 0.2% 反比式 c ＝ 0.2% × 9.5 ÷ t 仍要會用，但它只是對照，不是本頁主算法。先自己算、自己判斷，再揭曉。</p>
+    <p class="lede">單一 0.2% 反比式 c ＝ 0.2% × 10 ÷ t 仍要會用，但它只是對照，不是本頁主算法。式中的 0.2% 是原液（本課實測約 10 min），不是曲線上四個標準點之一。先自己算、自己判斷，再揭曉。</p>
   </div>
 
   <div class="card">
     <div class="chead"><h2>先用公式算一次</h2><span class="badge b-teal">對照教具</span></div>
     <div class="formula">
-      已知 0.2% 標準組需 9.5 min；樣本 X 平均時間為 t
-      <span class="big">c ＝ 0.2% × 9.5 ÷ t</span>
-      <span class="sub">假設反應速率與酶濃度成正比，且樣本處於線性範圍內。</span>
+      已知 0.2% 原液在本課實測下需 10 min；樣本 X 平均時間為 t
+      <span class="big">c ＝ 0.2% × 10 ÷ t</span>
+      <span class="sub">亦即 c ＝ 2.0 ÷ t。假設反應速率與酶濃度成正比，且樣本處於線性範圍內。</span>
     </div>
     <p id="cmpTLine" class="hint">目前示例的 t 會顯示在這裏。</p>
     <div class="fields f2">
       <div class="field">
         <label for="cmpFormula">你用公式求得的 c（%）</label>
-        <input id="cmpFormula" type="number" min="0" step="0.01" inputmode="decimal">
+        <input id="cmpFormula" type="number" min="0" step="0.001" inputmode="decimal">
       </div>
       <div class="field">
         <label for="cmpCurve">你在標準曲線上讀到的 c（%）</label>
-        <input id="cmpCurve" type="number" min="0" step="0.01" inputmode="decimal">
+        <input id="cmpCurve" type="number" min="0" step="0.001" inputmode="decimal">
       </div>
     </div>
     <div class="qblock">
@@ -812,10 +812,10 @@ input[type=range]{width:100%;height:32px}
       <div class="qtag">限制</div>
       <div class="qtext">這個反比關係在甚麼情況下會不準確？可多選。</div>
       <label class="chk"><input type="checkbox" name="cmpLim" value="linear"> 只在酶濃度處於線性反應範圍內才成立</label>
-      <label class="chk"><input type="checkbox" name="cmpLim" value="far"> 樣本 X 若明顯偏離 0.2%，單靠一個標準點推算會不準，應改用系列稀釋與標準曲線</label>
-      <label class="chk"><input type="checkbox" name="cmpLim" value="extra"> 把曲線無理外推到遠高於 0.4% 的濃度，推算會不準</label>
+      <label class="chk"><input type="checkbox" name="cmpLim" value="far"> 樣本 X 若明顯偏離已測定的標準範圍，單靠原液一個點推算會不準，應改用系列稀釋與標準曲線</label>
+      <label class="chk"><input type="checkbox" name="cmpLim" value="extra"> 把曲線無理外推到遠高於 0.16% 的濃度，推算會不準</label>
       <label class="chk"><input type="checkbox" name="cmpLim" value="always"> 無論濃度高低，這個公式永遠精確，不需要標準曲線</label>
-      <label class="chk"><input type="checkbox" name="cmpLim" value="vol"> 即使各組總體積不同，只要代入 9.5 min 就仍然準確</label>
+      <label class="chk"><input type="checkbox" name="cmpLim" value="vol"> 即使各組總體積不同，只要代入 10 min 就仍然準確</label>
     </div>
     <div class="btnrow">
       <button type="button" class="btn" id="btnCompare">核對比較</button>
@@ -832,12 +832,12 @@ input[type=range]{width:100%;height:32px}
   <div class="sechead">
     <div class="kicker">工作紙延伸第二點 · 不是標準系列的一部分</div>
     <h1>酶濃度過高時，時間不再按反比縮短</h1>
-    <p class="lede">若酶濃度繼續升高，例如到 0.8%，按反比應把時間再減半。實際上，混合速度及取樣間隔會限制你能記錄到的最短時間。這一點是額外示範，不要把它畫進工作紙那四個標準點裏。</p>
+    <p class="lede">若酶濃度繼續升高，例如到 0.8%，按反比應把時間再按比例縮短。實際上，混合速度及取樣間隔會限制你能記錄到的最短時間。這一點是額外示範，不要把它畫進工作紙那四個標準點裏。標準系列停在 0.16%。</p>
   </div>
 
   <div class="card">
     <div class="chead"><h2>先預測，再看示範</h2><span class="badge b-amber">額外模擬 · 示例數據</span></div>
-    <p>已知線性範圍內：0.4% 約 4.75 min，0.2% 約 9.5 min。若反比仍然成立，0.8% 的完全分解時間應是多少？</p>
+    <p>已知線性範圍內，0.2% 原液本課實測約 10 min。若反比仍然成立，0.8%（原液濃度的四倍）的完全分解時間應是多少？</p>
     <div class="qblock">
       <div class="qtag">預測</div>
       <div class="qtext">0.8% 若仍按反比，t 應約為？</div>
@@ -848,10 +848,10 @@ input[type=range]{width:100%;height:32px}
     </div>
     <div id="limRunMsg" class="note" style="display:none"></div>
     <div class="chartbox" id="limChartBox"></div>
-    <p class="figcap">原創教學示意：實線為線性範圍內的反比曲線（0.05%–0.4%）；空心點為 0.8% 的記錄時間，明顯高於反比外推值。0.8% 不是標準系列的一員。</p>
+    <p class="figcap">原創教學示意：實線為線性範圍內的反比曲線（標準系列 0.04%–0.16% 一帶）；示範執行後，空心點為 0.8% 的記錄時間，明顯高於反比外推值。0.8% 不是標準系列的一員。</p>
     <div class="qblock" id="limWhyBox" style="display:none">
       <div class="qtag">解釋</div>
-      <div class="qtext">為甚麼記錄時間不再按反比縮短到 2.375 min？可多選你認為正確的原因。</div>
+      <div class="qtext">為甚麼記錄時間不再按反比縮短到預測值？可多選你認為正確的原因。</div>
       <label class="chk"><input type="checkbox" name="limWhy" value="mix"> 混合需要時間：把酶加入澱粉、混勻、放回水浴再取第一滴樣，本身已耗去一段時間</label>
       <label class="chk"><input type="checkbox" name="limWhy" value="interval"> 取樣間隔（例如每 30 秒至 1 分鐘一次）限制了終點的解析度，記錄到的終點往往比真正完成的時刻遲</label>
       <label class="chk"><input type="checkbox" name="limWhy" value="sub"> 在極高酶量下，底物可能迅速耗盡，測定方法跟不上真正的初速（可作為簡短補充，不是本課唯一解釋）</label>
@@ -869,7 +869,7 @@ input[type=range]{width:100%;height:32px}
 
   <div class="card tint">
     <div class="chead"><h2>回到總覽</h2></div>
-    <p>你已經練習了兩件主軸工作：自己由貯存液配製系列，以及用線圖內插求樣本 X。單一 0.2% 公式在線性範圍內可以作為對照，但碰上明顯偏離或酶濃度過高，就要改用標準曲線，並且不要無理外推。</p>
+    <p>你已經練習了兩件主軸工作：自己由 0.2% 原液按比例配製系列，以及用線圖內插求樣本 X。單一 0.2% 公式在線性範圍內可以作為對照，但碰上明顯偏離或酶濃度過高，就要改用標準曲線，並且不要把曲線外推到遠高於 0.16% 的範圍。</p>
     <div class="btnrow">
       <a class="btn" href="#hub">返回總覽</a>
       <a class="btn ghost" href="b002-amylase.html">對照原實驗設計版</a>
@@ -879,7 +879,7 @@ input[type=range]{width:100%;height:32px}
 
 <div class="foot">
   <p><strong>B002 測定未知濃度澱粉酶溶液的濃度 · 系列稀釋與標準曲線模擬器</strong> · 福建中學（小西灣）生物科 · 2026年12月4日（星期五）第 1、2 節</p>
-  <p>頁內貯存液與試管、水浴、滴試板顏色、標準曲線及內插示意均為<strong>原創教學示意（SVG 繪製）</strong>，不是真實實驗照片或掃描圖。所有時間（4.75、9.5、19、38、6.3、12.7、3.8 min 等）僅供課堂練習，不代表任何一次真實實驗結果。</p>
+  <p>頁內原液與試管、水浴、滴試板顏色、標準曲線及內插示意均為<strong>原創教學示意（SVG 繪製）</strong>，不是真實實驗照片或掃描圖。0.2% 原液在指定條件下約 10 min 到達終點，是本課實測數據；其餘時間（12.5、16.67、25、50、13.3、19.4 min 等，以及過高示範的記錄時間）僅供課堂練習，不代表另一次真實實驗結果。</p>
   <p>本頁不收集姓名、班別或學號；進度只保存在你目前開啟的頁面，重新載入即重設。原實驗步驟設計版見 <a href="b002-amylase.html">b002-amylase.html</a>。</p>
 </div>
 
@@ -908,6 +908,12 @@ function almost(a,b,tol){
   if(a===null || b===null || a===undefined || b===undefined) return false;
   return Math.abs(a-b) <= (tol===undefined?0.02:tol);
 }
+function showT(t){
+  if(t===null || t===undefined) return "—";
+  if(Math.abs(t-Math.round(t))<1e-9) return String(Math.round(t));
+  if(Math.abs(t*10-Math.round(t*10))<1e-8) return (Math.round(t*10)/10).toFixed(1);
+  return (Math.round(t*100)/100).toFixed(2);
+}
 function showNote(el, kind, html){
   if(!el) return;
   el.style.display="block";
@@ -915,19 +921,18 @@ function showNote(el, kind, html){
   el.innerHTML=html;
 }
 function hideNote(el){ if(el){ el.style.display="none"; el.innerHTML=""; } }
-function setOn(el, on){ if(el) el.className = el.className.replace(/ ?on\b/g,"") + (on?" on":""); }
-function hasClass(el, c){ return (" "+el.className+" ").indexOf(" "+c+" ")>=0; }
 
-var K=0.2*9.5; /* 1.9 %-min */
-var IDEAL={"0.05":38,"0.1":19,"0.2":9.5,"0.4":4.75};
-var HIGH_C=0.8, HIGH_THEORY=2.375, HIGH_OBS=3.8;
+var K=0.2*10; /* 2.0 %-min；基準為本課實測 0.2% → 10 min */
+var STOCK_T=10;
+var IDEAL={"0.04":50,"0.08":25,"0.12":K/0.12,"0.16":12.5};
+var HIGH_C=0.8, HIGH_THEORY=K/0.8, HIGH_OBS=4.0;
 var ROUTES=["hub","dilution","assay","curve","compare","limits"];
 var DONE={dilution:false,assay:false,curve:false,compare:false,limits:false};
 var ST={sample:"A"};
 
 function currentSample(){
-  if(ST.sample==="B") return {id:"B", t:12.7, c:K/12.7, show:"0.15", between:"介於 0.1% 與 0.2%"};
-  return {id:"A", t:6.3, c:K/6.3, show:"0.30", between:"介於 0.2% 與 0.4%"};
+  if(ST.sample==="B") return {id:"B", t:19.4, c:K/19.4, show:"0.103", between:"介於 0.08% 與 0.12%"};
+  return {id:"A", t:13.3, c:K/13.3, show:"0.150", between:"介於 0.12% 與 0.16%"};
 }
 
 function setDone(mod){
@@ -983,12 +988,12 @@ function route(){
 
 /* ========== Dilution ========== */
 var SRC={
-  stock:{id:"stock", name:"0.4% 澱粉酶貯存液", kind:"enz", conc:0.4, extra:"課堂加設", cls:"enz"},
+  stock:{id:"stock", name:"0.2% 澱粉酶原液", kind:"enz", conc:0.2, extra:"工作紙已提供，使用前須搖勻", cls:"enz"},
   water:{id:"water", name:"蒸餾水", kind:"water", conc:0, extra:"稀釋及對照用", cls:"water"},
   starch:{id:"starch", name:"2% 澱粉溶液", kind:"starch", conc:0, extra:"這是底物，不是酶", cls:"starch"},
   x:{id:"x", name:"樣本 X", kind:"x", conc:null, extra:"未知濃度，不要用來配標準", cls:"enz"}
 };
-var dil={selected:"stock", mode:"serial", tubes:[], nextId:1, revealed:false};
+var dil={selected:"stock", mode:"parallel", tubes:[], nextId:1, revealed:false};
 
 function toMl(vol, unit){
   var x=num(vol);
@@ -1019,7 +1024,7 @@ function tubeAsSource(t){
     id:"tube:"+t.id,
     name:"試管 "+t.id+"（標籤 "+(t.label||"未標籤")+"）",
     kind:t.kind,
-    conc:t.mixed?t.actualConc:t.actualConc,
+    conc:t.actualConc,
     extra:t.mixed?"已混勻":"未混勻",
     cls:t.kind==="enz"?"enz":(t.kind==="starch"?"starch":"water"),
     mixed:t.mixed,
@@ -1045,7 +1050,7 @@ function renderBottles(){
 function renderTubes(){
   var host=id("tubeGrid"); if(!host) return;
   var h="", i;
-  h+='<div class="tube ok"><div class="liq enz"></div><div class="tn">貯存液</div><div class="ts">0.4% · 可直接使用<br>已搖勻</div></div>';
+  h+='<div class="tube ok"><div class="liq enz"></div><div class="tn">0.2% 原液</div><div class="ts">供按比例配製系列<br>已搖勻 · 不是標準點</div></div>';
   if(dil.tubes.length===0){
     h+='<div class="tube"><div class="liq none"></div><div class="tn">尚未配製</div><div class="ts">請在上面取液加入新管</div></div>';
   }
@@ -1069,8 +1074,8 @@ function renderTubes(){
 }
 
 function updateSeriesChecklist(){
-  var targets=["0.4%","0.2%","0.1%","0.05%"];
-  var ids=["sc-04","sc-02","sc-01","sc-005"];
+  var targets=["0.16%","0.12%","0.08%","0.04%"];
+  var ids=["sc-016","sc-012","sc-008","sc-004"];
   var i;
   for(i=0;i<targets.length;i++){
     var info=seriesStatus(targets[i]);
@@ -1080,11 +1085,6 @@ function updateSeriesChecklist(){
   }
 }
 function seriesStatus(label){
-  if(label==="0.4%"){
-    var t=findLabel(label);
-    if(t) return {lab:"有自製管（貯存液亦可用）", mix:t.mixed?"已混勻":"尚未混勻", tube:t, ok:t.mixed};
-    return {lab:"可用貯存液（課堂加設）", mix:"貯存液已搖勻", ok:true, stock:true};
-  }
   var u=findLabel(label);
   if(!u) return {lab:"尚未", mix:"—", ok:false};
   return {lab:"已有標籤", mix:u.mixed?"已混勻":"尚未混勻", tube:u, ok:!!u.mixed};
@@ -1113,9 +1113,6 @@ function makeTube(){
   var flags={bad:false, starch:false, noenz:false, unitmix:false, unmixed:true, fromX:false, fromUnmixed:false};
   if(unitSrc!==unitWat && vSrc>0 && vWat>0) flags.unitmix=true;
   var kind="enz", actual=null;
-  if(src.kind==="starch" || (src.kind==="water" && vSrc>0 && (sourceOf().id==="water" || src.kind==="water") && true)){
-    /* decided below */
-  }
   if(src.kind==="starch"){
     kind="starch"; actual=0; flags.starch=true; flags.bad=true;
   } else if(src.kind==="water" || (src.conc===0 && src.kind!=="x")){
@@ -1133,7 +1130,7 @@ function makeTube(){
   if(src.unmixed){ flags.fromUnmixed=true; flags.bad=true; }
   var mixed=false;
   if(vWat===0 && src.kind==="enz" && src.conc!==null && !src.unmixed){
-    mixed=true; flags.unmixed=false; /* 只是分取已混勻的酶溶液 */
+    mixed=true; flags.unmixed=false;
   }
   var brief="取 "+fmtVol(vSrc,unitSrc)+" "+src.name+" ＋ "+fmtVol(vWat,unitWat)+" 蒸餾水";
   if(flags.unitmix) brief+="（單位不一致）";
@@ -1157,10 +1154,10 @@ function makeTube(){
   if(flags.starch) tip="注意：你取用的是澱粉溶液，不是澱粉酶。先完成配製，核對時會說明後果。";
   if(flags.noenz) tip="這一管似乎沒有取用澱粉酶。核對時會說明後果。";
   if(flags.unitmix) tip="兩個體積的單位不同（mL 與 μL），實際濃度可能與你想的差很遠。";
-  showNote(msg, flags.bad||!t.mixed?"amber":"teal", tip);
+  if(vWat===0 && src.id==="stock") tip="你只是分取了 0.2% 原液，沒有稀釋。原液不是曲線上的四個標準點之一，請按比例加水配成 0.04%–0.16%。";
+  showNote(msg, flags.bad||!t.mixed||(vWat===0 && src.id==="stock")?"amber":"teal", tip);
 }
 function fmtVol(ml, unitChosen){
-  /* display the typed unit if provided via conversion back is messy; show in mL, plus μL if <0.2 */
   if(ml===0) return "0 mL";
   if(ml<0.2) return (Math.round(ml*1000)/1000)+" mL（即 "+(Math.round(ml*1000))+" μL）";
   return (Math.round(ml*100)/100)+" mL";
@@ -1192,43 +1189,39 @@ function resetDil(){
 function checkC1V1(){
   var c2=num(id("c1v1c2").value), v2=num(id("c1v1v2").value), v1=num(id("c1v1v1").value);
   var box=id("c1v1out");
+  var c1=0.2;
   if(c2===null || v2===null || v2<=0){ showNote(box,"rose","請先填寫目標濃度 C₂ 和總體積 V₂。"); return; }
-  if(c2>0.4){ showNote(box,"rose","C₂ 高於貯存液 0.4%，不能用稀釋配成，除非另有更濃的貯存液（本課沒有）。"); return; }
+  if(c2>c1){ showNote(box,"rose","C₂ 高於原液 0.2%，不能用稀釋配成，除非另有更濃的原液（本課沒有）。"); return; }
   if(c2<0){ showNote(box,"rose","濃度不能為負。"); return; }
-  var expect=0.4>0?(c2*v2/0.4):null;
+  var expect=c2*v2/c1;
   var water=v2-expect;
   if(v1===null){
-    showNote(box,"amber","請先寫出你算出的 V₁，再核對。提示形式：V₁ ＝ C₂ × V₂ ÷ C₁。");
+    showNote(box,"amber","請先寫出你算出的 V₁，再核對。提示形式：V₁ ＝ C₂ × V₂ ÷ C₁，C₁＝0.2%。");
     return;
   }
   if(almost(v1,expect,0.06) || (expect!==0 && Math.abs(v1-expect)/expect<=0.03)){
-    showNote(box,"teal","正確。C₁＝0.4%，C₂＝"+c2+"%，V₂＝"+v2+" mL，應取貯存液 V₁ ＝ "+f2(expect)+" mL，再加蒸餾水 "+f2(water)+" mL，然後必須混勻。你可把上面的「取來源體積／蒸餾水體積」設成這兩個數值（單位 mL），來源選 0.4% 貯存液，再加入新試管。");
+    showNote(box,"teal","正確。C₁＝0.2%，C₂＝"+c2+"%，V₂＝"+v2+" mL，應取原液 V₁ ＝ "+f2(expect)+" mL，再加蒸餾水 "+f2(water)+" mL，然後必須混勻。你可把上面的「取來源體積／蒸餾水體積」設成這兩個數值（單位 mL），來源選 0.2% 原液，再加入新試管。");
   } else {
-    showNote(box,"rose","尚未相符。V₁ ＝ C₂ × V₂ ÷ C₁ ＝ "+c2+" × "+v2+" ÷ 0.4 ＝ "+f2(expect)+" mL，蒸餾水應為 "+f2(water)+" mL。請檢查有沒有把 C₁、C₂ 寫反，或忘記單位是 mL。");
+    showNote(box,"rose","尚未相符。V₁ ＝ C₂ × V₂ ÷ C₁ ＝ "+c2+" × "+v2+" ÷ 0.2 ＝ "+f2(expect)+" mL，蒸餾水應為 "+f2(water)+" mL。請檢查有沒有把 C₁、C₂ 寫反，或忘記單位是 mL。");
   }
 }
 
 function targetConc(label){
-  if(label==="0.4%") return 0.4;
-  if(label==="0.2%") return 0.2;
-  if(label==="0.1%") return 0.1;
-  if(label==="0.05%") return 0.05;
+  if(label==="0.16%") return 0.16;
+  if(label==="0.12%") return 0.12;
+  if(label==="0.08%") return 0.08;
+  if(label==="0.04%") return 0.04;
   return null;
 }
 function checkSeries(){
   var body=id("dilRevealBody"), wrap=id("dilReveal");
   var lines=[], okCount=0, i;
-  var targets=["0.4%","0.2%","0.1%","0.05%"];
+  var targets=["0.16%","0.12%","0.08%","0.04%"];
   for(i=0;i<targets.length;i++){
     var lab=targets[i], want=targetConc(lab);
-    if(lab==="0.4%" && !findLabel(lab)){
-      lines.push("<p><strong>0.4%</strong>：可用課堂加設的貯存液，不必再稀釋。這點已齊備。</p>");
-      okCount++;
-      continue;
-    }
     var t=findLabel(lab);
     if(!t){
-      lines.push("<p><strong>"+lab+"</strong>：還沒有標了這個濃度的試管。</p>");
+      lines.push("<p><strong>"+lab+"</strong>：還沒有標了這個濃度的試管。四個標準點都必須由 0.2% 原液稀釋而成。</p>");
       continue;
     }
     if(!t.mixed){
@@ -1244,38 +1237,38 @@ function checkSeries(){
       continue;
     }
     if(t.flags.fromX){
-      lines.push("<p><strong>"+lab+"</strong>：你用了未知的樣本 X 來配「標準」。標準系列必須來自已知濃度的貯存液，否則曲線沒有已知的橫軸位置。</p>");
+      lines.push("<p><strong>"+lab+"</strong>：你用了未知的樣本 X 來配「標準」。標準系列必須來自已知濃度的 0.2% 原液，否則曲線沒有已知的橫軸位置。</p>");
       continue;
     }
     if(t.actualConc===null){
       lines.push("<p><strong>"+lab+"</strong>：無法確定實際濃度。</p>");
       continue;
     }
-    if(almost(t.actualConc,want,0.008) || Math.abs(t.actualConc-want)/want<=0.06){
+    if(almost(t.actualConc,want,0.006) || Math.abs(t.actualConc-want)/want<=0.06){
       lines.push("<p><strong>"+lab+"</strong>：標籤與實際濃度相符（約 "+concText(t.actualConc)+"）。</p>");
       okCount++;
     } else {
-      lines.push("<p><strong>"+lab+"</strong>：標籤是 "+lab+"，但按取液量推算，實際濃度約為 <strong>"+concText(t.actualConc)+"</strong>。若仍把它當 "+lab+" 使用，標準點會畫錯位置，內插也不準。常見原因：用錯原液、倍比時體積不相等，或 mL／μL 單位混亂。</p>");
+      lines.push("<p><strong>"+lab+"</strong>：標籤是 "+lab+"，但按取液量推算，實際濃度約為 <strong>"+concText(t.actualConc)+"</strong>。若仍把它當 "+lab+" 使用，標準點會畫錯位置，內插也不準。常見原因：用錯原液、體積比例不對，把稀釋管當作 0.2% 再去配，或 mL／μL 單位混亂。</p>");
     }
   }
-  var extras="<h3>建議主路徑（連續倍比稀釋）</h3>";
+  var extras="<h3>建議配方（由同一 0.2% 原液平行配製，各 10 mL）</h3>";
   extras+="<ol class='stepsol'>";
-  extras+="<li>0.4%：直接使用貯存液（課堂加設）。</li>";
-  extras+="<li>取 1 體積 0.4% ＋ 1 體積蒸餾水，混勻，得 0.2%（例如 5 mL ＋ 5 mL）。</li>";
-  extras+="<li>取 1 體積剛配好的 0.2% ＋ 1 體積蒸餾水，混勻，得 0.1%。</li>";
-  extras+="<li>再同樣由 0.1% 配成 0.05%。</li>";
+  extras+="<li>0.16%（4/5）：8 mL 0.2% 原液 ＋ 2 mL 蒸餾水，混勻。</li>";
+  extras+="<li>0.12%（3/5）：6 mL 0.2% 原液 ＋ 4 mL 蒸餾水，混勻。</li>";
+  extras+="<li>0.08%（2/5）：4 mL 0.2% 原液 ＋ 6 mL 蒸餾水，混勻。</li>";
+  extras+="<li>0.04%（1/5）：2 mL 0.2% 原液 ＋ 8 mL 蒸餾水，混勻。</li>";
   extras+="</ol>";
-  extras+="<p>也可用 C₁V₁＝C₂V₂ 由 0.4% 一次配成某一濃度，例如配 10 mL 0.1%：V₁＝0.1×10÷0.4＝2.5 mL 貯存液 ＋ 7.5 mL 蒸餾水，然後混勻。</p>";
+  extras+="<p>核對：C₁V₁＝C₂V₂，C₁＝0.2%。例如配 10 mL 0.16%：V₁＝0.16×10÷0.2＝8 mL。不要做 2 倍連續倍比稀釋，也不要把未經稀釋的 0.2% 原液當作曲線上的一個標準點。</p>";
   extras+="<h3>測定時不要改動反應總體積</h3>";
-  extras+="<p>系列配好後，測定仍是 <strong>10 mL 2% 澱粉 ＋ 1 mL 已稀釋酶溶液</strong>，總體積 11 mL。不要為了「酶少了」而把酶體積加大，否則底物相對濃度與總體積都變了，不能跟 9.5 min 的錨點比較。</p>";
+  extras+="<p>系列配好後，測定仍是 <strong>10 mL 2% 澱粉 ＋ 1 mL 已稀釋酶溶液</strong>，總體積 11 mL。不要為了「酶少了」而把酶體積加大，否則底物相對濃度與總體積都變了，不能跟 10 min 的原液基準比較。</p>";
   extras+="<h3>6 支試管要分批</h3>";
-  extras+="<p>預熱時每組兩支管，每批最多 3 組。例如第 1 批：0.4%、0.2%、對照組；第 2 批：0.1%、樣本 X、0.05%。較濃的標準較早到達終點，宜較早開始取樣。</p>";
+  extras+="<p>預熱時每組兩支管，每批最多 3 組。例如第 1 批：0.16%、0.12%、對照組；第 2 批：0.08%、樣本 X、0.04%。較濃的標準較早到達終點，宜較早開始取樣。</p>";
   var head="";
   if(okCount===4){
     head='<div class="note teal">四個標準濃度都齊備而且合理。可以進入「測定時間」，用同一套條件量度完全分解時間。</div>';
     setDone("dilution");
   } else {
-    head='<div class="note amber">目前有 '+okCount+'／4 個標準點可用。請按下面的說明補正，或重設後沿建議的倍比路徑再做一次。</div>';
+    head='<div class="note amber">目前有 '+okCount+'／4 個標準點可用。請按下面的說明補正，或重設後沿建議配方再做一次。</div>';
   }
   body.innerHTML=head+lines.join("")+extras;
   wrap.className="reveal on";
@@ -1292,11 +1285,12 @@ var assay={
   endpt:"ok",
   ctrl:"ok",
   shake:false,
-  pick:"0.4",
+  pick:"0.16",
   t:0,
   recorded:{},
   revealed:false
 };
+var ASSAY_MAX=55;
 
 function optHtml(name,val,text){
   return '<label class="opt"><input type="radio" name="'+name+'" value="'+esc(val)+'"><span>'+esc(text)+'</span></label>';
@@ -1319,7 +1313,7 @@ function renderAssayOptions(){
   id("aqCtrl").innerHTML=
     optHtml("aqCtrl","ok","設對照組：1 mL 蒸餾水代替酶溶液，總體積仍為 11 mL")+
     optHtml("aqCtrl","none","不設對照組，只做標準系列和樣本 X")+
-    optHtml("aqCtrl","std","用 0.2% 標準組當作對照組");
+    optHtml("aqCtrl","std","用 0.2% 原液當作對照組");
   bindOptList("aqVolume"); bindOptList("aqPreheat"); bindOptList("aqEnd"); bindOptList("aqCtrl");
 }
 function bindOptList(hostId){
@@ -1369,9 +1363,8 @@ function lockAssay(){
 }
 
 function trueTime(code){
-  /* returns numeric minutes, or null if no endpoint */
   if(code==="ctrl"){
-    if(assay.endpt!=="ok") return 12; /* 誤判對照組也「完成」 */
+    if(assay.endpt!=="ok") return 12;
     return null;
   }
   var t;
@@ -1379,14 +1372,13 @@ function trueTime(code){
   else if(IDEAL[code]!==undefined) t=IDEAL[code];
   else t=null;
   if(t===null) return null;
-  /* dilution error: if student prepared a wrong tube for this label, override */
   if(code!=="X" && code!=="ctrl"){
     var lab=code+"%", tube=findLabel(lab);
     if(tube){
       if(!tube.mixed){ t = t*1.15; }
       if(tube.flags.starch || tube.actualConc===0){ return (assay.endpt==="ok"?null:12); }
-      if(tube.actualConc!==null && !almost(tube.actualConc, parseFloat(code), 0.008)){
-        t = K/tube.actualConc;
+      if(tube.actualConc!==null && !almost(tube.actualConc, parseFloat(code), 0.006)){
+        if(tube.actualConc>0) t = K/tube.actualConc;
       }
     }
   }
@@ -1395,7 +1387,7 @@ function trueTime(code){
   if(assay.volume==="enz2" || assay.volume==="swap") t=t*0.55;
   if(assay.volume==="st5") t=t*0.7;
   if(assay.endpt==="pale" || assay.endpt==="any") t=Math.max(0.5, t-0.9);
-  if(code==="X" && !assay.shake){ /* 示意：未搖勻令終點偏移 */
+  if(code==="X" && !assay.shake){
     t = t*(ST.sample==="B"?1.22:0.84);
   }
   return r2(t);
@@ -1419,18 +1411,18 @@ function groupTitle(code){
 }
 
 function plateTimes(code){
-  if(code==="0.4") return [3,3.5,4,4.5,5,5.5,6,7];
-  if(code==="0.2") return [5,6,7,8,9,9.5,10,11];
-  if(code==="0.1") return [10,12,14,16,18,19,20,22];
-  if(code==="0.05") return [20,25,28,30,32,35,38,40];
-  if(code==="ctrl") return [5,10,15,20,25,30,35,40];
-  if(currentSample().id==="B") return [8,10,11,12,12.5,13,14,16];
-  return [4,5,5.5,6,6.5,7,8,9];
+  if(code==="0.16") return [8,10,11,12,12.5,13,14,15];
+  if(code==="0.12") return [12,14,15,16,16.5,17,18,20];
+  if(code==="0.08") return [18,20,22,24,25,26,28,30];
+  if(code==="0.04") return [30,35,40,45,48,50,52,55];
+  if(code==="ctrl") return [5,10,15,20,25,30,40,50];
+  if(currentSample().id==="B") return [14,16,18,19,19.4,20,22,24];
+  return [10,11,12,13,13.5,14,15,16];
 }
 
 function renderBath(preheat){
   var host=id("bathSvg"); if(!host) return;
-  var code=id("assayPick")?id("assayPick").value:"0.4";
+  var code=id("assayPick")?id("assayPick").value:"0.16";
   var enzLab=(code==="ctrl")?"蒸餾水 1 mL":(code==="X")?"樣本 X 1 mL":("酶 "+code+"% 1 mL");
   var temp=(assay.locked && (assay.preheat==="none") && preheat)?"約室溫":"40℃";
   var h='<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="水浴示意">';
@@ -1459,8 +1451,8 @@ function drawTube(x,y,label,fill){
 }
 
 function setAssayTime(t){
-  assay.t=clamp(t,0,40);
-  assay.pick=id("assayPick")?id("assayPick").value:"0.4";
+  assay.t=clamp(t,0,ASSAY_MAX);
+  assay.pick=id("assayPick")?id("assayPick").value:"0.16";
   var clock=id("assayClock");
   if(clock) clock.innerHTML=f1(assay.t)+' <sm>min</sm>';
   var rng=id("assayRange");
@@ -1476,9 +1468,9 @@ function setAssayTime(t){
   if(st) st.innerHTML=col.label;
   if(note){
     var extra="";
-    if(assay.t>=30 && assay.t<40) extra="已到工作紙約 30 分鐘實驗時段。";
-    if(assay.pick==="0.05" && assay.locked && trueTime("0.05")!==null && assay.t<trueTime("0.05") && assay.t>=30){
-      extra="0.05% 在課堂時段結束時可能仍未到終點（示例約 38 min）。不要虛構終點。";
+    if(assay.t>=30 && assay.t<ASSAY_MAX) extra="已到工作紙約 30 分鐘實驗時段。";
+    if(assay.pick==="0.04" && assay.locked && trueTime("0.04")!==null && assay.t<trueTime("0.04") && assay.t>=30){
+      extra="0.04% 在課堂時段結束時可能仍未到終點（示例約 50 min）。不要虛構終點。";
     }
     note.innerHTML=col.label+(extra?(" "+extra):"")+" 藍黑色表示仍有澱粉；不再呈藍黑色表示已達終點（碘液本身呈黃褐色）。";
   }
@@ -1486,7 +1478,7 @@ function setAssayTime(t){
   renderPlate();
   var hint=id("assayTickHint");
   if(hint && assay.locked){
-    hint.innerHTML="取樣間隔可按「下一步取樣」推進。較濃標準宜較早開始取樣；0.05% 可能超過 30 min。滑桿也可直接拖動。";
+    hint.innerHTML="取樣間隔可按「下一步取樣」推進。較濃標準宜較早開始取樣；0.04% 可能超過 30 min。滑桿也可直接拖動。";
   }
 }
 function renderPlate(){
@@ -1504,8 +1496,8 @@ function renderPlate(){
 function assayStep(){
   if(!assay.locked) return;
   var dt=0.5;
-  if(assay.pick==="0.1" || assay.pick==="0.05" || assay.pick==="ctrl") dt=1;
-  if(assay.pick==="0.05" && assay.t>=20) dt=2;
+  if(assay.pick==="0.08" || assay.pick==="0.04" || assay.pick==="ctrl") dt=1;
+  if(assay.pick==="0.04" && assay.t>=30) dt=2;
   setAssayTime(assay.t+dt);
 }
 function recordEndpoint(){
@@ -1522,10 +1514,10 @@ function recordEndpoint(){
   showNote(id("assayLockMsg"),"teal","已把 "+groupTitle(code)+" 在 t＝"+f1(assay.t)+" min 的判定記入記錄表。若顏色仍是藍黑色，這可能還不是終點。");
 }
 function recordId(code){
-  if(code==="0.4") return "rec-04";
-  if(code==="0.2") return "rec-02";
-  if(code==="0.1") return "rec-01";
-  if(code==="0.05") return "rec-005";
+  if(code==="0.16") return "rec-016";
+  if(code==="0.12") return "rec-012";
+  if(code==="0.08") return "rec-008";
+  if(code==="0.04") return "rec-004";
   if(code==="X") return "rec-x";
   return "rec-ctrl";
 }
@@ -1534,34 +1526,35 @@ function fillIdealTimes(){
     showNote(id("assayLockMsg"),"amber","請先按「核對示例時間」，才把正確操作下的示例值填入記錄表。");
     return;
   }
-  id("rec-04").value="4.75";
-  id("rec-02").value="9.5";
-  id("rec-01").value="19";
-  id("rec-005").value="38";
+  id("rec-016").value=showT(IDEAL["0.16"]);
+  id("rec-012").value=showT(IDEAL["0.12"]);
+  id("rec-008").value=showT(IDEAL["0.08"]);
+  id("rec-004").value=showT(IDEAL["0.04"]);
   id("rec-x").value=String(currentSample().t);
   id("rec-ctrl").value="30 min 內未到終點";
   pushTimesToCurve();
-  showNote(id("assayLockMsg"),"teal","已填入正確操作下的課堂示例時間，並可帶到標準曲線頁。這些不是該班當次真實結果。");
+  showNote(id("assayLockMsg"),"teal","已填入由基準點反比推得的課堂示例時間，並可帶到標準曲線頁。這些不是該班當次另一次實測結果。");
 }
 function pushTimesToCurve(){
-  if(id("t-04")) id("t-04").value=id("rec-04").value;
-  if(id("t-02")) id("t-02").value=id("rec-02").value;
-  if(id("t-01")) id("t-01").value=id("rec-01").value;
-  if(id("t-005")) id("t-005").value=id("rec-005").value;
+  if(id("t-016")) id("t-016").value=id("rec-016").value;
+  if(id("t-012")) id("t-012").value=id("rec-012").value;
+  if(id("t-008")) id("t-008").value=id("rec-008").value;
+  if(id("t-004")) id("t-004").value=id("rec-004").value;
   updateInvCells();
 }
 function checkAssay(){
   var wrap=id("assayReveal"), body=id("assayRevealBody");
   var samp=currentSample();
+  var t16=IDEAL["0.16"], t12=IDEAL["0.12"], t08=IDEAL["0.08"], t04=IDEAL["0.04"];
   var rows=[
     {lab:"對照組（蒸餾水）", rec:id("rec-ctrl").value, ideal:"實驗時段內一直呈藍黑色，未到終點", ok:isCtrlOk(id("rec-ctrl").value)},
-    {lab:"0.4%", rec:id("rec-04").value, ideal:"4.75 min", ok:numClose(id("rec-04").value,4.75,0.3)},
-    {lab:"0.2%", rec:id("rec-02").value, ideal:"9.5 min", ok:numClose(id("rec-02").value,9.5,0.4)},
-    {lab:"0.1%", rec:id("rec-01").value, ideal:"19 min", ok:numClose(id("rec-01").value,19,0.8)},
-    {lab:"0.05%", rec:id("rec-005").value, ideal:"38 min（30 min 時仍未到終點）", ok:is005Ok(id("rec-005").value)},
+    {lab:"0.16%", rec:id("rec-016").value, ideal:showT(t16)+" min", ok:numClose(id("rec-016").value,t16,0.4)},
+    {lab:"0.12%", rec:id("rec-012").value, ideal:showT(t12)+" min", ok:numClose(id("rec-012").value,t12,0.5)},
+    {lab:"0.08%", rec:id("rec-008").value, ideal:showT(t08)+" min", ok:numClose(id("rec-008").value,t08,0.8)},
+    {lab:"0.04%", rec:id("rec-004").value, ideal:showT(t04)+" min（30 min 時仍未到終點）", ok:is004Ok(id("rec-004").value)},
     {lab:"樣本 X（示例 "+samp.id+"）", rec:id("rec-x").value, ideal:samp.t+" min", ok:numClose(id("rec-x").value,samp.t,0.4)}
   ];
-  var h="<p>下列是<strong>正確操作、線性範圍內</strong>的課堂示例時間，由 0.2% → 9.5 min 按反比推得，不是該班當次真實結果。</p>";
+  var h="<p>0.2% 原液在本課指定條件下約 <strong>10 min</strong> 到達終點，這是<strong>本課實測數據</strong>。下列四個稀釋標準及樣本 X 的時間，是由這個基準點按反比（t ＝ 2.0 ÷ c）推得的<strong>課堂示例</strong>，不是該班當次另一次實測。</p>";
   h+='<div class="tblwrap"><table><thead><tr><th>組別</th><th>你的記錄</th><th>示例時間</th><th>對照</th></tr></thead><tbody>';
   var i;
   for(i=0;i<rows.length;i++){
@@ -1569,12 +1562,12 @@ function checkAssay(){
   }
   h+="</tbody></table></div>";
   h+="<h3>為甚麼是這些數字？</h3>";
-  h+="<p>酶濃度加倍，完全分解時間約減半：0.4% 為 9.5÷2＝4.75 min；0.1% 為 9.5×2＝19 min；0.05% 為 9.5×4＝38 min。樣本 X 示例 A 為 6.3 min，示例 B 為 12.7 min。</p>";
-  h+="<h3>設計討論：0.05% 與 30 分鐘時段</h3>";
-  h+="<p>0.05% 需要約 38 min，已超出工作紙約 30 分鐘的實驗時段。課堂上這個最稀的標準點可能來不及看到終點，圖上就少了一個點。取樣安排也要配合：較濃標準較早到達終點（0.4% 約 4.75 min，不宜仍等到第 5 分鐘才取第一次樣），較稀標準則要預留足夠時間。</p>";
+  h+="<p>t ＝ 2.0 ÷ c。因此 0.16% 為 2.0÷0.16＝12.5 min；0.12% 為 2.0÷0.12＝16.67 min（精確值為 16.666… min）；0.08% 為 25 min；0.04% 為 50 min。樣本 X 示例 A 為 13.3 min，示例 B 為 19.4 min。</p>";
+  h+="<h3>設計討論：0.04% 與 30 分鐘時段</h3>";
+  h+="<p>0.04% 需要約 50 min，已超出工作紙約 30 分鐘的實驗時段。課堂上這個最稀的標準點可能來不及看到終點，圖上就少了一個點。取樣安排也要配合：較濃標準較早到達終點（0.16% 約 12.5 min），較稀標準則要預留足夠時間。</p>";
   if(assay.volume!=="ok" || assay.preheat!=="ok" || assay.endpt!=="ok" || assay.ctrl!=="ok" || !assay.shake){
     h+="<h3>你這次鎖定的條件所產生的後果</h3><ul>";
-    if(assay.volume!=="ok") h+="<li>體積或總體積與標準條件不同，底物相對濃度改變，不能直接用 9.5 min 錨點或這條標準曲線比較。</li>";
+    if(assay.volume!=="ok") h+="<li>體積或總體積與標準條件不同，底物相對濃度改變，不能直接用 10 min 原液基準或這條標準曲線比較。</li>";
     if(assay.preheat==="none" || assay.preheat==="starchonly") h+="<li>未分開預熱到 40℃ 才混合，混合時溫度偏低，反應時間會偏長。</li>";
     if(assay.preheat==="together") h+="<li>預熱時已混合，計時起點與真正反應起點不一致，記錄時間會偏短，甚至第一次取樣前已過終點。</li>";
     if(assay.endpt!=="ok") h+="<li>以「變淺」或不統一的標準作終點，各組判定不一，對照組也可能被誤判為已完成。</li>";
@@ -1594,14 +1587,14 @@ function numClose(val, target, tol){
 }
 function isCtrlOk(val){
   if(!val) return false;
-  if(num(val)!==null && num(val)<25) return false;
-  return true; /* 空白不算；寫未到終點或大數字算合理 */
+  if(num(val)!==null && num(val)<40) return false;
+  return true;
 }
-function is005Ok(val){
+function is004Ok(val){
   if(!val) return false;
   var n=num(val);
-  if(n===null) return true; /* 文字如「30 min 仍未到終點」 */
-  return n>=29; /* 30 或 38 都可以討論 */
+  if(n===null) return true;
+  return n>=29;
 }
 
 /* ========== Charts ========== */
@@ -1616,10 +1609,10 @@ var curve={
 
 function readStdTimes(){
   return [
-    {c:0.05, t:num(id("t-005").value), key:"005"},
-    {c:0.1, t:num(id("t-01").value), key:"01"},
-    {c:0.2, t:num(id("t-02").value), key:"02"},
-    {c:0.4, t:num(id("t-04").value), key:"04"}
+    {c:0.04, t:num(id("t-004").value), key:"004"},
+    {c:0.08, t:num(id("t-008").value), key:"008"},
+    {c:0.12, t:num(id("t-012").value), key:"012"},
+    {c:0.16, t:num(id("t-016").value), key:"016"}
   ];
 }
 function updateInvCells(){
@@ -1664,46 +1657,55 @@ function chartFrame(w,h,padL,padR,padT,padB, xmin,xmax, ymin,ymax, xlab, ylab, y
   return {s:s, X:X, Y:Y, close:function(){ return "</svg>"; }};
 }
 
+function pointsLookIdeal(pts){
+  var i;
+  for(i=0;i<pts.length;i++){
+    var want=K/pts[i].c;
+    if(pts[i].t===null || Math.abs(pts[i].t-want)>0.15) return false;
+  }
+  return pts.length>=4;
+}
+
 function drawTimeChart(opts){
   opts=opts||{};
   var pts=opts.points||[];
-  var w=640,h=400,padL=58,padR=20,padT=28,padB=52;
-  var xmax=0.5, ymax=42;
-  var xt=[{v:0,lab:"0"},{v:0.05,lab:"0.05"},{v:0.1,lab:"0.1"},{v:0.15,lab:"0.15"},{v:0.2,lab:"0.2"},{v:0.3,lab:"0.3"},{v:0.4,lab:"0.4"},{v:0.5,lab:"0.5"}];
-  var yt=[{v:0,lab:"0"},{v:5,lab:"5"},{v:9.5,lab:"9.5"},{v:15,lab:"15"},{v:19,lab:"19"},{v:25,lab:"25"},{v:30,lab:"30"},{v:38,lab:"38"},{v:42,lab:"42"}];
+  var w=640,h=420,padL=58,padR=20,padT=28,padB=52;
+  var xmax=0.20, ymax=55;
+  var xt=[{v:0,lab:"0"},{v:0.04,lab:"0.04"},{v:0.08,lab:"0.08"},{v:0.12,lab:"0.12"},{v:0.16,lab:"0.16"},{v:0.20,lab:"0.20"}];
+  var yt=[{v:0,lab:"0"},{v:10,lab:"10"},{v:20,lab:"20"},{v:25,lab:"25"},{v:30,lab:"30"},{v:40,lab:"40"},{v:50,lab:"50"}];
   var fr=chartFrame(w,h,padL,padR,padT,padB,0,xmax,0,ymax,"酶濃度 / %","時間 / min",yt,xt);
   var s=fr.s, i;
-  /* class-period marker */
   var y30=fr.Y(30);
   s+='<line x1="'+fr.X(0)+'" y1="'+y30+'" x2="'+fr.X(xmax)+'" y2="'+y30+'" stroke="#c9a227" stroke-width="1" stroke-dasharray="5 4"/>';
   s+=svgText(fr.X(xmax)-4, y30-6, "約 30 min 課堂時段", "end", "#8a6a2c", 11);
-  if(opts.drawIdeal || opts.drawCurve){
-    var d="", c;
-    for(c=0.045;c<=0.48;c+=0.005){
-      var tt=K/c;
-      if(tt>ymax) continue;
-      d+=(d===""?"M":"L")+fr.X(c)+" "+fr.Y(tt)+" ";
-    }
-    if(opts.drawCurve){
-      /* if student points differ from ideal, build curve via 1/t linear interpolation between points */
-      var used=studentCurvePath(fr, pts, xmax, ymax);
-      if(used) d=used;
+  if(opts.drawCurve){
+    var d="", c, used=null;
+    if(!pointsLookIdeal(pts)) used=studentCurvePath(fr, pts, xmax, ymax);
+    if(used) d=used;
+    else {
+      for(c=0.037;c<=0.20+0.0001;c+=0.003){
+        var tt=K/c;
+        if(tt>ymax) continue;
+        d+=(d===""?"M":"L")+fr.X(c)+" "+fr.Y(tt)+" ";
+      }
     }
     s+='<path d="'+d+'" fill="none" stroke="#0c5f52" stroke-width="2.2"/>';
+    /* 原液實測基準：不是四個標準點 */
+    s+='<rect x="'+(fr.X(0.2)-4)+'" y="'+(fr.Y(STOCK_T)-4)+'" width="8" height="8" fill="#fff" stroke="#8a6a2c" stroke-width="1.6"/>';
+    s+=svgText(fr.X(0.2)-8, fr.Y(STOCK_T)-10, "0.2% 原液實測 10 min（非標準點）", "end", "#8a6a2c", 10);
   }
   for(i=0;i<pts.length;i++){
     if(pts[i].t===null) continue;
     var x=fr.X(pts[i].c), y=fr.Y(Math.min(pts[i].t,ymax));
     s+='<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="#0c5f52" stroke="#fff" stroke-width="1.5"/>';
-    s+=svgText(x+8, y-8, pts[i].c+"%， "+pts[i].t+" min", "start", "#0c5f52", 11);
+    s+=svgText(x+8, y-8, pts[i].c+"%， "+showT(pts[i].t)+" min", "start", "#0c5f52", 11);
   }
   if(opts.interpStep>=1){
     var tx=currentSample().t, yx=fr.Y(tx);
     s+='<circle cx="'+fr.X(0)+'" cy="'+yx+'" r="5" fill="#9a3b2f"/>';
     s+=svgText(fr.X(0)+8, yx-8, "樣本 X：t＝"+tx+" min", "start", "#9a3b2f", 12, "700");
     if(opts.interpStep>=2){
-      var cx=opts.hideAnswer?guessIntersectC(pts,tx):currentSample().c;
-      if(opts.hideAnswer) cx=guessIntersectC(pts,tx);
+      var cx=guessIntersectC(pts,tx);
       var xi=fr.X(cx);
       s+='<line x1="'+fr.X(0)+'" y1="'+yx+'" x2="'+xi+'" y2="'+yx+'" stroke="#9a3b2f" stroke-width="1.6" stroke-dasharray="6 4"/>';
       s+='<circle cx="'+xi+'" cy="'+yx+'" r="6" fill="none" stroke="#9a3b2f" stroke-width="2"/>';
@@ -1726,10 +1728,9 @@ function studentCurvePath(fr, pts, xmax, ymax){
   for(i=0;i<pts.length;i++){ if(pts[i].t!==null && pts[i].t>0) good.push(pts[i]); }
   if(good.length<2) return "";
   good.sort(function(a,b){ return a.c-b.c; });
-  /* use inverse-time piecewise linear in c, which becomes a hyperbolic-looking curve */
   var d="", c, first=true;
-  var c0=Math.max(0.045, good[0].c*0.9), c1=Math.min(0.48, good[good.length-1].c*1.08);
-  for(c=c0;c<=c1+0.0001;c+=0.005){
+  var c0=Math.max(0.035, good[0].c*0.9), c1=Math.min(0.20, good[good.length-1].c*1.08);
+  for(c=c0;c<=c1+0.0001;c+=0.003){
     var tt=interpT(good,c);
     if(tt===null || tt>ymax || tt<0) continue;
     d+=(first?"M":"L")+fr.X(c)+" "+fr.Y(tt)+" ";
@@ -1738,7 +1739,6 @@ function studentCurvePath(fr, pts, xmax, ymax){
   return d;
 }
 function interpT(pts, c){
-  /* piecewise linear in 1/t vs c; fall back to linear in t */
   if(!pts || !pts.length) return K/c;
   if(c<=pts[0].c){
     return interpSeg(pts[0], pts.length>1?pts[1]:null, c);
@@ -1762,11 +1762,9 @@ function guessIntersectC(pts, t){
   for(i=0;i<pts.length;i++){ if(pts[i].t!==null && pts[i].t>0) good.push(pts[i]); }
   if(good.length>=2){
     good.sort(function(a,b){ return a.c-b.c; });
-    /* invert interpT by bisection */
-    var lo=0.04, hi=0.5, k;
+    var lo=0.03, hi=0.20, k;
     for(k=0;k<24;k++){
       var mid=(lo+hi)/2, tm=interpT(good,mid);
-      /* t decreases as c increases */
       if(tm>t) lo=mid; else hi=mid;
     }
     return (lo+hi)/2;
@@ -1778,13 +1776,12 @@ function drawRateChart(opts){
   opts=opts||{};
   var pts=opts.points||[];
   var w=640,h=380,padL=58,padR=20,padT=28,padB=52;
-  var xmax=0.5, ymax=0.28;
-  var xt=[{v:0,lab:"0"},{v:0.05,lab:"0.05"},{v:0.1,lab:"0.1"},{v:0.2,lab:"0.2"},{v:0.3,lab:"0.3"},{v:0.4,lab:"0.4"},{v:0.5,lab:"0.5"}];
-  var yt=[{v:0,lab:"0"},{v:0.05,lab:"0.05"},{v:0.105,lab:"0.105"},{v:0.15,lab:"0.15"},{v:0.21,lab:"0.21"},{v:0.28,lab:"0.28"}];
+  var xmax=0.20, ymax=0.12;
+  var xt=[{v:0,lab:"0"},{v:0.04,lab:"0.04"},{v:0.08,lab:"0.08"},{v:0.12,lab:"0.12"},{v:0.16,lab:"0.16"},{v:0.20,lab:"0.20"}];
+  var yt=[{v:0,lab:"0"},{v:0.02,lab:"0.02"},{v:0.04,lab:"0.04"},{v:0.06,lab:"0.06"},{v:0.08,lab:"0.08"},{v:0.10,lab:"0.10"},{v:0.12,lab:"0.12"}];
   var fr=chartFrame(w,h,padL,padR,padT,padB,0,xmax,0,ymax,"酶濃度 / %","1／t　/ min⁻¹",yt,xt);
   var s=fr.s, i;
   if(opts.drawLine){
-    /* line through origin using 0.2% point if present, else ideal slope 1/1.9 */
     var slope=1/K, good=[];
     for(i=0;i<pts.length;i++){ if(pts[i].t!==null && pts[i].t>0) good.push(pts[i]); }
     if(good.length>=2){
@@ -1805,11 +1802,7 @@ function drawRateChart(opts){
   if(opts.showInterp){
     var tx=currentSample().t, u=1/tx, yu=fr.Y(u);
     var cx=currentSample().c;
-    if(opts.slope) cx=u/opts.slope;
-    else if(opts._slope) cx=u/opts._slope;
-    if(!opts.showC) {
-      /* still need a position for the lines; use computed but hide label */
-    }
+    if(opts._slope) cx=u/opts._slope;
     var xi=fr.X(cx);
     s+='<circle cx="'+fr.X(0)+'" cy="'+yu+'" r="5" fill="#9a3b2f"/>';
     s+=svgText(fr.X(0)+8, yu-8, "1／t ＝ "+f3(u)+" min⁻¹", "start", "#9a3b2f", 12, "700");
@@ -1840,8 +1833,7 @@ function refreshTimeChart(){
     points:pts,
     drawCurve:curve.curveDrawn,
     interpStep:curve.interpStep,
-    showC:curve.interpRevealed,
-    hideAnswer:!curve.interpRevealed
+    showC:curve.interpRevealed
   });
 }
 function refreshRateChart(){
@@ -1859,7 +1851,7 @@ function refreshRateChart(){
 function plotPoints(){
   var msg=id("plotMsg");
   if(!allTimesIn()){
-    showNote(msg,"rose","請先為 0.05%、0.1%、0.2%、0.4% 四個標準點都填上完全分解時間，才繪到圖上。可從測定記錄帶入，或自行填寫。");
+    showNote(msg,"rose","請先為 0.04%、0.08%、0.12%、0.16% 四個標準點都填上完全分解時間，才繪到圖上。可從測定記錄帶入，或自行填寫。");
     return;
   }
   updateInvCells();
@@ -1873,7 +1865,7 @@ function plotPoints(){
   var box=id("interpGuessBox"); if(box) box.style.display="none";
   var rev=id("interpReveal"); if(rev) rev.className="reveal";
   refreshTimeChart();
-  showNote(msg,"teal","四個標準點已繪上。請觀察點的分布，再按「連成線圖」。0.05% 若是 38 min，會接近或高於 30 min 課堂時段線。");
+  showNote(msg,"teal","四個標準點已繪上。請觀察點的分布，再按「連成線圖」。0.04% 若是 50 min，會高於 30 min 課堂時段線。");
   updateInterpPills();
   updateScore();
 }
@@ -1886,7 +1878,7 @@ function drawCurveLine(){
   id("btnInterpNext").disabled=false;
   id("btnInterpReset").disabled=false;
   refreshTimeChart();
-  showNote(id("plotMsg"),"teal","已連成「酶濃度—完全分解時間」曲線。這是雙曲線形，不穿過原點。接下來用樣本 X 的時間做內插：先標出 t，再畫水平線至曲線，然後垂直讀出濃度。");
+  showNote(id("plotMsg"),"teal","已連成「酶濃度—完全分解時間」曲線。這是雙曲線形，不穿過原點。0.2% 原液實測 10 min 以方塊標出，作為基準，但不是四個標準點之一。接下來用樣本 X 的時間做內插。");
   updateInterpPills();
 }
 function updateInterpPills(){
@@ -1945,11 +1937,11 @@ function checkInterp(){
     return;
   }
   var exact=samp.c;
-  var ok=Math.abs(g-exact)<=0.04 || Math.abs(g-parseFloat(samp.show))<=0.04;
+  var ok=Math.abs(g-exact)<=0.015 || Math.abs(g-parseFloat(samp.show))<=0.015;
   var h="";
-  if(ok) h+='<div class="note teal">你的讀數 '+f2(g)+"% 與內插結果大致相符。</div>";
-  else h+='<div class="note amber">你的讀數是 '+f2(g)+"%。請再看水平線與垂直線的交點落在橫軸何處；允許有小量讀圖誤差。</div>";
-  h+="<p>課堂示例 "+samp.id+" 的 t ＝ "+samp.t+" min，"+samp.between+"。按曲線（以及反比關係）內插，樣本 X 的酶濃度約為 <strong>"+samp.show+"%</strong>（計算值 0.2% × 9.5 ÷ "+samp.t+" ＝ "+f3(exact)+"%）。</p>";
+  if(ok) h+='<div class="note teal">你的讀數 '+f3(g)+"% 與內插結果大致相符。</div>";
+  else h+='<div class="note amber">你的讀數是 '+f3(g)+"%。請再看水平線與垂直線的交點落在橫軸何處；允許有小量讀圖誤差。</div>";
+  h+="<p>課堂示例 "+samp.id+" 的 t ＝ "+samp.t+" min，"+samp.between+"。按曲線（以及反比關係）內插，樣本 X 的酶濃度約為 <strong>"+samp.show+"%</strong>（計算值 2.0 ÷ "+samp.t+" ＝ "+f3(exact)+"%）。</p>";
   h+="<p>主圖是工作紙指定的「酶濃度—完全分解時間」曲線，呈雙曲線形。讀圖時由縱軸的 t 畫至曲線，再垂直向下，不要沿直線連到原點。</p>";
   body.innerHTML=h;
   wrap.className="reveal on";
@@ -1982,11 +1974,11 @@ function checkRate(){
     return;
   }
   var exact=samp.c;
-  var ok=Math.abs(g-exact)<=0.04 || Math.abs(g-parseFloat(samp.show))<=0.04;
+  var ok=Math.abs(g-exact)<=0.015 || Math.abs(g-parseFloat(samp.show))<=0.015;
   var h="";
-  if(ok) h+='<div class="note teal">輔圖讀數 '+f2(g)+"% 與內插結果大致相符。</div>";
-  else h+='<div class="note amber">你的讀數是 '+f2(g)+"%。直線通過原點時，讀圖通常比雙曲線容易，請再對一下垂直線落在橫軸的位置。</div>";
-  h+="<p>同一組示例數據：1／t ＝ 1／"+samp.t+" ＝ "+f3(1/samp.t)+" min⁻¹，對應濃度約 <strong>"+samp.show+"%</strong>。這與主圖內插、以及 c ＝ 0.2% × 9.5 ÷ t 在線性範圍內應大致相符。</p>";
+  if(ok) h+='<div class="note teal">輔圖讀數 '+f3(g)+"% 與內插結果大致相符。</div>";
+  else h+='<div class="note amber">你的讀數是 '+f3(g)+"%。直線通過原點時，讀圖通常比雙曲線容易，請再對一下垂直線落在橫軸的位置。</div>";
+  h+="<p>同一組示例數據：1／t ＝ 1／"+samp.t+" ＝ "+f3(1/samp.t)+" min⁻¹，對應濃度約 <strong>"+samp.show+"%</strong>。這與主圖內插、以及 c ＝ 0.2% × 10 ÷ t 在線性範圍內應大致相符。</p>";
   h+="<p>兩圖描述同一組數據。時間—濃度圖是工作紙指定的曲線；速率—濃度圖較易看成直線標準曲線。不要把主圖誤認成穿過原點的直線。</p>";
   body.innerHTML=h;
   wrap.className="reveal on";
@@ -1999,15 +1991,15 @@ function maybeFinishCurve(){
   updateScore();
 }
 function fillFromAssay(){
-  var a=id("rec-04").value, b=id("rec-02").value, c=id("rec-01").value, d=id("rec-005").value;
+  var a=id("rec-016").value, b=id("rec-012").value, c=id("rec-008").value, d=id("rec-004").value;
   if(!a && !b && !c && !d){
     showNote(id("plotMsg"),"amber","測定記錄表還是空的。你可以先到「測定時間」做完並核對，或在本表自行填入示例時間（核對測定後可用「把示例時間填入記錄表」）。");
     return;
   }
-  if(a) id("t-04").value=a;
-  if(b) id("t-02").value=b;
-  if(c) id("t-01").value=c;
-  if(d) id("t-005").value=d;
+  if(a) id("t-016").value=a;
+  if(b) id("t-012").value=b;
+  if(c) id("t-008").value=c;
+  if(d) id("t-004").value=d;
   updateInvCells();
   showNote(id("plotMsg"),"teal","已嘗試從測定記錄帶入時間。請檢查是否為數字（對照組的文字不要帶進來），然後把四點繪到圖上。");
 }
@@ -2033,10 +2025,7 @@ function renderCompareOptions(){
 function syncCompareT(){
   var samp=currentSample();
   var el=id("cmpTLine");
-  if(el) el.innerHTML="目前使用示例 "+samp.id+"：t ＝ <strong>"+samp.t+" min</strong>（"+samp.between+"）。請先代入公式計算，再寫下你在標準曲線上的讀數。";
-  if(curve.interpRevealed && id("cmpCurve") && !id("cmpCurve").value){
-    /* do not auto-fill answers */
-  }
+  if(el) el.innerHTML="目前使用示例 "+samp.id+"：t ＝ <strong>"+samp.t+" min</strong>（"+samp.between+"）。請先代入公式 c ＝ 2.0 ÷ t 計算，再寫下你在標準曲線上的讀數。";
 }
 function checkCompare(){
   var samp=currentSample();
@@ -2050,26 +2039,26 @@ function checkCompare(){
     body.innerHTML=h; wrap.className="reveal on"; return;
   }
   var exact=samp.c, show=samp.show;
-  var fOk=Math.abs(f-exact)<=0.03 || Math.abs(f-parseFloat(show))<=0.03;
-  var gOk=Math.abs(g-exact)<=0.05 || Math.abs(g-parseFloat(show))<=0.05;
+  var fOk=Math.abs(f-exact)<=0.02 || Math.abs(f-parseFloat(show))<=0.02;
+  var gOk=Math.abs(g-exact)<=0.02 || Math.abs(g-parseFloat(show))<=0.02;
   h+="<p>示例 "+samp.id+"：t ＝ "+samp.t+" min。</p>";
-  h+="<p>公式：c ＝ 0.2% × 9.5 ÷ "+samp.t+" ＝ <strong>"+f3(exact)+"%</strong>，約 <strong>"+show+"%</strong>。你寫的是 "+f2(f)+"% "+(fOk?"（相符）":"（請再代入一次）")+"。</p>";
-  h+="<p>標準曲線內插約為 <strong>"+show+"%</strong>。你寫的是 "+f2(g)+"% "+(gOk?"（與內插大致相符）":"（請回到主圖或輔圖再讀一次）")+"。</p>";
+  h+="<p>公式：c ＝ 0.2% × 10 ÷ "+samp.t+" ＝ 2.0 ÷ "+samp.t+" ＝ <strong>"+f3(exact)+"%</strong>，約 <strong>"+show+"%</strong>。你寫的是 "+f3(f)+"% "+(fOk?"（相符）":"（請再代入一次）")+"。</p>";
+  h+="<p>標準曲線內插約為 <strong>"+show+"%</strong>。你寫的是 "+f3(g)+"% "+(gOk?"（與內插大致相符）":"（請回到主圖或輔圖再讀一次）")+"。</p>";
   if(j==="agree"){
-    h+='<div class="note teal">判斷正確：在線性範圍內，兩種方法應大致相符，可用來互相核對，而不是互相矛盾。這個示例正好落在 0.05%–0.4% 系列之間。</div>';
+    h+='<div class="note teal">判斷正確：在線性範圍內，兩種方法應大致相符，可用來互相核對，而不是互相矛盾。這個示例正好落在 0.04%–0.16% 系列之間。記住：公式裏的 0.2% 是原液基準（本課實測約 10 min），不是曲線上四個標準點之一。</div>';
   } else {
-    h+='<div class="note amber">這個示例仍在線性範圍內，公式與內插應大致相符。公式並非「永遠不能用」，只是當樣本明顯偏離 0.2%、或超出線性範圍時才會不準。</div>';
+    h+='<div class="note amber">這個示例仍在 0.04%–0.16% 線性範圍內，公式與內插應大致相符。公式並非「永遠不能用」，只是當樣本明顯偏離已測定範圍、或超出線性範圍時才會不準。</div>';
   }
   var need=["linear","far","extra"], wrong=["always","vol"];
   var gotNeed=0, i, hasWrong=false;
   for(i=0;i<need.length;i++){ if(lims.indexOf(need[i])>=0) gotNeed++; }
   for(i=0;i<wrong.length;i++){ if(lims.indexOf(wrong[i])>=0) hasWrong=true; }
   h+="<h3>關係式成立的條件</h3>";
-  h+="<p>反比式只在酶濃度處於線性反應範圍內成立。樣本 X 若明顯偏離 0.2%，應改用系列稀釋與標準曲線。把曲線無理外推到遠高於 0.4% 的濃度（見下一頁）也不準。各組總體積必須同為 11 mL，否則 9.5 min 這個錨點不能直接套用。</p>";
+  h+="<p>反比式只在酶濃度處於線性反應範圍內成立。樣本 X 若明顯偏離已測定的標準範圍，應改用系列稀釋與標準曲線。把曲線無理外推到遠高於 0.16% 的濃度（見下一頁）也不準。各組總體積必須同為 11 mL，否則 10 min 這個原液基準不能直接套用。</p>";
   if(gotNeed>=3 && !hasWrong){
     h+='<div class="note teal">你選對了限制條件，也沒有選「公式永遠精確」或「總體積不同仍然準確」這兩項錯誤說法。</div>';
   } else {
-    h+='<div class="note amber">限制條件應包括：線性範圍、樣本明顯偏離 0.2% 時要改用標準曲線、以及不可無理外推。公式並非永遠精確；總體積不同時也不能直接代入 9.5 min。</div>';
+    h+='<div class="note amber">限制條件應包括：線性範圍、樣本明顯偏離已測定範圍時要改用標準曲線、以及不可把曲線外推到遠高於 0.16%。公式並非永遠精確；總體積不同時也不能直接代入 10 min。</div>';
   }
   body.innerHTML=h;
   wrap.className="reveal on";
@@ -2085,44 +2074,47 @@ function checkedValues(name){
 var limits={ran:false, revealed:false};
 function renderLimPred(){
   id("limPred").innerHTML=
-    optHtml("limPred","2.375","約 2.375 min（4.75 再減半，或 9.5 ÷ 4）")+
-    optHtml("limPred","4.75","仍是 4.75 min，與 0.4% 相同")+
+    optHtml("limPred","2.5","約為 0.2% 原液時間的四分之一（因為 0.8% 是 0.2% 的四倍）")+
+    optHtml("limPred","10","仍是 10 min，與 0.2% 原液相同")+
     optHtml("limPred","0","幾乎是 0 min，因為酶愈濃反應瞬間完成")+
-    optHtml("limPred","9.5","仍是 9.5 min，與濃度無關");
+    optHtml("limPred","12.5","仍是 12.5 min，與 0.16% 標準相同");
   bindOptList("limPred");
 }
 function drawLimChart(showObs){
   var w=640,h=400,padL=58,padR=24,padT=28,padB=52;
-  var xmax=1.0, ymax=22;
-  var xt=[{v:0,lab:"0"},{v:0.1,lab:"0.1"},{v:0.2,lab:"0.2"},{v:0.4,lab:"0.4"},{v:0.8,lab:"0.8"},{v:1,lab:"1.0"}];
-  var yt=[{v:0,lab:"0"},{v:5,lab:"5"},{v:4.75,lab:"4.75"},{v:9.5,lab:"9.5"},{v:15,lab:"15"},{v:19,lab:"19"}];
+  var xmax=1.0, ymax=30;
+  var xt=[{v:0,lab:"0"},{v:0.08,lab:"0.08"},{v:0.16,lab:"0.16"},{v:0.2,lab:"0.20"},{v:0.8,lab:"0.8"},{v:1,lab:"1.0"}];
+  var yt=[{v:0,lab:"0"},{v:10,lab:"10"},{v:12.5,lab:"12.5"},{v:16.67,lab:"16.67"},{v:20,lab:"20"},{v:25,lab:"25"}];
   if(showObs){
-    yt=[{v:0,lab:"0"},{v:2.375,lab:"2.375"},{v:3.8,lab:"3.8"},{v:4.75,lab:"4.75"},{v:9.5,lab:"9.5"},{v:19,lab:"19"}];
+    yt=[{v:0,lab:"0"},{v:2.5,lab:"2.5"},{v:4,lab:"4.0"},{v:10,lab:"10"},{v:12.5,lab:"12.5"},{v:16.67,lab:"16.67"},{v:25,lab:"25"}];
   }
   var fr=chartFrame(w,h,padL,padR,padT,padB,0,xmax,0,ymax,"酶濃度 / %","時間 / min",yt,xt);
   var s=fr.s, d="", c;
-  for(c=0.09;c<=0.42;c+=0.005){
-    d+=(d===""?"M":"L")+fr.X(c)+" "+fr.Y(K/c)+" ";
+  for(c=0.07;c<=0.20+0.0001;c+=0.004){
+    var tt=K/c;
+    if(tt>ymax) continue;
+    d+=(d===""?"M":"L")+fr.X(c)+" "+fr.Y(tt)+" ";
   }
   s+='<path d="'+d+'" fill="none" stroke="#0c5f52" stroke-width="2.2"/>';
   if(showObs){
-    var d2="M"+fr.X(0.4)+" "+fr.Y(K/0.4)+" L"+fr.X(0.8)+" "+fr.Y(HIGH_THEORY);
+    var d2="M"+fr.X(0.16)+" "+fr.Y(K/0.16)+" L"+fr.X(0.8)+" "+fr.Y(HIGH_THEORY);
     s+='<path d="'+d2+'" fill="none" stroke="#0c5f52" stroke-width="1.6" stroke-dasharray="6 4"/>';
   }
-  var std=[{c:0.1,t:19},{c:0.2,t:9.5},{c:0.4,t:4.75}];
+  var std=[{c:0.08,t:IDEAL["0.08"]},{c:0.12,t:IDEAL["0.12"]},{c:0.16,t:IDEAL["0.16"]}];
   var i;
   for(i=0;i<std.length;i++){
     s+='<circle cx="'+fr.X(std[i].c)+'" cy="'+fr.Y(std[i].t)+'" r="5.5" fill="#0c5f52" stroke="#fff" stroke-width="1.5"/>';
   }
-  s+=svgText(fr.X(0.4)+8, fr.Y(4.75)-8, "標準系列（0.1–0.4%）", "start", "#0c5f52", 11);
+  s+=svgText(fr.X(0.16)+8, fr.Y(IDEAL["0.16"])-8, "標準系列（較濃一端；0.04% 的 50 min 超出本圖縱軸）", "start", "#0c5f52", 11);
+  s+='<rect x="'+(fr.X(0.2)-4)+'" y="'+(fr.Y(STOCK_T)-4)+'" width="8" height="8" fill="#fff" stroke="#8a6a2c" stroke-width="1.6"/>';
   if(showObs){
-    s+=svgText(fr.X(0.8), fr.Y(HIGH_THEORY)-12, "反比外推 2.375 min", "middle", "#5a6873", 11);
+    s+=svgText(fr.X(0.8), fr.Y(HIGH_THEORY)-12, "反比外推 "+showT(HIGH_THEORY)+" min", "middle", "#5a6873", 11);
     s+='<circle cx="'+fr.X(0.8)+'" cy="'+fr.Y(HIGH_THEORY)+'" r="5" fill="none" stroke="#5a6873" stroke-width="1.6"/>';
     s+='<circle cx="'+fr.X(0.8)+'" cy="'+fr.Y(HIGH_OBS)+'" r="7" fill="none" stroke="#9a3b2f" stroke-width="2.2"/>';
     s+='<circle cx="'+fr.X(0.8)+'" cy="'+fr.Y(HIGH_OBS)+'" r="3" fill="#9a3b2f"/>';
-    s+=svgText(fr.X(0.8), fr.Y(HIGH_OBS)+22, "記錄時間約 3.8 min", "middle", "#9a3b2f", 12, "700");
+    s+=svgText(fr.X(0.8), fr.Y(HIGH_OBS)+22, "記錄時間約 4.0 min", "middle", "#9a3b2f", 12, "700");
   }
-  s+=svgText(fr.X(0.02), fr.Y(21), "實線＝標準系列範圍；虛線＝無理外推；空心點＝0.8% 不是系列成員", "start", "#5a6873", 11);
+  s+=svgText(fr.X(0.02), fr.Y(29), showObs?"實線＝標準系列範圍；虛線＝無理外推；0.8% 不是系列成員":"先預測 0.8% 的反比時間，再執行示範才顯示外推與記錄點", "start", "#5a6873", 11);
   s+=fr.close();
   return s;
 }
@@ -2135,9 +2127,9 @@ function runLimits(){
   }
   limits.ran=true;
   var h="";
-  if(pred==="2.375") h="你的反比推算是對的：0.8% 應為 4.75÷2 ＝ 9.5÷4 ＝ 2.375 min。現在看看實際能記錄到的時間是否真的這麼短。";
-  else h="若反比仍成立，0.8% 應為 4.75 min 再減半，即 2.375 min（也等於 9.5÷4）。請看示範：記錄到的時間並不是這個值。";
-  showNote(box, pred==="2.375"?"teal":"amber", h);
+  if(pred==="2.5") h="你的反比推算是對的：0.8% 是 0.2% 的四倍，時間應為 10 ÷ 4 ＝ 2.5 min。現在看看實際能記錄到的時間是否真的這麼短。";
+  else h="若反比仍成立，0.8% 是 0.2% 原液的四倍，時間應為 10 ÷ 4 ＝ 2.5 min。請看示範：記錄到的時間並不是這個值。";
+  showNote(box, pred==="2.5"?"teal":"amber", h);
   id("limChartBox").innerHTML=drawLimChart(true);
   id("limWhyBox").style.display="block";
   id("limWhyBtns").style.display="block";
@@ -2145,11 +2137,10 @@ function runLimits(){
 }
 function checkLimits(){
   if(!limits.ran){ runLimits(); if(!limits.ran) return; }
-  var pred=radioVal("limPred");
   var why=checkedValues("limWhy");
   var wrap=id("limitsReveal"), body=id("limitsRevealBody");
   var h="";
-  h+="<p>按反比，0.8% 應約 <strong>2.375 min</strong>。本課示例中，由於混合與取樣跟不上這麼快的反應，記錄到的終點約為 <strong>3.8 min</strong>，明顯長於反比預測。這是課堂示意數據，不是一次真實動力學測量。0.8% 這一點<strong>不是</strong>工作紙四點標準系列的一部分。</p>";
+  h+="<p>按反比，0.8% 應約 <strong>2.5 min</strong>（2.0 ÷ 0.8，或 10 ÷ 4）。本課示例中，由於混合與取樣跟不上這麼快的反應，記錄到的終點約為 <strong>4.0 min</strong>，明顯長於反比預測。這是課堂示意數據，不是一次真實動力學測量。0.8% 這一點<strong>不是</strong>四個標準點的一部分。標準系列停在 0.16%。</p>";
   var good=0;
   if(why.indexOf("mix")>=0) good++;
   if(why.indexOf("interval")>=0) good++;
@@ -2165,8 +2156,8 @@ function checkLimits(){
     h+="<p>你亦選了底物迅速耗盡這一項補充：在極高酶量下，底物可能很快用完，碘液目測或較疏的取樣無法反映真正初速。</p>";
   }
   h+="<h3>若仍用單一公式，或把曲線外推，會怎樣？</h3>";
-  h+="<p>若把記錄到的 3.8 min 代入 c ＝ 0.2% × 9.5 ÷ t，會得到 c ＝ 1.9 ÷ 3.8 ＝ <strong>0.50%</strong>，明顯低估真正的 0.8%。若假定反比一直成立而由 0.4% 外推，又會以為終點是 2.375 min，與記錄不符。所以：標準曲線只宜在已測定、呈線性的範圍內內插；不要無理外推，也不要把過高酶濃度的記錄時間硬套單一 0.2% 公式。</p>";
-  h+="<p>課堂上把標準系列停在 0.4%，並用內插求樣本 X（示例約 0.15% 或 0.30%），正是為了留在較可靠的範圍內。</p>";
+  h+="<p>若把記錄到的 4.0 min 代入 c ＝ 0.2% × 10 ÷ t，會得到 c ＝ 2.0 ÷ 4.0 ＝ <strong>0.50%</strong>，明顯低估真正的 0.8%。若假定反比一直成立而由 0.16% 外推，又會以為終點是 2.5 min，與記錄不符。所以：標準曲線只宜在已測定、呈線性的範圍內內插；不要無理外推到遠高於 0.16%，也不要把過高酶濃度的記錄時間硬套單一 0.2% 公式。</p>";
+  h+="<p>課堂上把標準系列停在 0.16%，並用內插求樣本 X（示例約 0.150% 或 0.103%），正是為了留在較可靠的範圍內。</p>";
   body.innerHTML=h;
   wrap.className="reveal on";
   limits.revealed=true;
@@ -2178,10 +2169,8 @@ function setSample(which){
   ST.sample=which;
   if(id("sampleA")) id("sampleA").className="chip"+(which==="A"?" on":"");
   if(id("sampleB")) id("sampleB").className="chip"+(which==="B"?" on":"");
-  /* reset interpolation answers because t changed, keep standard times */
   curve.interpRevealed=false;
   curve.rateRevealed=false;
-  if(curve.interpStep>0) { /* keep step but hide answers */ }
   var ir=id("interpReveal"); if(ir) ir.className="reveal";
   var rr=id("rateReveal"); if(rr) rr.className="reveal";
   var cr=id("compareReveal"); if(cr) cr.className="reveal";
@@ -2192,10 +2181,10 @@ function setSample(which){
 
 function setDilMode(mode){
   dil.mode=mode;
-  if(id("modeSerial")) id("modeSerial").className="chip"+(mode==="serial"?" on":"");
+  if(id("modeParallel")) id("modeParallel").className="chip"+(mode==="parallel"?" on":"");
   if(id("modeDirect")) id("modeDirect").className="chip"+(mode==="direct"?" on":"");
-  if(id("dilModeBadge")) id("dilModeBadge").innerHTML=mode==="serial"?"連續倍比稀釋":"C₁V₁＝C₂V₂";
-  if(id("serialHint")) id("serialHint").style.display=mode==="serial"?"block":"none";
+  if(id("dilModeBadge")) id("dilModeBadge").innerHTML=mode==="parallel"?"按比例平行配製":"C₁V₁＝C₂V₂";
+  if(id("parallelHint")) id("parallelHint").style.display=mode==="parallel"?"block":"none";
   if(id("directHint")) id("directHint").style.display=mode==="direct"?"block":"none";
   if(id("c1v1box")) id("c1v1box").style.display=mode==="direct"?"block":"none";
 }
@@ -2228,7 +2217,7 @@ function bindClicks(){
   on("btnResetDil","click", resetDil);
   on("btnCheckC1V1","click", checkC1V1);
   on("btnCheckSeries","click", checkSeries);
-  on("modeSerial","click", function(){ setDilMode("serial"); });
+  on("modeParallel","click", function(){ setDilMode("parallel"); });
   on("modeDirect","click", function(){ setDilMode("direct"); });
 
   on("sampleA","click", function(){ setSample("A"); });
@@ -2255,7 +2244,7 @@ function bindClicks(){
   on("btnPlotRate","click", plotRate);
   on("btnRateCheck","click", checkRate);
   on("btnFillFromAssay","click", fillFromAssay);
-  var ids=["t-005","t-01","t-02","t-04"], j;
+  var ids=["t-004","t-008","t-012","t-016"], j;
   for(j=0;j<ids.length;j++){ on(ids[j],"input", updateInvCells); on(ids[j],"change", updateInvCells); }
 
   on("btnCompare","click", checkCompare);
@@ -2276,7 +2265,7 @@ function ready(){
   if(id("timeChartBox")) id("timeChartBox").innerHTML=emptyTimeChart();
   if(id("rateChartBox")) id("rateChartBox").innerHTML=emptyRateChart();
   if(id("limChartBox")) id("limChartBox").innerHTML=drawLimChart(false);
-  setDilMode("serial");
+  setDilMode("parallel");
   bindClicks();
   updateInvCells();
   syncCurveNote();
